@@ -4,7 +4,7 @@
               android:layout_height = "match_parent"
               android:orientation = "vertical"
 
-              tools:context = ".activities.MainActivity"
+              tools:context = "org.mikuclub.app.ui.activities.HomeActivity"
     >
 
         <TextView
@@ -28,17 +28,25 @@
         <Button
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
-            android:onClick = "onClickHandler"
+            android:onClick = "onClickHandleGetRecentPost"
             android:text = "click me"
             />
 
-        <com.android.volley.toolbox.NetworkImageView
+        <TextView
+            android:id="@+id/text"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:text="standing........."
+            android:textAlignment="center"
+            />
+
+        <!--com.android.volley.toolbox.NetworkImageView
             android:id="@+id/img1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
             android:scaleType="centerInside"
-            android:src="@drawable/b" />
+            android:src="@drawable/b" /-->
 
 
 </LinearLayout>
