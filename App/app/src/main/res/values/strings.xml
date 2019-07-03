@@ -1,4 +1,19 @@
 <resources>
-        <string name = "app_name">App mikuclub</string>
+        <string name = "app_name">mikuclub</string>
 
+        <!-- TODO: Remove or change this placeholder text -->
+        <string name = "hello_blank_fragment">Hello blank fragment</string>
+
+        <!-- menu item-->
+        <string name ="item_search">search</string>
+
+        <!-- home-->
+        <string name ="recently_post">recently post</string>
+
+
+        <!-- recycle view-->
+        <string name ="recycler_loading">loading</string>
+        <string name ="recycler_empty">empty</string>
+        <string name ="recycler_error">errore of recycler</string>
+        <string name ="recycler_no_more">there are no more</string>
 </resources>

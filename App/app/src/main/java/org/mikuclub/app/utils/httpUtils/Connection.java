@@ -1,26 +1,28 @@
 package org.mikuclub.app.utils.httpUtils;
 
-import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.contexts.MyApplication;
-import org.mikuclub.app.utils.StringUtils;
+import org.mikuclub.app.utils.dataStructure.MapUtils;
 
-import java.io.UnsupportedEncodingException;
+import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 import java.lang.reflect.Type;
@@ -37,6 +39,9 @@ public class Connection
          */
         private static DefaultRetryPolicy defaultRetryPolicy = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        private static DefaultRetryPolicy retryPolicyForFile = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME_FOR_FILE, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
         private Gson gson = new Gson();
 
         /**
@@ -47,7 +52,7 @@ public class Connection
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
          * @param wrapperCallBack
          */
-        public static void get(String url, Map params, String tag, WrapperCallBack wrapperCallBack)
+        public static void get(String url, Map params, Map<String, String> headers,  String tag, WrapperCallBack wrapperCallBack)
         {
                 //se parametri non è vuoto
                 if (params != null && params.size() > 0)
@@ -55,15 +60,16 @@ public class Connection
                         //concatenare i Parametri sul URL
                         try
                         {
-                                url = url + "?" + StringUtils.mapToString(params, "=", "&");
+                                url = url + "?" + MapUtils.mapToString(params, "=", "&");
                         }
                         catch (Exception error)
                         {
-                                wrapperCallBack.onError(error);
+                                wrapperCallBack.onOtherError(error);
                         }
 
                 }
-                request(Request.Method.GET, url, null, null, tag, wrapperCallBack);
+
+                request(Request.Method.GET, url, null, headers, tag, wrapperCallBack);
         }
 
         /**
@@ -74,9 +80,9 @@ public class Connection
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
          * @param wrapperCallBack
          */
-        public static void post(String url, final Map params, String tag, WrapperCallBack wrapperCallBack)
+        public static void post(String url, Map<String, String> params, Map<String, String> headers, String tag, WrapperCallBack wrapperCallBack)
         {
-                request(Request.Method.POST, url, params, null, tag, wrapperCallBack);
+                request(Request.Method.POST, url, params, headers, tag, wrapperCallBack);
         }
 
         /**
@@ -101,17 +107,16 @@ public class Connection
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
          * @param wrapperCallBack
          */
-        private static void request(int method, String url, final Map params, final Map headers, String tag, final WrapperCallBack wrapperCallBack)
+        private static void request(int method, String url, final Map<String, String> params, final Map<String, String> headers, String tag, final WrapperCallBack wrapperCallBack)
         {
 
-                StringRequest stringRequest = new StringRequest(method, url,
-                        new Response.Listener<String>()
+                JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(method, url, null,
+                        new Response.Listener<JSONObject >()
                         {
                                 @Override
-                                public void onResponse(String response)
+                                public void onResponse(JSONObject response)
                                 {
                                         wrapperCallBack.onSuccess(response);
-
                                 }
                         }, new Response.ErrorListener()
                 {
@@ -130,13 +135,14 @@ public class Connection
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError
                         {
-                                if (params == null || params.size() == 0)
+                                if (params != null && params.size() > 0)
                                 {
-                                        return null;
+                                        return params;
+
                                 }
                                 else
                                 {
-                                        return params;
+                                        return null;
                                 }
                         }
 
@@ -159,9 +165,9 @@ public class Connection
                         }
                 };
 
-                stringRequest.setTag(tag);
-                stringRequest.setRetryPolicy(defaultRetryPolicy);
-                HttpRequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(stringRequest);
+                jsonObjectRequest.setTag(tag);
+                jsonObjectRequest.setRetryPolicy(defaultRetryPolicy);
+                HttpRequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(jsonObjectRequest);
         }
 
 
@@ -174,7 +180,7 @@ public class Connection
          * @param tag
          * @param wrapperCallBack
          */
-        public static void jsonGet(String url, Map params, Class beanClass, Type listClassesType,String tag, WrapperCallBack wrapperCallBack)
+        public static void jsonGet(String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType,String tag, WrapperCallBack wrapperCallBack)
         {
                 //se parametri non è vuoto
                 if (params != null && params.size() > 0)
@@ -182,14 +188,17 @@ public class Connection
                         //contenare i parametri sul URL
                         try
                         {
-                                url = url + "?" + StringUtils.mapToString(params, "=", "&");
+                                url = url + "?" + MapUtils.mapToString(params, "=", "&");
                         }
                         catch (Exception error)
                         {
-                                wrapperCallBack.onError(error);
+                                wrapperCallBack.onOtherError(error);
                         }
                 }
-                jsonRequest(Request.Method.GET, url, null, null, beanClass, listClassesType, tag, wrapperCallBack);
+
+
+
+                jsonRequest(Request.Method.GET, url, null, headers, beanClass, listClassesType, tag, wrapperCallBack);
         }
 
         /**
@@ -197,13 +206,13 @@ public class Connection
          * @param url
          * @param params
          * @param beanClass
-         * @param isArray
+         * @param listClassesType
          * @param tag
          * @param wrapperCallBack
          */
-        public static void jsonPost(String url, Map params, Class beanClass, Type listClassesType, String tag, WrapperCallBack wrapperCallBack)
+        public static void jsonPost(String url, Map<String,String> params, Map<String,String> headers,Class beanClass, Type listClassesType, String tag, WrapperCallBack wrapperCallBack)
         {
-                jsonRequest(Request.Method.POST, url, params, null, beanClass, listClassesType, tag, wrapperCallBack);
+                jsonRequest(Request.Method.POST, url, params, headers, beanClass, listClassesType, tag, wrapperCallBack);
         }
 
 
@@ -218,7 +227,7 @@ public class Connection
          * @param tag
          * @param wrapperCallBack
          */
-        private static void jsonRequest(int method, String url, Map params, Map headers, Class beanClass, Type listClassesType, String tag, final WrapperCallBack wrapperCallBack)
+        private static void jsonRequest(int method, String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType, String tag, final WrapperCallBack wrapperCallBack)
         {
                 GsonRequest gsonRequest = new GsonRequest(method, url, params, headers, beanClass, listClassesType,
                         new Response.Listener<Object>()
@@ -241,6 +250,36 @@ public class Connection
                 gsonRequest.setTag(tag);
                 gsonRequest.setRetryPolicy(defaultRetryPolicy);
                 HttpRequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(gsonRequest);
+
+        }
+
+
+
+        public static void filePost(String url, Map<String,String> params, Map<String,String> headers, File file, String tag, final WrapperCallBack wrapperCallBack){
+
+
+                FileRequest fileRequest = new FileRequest(Request.Method.POST, url, params,file ,headers, new Response.Listener<NetworkResponse>()
+                {
+                        @Override
+                        public void onResponse(NetworkResponse response)
+                        {
+                                String resultResponse = new String(response.data);
+                                Log.d("TAG", "hallo");
+
+                        }
+                }, new Response.ErrorListener()
+                {
+                        @Override
+                        public void onErrorResponse(VolleyError error)
+                        {
+                                wrapperCallBack.onError(error);
+                        }
+                });
+
+                fileRequest.setTag(tag);
+                fileRequest.setRetryPolicy(retryPolicyForFile);
+                HttpRequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(fileRequest);
+
 
         }
 

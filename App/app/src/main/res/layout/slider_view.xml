@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+                xmlns:zsr = "http://schemas.android.com/apk/res-auto"
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:background = "@android:color/white"
+      >
+
+        <com.zhengsr.viewpagerlib.view.BannerViewPager
+            android:id = "@+id/loop_viewpager"
+            android:layout_width = "0dp"
+            android:layout_height = "0dp"
+
+            app:layout_constraintDimensionRatio = "H,16:9"
+            app:layout_constraintTop_toTopOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+
+
+
+            zsr:banner_isloop = "true"
+            zsr:banner_looptime = "3000"
+            zsr:banner_switchtime = "600" />
+
+        <com.zhengsr.viewpagerlib.indicator.ZoomIndicator
+            android:id="@+id/bottom_scale_layout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/height_small"
+
+            app:layout_constraintTop_toTopOf="@id/loop_viewpager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+
+            zsr:zoom_alpha_min="0.5"
+            zsr:zoom_leftmargin="10dp"
+            zsr:zoom_max="1.5"
+           />
+
+
+
+</android.support.constraint.ConstraintLayout>

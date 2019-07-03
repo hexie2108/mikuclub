@@ -18,8 +18,12 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        //repository for  slider shows com.github.LillteZheng:ViewPagerHelper:v1.3
+        maven { url 'https://jitpack.io' }
         
     }
+
 }
 
 task clean(type: Delete) {

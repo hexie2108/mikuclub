@@ -6,17 +6,13 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.Post;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
@@ -29,7 +25,7 @@ public class GsonRequest extends Request
 
         private Response.Listener mListener;
         private Map<String, String> mParams;
-        private Map<String, String> headers;
+        private Map<String, String> mHeaders;
         private Gson mGson;
         private Class beanClass;
         private Type listClassesType;
@@ -44,11 +40,11 @@ public class GsonRequest extends Request
          * @param listener
          * @param errorListener
          */
-        public GsonRequest(int method, String url, Map params, Map headers, Class beanClass, Type listClassesType, Response.Listener listener, Response.ErrorListener errorListener)
+        public GsonRequest(int method, String url, Map<String, String> params, Map<String, String> headers, Class beanClass, Type listClassesType, Response.Listener listener, Response.ErrorListener errorListener)
         {
                 super(method, url, errorListener);
-                mParams = params;
-                this.headers = headers;
+                this.mParams = params;
+                this.mHeaders = headers;
                 this.mListener = listener;
                 this.mGson = GsonInstance.getInstance();
                 this.beanClass = beanClass;
@@ -75,10 +71,14 @@ public class GsonRequest extends Request
                         }
 
                         return Response.success(responseObject, HttpHeaderParser.parseCacheHeaders(response));
+
                 }
                 catch (UnsupportedEncodingException e)
                 {
                         e.printStackTrace();
+                }
+                catch (JsonSyntaxException e){
+                        return Response.error(new VolleyError(e.getMessage(), e.getCause()));
                 }
                 return null;
         }
@@ -93,7 +93,7 @@ public class GsonRequest extends Request
         @Override
         protected Map<String, String> getParams() throws AuthFailureError
         {
-                if (mParams != null)
+                if (mParams != null && mParams.size()>0)
                 {
                         return mParams;
                 }
@@ -109,11 +109,12 @@ public class GsonRequest extends Request
         @Override
         public Map<String, String> getHeaders() throws AuthFailureError
         {
-                if(headers==null || headers.size() == 0){
-                        return Collections.emptyMap();
+                if(mHeaders !=null && mHeaders.size() > 0){
+                        return mHeaders;
                 }
                 else{
-                        return headers;
+                        return Collections.emptyMap();
+
                 }
         }
 

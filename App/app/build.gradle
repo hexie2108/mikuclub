@@ -17,17 +17,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
+
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
     testImplementation 'junit:junit:4.13-beta-3'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    //import BottomNavigationView
+    implementation 'com.android.support:design:28.0.0'
+    //import ViewPager
+    implementation 'com.android.support:support-v4:28.0.0'
+
+
+   // implementation 'org.apache.httpcomponents:httpmime:4.5.9'
+
+    
+    //java fileUtils
+    implementation 'commons-io:commons-io:2.6'
+    //get file mime type
+    implementation 'com.sun.activation:javax.activation:1.2.0'
+
+
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+
+    //EasyRecyclerView https://github.com/zhou-you/EasyXRecyclerView
+    //implementation 'com.zhouyou:easyrecyclerview:1.0.6'
+
+    //repository link https://github.com/13767004362/VolleyHelper
+    //implementation 'com.xingen:volleyHelper:1.0.0'
+
+    //easy recyclerView library
+    //https://github.com/Jude95/EasyRecyclerView/
+    //
+    implementation 'com.jude:easyrecyclerview:4.4.2'
+
+    implementation "com.android.support:cardview-v7:28.0.0-alpha1"
+
+
+    //slidershow https://github.com/LillteZheng/ViewPagerHelper
+    implementation 'com.github.LillteZheng:ViewPagerHelper:v1.3'
+
+
 
 }
