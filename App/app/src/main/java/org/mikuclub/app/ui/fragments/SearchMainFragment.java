@@ -7,45 +7,36 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
 import com.jude.easyrecyclerview.adapter.RecyclerArrayAdapter;
-import com.zhengsr.viewpagerlib.bean.PageBean;
-import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.indicator.ZoomIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.contexts.MyApplication;
-import org.mikuclub.app.holders.RecentlyPostsHolder;
+import org.mikuclub.app.holders.PostListHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.presenter.HomePresenter;
+import org.mikuclub.app.presenter.SearchPresenter;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.httpUtils.Connection;
 
 import java.util.ArrayList;
 
 import mikuclub.app.R;
 
-public class HomeFragment extends Fragment
+public class SearchMainFragment extends Fragment
 {
-        private HomePresenter homePresenter;
+        private SearchPresenter searchPresenter;
 
         //recycler view
         private EasyRecyclerView recyclerView;
         private RecyclerArrayAdapter<Post> adapter;
 
-        //slidershow banner
-        private BannerViewPager bannerViewPager;
-        //indecator of slidershow
-        private ZoomIndicator zoomIndicator;
-
-        private View header;
+        //query string
+        private String query;
 
 
         @Override
@@ -54,7 +45,7 @@ public class HomeFragment extends Fragment
         {
 
                 // Inflate the layout for this fragment
-                return inflater.inflate(R.layout.home_fragment, container, false);
+                return inflater.inflate(R.layout.recycler_fragment, container, false);
 
 
         }
@@ -64,81 +55,13 @@ public class HomeFragment extends Fragment
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                homePresenter = new HomePresenter();
+                searchPresenter = new SearchPresenter();
 
-                header = getActivity().getLayoutInflater().inflate(R.layout.home_fragment_header, null);
-
-                initSliderShowView();
                 initRecyclerView();
 
-                adapter.addHeader(new RecyclerArrayAdapter.ItemView() {
-                        @Override
-                        public View onCreateView(ViewGroup parent) {
-                                return header;
-                        }
-
-                        @Override
-                        public void onBindView(View headerView) {
-                        }
-                });
-
-
 
         }
 
-        private void initSliderShowView()
-        {
-
-
-                bannerViewPager = (BannerViewPager) header.findViewById(R.id.loop_viewpager);
-                zoomIndicator = (ZoomIndicator) header.findViewById(R.id.bottom_scale_layout);
-                callBackForSliderShow();
-
-        }
-
-        private void callBackForSliderShow()
-        {
-                WrapperCallBack wrapperCallBack = new WrapperCallBack()
-                {
-                        @Override
-                        public void onSuccess(Object response)
-                        {
-                                addDataToSliderShow(response);
-                        }
-
-                };
-                homePresenter.getStickyPostList(0, wrapperCallBack);
-        }
-
-        private void addDataToSliderShow(Object response)
-        {
-                Posts posts = (Posts) response;
-
-                PageBean bean = new PageBean.Builder<Post>()
-                        .setDataObjects(posts.getBody())
-                        .setIndicator(zoomIndicator)
-                        .builder();
-
-                // animation of slider
-                // MzTransformer, DepthPageTransformer，ZoomOutPageTransformer
-                //mBannerCountViewPager.setPageTransformer(false, new DepthPageTransformer());
-
-                bannerViewPager.setPageListener(bean, R.layout.slider_view_item, new PageHelperListener<Post>()
-                {
-                        @Override
-                        public void getItemView(View view, Post data)
-                        {
-
-                                NetworkImageView imageView = view.findViewById(R.id.loop_img);
-                                String imgUrl = data.getMetadata().getThumbnail_img_src().get(0);
-                                Connection.getImg(imgUrl, imageView);
-                                TextView textView = view.findViewById(R.id.loop_text);
-                                textView.setText(data.getTitle().getRendered());
-
-                                //for eventual listener
-                        }
-                });
-        }
 
 
         private void initRecyclerView()
@@ -150,7 +73,7 @@ public class HomeFragment extends Fragment
                         public BaseViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
                         {
                                 //disccopiamento del adapter e viewHolder
-                                return new RecentlyPostsHolder(parent);
+                                return new PostListHolder(parent);
                         }
                 };
                 //set default error and noMore view
@@ -198,7 +121,7 @@ public class HomeFragment extends Fragment
                 });
 
                 //create recyclerView
-                recyclerView = getView().findViewById(R.id.homeRecentlyPosts);
+                recyclerView = getView().findViewById(R.id.recycler_view);
                 //initial recyclerView
                 RecyclerViewUtils.initRecyclerView(recyclerView, this.getActivity());
                 //mount adapter
@@ -215,17 +138,22 @@ public class HomeFragment extends Fragment
                                         public void run()
                                         {
                                                 adapter.clear();
+                                                recyclerView.showProgress();
+
                                                 callBackForRecyclerView();
                                         }
                                 }, 1000);
                         }
                 });
 
-                callBackForRecyclerView();
+                //visualize the empty list
+                //recyclerView.showEmpty();
+
+                recyclerView.showEmpty();
         }
 
 
-        private void callBackForRecyclerView()
+        public void callBackForRecyclerView()
         {
                 WrapperCallBack wrapperCallBack = new WrapperCallBack()
                 {
@@ -235,19 +163,23 @@ public class HomeFragment extends Fragment
                                 Posts posts = (Posts) response;
                                 ArrayList<Post> arrayList = posts.getBody();
                                 adapter.addAll(arrayList);
+                                recyclerView.showRecycler();
                         }
 
                         @Override
                         public void onErrorHappened()
                         {
-
                                 recyclerView.showError();
+
                         }
 
                 };
                 int nextStart = adapter.getCount() + 1;
-                homePresenter.getRecentlyPostList(nextStart, wrapperCallBack);
+                searchPresenter.getPostListBySearch( query, nextStart, wrapperCallBack);
         }
 
-
+        public void setQuery(String query)
+        {
+                this.query = query;
+        }
 }

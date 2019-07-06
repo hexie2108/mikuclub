@@ -10,6 +10,10 @@
         <!-- home-->
         <string name ="recently_post">recently post</string>
 
+        <!-- search-->
+        <string name ="search_text">search</string>
+        <string name ="cancels_text">cancels</string>
+
 
         <!-- recycle view-->
         <string name ="recycler_loading">loading</string>

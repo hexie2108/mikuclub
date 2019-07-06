@@ -5,7 +5,7 @@
                                              android:layout_width = "match_parent"
                                              android:layout_height = "match_parent"
 
-                                             tools:context = "org.mikuclub.app.ui.fragments.HomeFragment">
+                                             tools:context = "org.mikuclub.app.ui.fragments.HomeMainFragment">
 
 
         <include
@@ -20,16 +20,29 @@
             app:layout_constraintTop_toTopOf = "parent"
             />
 
+        <ImageView
+            android:id="@+id/today"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/margin_normal"
+            android:src="@drawable/today"
+
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/slider_view"
+
+            />
 
         <TextView
             android:id = "@+id/textView"
             android:text = "@string/recently_post"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:layout_marginTop = "@dimen/margin_normal"
+
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@+id/slider_view"
+            app:layout_constraintStart_toEndOf = "@id/today"
+            app:layout_constraintTop_toTopOf="@id/today"
+
+            app:layout_constraintBottom_toBottomOf="@id/today"
             />
 
 

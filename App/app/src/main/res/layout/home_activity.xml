@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
@@ -6,13 +7,12 @@
     android:layout_height = "match_parent"
 
     tools:context = "org.mikuclub.app.ui.activity.HomeActivity"
-
     >
 
         <!-- toolBar=============================-->
         <fragment
             android:id="@+id/toolbar"
-            android:name="org.mikuclub.app.ui.fragments.ToolBarFrame"
+            android:name="org.mikuclub.app.ui.fragments.HomeToolBarFrame"
             android:layout_width="0dp"
             android:layout_height="@dimen/height_normal"
 

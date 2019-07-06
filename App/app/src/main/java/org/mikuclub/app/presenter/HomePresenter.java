@@ -27,11 +27,13 @@ get lista di post più recente e aggiornare ui
  */
         public void getStickyPostList(int start, WrapperCallBack wrapperCallBack){
 
-                int page = start / GlobalConfig.NUMBER_FOR_RECENTLY_POSTS_LIST +1;
+                int page = start / GlobalConfig.NUMBER_FOR_SLIDERSHOW +1;
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
+                parametersListPosts.setPage(page);
+                parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_SLIDERSHOW);
+
                 parametersListPosts.setSticky(true);
                 parametersListPosts.setOrderby(PostConstants.OrderBy.DATE);
-                parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_SLIDERSHOW);
                 parametersListPosts.setStatus(PostConstants.Status.PUBLISH);
                 PostModel.getInstance().selectForList(parametersListPosts.toMap(), tag, wrapperCallBack);
 
@@ -44,9 +46,12 @@ get lista di post più recente e aggiornare ui
 
                 int page = start / GlobalConfig.NUMBER_FOR_RECENTLY_POSTS_LIST +1;
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
-                parametersListPosts.setOrderby(PostConstants.OrderBy.DATE);
+                parametersListPosts.setPage(page);
                 parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_RECENTLY_POSTS_LIST);
+
+                parametersListPosts.setOrderby(PostConstants.OrderBy.DATE);
                 parametersListPosts.setStatus(PostConstants.Status.PUBLISH);
+
                 PostModel.getInstance().selectForList(parametersListPosts.toMap(), tag, wrapperCallBack);
 
         }

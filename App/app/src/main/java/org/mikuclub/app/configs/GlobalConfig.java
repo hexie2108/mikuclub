@@ -14,6 +14,7 @@ public class GlobalConfig
 
         //tags per individuare la provenienza della richiesta, serve per annullare la richiesta in caso di necessita.
         public static final String TAG_HOME = "home";
+        public static final String TAG_SEARCH = "search";
 
         //formato data per JSON
         public static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
@@ -30,8 +31,9 @@ public class GlobalConfig
         public static final String USERS_URL = "users/";
 
 
-
-        //number of element for page
+        //number of element for page (general)
+        public static final int NUMBER_FOR_PAGE = 10;
+        //number of element for recently posts list
         public static final int NUMBER_FOR_RECENTLY_POSTS_LIST = 10;
         //number of sticky posts for slidershow
         public static final int NUMBER_FOR_SLIDERSHOW = 5;

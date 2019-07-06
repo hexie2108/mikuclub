@@ -1,5 +1,6 @@
 package org.mikuclub.app.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,24 +10,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
-
-import com.android.volley.toolbox.NetworkImageView;
-import com.zhengsr.viewpagerlib.bean.PageBean;
-import com.zhengsr.viewpagerlib.callback.PageHelperListener;
-import com.zhengsr.viewpagerlib.indicator.ZoomIndicator;
-import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.presenter.HomePresenter;
 import org.mikuclub.app.adapters.HomeBottomMenuAdapeter;
 import org.mikuclub.app.ui.fragments.BaseFragment;
-import org.mikuclub.app.ui.fragments.HomeFragment;
+import org.mikuclub.app.ui.fragments.HomeMainFragment;
 import org.mikuclub.app.utils.PermissionCheck;
-import org.mikuclub.app.utils.httpUtils.Connection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import mikuclub.app.R;
 
@@ -43,42 +33,32 @@ public class HomeActivity extends AppCompatActivity
         private ViewPager viewPager;
 
 
-
-
-
         @Override
         protected void onCreate(Bundle savedInstanceState)
         {
                 super.onCreate(savedInstanceState);
 
-                homePresenter = new HomePresenter();
-
                 setContentView(R.layout.home_activity);
+
+
+                homePresenter = new HomePresenter();
 
                 //check storage permission
                 PermissionCheck.verifyStoragePermissions(this);
 
+                initViewPager();
                 initBottomMenuView();
-
 
 
         }
 
-
+        /**
+         * initial bottom menu
+         */
         private void initBottomMenuView()
         {
                 //get menu view
                 bottomNavigationView = (BottomNavigationView) findViewById(R.id.homeBottomMenuView);
-                //get contenitore di viewPage
-                viewPager = (ViewPager) findViewById(R.id.homeMainViewPager);
-                //setup viewPager
-                HomeBottomMenuAdapeter adapter = new HomeBottomMenuAdapeter(getSupportFragmentManager());
-                adapter.addFragment(new HomeFragment());
-                adapter.addFragment(BaseFragment.getInstance(R.layout.home_fragment_bottom_menu_item));
-                adapter.addFragment(BaseFragment.getInstance(R.layout.home_fragment_bottom_menu_item));
-                adapter.addFragment(BaseFragment.getInstance(R.layout.home_fragment_bottom_menu_item));
-                viewPager.setAdapter(adapter);
-
                 //listener on bottom menu item
                 bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
                 {
@@ -106,6 +86,24 @@ public class HomeActivity extends AppCompatActivity
                                 return false;
                         }
                 });
+
+
+        }
+
+        /**
+         * initial view pager
+         */
+        private void initViewPager()
+        {
+                //get contenitore di viewPage
+                viewPager = (ViewPager) findViewById(R.id.homeMainViewPager);
+                //setup viewPager
+                HomeBottomMenuAdapeter adapter = new HomeBottomMenuAdapeter(getSupportFragmentManager());
+                adapter.addFragment(new HomeMainFragment());
+                adapter.addFragment(BaseFragment.getInstance(R.layout.home_fragment_bottom_menu_item));
+                adapter.addFragment(BaseFragment.getInstance(R.layout.home_fragment_bottom_menu_item));
+                adapter.addFragment(BaseFragment.getInstance(R.layout.home_fragment_bottom_menu_item));
+                viewPager.setAdapter(adapter);
 
                 //listener on ViewPager
                 viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
@@ -146,7 +144,7 @@ public class HomeActivity extends AppCompatActivity
         {
                 super.onStop();
                 //cancella tutte le richieste incorso
-                homePresenter.cancelRequest();
+                //homePresenter.cancelRequest();
         }
 
 
@@ -174,6 +172,18 @@ public class HomeActivity extends AppCompatActivity
                 networkImageView.setErrorImageResId(R.drawable.c);
                 networkImageView.setImageUrl( "https://static.mikuclub.org/wp-content/uploads/2019/06/20190603081513-500x280.jpg", imageLoader);
         }*/
+
+
+        /*
+   function to start the searchActivity
+   * */
+        public void startSearchActivity(){
+                Intent intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
+
+
+        }
+
 
 
 }
