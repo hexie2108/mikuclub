@@ -1,11 +1,16 @@
 package org.mikuclub.app.ui.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import org.mikuclub.app.callBack.FragmentCallBack;
 import org.mikuclub.app.presenter.SearchPresenter;
+import org.mikuclub.app.ui.fragments.EmptyFragment;
 import org.mikuclub.app.ui.fragments.SearchMainFragment;
 
 import mikuclub.app.R;
@@ -18,6 +23,7 @@ public class SearchActivity extends AppCompatActivity implements FragmentCallBac
 
         private SearchPresenter searchPresenter;
         private TextView textView;
+        private SearchMainFragment searchMainFragment;
 
 
         @Override
@@ -32,15 +38,13 @@ public class SearchActivity extends AppCompatActivity implements FragmentCallBac
         }
 
         @Override
-        public void callBack(Object object){
-
-                SearchMainFragment  searchMainFragment= (SearchMainFragment) getSupportFragmentManager().findFragmentById(R.id.searchFragment);
+        public void callBack(Object object)
+        {
+                searchMainFragment = (SearchMainFragment) getSupportFragmentManager().findFragmentById(R.id.searchFragment);
                 searchMainFragment.setQuery((String) object);
                 searchMainFragment.callBackForRecyclerView();
 
         }
-
-
 
 
         @Override
@@ -50,9 +54,6 @@ public class SearchActivity extends AppCompatActivity implements FragmentCallBac
                 //cancella tutte le richieste incorso
                 //homePresenter.cancelRequest();
         }
-
-
-
 
 
 }

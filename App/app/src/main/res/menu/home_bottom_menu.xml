@@ -4,21 +4,21 @@
 
         <item
             android:id="@+id/item_home"
-            android:icon="@drawable/menu_home_icon"
+            android:icon="@drawable/baseline_home_24"
             android:title="主页" />
         <item
             android:id="@+id/item_category"
-            android:icon="@drawable/menu_category_icon"
+            android:icon="@drawable/baseline_category_24"
             android:title="分类"
             />
         <item
             android:id="@+id/item_create"
-            android:icon="@drawable/menu_upload_icon"
+            android:icon="@drawable/baseline_publish_24"
             android:title="投稿" />
 
         <item
             android:id="@+id/item_user"
-            android:icon="@drawable/menu_user_icon"
+            android:icon="@drawable/baseline_person_24"
             android:title="我的" />
 
 

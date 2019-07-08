@@ -12,8 +12,6 @@ import android.widget.Toast;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
 import com.jude.easyrecyclerview.adapter.RecyclerArrayAdapter;
-import com.zhengsr.viewpagerlib.indicator.ZoomIndicator;
-import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.contexts.MyApplication;
@@ -39,6 +37,8 @@ public class SearchMainFragment extends Fragment
         private String query;
 
 
+
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
@@ -56,6 +56,7 @@ public class SearchMainFragment extends Fragment
                 super.onViewCreated(view, savedInstanceState);
 
                 searchPresenter = new SearchPresenter();
+
 
                 initRecyclerView();
 
@@ -138,8 +139,6 @@ public class SearchMainFragment extends Fragment
                                         public void run()
                                         {
                                                 adapter.clear();
-                                                recyclerView.showProgress();
-
                                                 callBackForRecyclerView();
                                         }
                                 }, 1000);
@@ -147,23 +146,26 @@ public class SearchMainFragment extends Fragment
                 });
 
                 //visualize the empty list
-                //recyclerView.showEmpty();
-
-                recyclerView.showEmpty();
+                //recyclerView.setVisibility(View.INVISIBLE);
+                //adapter.clear();
         }
 
 
         public void callBackForRecyclerView()
         {
+
+
                 WrapperCallBack wrapperCallBack = new WrapperCallBack()
                 {
                         @Override
                         public void onSuccess(Object response)
                         {
+
                                 Posts posts = (Posts) response;
                                 ArrayList<Post> arrayList = posts.getBody();
                                 adapter.addAll(arrayList);
-                                recyclerView.showRecycler();
+
+
                         }
 
                         @Override
@@ -178,8 +180,12 @@ public class SearchMainFragment extends Fragment
                 searchPresenter.getPostListBySearch( query, nextStart, wrapperCallBack);
         }
 
+
         public void setQuery(String query)
         {
                 this.query = query;
+
+                //recyclerView.showProgress();
+
         }
 }

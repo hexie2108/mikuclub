@@ -311,7 +311,7 @@ public class Connection
                 //set default img per view
                 networkImageView.setDefaultImageResId(R.drawable.loading);
                 //set error image per view
-                networkImageView.setErrorImageResId(R.drawable.error);
+                networkImageView.setErrorImageResId(R.drawable.baseline_error_outline_24);
                 //get e set image remote
                 networkImageView.setImageUrl(url, imageLoader);
         }

@@ -35,7 +35,7 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginStart="@dimen/margin_normal"
 
-                    android:src = "@drawable/search"
+                    android:src = "@drawable/baseline_search_24"
                     app:layout_constraintBottom_toBottomOf = "@+id/cancels_button"
                     app:layout_constraintEnd_toStartOf = "@id/search_query"
                     app:layout_constraintStart_toEndOf = "@+id/cancels_button"
