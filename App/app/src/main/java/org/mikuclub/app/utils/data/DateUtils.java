@@ -1,16 +1,18 @@
-package org.mikuclub.app.utils;
+package org.mikuclub.app.utils.data;
 
 import org.mikuclub.app.configs.GlobalConfig;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.SimpleFormatter;
 
+/**
+ * 日期数据处理函数集
+ */
 public class DateUtils
 {
 
         /**
-         * trasformare print data in formatta prestabilita dalla config
+         * 把日期实例转换成预设的字符串格式
          * @param date
          * @return
          */

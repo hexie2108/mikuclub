@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
 import org.mikuclub.app.callBack.FragmentCallBack;
-import org.mikuclub.app.presenter.SearchPresenter;
+import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.ui.fragments.SearchMainFragment;
 
 import mikuclub.app.R;
@@ -18,7 +18,9 @@ import mikuclub.app.R;
 public class SearchActivity extends AppCompatActivity implements FragmentCallBack
 {
 
-        private SearchPresenter searchPresenter;
+        private static final int TAG = 3;
+
+        private PostDelegate searchPresenter;
         private TextView textView;
         private SearchMainFragment searchMainFragment;
 
@@ -30,7 +32,7 @@ public class SearchActivity extends AppCompatActivity implements FragmentCallBac
 
                 setContentView(R.layout.search_activity);
 
-                searchPresenter = new SearchPresenter();
+                searchPresenter = new PostDelegate(TAG);
 
         }
 

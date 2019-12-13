@@ -1,41 +1,48 @@
 package org.mikuclub.app.configs;
 
 /**
- * questo classe contiene tutti i variabile modificabile del sistema
+ * 全局配置
  */
 public class GlobalConfig
 {
-        //la dimensione del cache è 100MB
-        public static final int CACHE_MAX_SIZE = 100;
-        //il tempo di attesa per rimandare la richiesta HTTP  (5s)
+        //图片缓存大小 (MB)
+        public static final int CACHE_MAX_SIZE = 200;
+        //网络请求重试间隔 (毫秒)
         public static final int RETRY_TIME = 5000;
-        //il tempo di attesa per rimandare la richiesta HTTP in caso di upload file (30s)
+        //网络请求(上传大文件) 重试间隔 (毫秒)
         public static final int RETRY_TIME_FOR_FILE= 5000;
 
-        //tags per individuare la provenienza della richiesta, serve per annullare la richiesta in caso di necessita.
-        public static final String TAG_HOME = "home";
-        public static final String TAG_SEARCH = "search";
+        //网络请求标签名, 用来区分请求来源, 以便在需要的时候取消请求
+//        public static final String TAG_HOME = "home";
+//        public static final String TAG_SEARCH = "search";
 
-        //formato data per JSON
+        //JSON用的日期格式
         public static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
 
 
-        //endpoints di backend
-       // public static final String SERVER_URL = "http://192.168.1.99/wordpress/wp-json/wp/v2/";
-        public static final String SERVER_URL = "https://www.mikuclub.org/wp-json/wp/v2/";
-        public static final String POSTS_URL = "posts/";
-        public static final String CATEGORIES_URL = "categories/";
-        public static final String TAGS_URL = "tags/";
-        public static final String COMMENTS_URL = "comments/";
-        public static final String MEDIA_URL = "media/";
-        public static final String USERS_URL = "users/";
+        //后台服务器地址
+        public class Server{
+
+                // public static final String ROOT = "http://192.168.1.99/wordpress/wp-json/wp/v2/";
+                public static final String ROOT = "https://www.mikuclub.org/wp-json/wp/v2/";
+                public static final String POSTS = "posts/";
+                public static final String CATEGORIES = "categories/";
+                public static final String TAGS = "tags/";
+                public static final String COMMENTS = "comments/";
+                public static final String MEDIA = "media/";
+                public static final String USERS = "users/";
+
+        }
 
 
-        //number of element for page (general)
+
+
+
+        //每页显示的文章数量
         public static final int NUMBER_FOR_PAGE = 10;
-        //number of element for recently posts list
+        //每页显示的文章数量 (最近发布)
         public static final int NUMBER_FOR_RECENTLY_POSTS_LIST = 10;
-        //number of sticky posts for slidershow
+        //首页幻灯片的文章数量
         public static final int NUMBER_FOR_SLIDERSHOW = 5;
 
 

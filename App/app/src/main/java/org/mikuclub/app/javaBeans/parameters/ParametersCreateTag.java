@@ -1,12 +1,9 @@
 package org.mikuclub.app.javaBeans.parameters;
 
-import org.mikuclub.app.utils.dataStructure.ArrayUtils;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.dataStructure.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
 
 public class ParametersCreateTag
 {

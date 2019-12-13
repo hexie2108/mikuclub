@@ -15,10 +15,9 @@ import com.jude.easyrecyclerview.adapter.RecyclerArrayAdapter;
 
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.holders.PostListHolder;
-import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.presenter.SearchPresenter;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.ArrayList;
@@ -27,11 +26,11 @@ import mikuclub.app.R;
 
 public class SearchMainFragment extends Fragment
 {
-        private SearchPresenter searchPresenter;
+        private PostDelegate searchPresenter;
 
         //recycler view
         private EasyRecyclerView recyclerView;
-        private RecyclerArrayAdapter<Post> adapter;
+        private RecyclerArrayAdapter<org.mikuclub.app.javaBeans.resources.Post> adapter;
 
         //query string
         private String query;
@@ -55,7 +54,7 @@ public class SearchMainFragment extends Fragment
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                searchPresenter = new SearchPresenter();
+                searchPresenter = new PostDelegate();
 
 
                 initRecyclerView();
@@ -68,7 +67,7 @@ public class SearchMainFragment extends Fragment
         private void initRecyclerView()
         {
                 //create adapter
-                adapter = new RecyclerArrayAdapter<Post>(this.getActivity())
+                adapter = new RecyclerArrayAdapter<org.mikuclub.app.javaBeans.resources.Post>(this.getActivity())
                 {
                         @Override
                         public BaseViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -162,7 +161,7 @@ public class SearchMainFragment extends Fragment
                         {
 
                                 Posts posts = (Posts) response;
-                                ArrayList<Post> arrayList = posts.getBody();
+                                ArrayList<org.mikuclub.app.javaBeans.resources.Post> arrayList = posts.getBody();
                                 adapter.addAll(arrayList);
 
 

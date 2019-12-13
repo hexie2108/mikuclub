@@ -24,9 +24,8 @@ import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.holders.PostListHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.presenter.HomePresenter;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.httpUtils.Connection;
+import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
 
@@ -131,7 +130,7 @@ public class HomeMainFragment extends Fragment
 
                                 NetworkImageView imageView = view.findViewById(R.id.loop_img);
                                 String imgUrl = data.getMetadata().getThumbnail_img_src().get(0);
-                                Connection.getImg(imgUrl, imageView);
+                                Request.getRemoteImg(imageView, imgUrl);
                                 TextView textView = view.findViewById(R.id.loop_text);
                                 textView.setText(data.getTitle().getRendered());
 

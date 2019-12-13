@@ -281,7 +281,7 @@ public class Post
         @Override
         public String toString()
         {
-                return "Post{" +
+                return "PostDelegate{" +
                         "date=" + date +
                         ", date_gmt=" + date_gmt +
                         ", guid=" + guid +

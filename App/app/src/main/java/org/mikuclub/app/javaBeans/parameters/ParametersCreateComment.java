@@ -3,7 +3,7 @@ package org.mikuclub.app.javaBeans.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.dataStructure.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
 
 public class ParametersCreateComment
 {

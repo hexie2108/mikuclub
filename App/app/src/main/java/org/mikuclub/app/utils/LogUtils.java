@@ -7,6 +7,11 @@ import android.util.Log;
 
 public class LogUtils
 {
+        public static final String VERBOSE_TAG = "verbose_tag";
+        public static final String DEBUG_TAG = "debug_tag";
+        public static final String INFO_TAG = "info_tag";
+        public static final String WARN_TAG = "warn_tag";
+        public static final String ERROR_TAG = "error_tag";
 
 
         public static final int VERBOSE = 1;
@@ -20,37 +25,37 @@ public class LogUtils
         //change this variable to manage the level of info to print
         public static int log_level = VERBOSE;
 
-        public static void v(String tag, String msg)
+        public static void v(String msg)
         {
                 if (log_level <= VERBOSE)
                 {
-                        Log.v(tag, msg);
+                        Log.v(VERBOSE_TAG, msg);
                 }
         }
 
-        public static void d(String tag, String msg)
+        public static void d(String msg)
         {
                 if (log_level <= DEBUG)
                 {
-                        Log.d(tag, msg);
+                        Log.d(DEBUG_TAG, msg);
                 }
         }
 
-        public static void i(String tag, String msg){
+        public static void i(String msg){
                 if(log_level <= INFO ){
-                        Log.i(tag, msg);
+                        Log.i(INFO_TAG, msg);
                 }
         }
 
-        public static void w(String tag, String msg){
+        public static void w(String msg){
                 if(log_level <= WARN ){
-                        Log.w(tag, msg);
+                        Log.w(WARN_TAG, msg);
                 }
         }
 
-        public static void e(String tag, String msg){
+        public static void e(String msg){
                 if(log_level <= ERROR ){
-                        Log.e(tag, msg);
+                        Log.e(ERROR_TAG, msg);
                 }
         }
 

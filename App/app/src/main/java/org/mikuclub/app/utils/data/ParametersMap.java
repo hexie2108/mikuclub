@@ -1,14 +1,16 @@
-package org.mikuclub.app.utils.dataStructure;
+package org.mikuclub.app.utils.data;
 
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * 自定义map类
+ */
 public class ParametersMap extends HashMap
 {
 
         /**
-         * metodo wrapper di map.put
-         * put elemente  solo se il valore non è nullo
+         * 自定义插入方法
+         * 只有数据不是null的情况下 才插入数据
          * @param key
          * @param inputValue
          */

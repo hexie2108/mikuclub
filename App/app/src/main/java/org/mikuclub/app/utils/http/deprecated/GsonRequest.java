@@ -1,4 +1,4 @@
-package org.mikuclub.app.utils.httpUtils;
+package org.mikuclub.app.utils.http.deprecated;
 
 import android.util.Log;
 
@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
+ * 废弃
  * la classe request personalizzato per trasformare response in oggetto bean
  *  source   https://www.jianshu.com/p/4e153e925878
  */
@@ -46,7 +47,7 @@ public class GsonRequest extends Request
                 this.mParams = params;
                 this.mHeaders = headers;
                 this.mListener = listener;
-                this.mGson = GsonInstance.getInstance();
+
                 this.beanClass = beanClass;
                 this.listClassesType = listClassesType;
 

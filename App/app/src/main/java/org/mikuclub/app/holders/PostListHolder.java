@@ -7,7 +7,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
 
 import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.utils.httpUtils.Connection;
+import org.mikuclub.app.utils.http.Request;
 
 import mikuclub.app.R;
 
@@ -34,7 +34,7 @@ public class PostListHolder extends BaseViewHolder<Post>
         {
                 title.setText(post.getTitle().getRendered());
                 description.setText(post.getExcerpt().getRendered());
-                Connection.getImg(post.getMetadata().getThumbnail_img_src().get(0), img);
+                Request.getRemoteImg(img,post.getMetadata().getThumbnail_img_src().get(0),);
 
 
         }

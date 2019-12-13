@@ -1,33 +1,33 @@
-package org.mikuclub.app.utils.dataStructure;
+package org.mikuclub.app.utils.data;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 
+/**
+ * 列表数据处理函数集
+ */
 public class ArrayUtils
 {
         /**
-         * transform a arrayList to string
+         * 把 arrayList 转换成 字符串
          *
          * @param arraylistSource  source list
          * @param symbolAround     symbol around the element
          * @param separatorElement separator between element
-         * @return String se lista non è vuoto, altrimenti ritorna null
+         * @return
          */
         public static String arrayListToString(ArrayList arraylistSource, String symbolAround, String separatorElement)
         {
 
                 String output = null;
-                //se list è definito e contiene almeno un elemento
-                if (arraylistSource != null && arraylistSource.size() > 0)
+                //如果列表不是空的
+                if (arraylistSource != null && !arraylistSource.isEmpty())
                 {
                         output = "";
                         for (int i = 0; i < arraylistSource.size(); i++)
                         {
-                                output += symbolAround + String.valueOf(arraylistSource.get(i)) + symbolAround + separatorElement;
+                                output += symbolAround + arraylistSource.get(i) + symbolAround + separatorElement;
                         }
-                        //remove the last separatorElement;
+                        //去除末尾的分隔符号
                         output = output.substring(0, output.length() - separatorElement.length());
 
                 }

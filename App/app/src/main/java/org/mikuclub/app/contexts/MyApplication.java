@@ -3,7 +3,7 @@ package org.mikuclub.app.contexts;
 import android.app.Application;
 import android.content.Context;
 
-import org.mikuclub.app.utils.httpUtils.HttpRequestQueue;
+import org.mikuclub.app.utils.http.RequestQueue;
 
 /**
  * 储存和获取全局context
@@ -20,7 +20,7 @@ public class MyApplication extends Application
                 //salvare context in variabile statico
                 context = getApplicationContext();
                 // inizializzare coda di richiesta HTTP
-                HttpRequestQueue.getInstance(context);
+                RequestQueue.getInstance(context);
 
         }
 

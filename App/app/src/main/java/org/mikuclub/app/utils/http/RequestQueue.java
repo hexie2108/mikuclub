@@ -1,34 +1,34 @@
-package org.mikuclub.app.utils.httpUtils;
+package org.mikuclub.app.utils.http;
 
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 /**
- * questa classe gestisce l'unico coda di richiesta HTTP Volley per intero applicazione
+ * 网络请求队列 统一管理器
  */
 
-public class HttpRequestQueue
+public class RequestQueue
 {
-        private static HttpRequestQueue instance;
-        private RequestQueue mRequestQueue;
+
+        private static RequestQueue instance;
+        private com.android.volley.RequestQueue mRequestQueue;
 
         /**
          * singleton mode
          * @param context application context
          * @return
          */
-        public static synchronized HttpRequestQueue getInstance(Context context)
+        public static synchronized RequestQueue getInstance(Context context)
         {
                 if (instance == null)
                 {
-                        synchronized (HttpRequestQueue .class)
+                        synchronized (RequestQueue.class)
                         {
                                 if (instance == null)
                                 {
-                                        instance = new HttpRequestQueue(context);
+                                        instance = new RequestQueue(context);
                                 }
                         }
 
@@ -37,27 +37,25 @@ public class HttpRequestQueue
         }
 
         /**
-         * costruttore
+         * 构建函数
          * @param context
          */
-        private HttpRequestQueue(Context context)
+        private RequestQueue(Context context)
         {
+                //生成请求队列
                 mRequestQueue = Volley.newRequestQueue(context);
         }
 
         /**
-         * get la coda di richiesta
-         * @return
+         * 获取请求队列
          */
-        public RequestQueue getRequestQueue()
+        public com.android.volley.RequestQueue getRequestQueue()
         {
                 return this.mRequestQueue;
         }
 
         /**
-         * inserire la richiesta in coda
-         * @param request
-         * @param <T>
+         * 插入新请求到队列
          */
         public <T> void  addRequestQueue(Request<T> request)
         {
@@ -65,7 +63,7 @@ public class HttpRequestQueue
         }
 
         /**
-         * cancellare le richieste con determinato TAG
+         * 批量删除TAG对应的请求
          * @param tag
          */
         public void cancelRequest(Object tag)

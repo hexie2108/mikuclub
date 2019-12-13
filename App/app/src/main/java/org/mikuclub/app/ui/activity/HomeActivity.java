@@ -12,11 +12,9 @@ import android.view.View;
 import android.widget.TextView;
 
 
-import org.mikuclub.app.presenter.HomePresenter;
 import org.mikuclub.app.adapters.HomeBottomMenuAdapeter;
 import org.mikuclub.app.ui.fragments.BaseFragment;
 import org.mikuclub.app.ui.fragments.HomeMainFragment;
-import org.mikuclub.app.utils.PermissionCheck;
 
 import mikuclub.app.R;
 
@@ -25,6 +23,7 @@ import mikuclub.app.R;
  */
 public class HomeActivity extends AppCompatActivity
 {
+        private static final int TAG = 2;
 
         private HomePresenter homePresenter;
         private TextView textView;
@@ -43,8 +42,7 @@ public class HomeActivity extends AppCompatActivity
 
                 homePresenter = new HomePresenter();
 
-                //check storage permission
-                PermissionCheck.verify(this);
+
 
                 initViewPager();
                 initBottomMenuView();

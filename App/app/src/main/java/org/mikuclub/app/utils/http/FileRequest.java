@@ -1,4 +1,4 @@
-package org.mikuclub.app.utils.httpUtils;
+package org.mikuclub.app.utils.http;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
