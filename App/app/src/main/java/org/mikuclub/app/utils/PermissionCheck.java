@@ -3,7 +3,7 @@ package org.mikuclub.app.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 /**
  * class che gestisce il problema di permesso
@@ -18,7 +18,7 @@ public class PermissionCheck
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
 
-        public static void verifyStoragePermissions(Activity activity)
+        public static void verify(Activity activity)
         {
                 // Check if we have write permission
                 int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- attivare il supporto per  il traffico in HTTP-->
+
+<!-- 允许不安全的HTTP请求-->
+<!-- permit uninsured HTTP request-->
 <network-security-config>
         <base-config cleartextTrafficPermitted="true"/>
 </network-security-config>

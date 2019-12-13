@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+        <!-- general size =====================================================================-->
+        <dimen name="ultra_large">50dp</dimen>
+        <dimen name="extra_large">30dp</dimen>
+        <dimen name="very_large">20dp</dimen>
+        <dimen name="large">15dp</dimen>
+        <dimen name="normal">10dp</dimen>
+        <dimen name="small">5dp</dimen>
+        <dimen name="tiny">2dp</dimen>
 
-
-        <!-- dimention of home bottom menu item-->
-        <dimen name="design_bottom_navigation_active_text_size">10sp</dimen>
-        <dimen name="design_bottom_navigation_text_size">10sp</dimen>
 
         <!-- text size =====================================================================-->
         <dimen name="text_superbig">30sp</dimen>
@@ -12,6 +16,11 @@
         <dimen name="text_large">20sp</dimen>
         <dimen name="text_normal">15sp</dimen>
         <dimen name="text_small">10sp</dimen>
+
+
+        <!-- dimention of home bottom menu item-->
+        <dimen name="design_bottom_navigation_active_text_size">10sp</dimen>
+        <dimen name="design_bottom_navigation_text_size">10sp</dimen>
 
         <!-- component size =====================================================================-->
         <dimen name="height_250">250dp</dimen>

@@ -2,10 +2,10 @@ package org.mikuclub.app.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity
                 homePresenter = new HomePresenter();
 
                 //check storage permission
-                PermissionCheck.verifyStoragePermissions(this);
+                PermissionCheck.verify(this);
 
                 initViewPager();
                 initBottomMenuView();

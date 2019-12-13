@@ -6,7 +6,8 @@ import android.content.Context;
 import org.mikuclub.app.utils.httpUtils.HttpRequestQueue;
 
 /**
- *  classe applicazione customizzato, che salva Application context in modo statico durante fase di OnCreate
+ * 储存和获取全局context
+ * storage the global context of application
  */
 public class MyApplication extends Application
 {

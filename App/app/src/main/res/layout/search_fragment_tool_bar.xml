@@ -10,7 +10,7 @@
     app:theme = "@style/ToolBarStyle"
     >
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
 
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
@@ -69,7 +69,7 @@
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toEndOf = "@+id/search_query"
                     app:layout_constraintTop_toTopOf = "@+id/search_query" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 </Toolbar>
 
 
