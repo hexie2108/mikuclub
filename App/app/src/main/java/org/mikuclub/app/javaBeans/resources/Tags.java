@@ -3,9 +3,10 @@ package org.mikuclub.app.javaBeans.resources;
 
 import org.mikuclub.app.javaBeans.resources.modules.Headers;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Tags
+public class Tags  implements Serializable
 {
 
         private List<Tag> body;

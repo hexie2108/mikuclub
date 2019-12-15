@@ -1,5 +1,9 @@
 <resources>
         <string name = "app_name">初音社</string>
+<!--        <string name = "version_name">beta0.1</string>-->
+
+
+        <string name = "default_text">默认文字.......</string>
 
         <!-- TODO: Remove or change this placeholder text -->
         <string name = "hello_blank_fragment">Hello blank fragment</string>

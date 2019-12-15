@@ -18,6 +18,7 @@ import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.holders.PostListHolder;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class SearchMainFragment extends Fragment
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                searchPresenter = new PostDelegate();
+                searchPresenter = new PostDelegate(HomeActivity.TAG);
 
 
                 initRecyclerView();
@@ -157,18 +158,18 @@ public class SearchMainFragment extends Fragment
                 WrapperCallBack wrapperCallBack = new WrapperCallBack()
                 {
                         @Override
-                        public void onSuccess(Object response)
+                        public void onSuccess(String response)
                         {
 
-                                Posts posts = (Posts) response;
-                                ArrayList<org.mikuclub.app.javaBeans.resources.Post> arrayList = posts.getBody();
-                                adapter.addAll(arrayList);
+//                                Posts posts = (Posts) response;
+//                                ArrayList<org.mikuclub.app.javaBeans.resources.Post> arrayList = posts.getBody();
+//                                adapter.addAll(arrayList);
 
 
                         }
 
                         @Override
-                        public void onErrorHappened()
+                        public void onError()
                         {
                                 recyclerView.showError();
 

@@ -11,49 +11,84 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.utils.LogUtils;
 
-/*questo è un classe wrapper  per gestire operazione callback di richiesta HTTP*/
+/*questo è un classe wrapper  per gestire operazione callback di richiesta HTTP
+* 空的回调类, 用来处理网络请求的回调
+* 必须重写来实现各种需求
+* */
 public class WrapperCallBack
 {
+
+        private Object argument1;
+        private Object argument2;
+
+        public WrapperCallBack()
+        {
+        }
+
+        public WrapperCallBack(Object argument1)
+        {
+                this.argument1 = argument1;
+        }
+        public WrapperCallBack(Object argument1, Object argument2)
+        {
+                this.argument1 = argument1;
+                this.argument2 = argument2;
+        }
+
+        public Object getArgument1()
+        {
+                return argument1;
+        }
+
+        public void setArgument1(Object argument1)
+        {
+                this.argument1 = argument1;
+        }
+
+        public Object getArgument2()
+        {
+                return argument2;
+        }
+
+        public void setArgument2(Object argument2)
+        {
+                this.argument2 = argument2;
+        }
+
         /**
-         * esegue questa funzione se risposta è positiva
-         * da Override
-         *
+         *  请求成功的情况
+         * 默认什么都不做
          * @param response
          */
-        public void onSuccess(Object response)
+        public void onSuccess(String response)
         {
 
         }
 
         /**
-         * esegue questa funzione se è successo qualche errore
-         * da Override
+         * 自定义错误处理函数
+         * 默认为空, 在有需要的时候
          */
-        public void onErrorHappened()
+        public void onError()
         {
 
         }
 
-        //default handle su errore generici non causati dalla connessione HTTP
-        public void onOtherError(Exception error)
-        {
-                onErrorHappened();
 
-                Log.i("TAG", "errore generici: " + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore generici: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                error.printStackTrace();
-        }
-
-        //default handle globale in caso di errore deriva dalla connessione HTTP
-        public void onError(VolleyError error)
+        /**
+         * 请求失败的情况
+         * @param error
+         */
+        public void onErrorHandler(VolleyError error)
         {
 
-                onErrorHappened();
+                onError();
 
                 NetworkResponse networkResponse = error.networkResponse;
                 String errorMessage = "Unknown error";
-                //se errore è dovuto da timeout o connessione
+                //如果是网络连接错误或超时
                 if (networkResponse == null)
                 {
                         if (error.getClass().equals(TimeoutError.class))
@@ -67,16 +102,16 @@ public class WrapperCallBack
                                 handleOnConnectionError(error);
                         }
 
-                        Log.i("Error", errorMessage);
+                        //Log.v("Error", errorMessage);
                 }
-                //altrimenti
+                //其他错误情况 (网络正常, 服务器返回包含错误信息的json)
                 else
                 {
-                        //convertire i messaggi di errore in stringa
+                        //从返回值里获取错误信息 (生成字符串格式)
                         String result = new String(networkResponse.data);
                         try
                         {
-                                //convertire in oggetto da JSON string
+                                //转换成 JSON类
                                 JSONObject response = new JSONObject(result);
                                 //get status code
                                 int status = response.getJSONObject("data").getInt("status");
@@ -112,6 +147,7 @@ public class WrapperCallBack
                         }
                         catch (JSONException e)
                         {
+                                LogUtils.w("解析网络请求错误原因的JSON失败");
                                 e.printStackTrace();
                         }
                 }
@@ -120,39 +156,39 @@ public class WrapperCallBack
 
         public void handleOnTimeOutError(VolleyError error)
         {
-                Log.i("TAG", "errore timeOut:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore timeOut: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.v(LogUtils.INFO_TAG, "errore timeOut:" + error.getMessage(), error);
+                Toast.makeText(MyApplication.getContext(), "error timeOut: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         public void handleOnConnectionError(VolleyError error)
         {
-                Log.i("TAG", "errore connection:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore connection: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.v(LogUtils.INFO_TAG, "errore connection:" + error.getMessage(), error);
+                Toast.makeText(MyApplication.getContext(), "error connection: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
 
         public void handleOnNotFoundError(VolleyError error)
         {
-                Log.i("TAG", "errore notFound:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore notFound: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.v(LogUtils.INFO_TAG, "errore notFound:" + error.getMessage(), error);
+                Toast.makeText(MyApplication.getContext(), "error notFound: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         public void handleOnUnauthorizedError(VolleyError error)
         {
-                Log.i("TAG", "errore Unauthorized:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore Unauthorized: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.v(LogUtils.INFO_TAG, "errore Unauthorized:" + error.getMessage(), error);
+                Toast.makeText(MyApplication.getContext(), "error Unauthorized: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         public void handleOnBadRequestError(VolleyError error)
         {
-                Log.i("TAG", "errore BadRequest:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore BadRequest: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.v(LogUtils.INFO_TAG, "error BadRequest:" + error.getMessage(), error);
+                Toast.makeText(MyApplication.getContext(), "error BadRequest: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         public void handleOnInternalServerError(VolleyError error)
         {
-                Log.i("TAG", "errore InternalServerError:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "errore InternalServerError: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.v(LogUtils.INFO_TAG, "errore InternalServerError:" + error.getMessage(), error);
+                Toast.makeText(MyApplication.getContext(), "error InternalServerError: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
 

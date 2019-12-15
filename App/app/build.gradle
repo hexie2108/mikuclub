@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "beta0.1"
+        versionName "0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,6 +18,13 @@ android {
             minifyEnabled false
             //the rules to obfuscate the code
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue "string", "app_version_name", "${defaultConfig.versionName}"
+        }
+
+        debug {
+            versionNameSuffix ".beta"
+            resValue "string", "app_version_name", "${defaultConfig.versionName}${versionNameSuffix}"
         }
     }
     packagingOptions {

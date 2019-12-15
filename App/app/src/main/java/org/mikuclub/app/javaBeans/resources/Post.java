@@ -7,10 +7,11 @@ import com.google.gson.annotations.SerializedName;
 import org.mikuclub.app.javaBeans.resources.modules.MetadataForPost;
 import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Post
+public class Post  implements Serializable
 {
         private Date date;
         private Date date_gmt;

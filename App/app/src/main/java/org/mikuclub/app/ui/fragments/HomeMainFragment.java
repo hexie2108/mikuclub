@@ -21,9 +21,11 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.holders.PostListHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -33,7 +35,7 @@ import mikuclub.app.R;
 
 public class HomeMainFragment extends Fragment
 {
-        private HomePresenter homePresenter;
+        private PostDelegate homePresenter;
 
         //recycler view
         private EasyRecyclerView recyclerView;
@@ -63,7 +65,7 @@ public class HomeMainFragment extends Fragment
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                homePresenter = new HomePresenter();
+                homePresenter = new PostDelegate(HomeActivity.TAG);
 
                 header = getActivity().getLayoutInflater().inflate(R.layout.home_fragment_header, null);
 
@@ -100,13 +102,13 @@ public class HomeMainFragment extends Fragment
                 WrapperCallBack wrapperCallBack = new WrapperCallBack()
                 {
                         @Override
-                        public void onSuccess(Object response)
+                        public void onSuccess(String response)
                         {
-                                addDataToSliderShow(response);
+                             //   addDataToSliderShow(response);
                         }
 
                 };
-                homePresenter.getStickyPostList(0, wrapperCallBack);
+                homePresenter.getStickyPostList(wrapperCallBack);
         }
 
         private void addDataToSliderShow(Object response)
@@ -229,15 +231,15 @@ public class HomeMainFragment extends Fragment
                 WrapperCallBack wrapperCallBack = new WrapperCallBack()
                 {
                         @Override
-                        public void onSuccess(Object response)
+                        public void onSuccess(String response)
                         {
-                                Posts posts = (Posts) response;
-                                ArrayList<Post> arrayList = posts.getBody();
-                                adapter.addAll(arrayList);
+//                                Posts posts = (Posts) response;
+//                                ArrayList<Post> arrayList = posts.getBody();
+//                                adapter.addAll(arrayList);
                         }
 
                         @Override
-                        public void onErrorHappened()
+                        public void onError()
                         {
 
                                 recyclerView.showError();

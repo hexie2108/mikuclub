@@ -5,10 +5,11 @@ import org.mikuclub.app.javaBeans.resources.modules.Avatar_urls;
 import org.mikuclub.app.javaBeans.resources.modules.Headers;
 import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Comments
+public class Comments  implements Serializable
 {
 
         private List<Comment> body;

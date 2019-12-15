@@ -34,7 +34,7 @@ public class PostListHolder extends BaseViewHolder<Post>
         {
                 title.setText(post.getTitle().getRendered());
                 description.setText(post.getExcerpt().getRendered());
-                Request.getRemoteImg(img,post.getMetadata().getThumbnail_img_src().get(0),);
+                Request.getRemoteImg(img, post.getMetadata().getThumbnail_img_src().get(0));
 
 
         }

@@ -6,11 +6,12 @@ import org.mikuclub.app.javaBeans.resources.modules.Headers;
 import org.mikuclub.app.javaBeans.resources.modules.MetadataForPost;
 import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Posts
+public class Posts  implements Serializable
 {
         private ArrayList<Post> body;
         private Integer status;

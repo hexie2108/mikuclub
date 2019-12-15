@@ -2,9 +2,10 @@ package org.mikuclub.app.javaBeans.resources;
 
 import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Media
+public class Media  implements Serializable
 {
         private Date date;
         private Date date_gmt;

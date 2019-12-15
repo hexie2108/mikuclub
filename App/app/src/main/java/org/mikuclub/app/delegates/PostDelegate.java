@@ -26,11 +26,10 @@ public class PostDelegate
         /*
         获取置顶文章列表
          */
-        public void getStickyPostList(int start, WrapperCallBack wrapperCallBack)
+        public void getStickyPostList(WrapperCallBack wrapperCallBack)
         {
-
-                int page = start / GlobalConfig.NUMBER_FOR_SLIDERSHOW + 1;
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
+                int page = 1;
                 parametersListPosts.setPage(page);
                 parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_SLIDERSHOW);
 
@@ -41,8 +40,10 @@ public class PostDelegate
 
         }
 
-        /*
-        获取最新发布的都文章列表
+        /**
+         * 获取最新发布的都文章列表
+         * @param start 开始位置
+         * @param wrapperCallBack
          */
         public void getRecentlyPostList(int start, WrapperCallBack wrapperCallBack)
         {

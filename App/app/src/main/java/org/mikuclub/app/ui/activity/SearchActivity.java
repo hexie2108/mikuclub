@@ -18,7 +18,7 @@ import mikuclub.app.R;
 public class SearchActivity extends AppCompatActivity implements FragmentCallBack
 {
 
-        private static final int TAG = 3;
+        public static final int TAG = 3;
 
         private PostDelegate searchPresenter;
         private TextView textView;

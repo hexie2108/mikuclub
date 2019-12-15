@@ -4,9 +4,10 @@ package org.mikuclub.app.javaBeans.resources;
 import org.mikuclub.app.javaBeans.resources.modules.Avatar_urls;
 import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Comment
+public class Comment  implements Serializable
 {
 
 

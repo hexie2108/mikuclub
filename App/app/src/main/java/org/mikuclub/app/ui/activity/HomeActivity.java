@@ -1,5 +1,6 @@
 package org.mikuclub.app.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -13,8 +14,11 @@ import android.widget.TextView;
 
 
 import org.mikuclub.app.adapters.HomeBottomMenuAdapeter;
+import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.fragments.BaseFragment;
 import org.mikuclub.app.ui.fragments.HomeMainFragment;
+import org.mikuclub.app.utils.http.Request;
 
 import mikuclub.app.R;
 
@@ -23,9 +27,9 @@ import mikuclub.app.R;
  */
 public class HomeActivity extends AppCompatActivity
 {
-        private static final int TAG = 2;
+        public static final int TAG = 2;
 
-        private HomePresenter homePresenter;
+        private PostDelegate homePresenter;
         private TextView textView;
 
         private BottomNavigationView bottomNavigationView;
@@ -40,7 +44,7 @@ public class HomeActivity extends AppCompatActivity
                 setContentView(R.layout.home_activity);
 
 
-                homePresenter = new HomePresenter();
+                homePresenter = new PostDelegate(TAG);
 
 
 
@@ -141,25 +145,13 @@ public class HomeActivity extends AppCompatActivity
         protected void onStop()
         {
                 super.onStop();
-                //cancella tutte le richieste incorso
-                //homePresenter.cancelRequest();
-        }
 
-
-        /**
-         * callback dopo utente ha risposto la richiesta di permessi
-         *
-         * @param requestCode
-         * @param permissions
-         * @param grantResults
-         */
-        @Override
-        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-        {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
 
         }
+
+
 
 
         /*
@@ -172,16 +164,19 @@ public class HomeActivity extends AppCompatActivity
         }*/
 
 
-        /*
-   function to start the searchActivity
-   * */
-        public void startSearchActivity(){
-                Intent intent = new Intent(this, SearchActivity.class);
-                startActivity(intent);
+        /**
+         * 静态 启动本活动的方法
+         * @param context
+         * @param stickyPostList
+         * @param postList
+         */
+        public static void startAction(Context context, Posts stickyPostList, Posts postList){
 
-
+                Intent intent = new Intent(context, HomeActivity.class);
+                intent.putExtra("sticky_post_list", stickyPostList);
+                intent.putExtra("post_list", postList);
+                context.startActivity(intent);
         }
-
 
 
 }

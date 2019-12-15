@@ -8,11 +8,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONObject;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.data.MapUtils;
 
 import java.io.File;
@@ -52,6 +54,7 @@ public class Request
                 {
                         //把参数拼入url中
                         url = url + "?" + MapUtils.mapToString(params, "=", "&");
+                        LogUtils.w(url);
                 }
 
                 request(com.android.volley.Request.Method.GET, url, null, headers, tag, wrapperCallBack);
@@ -94,11 +97,11 @@ public class Request
         private static void request(int method, String url, final Map<String, String> params, final Map<String, String> headers, int tag, final WrapperCallBack wrapperCallBack)
         {
 
-                JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(method, url, null,
-                        new Response.Listener<JSONObject >()
+                StringRequest stringRequest  = new StringRequest(method, url,
+                        new Response.Listener<String>()
                         {
                                 @Override
-                                public void onResponse(JSONObject response)
+                                public void onResponse(String response)
                                 {
                                         wrapperCallBack.onSuccess(response);
                                 }
@@ -107,7 +110,7 @@ public class Request
                         @Override
                         public void onErrorResponse(VolleyError error)
                         {
-                                wrapperCallBack.onError(error);
+                                wrapperCallBack.onErrorHandler(error);
                         }
                 })
                 {
@@ -148,9 +151,9 @@ public class Request
                         }
                 };
 
-                jsonObjectRequest.setTag(tag);
-                jsonObjectRequest.setRetryPolicy(customRetryPolicy);
-                RequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(jsonObjectRequest);
+                stringRequest.setTag(tag);
+                stringRequest.setRetryPolicy(customRetryPolicy);
+                RequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(stringRequest);
         }
 
 
@@ -182,7 +185,7 @@ public class Request
                         @Override
                         public void onErrorResponse(VolleyError error)
                         {
-                                wrapperCallBack.onError(error);
+                                wrapperCallBack.onErrorHandler(error);
                         }
                 });
 
