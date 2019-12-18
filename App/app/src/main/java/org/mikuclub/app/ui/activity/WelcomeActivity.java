@@ -68,6 +68,15 @@ public class WelcomeActivity extends AppCompatActivity
 
                 //检测权限
                 permissionCheck();
+
+
+        }
+
+        @Override
+        protected void onStart()
+        {
+                super.onStart();
+
                 //检测网络状态
                 boolean isInternetAvailable = internetCheck();
                 if (isInternetAvailable)
@@ -79,7 +88,6 @@ public class WelcomeActivity extends AppCompatActivity
                         //提示+延时结束应用
                         finishActivityDueNoInternet();
                 }
-
         }
 
         @Override
@@ -115,7 +123,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                         //请求失败
                         @Override
-                        public void onError()
+                        public void onHttpError()
                         {
                                 //增加请求计数器
                                 addRequestCount();
@@ -134,7 +142,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 startHomeSafety();
                         }
                         @Override
-                        public void onError()
+                        public void onHttpError()
                         {
                                 addRequestCount();
                         }
@@ -159,6 +167,8 @@ public class WelcomeActivity extends AppCompatActivity
                         {
                                 //启动主页
                                 HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
+                                //结束欢迎页
+                                finish();
                                 //Toast.makeText(this, "获取成功 Yeah!   " + stickyPostList.getStatus() + " " + postList.getStatus(), Toast.LENGTH_SHORT).show();
 
                         }

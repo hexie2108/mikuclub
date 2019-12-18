@@ -51,6 +51,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     //import CardView
     implementation 'androidx.cardview:cardview:1.0.0'
+    //navigation UI
+    implementation 'androidx.navigation:navigation-fragment:2.1.0'
+    implementation 'androidx.navigation:navigation-ui:2.1.0'
 
 
     implementation 'com.android.volley:volley:1.1.1'
@@ -64,6 +67,7 @@ dependencies {
     implementation 'com.sun.activation:javax.activation:1.2.0'
 
 
+
     //easy recyclerView library
     //https://github.com/Jude95/EasyRecyclerView/
     //
@@ -72,6 +76,9 @@ dependencies {
     //slidershow https://github.com/LillteZheng/ViewPagerHelper
     implementation 'com.github.LillteZheng:ViewPagerHelper:v1.3'
 
+
+    //圆角图片支持
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 
 
     // implementation 'org.apache.httpcomponents:httpmime:4.5.9'

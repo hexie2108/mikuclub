@@ -21,6 +21,7 @@
                 <item name="android:textSize">@dimen/text_large</item> <!--  修改字体大小-->
         </style>
 
+
 <!--        <style name="ProgressBarWhite" parent="Widget.AppCompat.ProgressBar">-->
 <!--                <item name="android:indeterminateOnly">true</item>-->
 <!--                <item name = "android:progressDrawable">@drawable/progress_bar_white</item>-->

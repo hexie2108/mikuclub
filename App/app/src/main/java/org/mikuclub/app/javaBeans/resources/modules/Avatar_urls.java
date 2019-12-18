@@ -2,7 +2,10 @@ package org.mikuclub.app.javaBeans.resources.modules;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Avatar_urls{
+import java.io.Serializable;
+
+public class Avatar_urls implements Serializable
+{
 
         @SerializedName("24")
         private String size24;

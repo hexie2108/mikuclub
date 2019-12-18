@@ -48,10 +48,10 @@ public class PostDelegate
         public void getRecentlyPostList(int start, WrapperCallBack wrapperCallBack)
         {
 
-                int page = start / GlobalConfig.NUMBER_FOR_RECENTLY_POSTS_LIST + 1;
+                int page = start / GlobalConfig.NUMBER_FOR_PAGE + 1;
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
                 parametersListPosts.setPage(page);
-                parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_RECENTLY_POSTS_LIST);
+                parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_PAGE);
 
                 parametersListPosts.setOrderby(PostConstants.OrderBy.DATE);
                 parametersListPosts.setStatus(PostConstants.Status.PUBLISH);

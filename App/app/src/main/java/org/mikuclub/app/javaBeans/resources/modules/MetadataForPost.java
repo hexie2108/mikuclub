@@ -2,9 +2,10 @@ package org.mikuclub.app.javaBeans.resources.modules;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MetadataForPost
+public class MetadataForPost implements Serializable
 {
         private List<Integer> views;
 

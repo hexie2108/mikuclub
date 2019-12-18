@@ -1,7 +1,10 @@
 package org.mikuclub.app.javaBeans.resources.modules;
 
-public class Href
+import java.io.Serializable;
+
+public class Href implements Serializable
 {
+
         private String href;
 
         public String getHref()

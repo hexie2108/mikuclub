@@ -23,4 +23,7 @@ public class GeneralUtils
                 float px = dp * (metrics.densityDpi / 160f);
                 return px;
         }
+
+
+
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context = "org.mikuclub.app.ui.activity.HomeActivity">
+
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width = "0dp"
+            android:layout_height = "0dp"
+
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent"
+            app:layout_constraintBottom_toTopOf = "@id/home_bottom_bar"
+            >
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id = "@+id/home_app_bar"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+                        <androidx.appcompat.widget.Toolbar
+                            android:id = "@+id/home_toolbar"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "?attr/actionBarSize"
+                            android:background = "?attr/colorPrimary"
+
+                            app:layout_scrollFlags = "scroll|enterAlways|snap"
+                            app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
+
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_marginRight = "@dimen/normal"
+                                    app:cardCornerRadius = "@dimen/small">
+
+
+                                        <TextView
+                                            android:layout_width = "match_parent"
+                                            android:layout_height = "wrap_content"
+                                            android:background = "@android:color/white"
+                                            android:padding = "@dimen/small"
+                                            android:text = "要搜索点什么吗..."
+                                            android:textColor = "@android:color/darker_gray" />
+
+
+                                </androidx.cardview.widget.CardView>
+
+
+                        </androidx.appcompat.widget.Toolbar>
+
+                </com.google.android.material.appbar.AppBarLayout>
+
+
+                <fragment
+                    android:id = "@+id/home_navigation"
+                    android:name = "androidx.navigation.fragment.NavHostFragment"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "match_parent"
+
+                    app:defaultNavHost = "true"
+                    app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+                    app:navGraph = "@navigation/home_navigation" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id = "@+id/home_bottom_bar"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginStart = "0dp"
+            android:layout_marginEnd = "0dp"
+            android:background = "?android:attr/windowBackground"
+
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:menu = "@menu/home_bottom_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

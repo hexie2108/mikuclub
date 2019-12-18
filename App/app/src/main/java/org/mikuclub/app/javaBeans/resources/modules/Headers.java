@@ -2,7 +2,9 @@ package org.mikuclub.app.javaBeans.resources.modules;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Headers
+import java.io.Serializable;
+
+public class Headers implements Serializable
 {
         @SerializedName("X-WP-Total")
         private int totalNumber;

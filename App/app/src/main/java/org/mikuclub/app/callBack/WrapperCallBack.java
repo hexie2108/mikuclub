@@ -3,20 +3,28 @@ package org.mikuclub.app.callBack;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.google.gson.JsonParseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.Parser;
+
+import mikuclub.app.R;
 
 /*questo è un classe wrapper  per gestire operazione callback di richiesta HTTP
-* 空的回调类, 用来处理网络请求的回调
-* 必须重写来实现各种需求
-* */
+ * 空的回调类, 用来处理网络请求的回调
+ * 必须重写来实现各种需求
+ * */
 public class WrapperCallBack
 {
 
@@ -31,6 +39,7 @@ public class WrapperCallBack
         {
                 this.argument1 = argument1;
         }
+
         public WrapperCallBack(Object argument1, Object argument2)
         {
                 this.argument1 = argument1;
@@ -58,8 +67,9 @@ public class WrapperCallBack
         }
 
         /**
-         *  请求成功的情况
-         * 默认什么都不做
+         * 自定义成功处理函数
+         * 默认为空
+         *
          * @param response
          */
         public void onSuccess(String response)
@@ -68,127 +78,107 @@ public class WrapperCallBack
         }
 
         /**
-         * 自定义错误处理函数
-         * 默认为空, 在有需要的时候
+         * 自定义内容错误处理函数 (请求成功,但是内容有问题)
+         * 默认为空
          */
         public void onError()
         {
 
         }
 
+        /**
+         * 自定义网络错误处理函数
+         * 默认为空
+         */
+        public void onHttpError()
+        {
+
+        }
+
+
+        /**
+         * 请求结束后的处理函数 (不管成功还是失败)
+         * 默认为空, 在有需要的时候
+         */
+        public void onFinally()
+        {
+
+        }
+
+        /**
+         * 请求成功的情况
+         *
+         * @param response
+         */
+        public void onSuccessHandler(String response)
+        {
+                try
+                {
+                        //先解析一遍返回数据
+                        JSONObject jsonObject = new JSONObject(response);
+                        //获取内容状态码
+                        int statusCode = jsonObject.getInt("status");
+                        //如果内容的状态码在200~300之间,  说明内容正常
+                        if (statusCode >= 200 && statusCode <= 300)
+                        {
+                                onSuccess(response);
+                        }
+                        //内容状态码异常, 说明有错误
+                        else
+                        {
+                                onError();
+                        }
+
+                        onFinally();
+                }
+                catch (JSONException exception)
+                {
+                        LogUtils.w("JSONObject无法解析返回数据");
+                        exception.printStackTrace();
+                }
+
+        }
+
 
         /**
          * 请求失败的情况
+         *
          * @param error
          */
         public void onErrorHandler(VolleyError error)
         {
 
-                onError();
+                onHttpError();
 
-                NetworkResponse networkResponse = error.networkResponse;
-                String errorMessage = "Unknown error";
-                //如果是网络连接错误或超时
-                if (networkResponse == null)
+                //NetworkResponse networkResponse = error.networkResponse;
+
+                String errorMessage = "未知错误";
+                if (error instanceof AuthFailureError)
                 {
-                        if (error.getClass().equals(TimeoutError.class))
-                        {
-                                errorMessage = "Request timeout";
-                                handleOnTimeOutError(error);
-                        }
-                        else if (error.getClass().equals(NoConnectionError.class))
-                        {
-                                errorMessage = "Failed to connect server";
-                                handleOnConnectionError(error);
-                        }
-
-                        //Log.v("Error", errorMessage);
+                        errorMessage = "请求信息验证失败";
                 }
-                //其他错误情况 (网络正常, 服务器返回包含错误信息的json)
-                else
+                else if (error instanceof NetworkError)
                 {
-                        //从返回值里获取错误信息 (生成字符串格式)
-                        String result = new String(networkResponse.data);
-                        try
-                        {
-                                //转换成 JSON类
-                                JSONObject response = new JSONObject(result);
-                                //get status code
-                                int status = response.getJSONObject("data").getInt("status");
-                                //get error title
-                                String code = response.getString("code");
-                                //get error description
-                                String message = response.getString("message");
-
-                                Log.e("Error Status", status + "");
-                                Log.e("Error Message", code + " : " + message);
-
-                                if (networkResponse.statusCode == 404)
-                                {
-                                        errorMessage = "Resource not found";
-                                        handleOnNotFoundError(error);
-                                }
-                                else if (networkResponse.statusCode == 401)
-                                {
-                                        errorMessage = message + " Please login again";
-                                        handleOnUnauthorizedError(error);
-                                }
-                                else if (networkResponse.statusCode == 400)
-                                {
-                                        errorMessage = message + " Check your inputs";
-                                        handleOnBadRequestError(error);
-
-                                }
-                                else if (networkResponse.statusCode == 500)
-                                {
-                                        errorMessage = message + " Something is getting wrong";
-                                        handleOnInternalServerError(error);
-                                }
-                        }
-                        catch (JSONException e)
-                        {
-                                LogUtils.w("解析网络请求错误原因的JSON失败");
-                                e.printStackTrace();
-                        }
+                        errorMessage = "未知的网络错误";
                 }
+                else if (error instanceof NoConnectionError)
+                {
+                        errorMessage = "无法建立网络连接";
+                }
+                else if (error instanceof TimeoutError)
+                {
+                        errorMessage = "请求超时错误";
+                }
+                else if (error instanceof ServerError)
+                {
+                        errorMessage = "服务器内部错误";
+                }
+
+                LogUtils.w(errorMessage + " : " + error.getMessage());
+                Toast.makeText(MyApplication.getContext(), errorMessage, Toast.LENGTH_LONG).show();
                 error.printStackTrace();
-        }
 
-        public void handleOnTimeOutError(VolleyError error)
-        {
-                Log.v(LogUtils.INFO_TAG, "errore timeOut:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "error timeOut: " + error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        public void handleOnConnectionError(VolleyError error)
-        {
-                Log.v(LogUtils.INFO_TAG, "errore connection:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "error connection: " + error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-
-        public void handleOnNotFoundError(VolleyError error)
-        {
-                Log.v(LogUtils.INFO_TAG, "errore notFound:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "error notFound: " + error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        public void handleOnUnauthorizedError(VolleyError error)
-        {
-                Log.v(LogUtils.INFO_TAG, "errore Unauthorized:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "error Unauthorized: " + error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        public void handleOnBadRequestError(VolleyError error)
-        {
-                Log.v(LogUtils.INFO_TAG, "error BadRequest:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "error BadRequest: " + error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        public void handleOnInternalServerError(VolleyError error)
-        {
-                Log.v(LogUtils.INFO_TAG, "errore InternalServerError:" + error.getMessage(), error);
-                Toast.makeText(MyApplication.getContext(), "error InternalServerError: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                onFinally();
         }
 
 

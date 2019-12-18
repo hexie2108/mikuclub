@@ -103,7 +103,7 @@ public class Request
                                 @Override
                                 public void onResponse(String response)
                                 {
-                                        wrapperCallBack.onSuccess(response);
+                                        wrapperCallBack.onSuccessHandler(response);
                                 }
                         }, new Response.ErrorListener()
                 {
@@ -299,16 +299,15 @@ public class Request
                 //创建图片加载器 (使用自定义缓存策略, 首先检查本地缓存, 找不到才会通过网络请求)
                 ImageLoader imageLoader = ImageFileLoader.getImageLoader();
 
+                //设置加载时的图案
+                networkImageView.setDefaultImageResId(R.drawable.loop_black_48);
+                //设置加载错误时的图片
+                networkImageView.setErrorImageResId(R.drawable.baseline_error_outline_24);
                 //请求图片
                 networkImageView.setImageUrl(url, imageLoader);
 
 
 
-                //需要转移到创建的时候==========================================================================
-                //设置加载时的图案
-                networkImageView.setDefaultImageResId(R.drawable.loading);
-                //设置加载错误时的图片
-                networkImageView.setErrorImageResId(R.drawable.baseline_error_outline_24);
 
 
         }

@@ -16,12 +16,9 @@ import com.jude.easyrecyclerview.adapter.RecyclerArrayAdapter;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.holders.PostListHolder;
-import org.mikuclub.app.javaBeans.resources.Posts;
+
 import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-
-import java.util.ArrayList;
 
 import mikuclub.app.R;
 
@@ -74,7 +71,8 @@ public class SearchMainFragment extends Fragment
                         public BaseViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
                         {
                                 //disccopiamento del adapter e viewHolder
-                                return new PostListHolder(parent);
+                                //return new PostListHolder(parent);
+                                return null;
                         }
                 };
                 //set default error and noMore view
@@ -82,7 +80,7 @@ public class SearchMainFragment extends Fragment
 
 
                 //in case of get more
-                adapter.setMore(R.layout.recycler_view_more, new RecyclerArrayAdapter.OnMoreListener()
+                adapter.setMore(R.layout.list_item_more, new RecyclerArrayAdapter.OnMoreListener()
                 {
                         @Override
                         public void onMoreShow()

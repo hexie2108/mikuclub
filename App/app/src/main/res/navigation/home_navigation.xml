@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/mobile_navigation"
+    app:startDestination = "@+id/navigation_home">
+
+        <fragment
+            android:id = "@+id/navigation_home"
+            android:name = "org.mikuclub.app.ui.fragments.HomeMainFragment"
+            android:label = "主页"
+            tools:layout = "@layout/empty_view" />
+
+        <fragment
+            android:id = "@+id/navigation_category"
+            android:name = "org.mikuclub.app.ui.fragments.EmptyFragment"
+            android:label = "分类"
+            tools:layout = "@layout/empty_activity" />
+
+        <fragment
+            android:id = "@+id/navigation_create"
+            android:name = "org.mikuclub.app.ui.fragments.EmptyFragment"
+            android:label = "投稿"
+            tools:layout = "@layout/empty_activity" />
+</navigation>

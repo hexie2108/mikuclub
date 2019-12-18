@@ -2,7 +2,10 @@ package org.mikuclub.app.javaBeans.resources.modules;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LinksForPost
+import java.io.Serializable;
+
+public class LinksForPost implements Serializable
+
 {
         private Href self;
         private Href collection;
