@@ -5,8 +5,6 @@
         <color name = "colorPrimary">#16a085</color>
         <color name = "colorPrimaryDark">#10796A</color>
         <color name = "colorAccent">#f78585</color>
-        <color name = "colorGrey">#e4e4e4</color>
-        <color name = "colorTransparentBlack">#80000000</color>
 
         <color name = "defaultBackground">#fafafa</color>
 </resources>

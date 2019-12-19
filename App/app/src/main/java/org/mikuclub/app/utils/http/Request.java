@@ -6,11 +6,9 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONObject;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.contexts.MyApplication;
@@ -148,6 +146,14 @@ public class Request
                                 {
                                         return headers;
                                 }
+                        }
+
+                        //取消的时候  回调函数
+                        @Override
+                        public void cancel()
+                        {
+                                super.cancel();
+                                wrapperCallBack.onCancel();
                         }
                 };
 
@@ -300,9 +306,9 @@ public class Request
                 ImageLoader imageLoader = ImageFileLoader.getImageLoader();
 
                 //设置加载时的图案
-                networkImageView.setDefaultImageResId(R.drawable.loop_black_48);
+                networkImageView.setDefaultImageResId(R.drawable.loop_black_16x9);
                 //设置加载错误时的图片
-                networkImageView.setErrorImageResId(R.drawable.baseline_error_outline_24);
+                networkImageView.setErrorImageResId(R.drawable.error_outline);
                 //请求图片
                 networkImageView.setImageUrl(url, imageLoader);
 

@@ -8,14 +8,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.zhengsr.viewpagerlib.bean.PageBean;
@@ -52,17 +48,14 @@ public class HomeMainFragment extends Fragment
 
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
-
+        //滚动布局
         private NestedScrollView nestedScrollView;
+
 
         //首页幻灯片
         private BannerViewPager bannerViewPager;
         private ZoomIndicator zoomIndicator;
 
-        //储存数据
-        private Posts postList;
-        //是否还有新的文章数据 (默认是有)
-        private boolean areMorePosts = true;
         //是否要加载新数据 默认是
         private boolean wantMore = true;
 
@@ -76,7 +69,9 @@ public class HomeMainFragment extends Fragment
                 // 为fragment加载主布局
                 View root = inflater.inflate(R.layout.fragment_home_main, container, false);
 
+                //创建数据请求 代理人
                 postDelegate = new PostDelegate(HomeActivity.TAG);
+
                 //获取组件
                 bannerViewPager = root.findViewById(R.id.loop_viewpager);
                 zoomIndicator = root.findViewById(R.id.bottom_scale_layout);
@@ -84,6 +79,8 @@ public class HomeMainFragment extends Fragment
                 swipeRefresh = root.findViewById(R.id.swipe_refresh);
 
                 nestedScrollView = root.findViewById(R.id.nested_scroll_view);
+
+
 
                 //从intent里读取上个活动传送来的数据
                 Posts stickyPostList = (Posts) getActivity().getIntent().getSerializableExtra("sticky_post_list");
@@ -108,7 +105,14 @@ public class HomeMainFragment extends Fragment
 
                 return root;
 
+        }
 
+        @Override
+        public void onStart()
+        {
+                super.onStart();
+                //每次开始的时候请求一次数据 (解决中途切换活动导致的不加载问题)
+                getMore();
         }
 
         /**
@@ -196,8 +200,8 @@ public class HomeMainFragment extends Fragment
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        LogUtils.e(response);
-                                        postList = Parser.posts(response);
+
+                                        Posts postList = Parser.posts(response);
                                         recyclerDataList.addAll(postList.getBody());
                                         postsAdapter.notifyItemInserted(recyclerDataList.size());
                                         //重新开启信号标
@@ -209,20 +213,36 @@ public class HomeMainFragment extends Fragment
                                 @Override
                                 public void onError()
                                 {
-                                        refreshNotMoreErrorHandler();
+                                        //显示错误信息
+                                        ErrorFooterListener.refreshNotMoreErrorHandler(recyclerView, recyclerDataList);
                                 }
 
                                 //网络失败
                                 @Override
                                 public void onHttpError()
                                 {
-                                        refreshHttpErrorHandler();
+                                        //显示错误信息, 绑定点击事件允许用户手动重试
+                                        ErrorFooterListener.refreshHttpErrorHandler(recyclerView, recyclerDataList, new View.OnClickListener()
+                                        {
+                                                @Override
+                                                public void onClick(View v)
+                                                {
+                                                        wantMore = true;
+                                                        getMore();
+                                                }
+                                        });
                                 }
 
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置信号标
+                                        wantMore = true;
+
+                                }
                         };
 
                         int nextStart = recyclerDataList.size();
-                        LogUtils.e("发送请求 " + nextStart);
                         postDelegate.getRecentlyPostList(nextStart, wrapperCallBack);
                 }
         }
@@ -241,7 +261,7 @@ public class HomeMainFragment extends Fragment
                         @Override
                         public void onSuccess(String response)
                         {
-                                postList = Parser.posts(response);
+                                Posts postList = Parser.posts(response);
                                 recyclerDataList.clear();
                                 recyclerDataList.addAll(postList.getBody());
                                 postsAdapter.notifyDataSetChanged();
@@ -256,35 +276,18 @@ public class HomeMainFragment extends Fragment
                                 swipeRefresh.setRefreshing(false);
                                 wantMore = true;
                         }
-
-                };
-                int nextStart = 0;
-                postDelegate.getRecentlyPostList(nextStart, wrapperCallBack);
-        }
-
-        /**
-         * 自动加载发生错误的情况  就停止自动刷新, 改成手动触发
-         */
-        private void refreshHttpErrorHandler()
-        {
-
-                ErrorFooterListener.setupHttpErrorSchema(recyclerView.findViewHolderForAdapterPosition(recyclerDataList.size()), "加载失败, 请点击重试", new View.OnClickListener()
-                {
+                        //如果请求被取消
                         @Override
-                        public void onClick(View v)
+                        public void onCancel()
                         {
+                                //关闭加载进度条
+                                swipeRefresh.setRefreshing(false);
+                                //重置信号标
                                 wantMore = true;
-                                getMore();
+                                LogUtils.e("我被取消了");
                         }
-                });
-        }
-
-        /**
-         * 自动加载 没有更多数据的情况  停止自动刷新, 提示用户没有了
-         */
-        private void refreshNotMoreErrorHandler()
-        {
-                ErrorFooterListener.setupNotMoreErrorSchema(recyclerView.findViewHolderForAdapterPosition(recyclerDataList.size()), "已经到底了~");
+                };
+                postDelegate.getRecentlyPostList(0, wrapperCallBack);
         }
 
 

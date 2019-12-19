@@ -29,7 +29,7 @@
                 <TextView
                     android:id = "@+id/item_text"
                     android:layout_width = "match_parent"
-                    android:layout_height = "@dimen/ultra_large"
+                    android:layout_height = "@dimen/super_large"
                     android:layout_margin="@dimen/small"
                     android:textSize = "@dimen/text_default"
 

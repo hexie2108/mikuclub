@@ -10,15 +10,13 @@
 
         </style>
 
+
+
         <!-- ToolBar -->
-        <style name="ToolBarStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-                <item name="android:textColorPrimary">@android:color/white</item>
-                <item name="android:textColorSecondary">@android:color/white</item>
-                <item name="android:actionMenuTextColor">@android:color/white</item>
-                <item name="android:background">@color/colorPrimary</item>
-                <item name="actionMenuTextColor">@android:color/white</item>
-                <item name="android:textColor">@android:color/white</item>
-                <item name="android:textSize">@dimen/text_large</item> <!--  修改字体大小-->
+
+        <!--  修改标题栏默认图标颜色-->
+        <style name="ToolbarColoredBackArrow" parent="AppTheme">
+                <item name="android:textColorSecondary">@android:color/tertiary_text_dark</item>
         </style>
 
 

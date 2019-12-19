@@ -1,58 +1,96 @@
 package org.mikuclub.app.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.widget.TextView;
+import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.http.Request;
 
-import org.mikuclub.app.callBack.FragmentCallBack;
-import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.ui.fragments.SearchMainFragment;
-
+import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
 /**
- * la classe Activity gestisce solo la interfaccia utente
+ *  搜索页面
  */
-public class SearchActivity extends AppCompatActivity implements FragmentCallBack
+public class SearchActivity extends AppCompatActivity
 {
 
         public static final int TAG = 3;
+        private EditText searchInput;
+        private ImageView searchInputIcon;
 
-        private PostDelegate searchPresenter;
-        private TextView textView;
-        private SearchMainFragment searchMainFragment;
 
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
         {
                 super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_search);
 
-                setContentView(R.layout.search_activity);
+                //替换原版标题栏
+                Toolbar toolbar = findViewById(R.id.search_toolbar);
+                setSupportActionBar(toolbar);
+                ActionBar actionBar = getSupportActionBar();
+                if(actionBar != null){
+                        //显示返回键
+                        actionBar.setDisplayHomeAsUpEnabled(true);
 
-                searchPresenter = new PostDelegate(TAG);
+                }
+
+                searchInput =findViewById(R.id.search_input);
+                searchInputIcon = findViewById(R.id.search_input_icon);
+
 
         }
 
-        @Override
-        public void callBack(Object object)
-        {
-                searchMainFragment = (SearchMainFragment) getSupportFragmentManager().findFragmentById(R.id.searchFragment);
-                searchMainFragment.setQuery((String) object);
-                searchMainFragment.callBackForRecyclerView();
 
+
+        //监听标题栏菜单动作
+        @Override
+        public boolean onOptionsItemSelected(@NonNull MenuItem item)
+        {
+
+                switch (item.getItemId()){
+                        //如果点了返回键
+                        case android.R.id.home:
+                                finish();
+                                return true;
+                }
+                return super.onOptionsItemSelected(item);
         }
 
 
         @Override
         protected void onStop()
         {
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
+
                 super.onStop();
-                //cancella tutte le richieste incorso
-                //homePresenter.cancelRequest();
         }
 
+        /**
+         * 静态 启动本活动的方法
+         *
+         * @param context
+         */
+        public static void startAction(Context context)
+        {
+
+                Intent intent = new Intent(context, SearchActivity.class);
+                context.startActivity(intent);
+        }
 
 }

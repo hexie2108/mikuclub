@@ -29,8 +29,7 @@ public class PostDelegate
         public void getStickyPostList(WrapperCallBack wrapperCallBack)
         {
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
-                int page = 1;
-                parametersListPosts.setPage(page);
+                parametersListPosts.setPage(1);
                 parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_SLIDERSHOW);
 
                 parametersListPosts.setSticky(true);
@@ -48,7 +47,7 @@ public class PostDelegate
         public void getRecentlyPostList(int start, WrapperCallBack wrapperCallBack)
         {
 
-                int page = start / GlobalConfig.NUMBER_FOR_PAGE + 1;
+                int page = getNextPageNumber(start);
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
                 parametersListPosts.setPage(page);
                 parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_PAGE);
@@ -66,8 +65,7 @@ public class PostDelegate
          */
         public void getPostListBySearch(String query, int start, WrapperCallBack wrapperCallBack)
         {
-
-                int page = start / GlobalConfig.NUMBER_FOR_PAGE + 1;
+                int page = getNextPageNumber(start);
 
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
                 parametersListPosts.setPage(page);
@@ -77,6 +75,24 @@ public class PostDelegate
                 parametersListPosts.setOrderby(PostConstants.OrderBy.DATE);
                 parametersListPosts.setStatus(PostConstants.Status.PUBLISH);
                 postModel.selectForList(parametersListPosts.toMap(), tag, wrapperCallBack);
+
+        }
+
+        /**
+         * 计算 下个请求应该设置的页数
+         * @param number 当前已拥有的数据数量
+         * @return
+         */
+        private int getNextPageNumber(int number){
+                //计算页面数字, 页数是从1开始所以要+1
+                int page = number / GlobalConfig.NUMBER_FOR_PAGE+1;
+                int currentModulo = number % GlobalConfig.NUMBER_FOR_PAGE;
+
+                //如果有取余, 说明当前页数还需要+1
+                if(currentModulo > 0){
+                        page++;
+                }
+                return page;
 
         }
 

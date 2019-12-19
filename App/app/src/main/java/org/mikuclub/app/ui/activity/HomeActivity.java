@@ -17,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -37,6 +38,9 @@ public class HomeActivity extends AppCompatActivity
         private DrawerLayout drawer;
         private AppBarConfiguration mAppBarConfiguration;
 
+        //搜索栏
+        private TextView searchInput;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -50,6 +54,18 @@ public class HomeActivity extends AppCompatActivity
 
                 bottomNavigationView =findViewById(R.id.home_bottom_bar);
                 drawer= findViewById(R.id.home_drawer_layout);
+                searchInput = findViewById(R.id.search_input);
+
+                //绑定点击监听器到搜索栏
+                searchInput.setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                //启动搜索页面
+                                SearchActivity.startAction(HomeActivity.this);
+                        }
+                });
 
 
                 initBottomMenu();
@@ -80,26 +96,15 @@ public class HomeActivity extends AppCompatActivity
         @Override
         protected void onStop()
         {
-                super.onStop();
 
                 //取消本活动相关的所有网络请求
                 Request.cancelRequest(TAG);
 
+                super.onStop();
+
+
+
         }
-
-
-
-
-        /*
-        public void onClickHandlerOnImage(View view){
-                ImageLoader imageLoader = new ImageLoader(Volley.newRequestQueue(HomeActivity.this), new ImageFileCache());
-                NetworkImageView networkImageView = findViewById(R.id.img1);
-                networkImageView.setDefaultImageResId(R.drawable.a);
-                networkImageView.setErrorImageResId(R.drawable.c);
-                networkImageView.setImageUrl( "https://static.mikuclub.org/wp-content/uploads/2019/06/20190603081513-500x280.jpg", imageLoader);
-        }*/
-
-
 
         /**
          * 加载自定义菜单
@@ -113,6 +118,10 @@ public class HomeActivity extends AppCompatActivity
         }
 
 
+        /**
+         * 修正返回键动作
+         * @return
+         */
         @Override
         public boolean onSupportNavigateUp()
         {

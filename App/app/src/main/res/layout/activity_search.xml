@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context = "org.mikuclub.app.ui.activity.SearchActivity">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id = "@+id/search_app_bar"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id = "@+id/search_toolbar"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "?attr/actionBarSize"
+                    android:background = "@color/defaultBackground"
+                    app:theme="@style/ToolbarColoredBackArrow"
+                    app:layout_scrollFlags = "scroll|enterAlways|snap"
+                    app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width = "match_parent"
+                            android:layout_height = "match_parent"
+                            >
+
+                                <EditText
+                                    android:id = "@+id/search_input"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "0dp"
+                                    android:textCursorDrawable="@drawable/custom_edit_text_cursor_color"
+                                    android:imeOptions="actionSearch"
+                                    android:background="@null"
+                                    android:hint="要搜索点什么吗..."
+                                    android:maxLines="1"
+                                    android:inputType="text"
+
+                                    android:textColor = "@android:color/darker_gray"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf = "parent"
+                                    app:layout_constraintEnd_toStartOf = "@id/search_input_icon"
+                                    app:layout_constraintStart_toStartOf = "parent" />
+
+                                <ImageView
+                                    android:id = "@+id/search_input_icon"
+                                    android:layout_width = "wrap_content"
+                                    android:layout_height = "wrap_content"
+                                    android:src = "@drawable/search"
+                                    android:layout_marginRight="@dimen/large"
+
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf = "parent"
+                                    app:layout_constraintStart_toEndOf="@id/search_input"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <fragment
+            android:id = "@+id/home_navigation"
+            android:name = "org.mikuclub.app.ui.fragments.SearchFragment"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+             />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4,7 +4,7 @@
 
         <item
             android:id="@+id/navigation_home"
-            android:icon="@drawable/baseline_home_24"
+            android:icon="@drawable/home"
             android:title="主页" />
         <item
             android:id="@+id/navigation_category"
@@ -13,7 +13,7 @@
             />
         <item
             android:id="@+id/navigation_create"
-            android:icon="@drawable/baseline_publish_24"
+            android:icon="@drawable/publish"
             android:title="投稿" />
 
 

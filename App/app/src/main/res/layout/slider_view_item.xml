@@ -7,18 +7,25 @@
 
     >
 
-
-        <org.mikuclub.app.view.AnimatedNetworkImageView
-            android:id = "@+id/item_image"
+        <androidx.cardview.widget.CardView
+            android:id = "@+id/item_container"
             android:layout_width = "0dp"
             android:layout_height = "0dp"
-            android:scaleType = "centerCrop"
-            app:layout_constraintDimensionRatio = "H,16:6"
+            app:cardCornerRadius = "@dimen/small"
 
-            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintDimensionRatio = "H,16:6"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintTop_toTopOf = "parent"
-            />
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent">
+
+                <org.mikuclub.app.view.AnimatedNetworkImageView
+                    android:id = "@+id/item_image"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "match_parent"
+                    android:scaleType = "centerCrop" />
+
+        </androidx.cardview.widget.CardView>
+
 
         <TextView
             android:id = "@+id/item_text"
@@ -28,9 +35,9 @@
             android:gravity = "center"
             android:maxLines = "1"
             android:textSize = "@dimen/text_normal"
-            app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@id/item_image"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/item_container"
 
             />
 

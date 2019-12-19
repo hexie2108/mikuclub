@@ -86,6 +86,16 @@ public class WrapperCallBack
 
         }
 
+
+        /**
+         * 自定义请求取消处理函数 (请求被半路取消)
+         * 默认为空
+         */
+        public void onCancel()
+        {
+
+        }
+
         /**
          * 自定义网络错误处理函数
          * 默认为空

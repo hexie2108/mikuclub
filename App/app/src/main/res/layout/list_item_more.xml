@@ -20,7 +20,7 @@
             android:id = "@+id/list_item_info_icon"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
-            android:src = "@drawable/baseline_error_outline_24"
+            android:src = "@drawable/error_outline"
             android:visibility="gone"
 
             android:layout_marginRight="@dimen/normal"

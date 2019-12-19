@@ -13,7 +13,7 @@
             android:id = "@+id/icon"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:src="@drawable/baseline_inbox_24"
+            android:src="@drawable/inbox"
             app:layout_constraintTop_toTopOf = "parent"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"

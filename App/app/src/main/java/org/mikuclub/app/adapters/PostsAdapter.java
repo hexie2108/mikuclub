@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
+import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.utils.http.Request;
 
@@ -47,51 +48,6 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 }
         }
-
-        //正常内容视图管理器
-        public class FooterViewHolder extends RecyclerView.ViewHolder{
-
-                View itemView;
-                ProgressBar progressBar;
-                ImageView imageView;
-                TextView textView;
-
-                public FooterViewHolder(@NonNull View itemView)
-                {
-                        super(itemView);
-                        //管理器绑定各项 视图
-                        this.itemView = itemView;
-                        progressBar = itemView.findViewById(R.id.list_item_progress_bar);
-                        imageView = itemView.findViewById(R.id.list_item_info_icon);
-                        textView = itemView.findViewById(R.id.list_item_info_text);
-                }
-
-                public View getItemView()
-                {
-                        return itemView;
-                }
-
-
-                public ProgressBar getProgressBar()
-                {
-                        return progressBar;
-                }
-
-
-                public ImageView getImageView()
-                {
-                        return imageView;
-                }
-
-
-                public TextView getTextView()
-                {
-                        return textView;
-                }
-
-        }
-
-
 
 
         public PostsAdapter(List<Post> list)

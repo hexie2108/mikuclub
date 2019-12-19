@@ -50,7 +50,7 @@ public class WelcomeActivity extends AppCompatActivity
         private Posts postList = null;
 
         //需要等待的请求数量
-        private int requestNumber=2;
+        private int requestNumber = 2;
         //已完成的请求数量 (成功和失败都算)
         private int requestCount = 0;
 
@@ -84,7 +84,8 @@ public class WelcomeActivity extends AppCompatActivity
                         //请求数据 + 跳转主页
                         getDataForHome();
                 }
-                else{
+                else
+                {
                         //提示+延时结束应用
                         finishActivityDueNoInternet();
                 }
@@ -93,9 +94,11 @@ public class WelcomeActivity extends AppCompatActivity
         @Override
         protected void onStop()
         {
-                super.onStop();
                 //取消本活动相关的所有网络请求
                 Request.cancelRequest(TAG);
+
+                super.onStop();
+
         }
 
         /**
@@ -114,9 +117,8 @@ public class WelcomeActivity extends AppCompatActivity
                                 //解析数据
                                 Posts posts = Parser.posts(response);
                                 //保存数据
-                                setStickyPostList(posts);
-                                //增加请求计数器
-                                addRequestCount();
+                                stickyPostList = posts;
+
                                 //尝试启动主页
                                 startHomeSafety();
                         }
@@ -126,7 +128,14 @@ public class WelcomeActivity extends AppCompatActivity
                         public void onHttpError()
                         {
                                 //增加请求计数器
-                                addRequestCount();
+                                setError();
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                                //重置请求计数器
+                                requestCount = 0;
                         }
                 });
 
@@ -137,17 +146,24 @@ public class WelcomeActivity extends AppCompatActivity
                         public void onSuccess(String response)
                         {
                                 Posts posts = Parser.posts(response);
-                                setPostList(posts);
-                                addRequestCount();
+                                postList = posts;
+
                                 startHomeSafety();
                         }
+
                         @Override
                         public void onHttpError()
                         {
-                                addRequestCount();
+                                setError();
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                                //重置请求计数器
+                                requestCount = 0;
                         }
                 });
-
 
         }
 
@@ -159,7 +175,10 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void startHomeSafety()
         {
-                //所有请求已经结束
+                //增加请求计数器
+                addRequestCount();
+
+                //所有请求都成功的情况
                 if (requestCount == requestNumber)
                 {
                         //数据们都成功获取
@@ -172,14 +191,38 @@ public class WelcomeActivity extends AppCompatActivity
                                 //Toast.makeText(this, "获取成功 Yeah!   " + stickyPostList.getStatus() + " " + postList.getStatus(), Toast.LENGTH_SHORT).show();
 
                         }
-                        //有数据获取失败
-                        else
-                        {
-                                welecomeInfoText.setText("当前无法连接上服务器, 请您稍后再重新尝试");
-                                welecomeInfoText.setVisibility(View.VISIBLE);
-                                welecomeProgressBar.setVisibility(View.INVISIBLE);
-                        }
                 }
+        }
+
+        /**
+         * 错误的情况 , 给用户显示信息, 并允许用户手动重试
+         */
+        private void setError()
+        {
+                //取消所有连接
+                Request.cancelRequest(TAG);
+                //清零计数器
+                requestCount = 0;
+
+                //切换组件显示
+                welecomeProgressBar.setVisibility(View.INVISIBLE);
+                welecomeInfoText.setText("当前无法连接上服务器, 请点我尝试");
+                welecomeInfoText.setVisibility(View.VISIBLE);
+
+                //绑定点击事件 允许用户手动重试
+                welecomeInfoText.setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                welecomeInfoText.setVisibility(View.INVISIBLE);
+                                welecomeProgressBar.setVisibility(View.VISIBLE);
+
+                                getDataForHome();
+                        }
+                });
+
+
         }
 
 
@@ -209,6 +252,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         /**
          * 检测网络状态
+         *
          * @return
          */
         private boolean internetCheck()
@@ -251,7 +295,8 @@ public class WelcomeActivity extends AppCompatActivity
         /**
          * 定时退出活动 (无网络连接的情况)
          */
-        private void finishActivityDueNoInternet(){
+        private void finishActivityDueNoInternet()
+        {
                 //创建子线程
                 new Thread(new Runnable()
                 {
@@ -270,6 +315,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 {
                                                         //通过get方法获取到外部传递的第一个变量
                                                         int seconds = (int) this.getArgument1();
+
                                                         @Override
                                                         public void run()
                                                         {
@@ -340,7 +386,11 @@ public class WelcomeActivity extends AppCompatActivity
         {
                 this.postList = postList;
         }
-        private void addRequestCount()
+
+        /**
+         * 同步增加计数器
+         */
+        private synchronized void addRequestCount()
         {
                 this.requestCount++;
         }

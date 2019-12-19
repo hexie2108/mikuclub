@@ -7,11 +7,11 @@
 
                 <item
                     android:id = "@+id/nav_slideshow"
-                    android:icon = "@drawable/ic_menu_slideshow"
+                    android:icon = "@drawable/slideshow"
                     android:title = "登陆" />
                 <item
                     android:id = "@+id/nav_gallery"
-                    android:icon = "@drawable/ic_menu_gallery"
+                    android:icon = "@drawable/gallery"
                     android:title = "相册" />
 
 
@@ -21,15 +21,15 @@
                 <menu>
                         <item
                             android:id = "@+id/nav_share"
-                            android:icon = "@drawable/ic_menu_share"
+                            android:icon = "@drawable/share"
                             android:title = "分享" />
                         <item
                             android:id = "@+id/nav_send"
-                            android:icon = "@drawable/ic_menu_send"
+                            android:icon = "@drawable/send"
                             android:title = "发送" />
                         <item
                             android:id = "@+id/nav_tools"
-                            android:icon = "@drawable/ic_menu_manage"
+                            android:icon = "@drawable/manage"
                             android:title = "配置" />
                 </menu>
         </item>
