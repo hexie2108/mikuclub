@@ -4,7 +4,9 @@
     xmlns:tools = "http://schemas.android.com/tools"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
-    tools:context = "org.mikuclub.app.ui.activity.HomeActivity">
+    tools:context = "org.mikuclub.app.ui.activity.HomeActivity"
+
+    >
 
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -67,7 +69,10 @@
 
                     app:defaultNavHost = "true"
                     app:layout_behavior = "@string/appbar_scrolling_view_behavior"
-                    app:navGraph = "@navigation/home_navigation" />
+                    app:navGraph = "@navigation/home_navigation"
+
+                    tools:layout="@layout/fragment_home_main"
+                    />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

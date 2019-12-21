@@ -20,7 +20,7 @@ public class EmptyFragment extends Fragment
                                  Bundle savedInstanceState)
         {
                 // Inflate the layout for this fragment
-                return inflater.inflate(R.layout.empty_view, container, false);
+                return inflater.inflate(R.layout.activity_welcome, container, false);
         }
 
 }

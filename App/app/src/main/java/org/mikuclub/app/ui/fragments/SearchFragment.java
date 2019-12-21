@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,10 +20,12 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.mikuclub.app.adapters.PostsAdapter;
 import org.mikuclub.app.adapters.listener.ErrorFooterListener;
+import org.mikuclub.app.adapters.listener.ManageInfoUtilView;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
@@ -60,14 +63,15 @@ public class SearchFragment extends Fragment
         //键盘
         private InputMethodManager imm;
 
+        private ManageInfoUtilView manageInfoUtilView;
+
+
         //信号标 是否要加载新数据 默认不开启
         private boolean wantMore = false;
         //信号标 是否正在搜索
         private boolean isSearching = false;
         //搜索内容
         private String queryString;
-
-
 
 
         @Override
@@ -82,6 +86,8 @@ public class SearchFragment extends Fragment
 
                 recyclerView = root.findViewById(R.id.recycler_view);
                 nestedScrollView = root.findViewById(R.id.nested_scroll_view);
+                //绑定信息提示组件
+                manageInfoUtilView = new ManageInfoUtilView(root);
 
                 //获取键盘
                 imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -118,13 +124,14 @@ public class SearchFragment extends Fragment
         }
 
 
-
-
         /**
          * 初始化 空的文章列表
          */
         private void initRecyclerView()
         {
+                //隐藏信息提示框(加载进度条)
+                manageInfoUtilView.setVisibility(false);
+
                 recyclerDataList = new ArrayList<Post>();
                 postsAdapter = new PostsAdapter(recyclerDataList);
                 recyclerView.setAdapter(postsAdapter);
@@ -184,6 +191,25 @@ public class SearchFragment extends Fragment
                                 return true;
                         }
                 });
+                //监听是否有焦点
+                searchInput.setOnFocusChangeListener(new View.OnFocusChangeListener()
+                {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus)
+                        {
+                                //如果有焦点
+                                if(hasFocus){
+                                        //显示搜索图标
+                                        searchInputIcon.setVisibility(View.VISIBLE);
+                                }
+                                //如果无焦点
+                                else{
+                                        //隐藏搜索图标
+                                        searchInputIcon.setVisibility(View.INVISIBLE);
+                                }
+
+                        }
+                });
                 //监听搜索图标
                 searchInputIcon.setOnClickListener(new View.OnClickListener()
                 {
@@ -194,6 +220,7 @@ public class SearchFragment extends Fragment
                                 sendSearch();
                         }
                 });
+
 
         }
 
@@ -211,19 +238,14 @@ public class SearchFragment extends Fragment
                         isSearching = true;
                         //关闭信号标 不要自动加载
                         wantMore = false;
-
                         //移除搜索栏的focus状态
                         searchInput.clearFocus();
                         //隐藏键盘
                         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-                        //重置底部功能组件 (重新显示加载进度条)
-                        ErrorFooterListener.resetFooterErrorView(recyclerView, recyclerDataList);
-                        //清空旧表
-                        recyclerDataList.clear();
-                        //通知列表刷新
-                        postsAdapter.notifyDataSetChanged();
-                        //显示文章列表 (已被清空, 所以只显示默认加载进度条)
-                        recyclerView.setVisibility(View.VISIBLE);
+                        //显示加载进度条
+                       manageInfoUtilView.setLoadingInfo();
+                       //隐藏 列表
+                        recyclerView.setVisibility(View.GONE);
 
                         WrapperCallBack wrapperCallBack = new WrapperCallBack()
                         {
@@ -231,32 +253,48 @@ public class SearchFragment extends Fragment
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        //解析数据
+
+                                        //解析新数据
                                         Posts postList = Parser.posts(response);
                                         //如果搜索结果不是空的
                                         if (!postList.getBody().isEmpty())
                                         {
+
+                                                //只有在不是空列表的情况
+                                               if(!recyclerDataList.isEmpty())
+                                               {
+                                                       //重新生成尾部功能组件
+                                                       recyclerView.removeViewAt(recyclerDataList.size());
+                                               }
+                                                //清空旧数据
+                                                recyclerDataList.clear();
                                                 //添加数据到列表
                                                 recyclerDataList.addAll(postList.getBody());
-                                                //插入
-                                                postsAdapter.notifyItemInserted(0);
+                                                //通知列表更新
+                                                postsAdapter.notifyDataSetChanged();
+                                                //显示列表
+                                                recyclerView.setVisibility(View.VISIBLE);
+                                                //隐藏信息提示加载进度条
+                                                manageInfoUtilView.setVisibility(false);
 
                                                 //开启信号标
                                                 wantMore = true;
-
                                         }
                                         //如果搜索结果是空的
                                         else
                                         {
                                                 //提示用户
-                                                ErrorFooterListener.searchEmptyErrorHandler(recyclerView, recyclerDataList);
+                                                manageInfoUtilView.setErrorInfo("抱歉, 没有找到相关内容", null);
                                         }
+
                                 }
+
                                 //网络失败的情况
                                 @Override
                                 public void onHttpError()
                                 {
-                                        ErrorFooterListener.searchHttpErrorHandler(recyclerView, recyclerDataList, new View.OnClickListener()
+                                        //提示用户, 绑定动作允许用户手动重试
+                                        manageInfoUtilView.setErrorInfo("搜索失败, 请点击重试", new View.OnClickListener()
                                         {
                                                 @Override
                                                 public void onClick(View v)
@@ -266,6 +304,7 @@ public class SearchFragment extends Fragment
                                         });
 
                                 }
+
                                 //请求结束后
                                 @Override
                                 public void onFinally()
@@ -273,14 +312,15 @@ public class SearchFragment extends Fragment
                                         //关闭 信号标
                                         isSearching = false;
                                 }
+
                                 //请求被取消的情况
                                 @Override
                                 public void onCancel()
                                 {
                                         //关闭信号标
                                         isSearching = false;
-                                        //隐藏列表
-                                        recyclerView.setVisibility(View.INVISIBLE);
+                                        //隐藏信息提示组件
+                                       manageInfoUtilView.setVisibility(false);
                                 }
                         };
                         //获取当前 数据长度
@@ -339,12 +379,12 @@ public class SearchFragment extends Fragment
                                                 }
                                         });
                                 }
+
                                 //取消请求的情况
                                 @Override
                                 public void onCancel()
                                 {
                                         wantMore = true;
-
                                 }
                         };
                         //获取当前 数据长度

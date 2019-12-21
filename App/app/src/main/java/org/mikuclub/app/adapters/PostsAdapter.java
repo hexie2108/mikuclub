@@ -1,17 +1,17 @@
 package org.mikuclub.app.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
 import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.utils.http.Request;
+import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.http.GetRemoteImage;
 
 import java.util.List;
 
@@ -29,6 +29,8 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         //数据列表
         private List<Post> list;
+        //上下文
+        private Context mConxt;
 
         //正常内容视图管理器
         private class PostViewHolder extends RecyclerView.ViewHolder{
@@ -73,17 +75,35 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
+                //获取保存上下文
+                if(mConxt==null){
+                        mConxt = parent.getContext();
+                }
+
                 //创建管理器的时候, 趁机绑定视图
-                RecyclerView.ViewHolder holder;
+                final RecyclerView.ViewHolder holder;
                 //如果是普通数据类型
                 if(viewType == TYPE_ITEM)
                 {
                         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_posts, parent, false);
                         holder = new PostViewHolder(view);
+                        ((PostViewHolder)holder).cardView.setOnClickListener(new
+                                                                                     View.OnClickListener()
+                                                                                     {
+                                                                                             @Override
+                                                                                             public void onClick(View v)
+                                                                                             {
+                                                                                                     //获取数据在列表中的位置
+                                                                                                     int position = holder.getAdapterPosition();
+                                                                                                     Post post = list.get(position);
+                                                                                                     //启动 文章页
+                                                                                                     PostActivity.startAction(mConxt,post);
+                                                                                             }
+                                                                                     });
                 }
                 //如果是footer
                 else{
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_more, parent, false);
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_info_util, parent, false);
                         holder = new FooterViewHolder(view);
                 }
                 return holder;
@@ -101,9 +121,9 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         Post post = list.get(position);
                         //为视图设置各项数据
                         postViewHolder.itemText.setText(post.getTitle().getRendered());
-                        String imgUrl = post.getMetadata().getThumbnail_img_src().get(0);
+                        String imgUrl = post.getMetadata().getThumbnail_src().get(0);
                         //加载远程图片
-                        Request.getRemoteImg(postViewHolder.itemImage, imgUrl);
+                        GetRemoteImage.get(postViewHolder.itemImage, imgUrl);
                 }
                 //如果是footer组件
                 else{

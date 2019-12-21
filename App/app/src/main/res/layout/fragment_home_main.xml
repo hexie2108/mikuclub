@@ -6,6 +6,8 @@
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
 
+    tools:showIn="@layout/activity_home_main"
+
    >
 
         <androidx.core.widget.NestedScrollView
@@ -21,12 +23,13 @@
                     android:layout_margin = "@dimen/normal"
                     android:orientation = "vertical">
 
-                        <include layout = "@layout/slider_view" />
+                        <include layout = "@layout/home_slider_view" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id = "@+id/recycler_view"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+
                             />
 
                 </LinearLayout>

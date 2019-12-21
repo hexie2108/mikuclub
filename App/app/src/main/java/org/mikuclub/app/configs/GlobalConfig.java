@@ -10,7 +10,7 @@ public class GlobalConfig
         //网络请求重试间隔 (毫秒)
         public static final int RETRY_TIME = 5000;
         //网络请求(上传大文件) 重试间隔 (毫秒)
-        public static final int RETRY_TIME_FOR_FILE= 5000;
+        public static final int RETRY_TIME_FOR_FILE= 3000;
 
         //网络请求标签名, 用来区分请求来源, 以便在需要的时候取消请求
 //        public static final String TAG_HOME = "home";

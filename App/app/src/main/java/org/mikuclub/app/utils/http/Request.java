@@ -29,7 +29,7 @@ public class Request
         /**
          * 自定义网络超时重试策略
          */
-        private static DefaultRetryPolicy customRetryPolicy = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        private static DefaultRetryPolicy customRetryPolicy = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME, DefaultRetryPolicy.DEFAULT_MAX_RETRIES*2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         private static DefaultRetryPolicy retryPolicyForFile = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME_FOR_FILE, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
@@ -295,27 +295,5 @@ public class Request
         }
 
 
-        /**
-         * 获取网络图片
-         * @param networkImageView
-         * @param url
-         */
-        public static void getRemoteImg(NetworkImageView networkImageView, String url)
-        {
-                //创建图片加载器 (使用自定义缓存策略, 首先检查本地缓存, 找不到才会通过网络请求)
-                ImageLoader imageLoader = ImageFileLoader.getImageLoader();
-
-                //设置加载时的图案
-                networkImageView.setDefaultImageResId(R.drawable.loop_black_16x9);
-                //设置加载错误时的图片
-                networkImageView.setErrorImageResId(R.drawable.error_outline);
-                //请求图片
-                networkImageView.setImageUrl(url, imageLoader);
-
-
-
-
-
-        }
 
 }

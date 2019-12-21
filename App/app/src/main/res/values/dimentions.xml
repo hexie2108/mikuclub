@@ -4,6 +4,7 @@
         <dimen name="super_large">50dp</dimen>
         <dimen name="ultra_large">40dp</dimen>
         <dimen name="extra_large">30dp</dimen>
+        <dimen name="really_large">25dp</dimen>
         <dimen name="very_large">20dp</dimen>
         <dimen name="large">15dp</dimen>
         <dimen name="normal">10dp</dimen>

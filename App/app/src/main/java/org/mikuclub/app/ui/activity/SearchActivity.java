@@ -65,6 +65,7 @@ public class SearchActivity extends AppCompatActivity
                 switch (item.getItemId()){
                         //如果点了返回键
                         case android.R.id.home:
+                                //结束当前活动页
                                 finish();
                                 return true;
                 }

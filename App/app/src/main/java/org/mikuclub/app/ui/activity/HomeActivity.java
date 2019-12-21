@@ -27,7 +27,7 @@ import org.mikuclub.app.utils.http.Request;
 import mikuclub.app.R;
 
 /**
- * la classe Activity gestisce solo la interfaccia utente
+ * 主页
  */
 public class HomeActivity extends AppCompatActivity
 {

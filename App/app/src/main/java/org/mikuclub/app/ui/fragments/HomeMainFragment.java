@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
+import com.zhengsr.viewpagerlib.indicator.NormalIndicator;
+import com.zhengsr.viewpagerlib.indicator.TransIndicator;
 import com.zhengsr.viewpagerlib.indicator.ZoomIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
@@ -27,10 +29,11 @@ import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
+import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.CustomGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.Parser;
-import org.mikuclub.app.utils.http.Request;
+import org.mikuclub.app.utils.http.GetRemoteImage;
 
 import java.util.List;
 
@@ -53,8 +56,8 @@ public class HomeMainFragment extends Fragment
 
 
         //首页幻灯片
-        private BannerViewPager bannerViewPager;
-        private ZoomIndicator zoomIndicator;
+        private BannerViewPager sliderViewPager;
+        private TransIndicator transIndicator;
 
         //是否要加载新数据 默认是
         private boolean wantMore = true;
@@ -73,14 +76,12 @@ public class HomeMainFragment extends Fragment
                 postDelegate = new PostDelegate(HomeActivity.TAG);
 
                 //获取组件
-                bannerViewPager = root.findViewById(R.id.loop_viewpager);
-                zoomIndicator = root.findViewById(R.id.bottom_scale_layout);
+                sliderViewPager = root.findViewById(R.id.home_slider_viewpager);
+                transIndicator = root.findViewById(R.id.home_slider_indicator);
                 recyclerView = root.findViewById(R.id.recycler_view);
                 swipeRefresh = root.findViewById(R.id.swipe_refresh);
 
                 nestedScrollView = root.findViewById(R.id.nested_scroll_view);
-
-
 
                 //从intent里读取上个活动传送来的数据
                 Posts stickyPostList = (Posts) getActivity().getIntent().getSerializableExtra("sticky_post_list");
@@ -89,7 +90,6 @@ public class HomeMainFragment extends Fragment
                 initSliders(stickyPostList);
                 //加载文章列表
                 initRecyclerView(postList);
-
 
                 //配置下拉刷新
                 swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -102,9 +102,7 @@ public class HomeMainFragment extends Fragment
                         }
                 });
 
-
                 return root;
-
         }
 
         @Override
@@ -123,27 +121,39 @@ public class HomeMainFragment extends Fragment
         private void initSliders(Posts postList)
         {
 
+
+
                 PageBean bean = new PageBean.Builder<Post>()
-                        .setDataObjects(postList.getBody())
-                        .setIndicator(zoomIndicator)
+                        .data(postList.getBody())
+                        .indicator(transIndicator)
                         .builder();
 
                 // animation of slider
                 // MzTransformer, DepthPageTransformer，ZoomOutPageTransformer
-                //bannerViewPager.setPageTransformer(false, new DepthPageTransformer());
+                //sliderViewPager.setPageTransformer(false, new DepthPageTransformer());
 
-                bannerViewPager.setPageListener(bean, R.layout.slider_view_item, new PageHelperListener<Post>()
+                sliderViewPager.setPageListener(bean, R.layout.home_slider_view_item, new PageHelperListener<Post>()
                 {
                         @Override
-                        public void getItemView(View view, Post data)
+                        public void getItemView(View view, final Post post)
                         {
 
-                                String imgUrl = data.getMetadata().getThumbnail_img_src().get(0);
+                                String imgUrl = post.getMetadata().getThumbnail_src().get(0);
                                 NetworkImageView imageView = view.findViewById(R.id.item_image);
-                                Request.getRemoteImg(imageView, imgUrl);
+                                GetRemoteImage.get(imageView, imgUrl);
 
                                 TextView textView = view.findViewById(R.id.item_text);
-                                textView.setText(data.getTitle().getRendered());
+                                textView.setText(post.getTitle().getRendered());
+
+                                view.setOnClickListener(new View.OnClickListener()
+                                {
+                                        @Override
+                                        public void onClick(View v)
+                                        {
+                                                //启动 文章页
+                                                PostActivity.startAction(getActivity(), post);
+                                        }
+                                });
 
                         }
                 });

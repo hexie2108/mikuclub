@@ -8,6 +8,7 @@
     tools:context = "org.mikuclub.app.ui.activity.HomeActivity"
     android:fitsSystemWindows = "true"
     tools:openDrawer = "start"
+
     >
 
         <include

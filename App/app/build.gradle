@@ -67,19 +67,19 @@ dependencies {
     implementation 'com.sun.activation:javax.activation:1.2.0'
 
 
-
     //easy recyclerView library
     //https://github.com/Jude95/EasyRecyclerView/
     //
     implementation 'com.jude:easyrecyclerview:4.4.2'
 
-    //slidershow https://github.com/LillteZheng/ViewPagerHelper
-    implementation 'com.github.LillteZheng:ViewPagerHelper:v1.3'
-
+    //轮播幻灯片组件 https://github.com/LillteZheng/ViewPagerHelper
+    implementation 'com.github.LillteZheng:ViewPagerHelper:v1.9'
 
     //圆角图片支持
     implementation 'de.hdodenhof:circleimageview:3.0.1'
 
+    //可拖拽放大的图片位
+    //implementation 'com.github.MikeOrtiz:TouchImageView:2.3.1'
 
     // implementation 'org.apache.httpcomponents:httpmime:4.5.9'
 

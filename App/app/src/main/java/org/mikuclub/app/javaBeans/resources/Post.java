@@ -1,17 +1,16 @@
 package org.mikuclub.app.javaBeans.resources;
 
 
-
 import com.google.gson.annotations.SerializedName;
 
-import org.mikuclub.app.javaBeans.resources.modules.MetadataForPost;
+
 import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Post  implements Serializable
+public class Post implements Serializable
 {
         private Date date;
         private Date date_gmt;
@@ -309,4 +308,48 @@ public class Post  implements Serializable
                         ", tags=" + tags +
                         '}';
         }
+
+
+        public class MetadataForPost implements Serializable
+        {
+                private List<Integer> views;
+
+                @SerializedName("_thumbnail_src")
+                private List<String> thumbnail_src;
+
+                private List<String> images_src;
+
+
+                public List<Integer> getViews()
+                {
+                        return views;
+                }
+
+                public void setViews(List<Integer> views)
+                {
+                        this.views = views;
+                }
+
+
+                public List<String> getThumbnail_src()
+                {
+                        return thumbnail_src;
+                }
+
+                public void setThumbnail_src(List<String> thumbnail_src)
+                {
+                        this.thumbnail_src = thumbnail_src;
+                }
+
+                public List<String> getImages_src()
+                {
+                        return images_src;
+                }
+
+                public void setImages_src(List<String> images_src)
+                {
+                        this.images_src = images_src;
+                }
+        }
+
 }

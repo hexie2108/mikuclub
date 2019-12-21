@@ -125,21 +125,6 @@ public class ErrorFooterListener
         }
 
 
-        /**
-         * 搜索的时候发生错误的情况 , 提示用户对应信息, 绑定监听器允许用户点击重试
-         */
-        public static void searchHttpErrorHandler(RecyclerView recyclerView, List recyclerDataList, View.OnClickListener onClickListener)
-        {
-                ErrorFooterListener.setupErrorSchemaWithListener(recyclerView.findViewHolderForAdapterPosition(recyclerDataList.size()), "搜索失败, 请点击重试", onClickListener);
-        }
-
-        /**
-         * 搜索的时候发生错误的情况, 提示用户对应信息
-         */
-        public static void searchEmptyErrorHandler(RecyclerView recyclerView, List recyclerDataList)
-        {
-                ErrorFooterListener.setupErrorSchema(recyclerView.findViewHolderForAdapterPosition(recyclerDataList.size()), "抱歉, 没有找到相关内容");
-        }
 
 
 }
