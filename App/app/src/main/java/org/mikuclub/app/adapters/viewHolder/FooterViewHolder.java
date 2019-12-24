@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
 /**
- * 列表结尾 功能组件 (显示加载进度条 和 显示对应错误)
+ * 文章列表 尾部控制器 (显示错误提示, 加载进度条)
  */
 public class FooterViewHolder extends RecyclerView.ViewHolder{
 

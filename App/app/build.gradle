@@ -55,10 +55,13 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
 
-
+    //网络请求框架
     implementation 'com.android.volley:volley:1.1.1'
-    //import ViewPager
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    //图片加载框架
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    //图片加载框架调用的网络框架
+   implementation 'com.github.bumptech.glide:volley-integration:4.10.0'
+    //implementation "com.github.bumptech.glide:okhttp3-integration:4.10.0"
     //java fileUtils
     implementation 'org.apache.commons:commons-io:1.3.2'
     //implementation 'commons-io:commons-io:2.6'
@@ -66,17 +69,19 @@ dependencies {
     //get file mime type
     implementation 'com.sun.activation:javax.activation:1.2.0'
 
-
-    //easy recyclerView library
-    //https://github.com/Jude95/EasyRecyclerView/
-    //
-    implementation 'com.jude:easyrecyclerview:4.4.2'
+    //import ViewPager
+    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     //轮播幻灯片组件 https://github.com/LillteZheng/ViewPagerHelper
     implementation 'com.github.LillteZheng:ViewPagerHelper:v1.9'
 
+
     //圆角图片支持
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+
+    //可放大和移动的图片查看组件
+    implementation 'com.github.MikeOrtiz:TouchImageView:2.3.1'
+
 
     //可拖拽放大的图片位
     //implementation 'com.github.MikeOrtiz:TouchImageView:2.3.1'

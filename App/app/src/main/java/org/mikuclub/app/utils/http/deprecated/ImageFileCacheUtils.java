@@ -1,4 +1,4 @@
-package org.mikuclub.app.utils.http;
+package org.mikuclub.app.utils.http.deprecated;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

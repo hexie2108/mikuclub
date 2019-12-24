@@ -40,12 +40,16 @@ public class GlobalConfig
 
         //每页显示的文章数量
         public static final int NUMBER_FOR_PAGE = 16;
+
+        //每个列表能存放的最大文章数量
+        public static final int MAX_NUMBER_POST_FOR_LIST = NUMBER_FOR_PAGE * 3;
+
         //每页显示的文章数量 (最近发布)
         public static final int NUMBER_FOR_RECENTLY_POSTS_LIST = 10;
         //首页幻灯片的文章数量
         public static final int NUMBER_FOR_SLIDERSHOW = 5;
-        //列表开始自动加载的 高度百分比 (默认游览超过50%就开始加载)
-        public static final float LIST_PRE_LOAD_HEIGHT_RATION = 0.50f;
+        //提前多少item触发自动加载
+        public static final int PRE_LOAD_ITEM_NUMBER = 3;
 
 
 }

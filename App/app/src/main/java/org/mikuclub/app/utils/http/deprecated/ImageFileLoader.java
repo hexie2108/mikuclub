@@ -1,8 +1,9 @@
-package org.mikuclub.app.utils.http;
+package org.mikuclub.app.utils.http.deprecated;
 
 import com.android.volley.toolbox.ImageLoader;
 
 import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.utils.http.RequestQueue;
 
 /**
  * 获取图片加载器实例

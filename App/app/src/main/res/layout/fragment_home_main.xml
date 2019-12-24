@@ -6,35 +6,28 @@
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
 
-    tools:showIn="@layout/activity_home_main"
+    tools:showIn = "@layout/activity_home_main"
 
-   >
+    >
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+
+        <LinearLayout
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
-            android:scrollbars="vertical"
-            >
+                android:padding="@dimen/normal"
+            android:orientation = "vertical">
 
-                <LinearLayout
+                <!--                        <include layout = "@layout/home_slider_view" />-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id = "@+id/recycler_view"
                     android:layout_width = "match_parent"
-                    android:layout_height = "wrap_content"
-                    android:layout_margin = "@dimen/normal"
-                    android:orientation = "vertical">
+                    android:layout_height = "match_parent"
 
-                        <include layout = "@layout/home_slider_view" />
+                    android:scrollbars = "vertical"
+                    app:layout_behavior = "@string/appbar_scrolling_view_behavior" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id = "@+id/recycler_view"
-                            android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
-
-                            />
-
-                </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
 
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

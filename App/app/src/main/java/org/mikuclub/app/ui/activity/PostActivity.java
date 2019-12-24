@@ -6,22 +6,23 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.indicator.TextIndicator;
-import com.zhengsr.viewpagerlib.indicator.TransIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.utils.http.GetRemoteImage;
+import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.view.AnimatedNetworkImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -43,6 +44,8 @@ public class PostActivity extends AppCompatActivity
         //标题栏幻灯片
         private BannerViewPager sliderViewPager;
         private TextIndicator textIndicator;
+
+        private List<String> imagesSrc;
 
 
         @Override
@@ -75,6 +78,7 @@ public class PostActivity extends AppCompatActivity
                 }
 
                 post = (Post) getIntent().getSerializableExtra("post");
+                imagesSrc = post.getMetadata().getImages_src();
 
                 initSliders();
 
@@ -85,44 +89,59 @@ public class PostActivity extends AppCompatActivity
          **/
         private void initSliders()
         {
-                //获取图片数量
-                int imageNumber = post.getMetadata().getImages_src().size();
-                PageBean bean;
-                //如果图片大于1, 就用默认配置
-                if (imageNumber>1)
+
+                PageBean.Builder builder = new PageBean.Builder<String>();
+                //如果只有1张图
+                if (imagesSrc.size() == 1)
                 {
-                        bean = new PageBean.Builder<String>()
-                                .data(post.getMetadata().getImages_src())
-                                .indicator(textIndicator)
-                                .builder();
-                }
-                //只有1张图, 关闭幻灯片循环功能
-                else
-                {
-                        bean = new PageBean.Builder<String>()
+                        //关闭循环
+                        builder = builder
                                 .useCode(true)
-                                .cycle(false)
-                                .data(post.getMetadata().getImages_src())
-                                .indicator(textIndicator)
-                                .builder();
+                                .cycle(false);
                 }
+                PageBean bean = builder
+                        .data(imagesSrc)
+                        .indicator(textIndicator)
+                        .builder();
+
 
                 sliderViewPager.setPageListener(bean, R.layout.post_slider_view_item, new PageHelperListener<String>()
                 {
+
                         @Override
-                        public void getItemView(View view, final String imageSrc)
+                        public void getItemView(View view, final String itemSrc)
                         {
                                 //加载图片
-                                NetworkImageView imageView = view.findViewById(R.id.item_image);
-                                GetRemoteImage.get(imageView, imageSrc);
+                                ImageView imageView = view.findViewById(R.id.item_image);
+
+                                //如果是第一张图
+                                if (itemSrc.equals(imagesSrc.get(0)))
+                                {
+                                        String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+                                        GlideImageUtils.getWithThumbnail(PostActivity.this, imageView, itemSrc, thumbnailSrc);
+                                }
+                                else
+                                {
+                                        GlideImageUtils.get(PostActivity.this, imageView, itemSrc);
+                                }
 
                                 view.setOnClickListener(new View.OnClickListener()
                                 {
                                         @Override
                                         public void onClick(View v)
                                         {
+                                                //找到当前图片地址的列表位置
+                                               int position = imagesSrc.indexOf(itemSrc);
+                                                //新建列表
+                                                ArrayList<String> newImagesSrc = new ArrayList<>();
+                                                //截取当前位置和后续位置的地址
+                                                newImagesSrc.addAll(imagesSrc.subList(position, imagesSrc.size()));
+                                                //然后再添加 开头位置 到 当前位置-1 的地址
+                                                newImagesSrc.addAll(imagesSrc.subList(0, position));
+                                                //以此达到重建新列表的目标
+
                                                 //启动单独的图片查看页面
-                                                ImageActivity.startAction(PostActivity.this, (ArrayList<String>) post.getMetadata().getImages_src());
+                                                ImageActivity.startAction(PostActivity.this, newImagesSrc );
 
                                         }
                                 });
@@ -131,11 +150,7 @@ public class PostActivity extends AppCompatActivity
                 });
 
 
-
-
         }
-
-
 
 
         @Override
@@ -144,6 +159,7 @@ public class PostActivity extends AppCompatActivity
 
                 //取消本活动相关的所有网络请求
                 Request.cancelRequest(TAG);
+
 
                 super.onStop();
 
@@ -168,6 +184,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 静态 启动本活动的方法
+         *
          * @param context
          * @param post
          */
