@@ -312,13 +312,31 @@ public class Post implements Serializable
 
         public class MetadataForPost implements Serializable
         {
+
                 private List<Integer> views;
+
+                @SerializedName("contenuto")
+                private List<String> content;
 
                 @SerializedName("_thumbnail_src")
                 private List<String> thumbnail_src;
-
                 private List<String> images_src;
+                private List<Integer> count_comments;
+                private List<Integer> count_like;
+               // private List<PostTag> tags;
 
+                private List<PostAuthor> author;
+
+
+                public List<String> getContent()
+                {
+                        return content;
+                }
+
+                public void setContent(List<String> content)
+                {
+                        this.content = content;
+                }
 
                 public List<Integer> getViews()
                 {
@@ -329,7 +347,6 @@ public class Post implements Serializable
                 {
                         this.views = views;
                 }
-
 
                 public List<String> getThumbnail_src()
                 {
@@ -349,6 +366,122 @@ public class Post implements Serializable
                 public void setImages_src(List<String> images_src)
                 {
                         this.images_src = images_src;
+                }
+
+                public List<Integer> getCount_comments()
+                {
+                        return count_comments;
+                }
+
+                public void setCount_comments(List<Integer> count_comments)
+                {
+                        this.count_comments = count_comments;
+                }
+
+                public List<Integer> getCount_like()
+                {
+                        return count_like;
+                }
+
+                public void setCount_like(List<Integer> count_like)
+                {
+                        this.count_like = count_like;
+                }
+
+
+                public List<PostAuthor> getAuthor()
+                {
+                        return author;
+                }
+
+                public void setAuthor(List<PostAuthor> author)
+                {
+                        this.author = author;
+                }
+        }
+
+        public class PostTag implements Serializable{
+                private int term_id;
+                private String name;
+                private int count;
+
+                public int getTerm_id()
+                {
+                        return term_id;
+                }
+
+                public void setTerm_id(int term_id)
+                {
+                        this.term_id = term_id;
+                }
+
+                public String getName()
+                {
+                        return name;
+                }
+
+                public void setName(String name)
+                {
+                        this.name = name;
+                }
+
+                public int getCount()
+                {
+                        return count;
+                }
+
+                public void setCount(int count)
+                {
+                        this.count = count;
+                }
+        }
+
+
+        public class PostAuthor implements Serializable{
+
+                private int author_id;
+                private String display_name;
+                private String user_description;
+                private String avatar_src;
+
+                public int getAuthor_id()
+                {
+                        return author_id;
+                }
+
+                public void setAuthor_id(int author_id)
+                {
+                        this.author_id = author_id;
+                }
+
+                public String getDisplay_name()
+                {
+                        return display_name;
+                }
+
+                public void setDisplay_name(String display_name)
+                {
+                        this.display_name = display_name;
+                }
+
+                public String getUser_description()
+                {
+                        return user_description;
+                }
+
+                public void setUser_description(String user_description)
+                {
+                        this.user_description = user_description;
+                }
+
+                public String getAvatar_src()
+                {
+                        return avatar_src;
+                }
+
+                public void setAvatar_src(String avatar_src)
+                {
+                        this.avatar_src = avatar_src;
                 }
         }
 

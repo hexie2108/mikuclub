@@ -8,16 +8,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.android.volley.toolbox.NetworkImageView;
-import com.bumptech.glide.Glide;
+
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
+
+
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.indicator.TextIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
+import org.mikuclub.app.adapters.PostFragmentViewPagerAdapter;
 import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -28,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
 /**
@@ -40,6 +44,11 @@ public class PostActivity extends AppCompatActivity
         private Post post;
 
         private CollapsingToolbarLayout postCollapsingToolbarLayout;
+
+        //分页管理器
+        private ViewPager2 postViewPager;
+        //分页菜单栏
+        private TabLayout postTabsMenuLayout;
 
         //标题栏幻灯片
         private BannerViewPager sliderViewPager;
@@ -59,12 +68,13 @@ public class PostActivity extends AppCompatActivity
 
                 setContentView(R.layout.activity_post);
 
-                postCollapsingToolbarLayout = findViewById(R.id.post_collapsing_toolbar_layout);
                 Toolbar toolbar = findViewById(R.id.post_toolbar);
-
+                postCollapsingToolbarLayout = findViewById(R.id.post_collapsing_toolbar_layout);
                 //获取幻灯片组件
                 sliderViewPager = findViewById(R.id.post_slider_viewpager);
                 textIndicator = findViewById(R.id.post_slider_indicator);
+                postViewPager = findViewById(R.id.post_view_pager);
+                postTabsMenuLayout = findViewById(R.id.post_tabs_menu);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -77,10 +87,16 @@ public class PostActivity extends AppCompatActivity
                         actionBar.setDisplayShowTitleEnabled(false);
                 }
 
+                //获取文章数据
                 post = (Post) getIntent().getSerializableExtra("post");
+                //获取图片地址列表
                 imagesSrc = post.getMetadata().getImages_src();
 
                 initSliders();
+
+                initFragment();
+
+
 
         }
 
@@ -113,7 +129,6 @@ public class PostActivity extends AppCompatActivity
                         {
                                 //加载图片
                                 ImageView imageView = view.findViewById(R.id.item_image);
-
                                 //如果是第一张图
                                 if (itemSrc.equals(imagesSrc.get(0)))
                                 {
@@ -149,6 +164,30 @@ public class PostActivity extends AppCompatActivity
                         }
                 });
 
+
+        }
+
+
+        /**
+         * 初始化 文章主体fragment
+         */
+        private void initFragment(){
+
+
+                postViewPager.setAdapter(new PostFragmentViewPagerAdapter(this));
+
+
+                new TabLayoutMediator(postTabsMenuLayout, postViewPager,
+                        new TabLayoutMediator.TabConfigurationStrategy() {
+                                @Override public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                                        if(position==0){
+                                                tab.setText("描述");
+                                        }
+                                        else if(position == 1){
+                                                tab.setText("评论");
+                                        }
+                                }
+                        }).attach();
 
         }
 

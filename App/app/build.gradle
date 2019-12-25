@@ -42,7 +42,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //import material design
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
+
     //import PreferenceManager
     implementation 'androidx.preference:preference:1.1.0'
     //import Gson (json support)
@@ -54,7 +55,8 @@ dependencies {
     //navigation UI
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
-
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
     //网络请求框架
     implementation 'com.android.volley:volley:1.1.1'
     //图片加载框架
@@ -82,9 +84,13 @@ dependencies {
     //可放大和移动的图片查看组件
     implementation 'com.github.MikeOrtiz:TouchImageView:2.3.1'
 
+    //html代码自定义解析 https://github.com/wangchenyan/html-text
+    implementation 'com.github.wangchenyan:html-text:1.0'
+
+
+
 
     //可拖拽放大的图片位
-    //implementation 'com.github.MikeOrtiz:TouchImageView:2.3.1'
 
     // implementation 'org.apache.httpcomponents:httpmime:4.5.9'
 

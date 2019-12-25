@@ -4,14 +4,41 @@
     xmlns:tools = "http://schemas.android.com/tools"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
-    app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+
     tools:context = "org.mikuclub.app.ui.activity.PostActivity"
     tools:showIn = "@layout/activity_post">
 
-        <TextView
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent">
 
-            android:text = "@string/large_text" />
+                <TextView
+                    android:id = "@+id/post_title"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:maxLines = "2"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf = "parent" />
+
+
+                <include layout = "@layout/post_info_box" />
+
+                <include layout = "@layout/post_author_info_box" />
+
+                <TextView
+                    android:id = "@+id/post_description"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:textIsSelectable="true"
+                    android:layout_marginTop="@dimen/normal"
+                    android:textSize="@dimen/text_default"
+                    app:layout_constraintTop_toBottomOf = "@id/post_author_info_box"
+                    />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.core.widget.NestedScrollView>

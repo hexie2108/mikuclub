@@ -19,43 +19,43 @@
                     android:layout_width = "match_parent"
                     android:layout_height = "?attr/actionBarSize"
                     android:background = "@color/defaultBackground"
-                    app:theme="@style/ToolbarColoredBackArrow"
                     app:layout_scrollFlags = "scroll|enterAlways|snap"
-                    app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
+                    app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
+                    app:theme = "@style/ToolbarColoredBackArrow">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width = "match_parent"
-                            android:layout_height = "match_parent"
-                            >
+                            android:layout_height = "match_parent">
 
                                 <EditText
                                     android:id = "@+id/search_input"
                                     android:layout_width = "0dp"
                                     android:layout_height = "0dp"
-                                    android:textCursorDrawable="@drawable/custom_edit_text_cursor_color"
-                                    android:imeOptions="actionSearch"
-                                    android:background="@null"
-                                    android:hint="要搜索点什么吗..."
-                                    android:maxLines="1"
-                                    android:inputType="text"
-
+                                    android:layout_marginRight = "@dimen/normal"
+                                    android:background = "@null"
+                                    android:hint = "要搜索点什么吗..."
+                                    android:imeOptions = "actionSearch"
+                                    android:inputType = "text"
+                                    android:maxLines = "1"
                                     android:textColor = "@android:color/darker_gray"
-                                    app:layout_constraintTop_toTopOf="parent"
+                                    android:textCursorDrawable = "@drawable/custom_edit_text_cursor_color"
                                     app:layout_constraintBottom_toBottomOf = "parent"
                                     app:layout_constraintEnd_toStartOf = "@id/search_input_icon"
-                                    app:layout_constraintStart_toStartOf = "parent" />
+                                    app:layout_constraintStart_toStartOf = "parent"
+                                    app:layout_constraintTop_toTopOf = "parent" />
 
                                 <ImageView
                                     android:id = "@+id/search_input_icon"
                                     android:layout_width = "wrap_content"
                                     android:layout_height = "wrap_content"
+                                    android:layout_marginRight = "@dimen/normal"
+                                    android:visibility="invisible"
                                     android:src = "@drawable/search"
-                                    android:layout_marginRight="@dimen/large"
 
-                                    app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintBottom_toBottomOf = "parent"
-                                    app:layout_constraintStart_toEndOf="@id/search_input"
-                                    app:layout_constraintEnd_toEndOf="parent"/>
+                                    app:layout_constraintEnd_toEndOf = "parent"
+                                    app:layout_constraintStart_toEndOf = "@id/search_input"
+                                    app:layout_constraintTop_toTopOf = "parent" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -72,8 +72,7 @@
             android:layout_height = "match_parent"
             app:layout_behavior = "@string/appbar_scrolling_view_behavior"
 
-            tools:layout="@layout/fragment_search"
-             />
+            tools:layout = "@layout/fragment_search" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -12,6 +12,7 @@
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content"
             android:background = "@color/defaultBackground"
+
             android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -24,37 +25,55 @@
 
                     app:layout_scrollFlags = "scroll|exitUntilCollapsed"
 
-
                     app:titleEnabled = "false"
-                    app:toolbarId = "@+id/post_toolbar">
-
+                    app:toolbarId = "@id/post_toolbar">
 
                         <include layout = "@layout/post_slider_view" />
+
 
 
                         <androidx.appcompat.widget.Toolbar
                             android:id = "@+id/post_toolbar"
                             android:layout_width = "match_parent"
                             android:layout_height = "?attr/actionBarSize"
-                            android:layout_marginTop = "@dimen/normal"
-
+                            android:layout_gravity = "top"
+                            android:layout_marginTop="@dimen/normal"
                             app:layout_collapseMode = "pin"
-                            app:popupTheme = "@style/ThemeOverlay.AppCompat.Light" />
+                            app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
+
+                            />
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id = "@+id/post_tabs_menu"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_gravity = "bottom"
+
+                            />
+
+
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include layout = "@layout/fragment_post_main" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id = "@+id/post_view_pager"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            android:padding="@dimen/normal"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/post_download_button"
+            android:id = "@+id/post_download_button"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_margin = "@dimen/large"
             android:src = "@drawable/share"
-            app:backgroundTint="@color/colorPrimary"
-            android:tint="@android:color/white"
+            android:tint = "@android:color/white"
+            app:backgroundTint = "@color/colorPrimary"
             app:layout_anchor = "@id/post_app_bar"
             app:layout_anchorGravity = "bottom|end" />
 

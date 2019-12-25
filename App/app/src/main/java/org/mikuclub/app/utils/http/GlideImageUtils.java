@@ -32,6 +32,18 @@ public class GlideImageUtils
 
         }
 
+        public static void getSquareImg(Context context, ImageView imageView, String url)
+        {
+
+                Glide.with(context)
+                        .load(url)
+                        .placeholder(R.drawable.loop_grey_1x1)
+                        .error(R.drawable.baseline_error_grey_1x1)
+                        .transition(withCrossFade())
+                        .into(imageView);
+
+        }
+
         /**
          * 关闭缓存的版本
          * @param context

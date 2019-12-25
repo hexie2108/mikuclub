@@ -1,19 +1,11 @@
 package org.mikuclub.app.ui.fragments;
 
 import android.os.Bundle;
-
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.HomeListAdapter;
-import org.mikuclub.app.adapters.listener.ErrorFooterListener;
 import org.mikuclub.app.adapters.listener.PostListOnScrollListener;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
@@ -21,12 +13,19 @@ import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
-import org.mikuclub.app.view.CustomGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.Parser;
+import org.mikuclub.app.view.CustomGridLayoutSpanSizeLookup;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
 public class HomeMainFragment extends Fragment
@@ -41,8 +40,7 @@ public class HomeMainFragment extends Fragment
 
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
-        //滚动布局
-        private NestedScrollView nestedScrollView;
+
 
         private Posts stickyPosts;
         private List<Post> stickyPostList;
@@ -58,16 +56,24 @@ public class HomeMainFragment extends Fragment
                                  Bundle savedInstanceState)
         {
 
-
                 // 为fragment加载主布局
                 View root = inflater.inflate(R.layout.fragment_home_main, container, false);
+
+                return root;
+        }
+
+
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+        {
+                super.onViewCreated(view, savedInstanceState);
 
                 //创建数据请求 代理人
                 postDelegate = new PostDelegate(HomeActivity.TAG);
 
-
-                recyclerView = root.findViewById(R.id.recycler_view);
-                swipeRefresh = root.findViewById(R.id.swipe_refresh);
+                recyclerView = view.findViewById(R.id.recycler_view);
+                swipeRefresh = view.findViewById(R.id.swipe_refresh);
 
 
                 //从intent里读取上个活动传送来的数据
@@ -89,8 +95,6 @@ public class HomeMainFragment extends Fragment
                                 refreshPosts();
                         }
                 });
-
-                return root;
         }
 
         @Override
@@ -110,7 +114,7 @@ public class HomeMainFragment extends Fragment
         private void initRecyclerView(Posts postList)
         {
                 //创建适配器
-                homeListAdapter = new HomeListAdapter(recyclerDataList, stickyPostList);
+                homeListAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getContext());
                 recyclerView.setAdapter(homeListAdapter);
 
                 //设置网格布局

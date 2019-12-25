@@ -42,6 +42,8 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         //上下文
         private Context mConxt;
+        //布局创建器
+        private LayoutInflater mInflater;
         //头部占据的列数
         private int headerRow = 1;
         //尾部占据的列数
@@ -58,11 +60,14 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          *
          * @param list           列表文章
          * @param headerPostList //头部幻灯片文章
+         * @param context
          */
-        public HomeListAdapter(List<Post> list, List<Post> headerPostList)
+        public HomeListAdapter(List<Post> list, List<Post> headerPostList, Context context )
         {
                 this.list = list;
                 this.headerPostList = headerPostList;
+                this.mConxt = context;
+                this.mInflater = LayoutInflater.from(context);
         }
 
 
@@ -91,12 +96,6 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-                //获取保存上下文
-                if (mConxt == null)
-                {
-                        mConxt = parent.getContext();
-                }
-
                 //创建控制器
                 RecyclerView.ViewHolder holder;
                 //如果是普通数据类型
@@ -140,22 +139,11 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return list.size() + headerRow + footerRow;
         }
 
-        public FooterViewHolder createFooterViewHolder(ViewGroup parent)
-        {
-                //加载布局
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_info_util, parent, false);
-                //生成控制器
-                FooterViewHolder holder = new FooterViewHolder(view);
-
-                return holder;
-
-        }
-
 
         public PostViewHolder createPostViewHolder(ViewGroup parent)
         {
                 //加载布局
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_posts, parent, false);
+                View view = mInflater.inflate(R.layout.list_item_posts, parent, false);
                 //生成控制器
                 final PostViewHolder holder = new PostViewHolder(view);
                 //绑定监听器
@@ -180,7 +168,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public HeaderViewHolder createHeaderViewHolder(ViewGroup parent)
         {
                 //加载布局
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_slider_view, parent, false);
+                View view = mInflater.inflate(R.layout.home_slider_view, parent, false);
                 final HeaderViewHolder holder = new HeaderViewHolder(view);
 
                 //配置幻灯片
@@ -222,6 +210,17 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return holder;
 
         }
+
+        public FooterViewHolder createFooterViewHolder(ViewGroup parent)
+        {
+                //加载布局
+                View view = mInflater.inflate(R.layout.list_item_info_util, parent, false);
+                //生成控制器
+                FooterViewHolder holder = new FooterViewHolder(view);
+
+                return holder;
+        }
+
 
 
         public void bindPostViewHolder(RecyclerView.ViewHolder holder, int position)

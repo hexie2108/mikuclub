@@ -35,6 +35,8 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private List<Post> list;
         //上下文
         private Context mConxt;
+        //布局创建器
+        private LayoutInflater mInflater;
 
         //尾部占据的列数
         private int footerRow = 1;
@@ -50,10 +52,13 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
          * 构建函数
          *
          * @param list
+         * @param context
          */
-        public PostsAdapter(List<Post> list)
+        public PostsAdapter(List<Post> list, Context context )
         {
                 this.list = list;
+                this.mConxt = context;
+                this.mInflater = LayoutInflater.from(context);
         }
 
 
@@ -75,18 +80,12 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-                //获取保存上下文
-                if (mConxt == null)
-                {
-                        mConxt = parent.getContext();
-                }
-
                 //创建控制器
                 final RecyclerView.ViewHolder holder;
                 //如果是普通数据类型
                 if (viewType == TYPE_ITEM)
                 {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_posts, parent, false);
+                        View view = mInflater.inflate(R.layout.list_item_posts, parent, false);
                         holder = new PostViewHolder(view);
                         ((PostViewHolder) holder).getCardView().setOnClickListener(new
                                                                                            View.OnClickListener()
@@ -105,7 +104,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //如果是footer
                 else
                 {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_info_util, parent, false);
+                        View view = mInflater.inflate(R.layout.list_item_info_util, parent, false);
                         holder = new FooterViewHolder(view);
                 }
                 return holder;

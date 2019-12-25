@@ -3,6 +3,7 @@ package org.mikuclub.app.ui.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -70,23 +71,29 @@ public class SearchFragment extends Fragment
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
-
                 // 为fragment加载主布局
                 View root = inflater.inflate(R.layout.fragment_search, container, false);
-                //创建数据请求 代理人
-                postDelegate = new PostDelegate(SearchActivity.TAG);
-
-                //绑定组件
-                recyclerView = root.findViewById(R.id.recycler_view);
-                //绑定信息组件
-                manageInfoUtilView = new ManageInfoUtilView(root);
-
-                //初始化列表
-                initRecyclerView();
 
                 return root;
 
 
+        }
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+        {
+                super.onViewCreated(view, savedInstanceState);
+
+                //创建数据请求 代理人
+                postDelegate = new PostDelegate(SearchActivity.TAG);
+
+                //绑定组件
+                recyclerView = view.findViewById(R.id.recycler_view);
+                //绑定信息组件
+                manageInfoUtilView = new ManageInfoUtilView(view);
+
+                //初始化列表
+                initRecyclerView();
         }
 
         @Override
@@ -121,7 +128,7 @@ public class SearchFragment extends Fragment
                 manageInfoUtilView.setVisibility(false);
 
                 recyclerDataList = new ArrayList<Post>();
-                postsAdapter = new PostsAdapter(recyclerDataList);
+                postsAdapter = new PostsAdapter(recyclerDataList, getContext());
                 recyclerView.setAdapter(postsAdapter);
 
                 //设置网格布局
@@ -175,6 +182,31 @@ public class SearchFragment extends Fragment
                                 return true;
                         }
                 });
+
+
+                //创建2个搜索图标的点击监听器
+                final View.OnClickListener sendSearchListener = new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                //发送搜索请求
+                                sendSearch();
+                        }
+                };
+                final View.OnClickListener cancelInputListener = new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                //清空输入框
+                                searchInput.setText("");
+                                //隐藏图标
+                                searchInputIcon.setVisibility(View.INVISIBLE);
+                        }
+                };
+
+
                 //监听是否有焦点
                 searchInput.setOnFocusChangeListener(new View.OnFocusChangeListener()
                 {
@@ -184,25 +216,33 @@ public class SearchFragment extends Fragment
                                 //如果有焦点
                                 if (hasFocus)
                                 {
-                                        //显示搜索图标
+                                        //显示图标
                                         searchInputIcon.setVisibility(View.VISIBLE);
+                                        //改变图标
+                                        searchInputIcon.setImageResource(R.drawable.search);
+                                        //绑定对应动作监听器
+                                        searchInputIcon.setOnClickListener(sendSearchListener);
+                                        //把光标移动到末尾
+                                        searchInput.setSelection(searchInput.getText().length());
                                 }
                                 //如果无焦点
                                 else
                                 {
-                                        //隐藏搜索图标
-                                        searchInputIcon.setVisibility(View.INVISIBLE);
+                                        //如果搜索内容不是空的
+                                        if(searchInput.getText().toString().length() >0){
+                                                //显示图标
+                                                searchInputIcon.setVisibility(View.VISIBLE);
+                                                //改变图标
+                                                searchInputIcon.setImageResource(R.drawable.baseline_clear);
+                                                //绑定对应动作监听器
+                                                searchInputIcon.setOnClickListener(cancelInputListener);
+                                        }
+                                        else{
+                                                //如果是空的 就隐藏图标
+                                                searchInputIcon.setVisibility(View.INVISIBLE);
+                                        }
+
                                 }
-                        }
-                });
-                //监听搜索图标
-                searchInputIcon.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                //发送搜索请求
-                                sendSearch();
                         }
                 });
 
@@ -251,13 +291,15 @@ public class SearchFragment extends Fragment
                                                 //重置网络错误
                                                 postsAdapter.setInternetError(false, null);
                                                 //如果返回的文章等于规定数量, 正常
-                                                if(postList.getBody().size() == GlobalConfig.NUMBER_FOR_PAGE){
+                                                if (postList.getBody().size() == GlobalConfig.NUMBER_FOR_PAGE)
+                                                {
                                                         //开启信号灯
                                                         wantMore = true;
                                                         //重置没有更多错误
                                                         postsAdapter.setNotMoreError(false);
                                                 }
-                                                else{
+                                                else
+                                                {
                                                         //开启没有更多错误
                                                         postsAdapter.setNotMoreError(true);
                                                 }
@@ -360,17 +402,17 @@ public class SearchFragment extends Fragment
                                 {
                                         //显示错误信息, 绑定点击事件允许用户手动重试
                                         postsAdapter.setInternetError(true, new View.OnClickListener()
+                                        {
+                                                @Override
+                                                public void onClick(View v)
                                                 {
-                                                        @Override
-                                                        public void onClick(View v)
-                                                        {
-                                                                //重置请求状态
-                                                                wantMore = true;
-                                                                //重置错误显示
-                                                                postsAdapter.setInternetError(false, null);
-                                                                getMore();
-                                                        }
-                                                });
+                                                        //重置请求状态
+                                                        wantMore = true;
+                                                        //重置错误显示
+                                                        postsAdapter.setInternetError(false, null);
+                                                        getMore();
+                                                }
+                                        });
                                         //通知更新尾部
                                         postsAdapter.notifyItemChanged(recyclerDataList.size());
                                 }

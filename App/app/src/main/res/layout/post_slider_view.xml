@@ -6,9 +6,7 @@
 
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
-
     app:layout_collapseMode = "parallax"
-
     tools:showIn = "@layout/activity_post"
     >
 
@@ -20,9 +18,7 @@
             android:layout_height = "0dp"
 
             app:banner_iscycle = "true"
-
             app:layout_constraintDimensionRatio = "H,16:9"
-
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toTopOf = "parent" />
@@ -37,7 +33,7 @@
             android:layout_height = "30dp"
 
             android:layout_marginRight = "@dimen/large"
-            android:layout_marginTop = "@dimen/really_large"
+            android:layout_marginTop = "@dimen/extra_large"
             app:layout_constraintTop_toTopOf="@id/post_slider_viewpager"
 
             app:layout_constraintEnd_toEndOf = "parent"
