@@ -281,7 +281,7 @@ public class Post implements Serializable
         @Override
         public String toString()
         {
-                return "PostDelegate{" +
+                return "PostsDelegate{" +
                         "date=" + date +
                         ", date_gmt=" + date_gmt +
                         ", guid=" + guid +

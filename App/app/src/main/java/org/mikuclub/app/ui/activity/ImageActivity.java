@@ -43,11 +43,14 @@ public class ImageActivity extends AppCompatActivity
 
                 setContentView(R.layout.activity_image);
 
-                //获取图片地址的列表
-                imagesSrc = getIntent().getStringArrayListExtra("images_src");
+
 
                 //获取幻灯片组件
                 sliderViewPager = findViewById(R.id.image_slider_viewpager);
+
+
+                //获取图片地址的列表
+                imagesSrc = getIntent().getStringArrayListExtra("images_src");
 
                 initSliders();
         }

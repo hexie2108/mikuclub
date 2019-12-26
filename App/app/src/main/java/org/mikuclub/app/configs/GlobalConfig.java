@@ -39,10 +39,12 @@ public class GlobalConfig
 
 
         //每页显示的文章数量
-        public static final int NUMBER_FOR_PAGE = 16;
+        public static final int NUMBER_PER_PAGE = 12;
+        //每页显示的p评论数量
+        public static final int NUMBER_PER_PAGE_OF_COMMENTS = 10;
 
         //每个列表能存放的最大文章数量
-        public static final int MAX_NUMBER_POST_FOR_LIST = NUMBER_FOR_PAGE * 3;
+        public static final int MAX_NUMBER_POST_FOR_LIST = NUMBER_PER_PAGE * 3;
 
         //每页显示的文章数量 (最近发布)
         public static final int NUMBER_FOR_RECENTLY_POSTS_LIST = 10;

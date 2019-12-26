@@ -24,6 +24,8 @@ import com.bumptech.glide.request.transition.Transition;
 
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.ui.activity.ImageActivity;
+import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
@@ -32,6 +34,7 @@ import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,8 +86,8 @@ public class PostMainFragment extends Fragment
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                //获取文章数据
-                post = (Post) getActivity().getIntent().getSerializableExtra("post");
+                //从活动中获取文章数据
+                post = ((PostActivity)getActivity()).getPost();
 
                 postTitle = view.findViewById(R.id.post_title);
                 postDate= view.findViewById(R.id.post_date);
@@ -127,9 +130,9 @@ public class PostMainFragment extends Fragment
                 postAuthorName.setText(metadata.getAuthor().get(0).getDisplay_name());
 
                 //确保给地址添加上https协议
-                String avatar_src = HttpUtils.checkAndAddHttpsProtocol(metadata.getAuthor().get(0).getAvatar_src());
-                GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatar_src);
-
+                String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(metadata.getAuthor().get(0).getAvatar_src());
+                //获取头像
+                GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatarSrc);
 
                 //开启超链接支持
                 postDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -146,12 +149,24 @@ public class PostMainFragment extends Fragment
                 //解析 html描述
                 HttpUtils.parseHtml(getContext(), htmlDescription, postDescription, new OnTagClickListener()
                 {
+                        //设置 点击图片tag的动作
                         @Override
-                        public void onImageClick(Context context, List<String> list, int i)
+                        public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
+                                //新建列表
+                                ArrayList<String> newImagesSrc = new ArrayList<>();
+                                //截取当前位置和后续位置的地址
+                                newImagesSrc.addAll(imagesSrc.subList(position, imagesSrc.size()));
+                                //然后再添加 开头位置 到 当前位置-1 的地址
+                                newImagesSrc.addAll(imagesSrc.subList(0, position));
+                                //以此达到重建新列表的目标
+
+                                //启动单独的图片查看页面
+                                ImageActivity.startAction(getContext(), newImagesSrc );
+
 
                         }
-
+                        //设置点击链接tag的动作
                         @Override
                         public void onLinkClick(Context context, String url)
                         {

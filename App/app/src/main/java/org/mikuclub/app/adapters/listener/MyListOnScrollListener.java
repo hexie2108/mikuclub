@@ -3,24 +3,24 @@ package org.mikuclub.app.adapters.listener;
 import org.mikuclub.app.configs.GlobalConfig;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PostListOnScrollListener extends RecyclerView.OnScrollListener
+public class MyListOnScrollListener extends RecyclerView.OnScrollListener
 {
         private int lastVisibleItem;
-        private GridLayoutManager gridLayoutManager;
+        private LinearLayoutManager manager;
         private RecyclerView.Adapter adapter;
 
         /**
          * 传递适配器 和 布局组件
          * @param adapter
-         * @param gridLayoutManager
+         * @param manager
          */
-        public PostListOnScrollListener(RecyclerView.Adapter adapter , GridLayoutManager gridLayoutManager)
+        public MyListOnScrollListener(RecyclerView.Adapter adapter , LinearLayoutManager manager)
         {
                 this.adapter = adapter;
-                this.gridLayoutManager = gridLayoutManager;
+                this.manager = manager;
 
         }
 
@@ -37,7 +37,7 @@ public class PostListOnScrollListener extends RecyclerView.OnScrollListener
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
                 {
                         //获取列表最后一个可见item的位置
-                        lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
+                        lastVisibleItem = manager.findLastVisibleItemPosition();
                         //LogUtils.e("lastitem: " + lastVisibleItem + " / total: " + homeListAdapter.getItemCount());
 
                         //如果可见item 到达了加载范围里, 触发加载

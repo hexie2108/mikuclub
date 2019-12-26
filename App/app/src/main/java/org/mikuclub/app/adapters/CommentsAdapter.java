@@ -1,6 +1,8 @@
 package org.mikuclub.app.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,23 +10,23 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
-
+import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
-import org.mikuclub.app.adapters.viewHolder.PostViewHolder;
-import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.javaBeans.resources.Comment;
+import org.mikuclub.app.ui.activity.ImageActivity;
+import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
-public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
         //正常内容
         private final static int TYPE_ITEM = 0;
@@ -32,7 +34,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private final static int TYPE_FOOTER = 1;
 
         //数据列表
-        private List<Post> list;
+        private List<Comment> list;
         //上下文
         private Context mConxt;
         //布局创建器
@@ -54,7 +56,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
          * @param list
          * @param context
          */
-        public PostsAdapter(List<Post> list, Context context )
+        public CommentsAdapter(List<Comment> list, Context context )
         {
                 this.list = list;
                 this.mConxt = context;
@@ -73,7 +75,6 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 {
                         return TYPE_ITEM;
                 }
-
         }
 
         @NonNull
@@ -85,19 +86,15 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //如果是普通数据类型
                 if (viewType == TYPE_ITEM)
                 {
-                        View view = mInflater.inflate(R.layout.list_item_posts, parent, false);
-                        holder = new PostViewHolder(view);
-                        ((PostViewHolder) holder).getCardView().setOnClickListener(new
+                        View view = mInflater.inflate(R.layout.list_item_comments, parent, false);
+                        holder = new CommentViewHolder(view);
+                        ((CommentViewHolder) holder).getItem().setOnClickListener(new
                                                                                            View.OnClickListener()
                                                                                            {
                                                                                                    @Override
                                                                                                    public void onClick(View v)
                                                                                                    {
-                                                                                                           //获取数据在列表中的位置
-                                                                                                           int position = holder.getAdapterPosition();
-                                                                                                           Post post = list.get(position);
-                                                                                                           //启动 文章页
-                                                                                                           PostActivity.startAction(mConxt, post);
+
                                                                                                    }
                                                                                            });
                 }
@@ -115,9 +112,9 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         {
                 //需要展示对应子视图的时候
                 //如果是普通数据组件
-                if (holder instanceof PostViewHolder)
+                if (holder instanceof CommentViewHolder)
                 {
-                        bindPostViewHolder(holder, position);
+                        bindCommentViewHolder(holder, position);
 
                 }
                 else if(holder instanceof  FooterViewHolder){
@@ -135,17 +132,48 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-        private void bindPostViewHolder(RecyclerView.ViewHolder holder, int position)
+        private void bindCommentViewHolder(RecyclerView.ViewHolder holder, int position)
         {
-                PostViewHolder postViewHolder = (PostViewHolder) holder;
+                CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
                 //先从列表获取对应位置的数据
-                Post post = list.get(position);
-                //为视图设置各项数据
-                postViewHolder.getItemText().setText(post.getTitle().getRendered());
-                String imgUrl = post.getMetadata().getThumbnail_src().get(0);
+                Comment comment = list.get(position);
+
+                //为视图设置数据
+                commentViewHolder.getItemName().setText(comment.getAuthor_name());
+                //生成时间格式
+                String dateString = new SimpleDateFormat("yy-MM-dd HH:mm").format(comment.getDate());
+                commentViewHolder.getItemDate().setText(dateString);
+
+
+                //确保给地址添加上https协议
+                String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(comment.getAuthor_avatar_urls().getSize96());
                 //加载远程图片
-                GlideImageUtils.get(mConxt, postViewHolder.getItemImage(), imgUrl);
+                GlideImageUtils.get(mConxt, commentViewHolder.getItemAvatarImg(), avatarSrc);
+
+                String htmlContent = comment.getContent().getRendered();
+                //解析 html描述
+                HttpUtils.parseHtml(mConxt, htmlContent, commentViewHolder.getItemContent(), new OnTagClickListener()
+                {
+                        //设置 点击图片tag的动作
+                        @Override
+                        public void onImageClick(Context context, List<String> imagesSrc, int position)
+                        {
+
+                        }
+                        //设置点击链接tag的动作
+                        @Override
+                        public void onLinkClick(Context context, String url)
+                        {
+                                // link click
+                                Uri uri = Uri.parse(HttpUtils.checkAndAddHttpsProtocol(url));
+                                Intent intent = new Intent();
+                                intent.setAction("android.intent.action.VIEW");
+                                intent.setData(uri);
+                                mConxt.startActivity(intent);
+                        }
+                });
         }
+
 
 
         /**

@@ -31,13 +31,12 @@
                         <include layout = "@layout/post_slider_view" />
 
 
-
                         <androidx.appcompat.widget.Toolbar
                             android:id = "@+id/post_toolbar"
                             android:layout_width = "match_parent"
                             android:layout_height = "?attr/actionBarSize"
                             android:layout_gravity = "top"
-                            android:layout_marginTop="@dimen/normal"
+                            android:layout_marginTop = "@dimen/normal"
                             app:layout_collapseMode = "pin"
                             app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
 
@@ -46,11 +45,13 @@
                         <com.google.android.material.tabs.TabLayout
                             android:id = "@+id/post_tabs_menu"
                             android:layout_width = "match_parent"
-                            android:layout_height = "wrap_content"
+                            android:layout_height = "@dimen/extra_large"
                             android:layout_gravity = "bottom"
+                            android:background = "@color/defaultBackground"
+                            app:tabIndicatorColor = "@color/colorPrimary"
+                            app:tabTextColor = "@android:color/primary_text_light"
 
                             />
-
 
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -58,12 +59,17 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
+
         <androidx.viewpager2.widget.ViewPager2
             android:id = "@+id/post_view_pager"
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
-            android:padding="@dimen/normal"
-            app:layout_behavior = "@string/appbar_scrolling_view_behavior" />
+            android:padding = "@dimen/normal"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+
+            />
+
+
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import org.json.JSONObject;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.WordpressError;
+import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 
@@ -15,6 +16,11 @@ public class Parser
 
         private static Gson gson = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON).create();
 
+        /**
+         * 解析文章列表
+         * @param response
+         * @return
+         */
         public static Posts posts(String response)
         {
 
@@ -22,6 +28,21 @@ public class Parser
                 return posts;
 
         }
+
+        /**
+         * 解析评论列表
+         * @param response
+         * @return
+         */
+        public static Comments comments(String response)
+        {
+
+                Comments comments = gson.fromJson(response, Comments.class);
+                return comments;
+
+        }
+
+
 
 
         public static WordpressError wordpressError(String response) throws JsonParseException

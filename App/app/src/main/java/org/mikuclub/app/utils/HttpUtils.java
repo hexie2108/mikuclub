@@ -50,9 +50,11 @@ public class HttpUtils
 
                 if(htmlImageMaxWidth==0){
                         //要扣除左右两边的填充边距
-                        int paddingDistance = (int) GeneralUtils.convertDpToPixel( context.getResources().getDimension(R.dimen.normal) , context);
+                        //int paddingDistance = (int) GeneralUtils.convertDpToPixel( context.getResources().getDimension(R.dimen.normal) , context);
                         //扣除屏幕的 px宽度
-                        htmlImageMaxWidth = ScreenUtils.getScreenWidth(context) - paddingDistance;
+                        //htmlImageMaxWidth = ScreenUtils.getScreenWidth(context) - paddingDistance;
+
+                        htmlImageMaxWidth = ScreenUtils.getScreenWidth(context);
                 }
 
                 HtmlText.from(htmlString).setImageLoader(new HtmlImageLoader()
@@ -82,13 +84,14 @@ public class HttpUtils
                         @Override
                         public Drawable getDefaultDrawable()
                         {
-                                return ContextCompat.getDrawable(context, R.drawable.loop_grey_16x9);
+                                //return ContextCompat.getDrawable(context, R.drawable.loop_grey_16x9);
+                                return null;
                         }
 
                         @Override
                         public Drawable getErrorDrawable()
                         {
-                                return ContextCompat.getDrawable(context, R.drawable.baseline_error_grey_16x9);
+                                return ContextCompat.getDrawable(context, R.drawable.baseline_error_black);
                         }
 
                         @Override

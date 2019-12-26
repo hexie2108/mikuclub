@@ -1,6 +1,7 @@
 package org.mikuclub.app.adapters;
 
 import org.mikuclub.app.ui.fragments.CardFragment;
+import org.mikuclub.app.ui.fragments.PostCommentsFragment;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
+/**
+ * viewpager 碎片适配器
+ */
 public class PostFragmentViewPagerAdapter extends FragmentStateAdapter
 {
         private static final int FRAGMENT_NUMBER = 2;
@@ -25,15 +29,22 @@ public class PostFragmentViewPagerAdapter extends FragmentStateAdapter
         public Fragment createFragment(int position)
         {
 
+                Fragment fragment = null;
+                //根据位置 生成对应的 碎片
+                switch (position)
+                {
+                        case 0:
+                                fragment = new PostMainFragment();
+                                break;
+                        case 1:
+                                fragment = new PostCommentsFragment();
+                                break;
 
-                if (position == 0)
-                {
-                        return new PostMainFragment();
                 }
-                else
-                {
-                        return CardFragment.newInstance(position);
-                }
+
+                return fragment;
+
+
         }
 
         @Override

@@ -128,12 +128,12 @@ public class WrapperCallBack
                         JSONObject jsonObject = new JSONObject(response);
                         //获取内容状态码
                         int statusCode = jsonObject.getInt("status");
-                        //如果内容的状态码在200~300之间,  说明内容正常
-                        if (statusCode >= 200 && statusCode <= 300)
+                        //如果请求内的状态码在200~300之间,   而且 内容主体不是空的, 说明请求结果正常
+                        if (statusCode >= 200 && statusCode <= 300 && jsonObject.getJSONArray("body").length() >0 )
                         {
                                 onSuccess(response);
                         }
-                        //内容状态码异常, 说明有错误
+                        //状态码异常,  或者 主体为空, 说明有异常错误
                         else
                         {
                                 onError();

@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.HomeListAdapter;
-import org.mikuclub.app.adapters.listener.PostListOnScrollListener;
+import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.callBack.WrapperCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
@@ -21,7 +21,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,11 +30,11 @@ import mikuclub.app.R;
 public class HomeMainFragment extends Fragment
 {
 
-        private PostDelegate postDelegate;
+        private PostsDelegate delegate;
 
         //文章列表
         private RecyclerView recyclerView;
-        private HomeListAdapter homeListAdapter;
+        private HomeListAdapter recyclerViewAdapter;
         private List<Post> recyclerDataList;
 
         //下拉刷新布局
@@ -48,7 +47,7 @@ public class HomeMainFragment extends Fragment
         //是否要加载新数据 默认是
         private boolean wantMore = true;
 
-        private int start = 0;
+        private int offset = 0;
 
 
         @Override
@@ -63,19 +62,16 @@ public class HomeMainFragment extends Fragment
         }
 
 
-
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                //创建数据请求 代理人
-                postDelegate = new PostDelegate(HomeActivity.TAG);
-
                 recyclerView = view.findViewById(R.id.recycler_view);
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
 
-
+                //创建数据请求 代理人
+                delegate = new PostsDelegate(HomeActivity.TAG);
                 //从intent里读取上个活动传送来的数据
                 stickyPosts = (Posts) getActivity().getIntent().getSerializableExtra("sticky_post_list");
                 stickyPostList = stickyPosts.getBody();
@@ -86,15 +82,7 @@ public class HomeMainFragment extends Fragment
                 initRecyclerView(postList);
 
                 //配置下拉刷新
-                swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
-                swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-                {
-                        @Override
-                        public void onRefresh()
-                        {
-                                refreshPosts();
-                        }
-                });
+                initSwipeRefresh();
         }
 
         @Override
@@ -114,8 +102,8 @@ public class HomeMainFragment extends Fragment
         private void initRecyclerView(Posts postList)
         {
                 //创建适配器
-                homeListAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getContext());
-                recyclerView.setAdapter(homeListAdapter);
+                recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getContext());
+                recyclerView.setAdapter(recyclerViewAdapter);
 
                 //设置网格布局
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -125,9 +113,9 @@ public class HomeMainFragment extends Fragment
                 recyclerView.setLayoutManager(gridLayoutManager);
                 //recyclerView.setHasFixedSize(true);
                 //缓存item的数量
-                recyclerView.setItemViewCacheSize(GlobalConfig.NUMBER_FOR_PAGE*2);
+                recyclerView.setItemViewCacheSize(GlobalConfig.NUMBER_PER_PAGE * 2);
                 //绑定滑动事件
-                recyclerView.addOnScrollListener(new PostListOnScrollListener(homeListAdapter, gridLayoutManager)
+                recyclerView.addOnScrollListener(new MyListOnScrollListener(recyclerViewAdapter, gridLayoutManager)
                 {
                         //只有满足位置条件才会触发方法
                         @Override
@@ -135,6 +123,25 @@ public class HomeMainFragment extends Fragment
                         {
                                 //加载更多
                                 getMore();
+                        }
+                });
+
+        }
+
+        /**
+         * 配置上拉刷新动作
+         */
+        private void initSwipeRefresh()
+        {
+                //设置进度条颜色
+                swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+                //绑定动作
+                swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+                {
+                        @Override
+                        public void onRefresh()
+                        {
+                                refreshPosts();
                         }
                 });
 
@@ -163,7 +170,7 @@ public class HomeMainFragment extends Fragment
                                         //插入新数据
                                         recyclerDataList.addAll(newPostList.getBody());
                                         //通知增加了对应位置的数据
-                                        homeListAdapter.notifyItemRangeInserted(recyclerDataList.size(), GlobalConfig.NUMBER_FOR_PAGE);
+                                        recyclerViewAdapter.notifyItemRangeInserted(recyclerDataList.size(), GlobalConfig.NUMBER_PER_PAGE);
 
                                         //重新开启信号标
                                         wantMore = true;
@@ -174,9 +181,9 @@ public class HomeMainFragment extends Fragment
                                 @Override
                                 public void onError()
                                 {
-                                        homeListAdapter.setNotMoreError(true);
+                                        recyclerViewAdapter.setNotMoreError(true);
                                         //通知更新尾部
-                                        homeListAdapter.notifyItemChanged(recyclerDataList.size());
+                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
                                 }
 
                                 //网络失败
@@ -185,7 +192,7 @@ public class HomeMainFragment extends Fragment
                                 {
 
                                         //显示错误信息, 绑定点击事件允许用户手动重试
-                                        homeListAdapter.setInternetError(true, new View.OnClickListener()
+                                        recyclerViewAdapter.setInternetError(true, new View.OnClickListener()
                                         {
                                                 @Override
                                                 public void onClick(View v)
@@ -193,12 +200,12 @@ public class HomeMainFragment extends Fragment
                                                         //重置请求状态
                                                         wantMore = true;
                                                         //重置错误显示
-                                                        homeListAdapter.setInternetError(false, null);
+                                                        recyclerViewAdapter.setInternetError(false, null);
                                                         getMore();
                                                 }
                                         });
                                         //通知更新尾部
-                                        homeListAdapter.notifyItemChanged(recyclerDataList.size());
+                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
 
                                 }
 
@@ -211,9 +218,9 @@ public class HomeMainFragment extends Fragment
                                 }
                         };
 
-                        int start = recyclerDataList.size();
-                        LogUtils.e(start + "");
-                        postDelegate.getRecentlyPostList(start, wrapperCallBack);
+                        int offset = recyclerDataList.size();
+                        //LogUtils.e(start + "");
+                        delegate.getRecentlyPostsList(offset, wrapperCallBack);
                 }
         }
 
@@ -233,7 +240,7 @@ public class HomeMainFragment extends Fragment
                                 Posts postList = Parser.posts(response);
                                 recyclerDataList.clear();
                                 recyclerDataList.addAll(postList.getBody());
-                                homeListAdapter.notifyDataSetChanged();
+                                recyclerViewAdapter.notifyDataSetChanged();
 
                         }
 
@@ -257,7 +264,7 @@ public class HomeMainFragment extends Fragment
                                 LogUtils.e("我被取消了");
                         }
                 };
-                postDelegate.getRecentlyPostList(0, wrapperCallBack);
+                delegate.getRecentlyPostsList(0, wrapperCallBack);
         }
 
 

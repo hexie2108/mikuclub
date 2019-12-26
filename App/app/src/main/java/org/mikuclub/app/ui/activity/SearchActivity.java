@@ -41,6 +41,9 @@ public class SearchActivity extends AppCompatActivity
 
                 //替换原版标题栏
                 Toolbar toolbar = findViewById(R.id.search_toolbar);
+                searchInput =findViewById(R.id.search_input);
+                searchInputIcon = findViewById(R.id.search_input_icon);
+
                 setSupportActionBar(toolbar);
                 ActionBar actionBar = getSupportActionBar();
                 if(actionBar != null){
@@ -49,8 +52,7 @@ public class SearchActivity extends AppCompatActivity
 
                 }
 
-                searchInput =findViewById(R.id.search_input);
-                searchInputIcon = findViewById(R.id.search_input_icon);
+
 
 
         }

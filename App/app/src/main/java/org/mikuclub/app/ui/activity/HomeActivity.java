@@ -48,13 +48,14 @@ public class HomeActivity extends AppCompatActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home);
 
-                //替换原版标题栏
-                Toolbar toolbar = findViewById(R.id.home_toolbar);
-                setSupportActionBar(toolbar);
 
+                Toolbar toolbar = findViewById(R.id.home_toolbar);
                 bottomNavigationView =findViewById(R.id.home_bottom_bar);
                 drawer= findViewById(R.id.home_drawer_layout);
                 searchInput = findViewById(R.id.search_input);
+
+                //替换原版标题栏
+                setSupportActionBar(toolbar);
 
                 //绑定点击监听器到搜索栏
                 searchInput.setOnClickListener(new View.OnClickListener()

@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.WrapperCallBack;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.Parser;
@@ -43,7 +43,7 @@ public class WelcomeActivity extends AppCompatActivity
         private TextView welecomeInfoText;
         private ProgressBar welecomeProgressBar;
 
-        private PostDelegate postDelegate;
+        private PostsDelegate postDelegate;
 
         //存储通过网络获取的文章数据, 需要传递给主页
         private Posts stickyPostList = null;
@@ -64,7 +64,7 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeInfoText = findViewById(R.id.welcome_info_text);
                 welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
 
-                postDelegate = new PostDelegate(TAG);
+                postDelegate = new PostsDelegate(TAG);
 
                 //检测权限
                 permissionCheck();
@@ -108,7 +108,7 @@ public class WelcomeActivity extends AppCompatActivity
         {
 
                 //获取置顶文章
-                postDelegate.getStickyPostList(new WrapperCallBack()
+                postDelegate.getStickyPostsList(new WrapperCallBack()
                 {
                         //请求成功
                         @Override
@@ -140,7 +140,7 @@ public class WelcomeActivity extends AppCompatActivity
                 });
 
                 //获取最新文章
-                postDelegate.getRecentlyPostList(0, new WrapperCallBack()
+                postDelegate.getRecentlyPostsList(0, new WrapperCallBack()
                 {
                         @Override
                         public void onSuccess(String response)

@@ -28,7 +28,9 @@
 
                 <TextView
                     android:id = "@+id/item_text"
-                    android:layout_width = "match_parent"
+                    android:layout_width = "0dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_height = "@dimen/super_large"
                     android:layout_margin="@dimen/small"
                     android:textSize = "@dimen/text_default"

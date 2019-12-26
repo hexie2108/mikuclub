@@ -145,6 +145,7 @@ public class PostActivity extends AppCompatActivity
                                         @Override
                                         public void onClick(View v)
                                         {
+
                                                 //找到当前图片地址的列表位置
                                                int position = imagesSrc.indexOf(itemSrc);
                                                 //新建列表
@@ -236,4 +237,8 @@ public class PostActivity extends AppCompatActivity
         }
 
 
+        public Post getPost()
+        {
+                return post;
+        }
 }

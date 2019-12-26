@@ -5,8 +5,10 @@
     android:id = "@+id/post_author_info_box"
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
-    android:layout_marginTop = "@dimen/small"
+    android:layout_marginTop = "@dimen/normal"
     app:layout_constraintTop_toBottomOf = "@id/post_info_box">
+
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/post_author_img_box"
@@ -37,5 +39,8 @@
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_author_img_box"
             app:layout_constraintTop_toTopOf = "parent" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

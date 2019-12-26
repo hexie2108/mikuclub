@@ -1,9 +1,9 @@
 package org.mikuclub.app.configs;
 
-public class PostConstants
+public class Constants
 {
 
-
+        //API请求信息的参数
 
         public class OrderBy{
                 public static final String DATE = "date";
