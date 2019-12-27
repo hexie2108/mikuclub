@@ -3,6 +3,8 @@ package org.mikuclub.app.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.mikuclub.app.configs.GlobalConfig;
 
@@ -26,8 +28,18 @@ public class GeneralUtils
                 return px;
         }
 
-
-
+        /**
+         * 设置布局的高度占比
+         * @param context
+         * @param view
+         * @param percentage 屏幕高度百分比
+         */
+        public static void setMaxHeightOfLayout(Context context, View view, float percentage){
+                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                int height = (int) (context.getResources().getDisplayMetrics().heightPixels * percentage);//屏幕高的60%
+                layoutParams.height = height;
+                view.setLayoutParams(layoutParams);
+        }
 
 
         /**

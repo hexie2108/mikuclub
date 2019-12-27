@@ -102,11 +102,11 @@ public class HomeMainFragment extends Fragment
         private void initRecyclerView(Posts postList)
         {
                 //创建适配器
-                recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getContext());
+                recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getActivity());
                 recyclerView.setAdapter(recyclerViewAdapter);
 
                 //设置网格布局
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                 //让最后一个组件(进度条组件) 占据2个列
                 gridLayoutManager.setSpanSizeLookup(new CustomGridLayoutSpanSizeLookup(recyclerDataList, 2, true));
                 //加载布局

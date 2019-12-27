@@ -19,7 +19,6 @@
             android:visibility = "invisible"
             android:scrollbars="vertical"
         />
-        <!--  不设置 marginTop 就会报错, 原因未知-->
 
 </LinearLayout>
 

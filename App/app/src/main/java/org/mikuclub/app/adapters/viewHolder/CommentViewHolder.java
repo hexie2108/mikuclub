@@ -22,6 +22,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder
         private TextView itemName;
         private TextView itemDate;
         private TextView itemContent;
+        private TextView itemCountReplies;
 
         public CommentViewHolder(@NonNull View itemView)
         {
@@ -32,7 +33,18 @@ public class CommentViewHolder extends RecyclerView.ViewHolder
                 itemName = itemView.findViewById(R.id.item_name);
                 itemDate = itemView.findViewById(R.id.item_date);
                 itemContent = itemView.findViewById(R.id.item_content);
+                itemCountReplies = itemView.findViewById(R.id.item_count_replies);
 
+        }
+
+        public TextView getItemCountReplies()
+        {
+                return itemCountReplies;
+        }
+
+        public void setItemCountReplies(TextView itemCountReplies)
+        {
+                this.itemCountReplies = itemCountReplies;
         }
 
         public ConstraintLayout getItem()

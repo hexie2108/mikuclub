@@ -16,7 +16,7 @@
             android:roundIcon = "@mipmap/ic_launcher_round"
             android:supportsRtl = "true"
             android:theme = "@style/AppTheme">
-                <activity android:name = "org.mikuclub.app.ui.activity.ImageActivity"></activity>
+                <activity android:name = "org.mikuclub.app.ui.activity.ImageActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.WelcomeActivity">
                         <intent-filter>
                                 <action android:name = "android.intent.action.MAIN" />
@@ -24,9 +24,9 @@
                                 <category android:name = "android.intent.category.LAUNCHER" />
                         </intent-filter>
                 </activity>
-                <activity android:name = "org.mikuclub.app.ui.activity.HomeActivity"></activity>
-                <activity android:name = "org.mikuclub.app.ui.activity.SearchActivity"></activity>
-                <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" ></activity>
+                <activity android:name = "org.mikuclub.app.ui.activity.HomeActivity" />
+                <activity android:name = "org.mikuclub.app.ui.activity.SearchActivity" />
+                <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
         </application>
 
 </manifest>

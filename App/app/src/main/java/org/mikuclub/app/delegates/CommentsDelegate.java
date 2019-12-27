@@ -28,10 +28,11 @@ public class CommentsDelegate
         /**
          * 获和某文章id 相关的评论列表
          * @param  postId 文章id
+         * @param commentParentId 评论ID, 默认为0, 获取所有评论, 其他情况 为获取特定评论收到的回复
          * @param offset 开始位置
          * @param wrapperCallBack
          */
-        public void getCommentsListByPostId(int postId, int offset, WrapperCallBack wrapperCallBack)
+        public void getCommentsListByPostId(int postId, int commentParentId,  int offset, WrapperCallBack wrapperCallBack)
         {
 
                 int page = GeneralUtils.getNextPageNumber(offset, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS);
@@ -41,10 +42,13 @@ public class CommentsDelegate
                 parameters.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS);
                 parameters.setOrderby(Constants.OrderBy.DATE);
                 parameters.setPost(postId);
+                //去除评论收到的回复
+                parameters.setParent(commentParentId);
 
                 commentModel.selectForList(parameters.toMap(), tag, wrapperCallBack);
 
         }
+
 
 
 

@@ -31,7 +31,7 @@
                                     android:id = "@+id/search_input"
                                     android:layout_width = "0dp"
                                     android:layout_height = "0dp"
-                                    android:layout_marginRight = "@dimen/normal"
+                                    android:layout_marginEnd = "@dimen/normal"
                                     android:background = "@null"
                                     android:hint = "要搜索点什么吗..."
                                     android:imeOptions = "actionSearch"
@@ -48,7 +48,7 @@
                                     android:id = "@+id/search_input_icon"
                                     android:layout_width = "wrap_content"
                                     android:layout_height = "wrap_content"
-                                    android:layout_marginRight = "@dimen/normal"
+                                    android:layout_marginEnd = "@dimen/normal"
                                     android:visibility="invisible"
                                     android:src = "@drawable/search"
 

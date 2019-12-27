@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.http.Request;
 
@@ -33,13 +35,13 @@ public class HomeActivity extends AppCompatActivity
 {
         public static final int TAG = 2;
 
+        private AppBarConfiguration mAppBarConfiguration;
+
 
         private BottomNavigationView bottomNavigationView;
         private DrawerLayout drawer;
-        private AppBarConfiguration mAppBarConfiguration;
-
-        //搜索栏
         private TextView searchInput;
+
 
 
         @Override
@@ -50,13 +52,25 @@ public class HomeActivity extends AppCompatActivity
 
 
                 Toolbar toolbar = findViewById(R.id.home_toolbar);
-                bottomNavigationView =findViewById(R.id.home_bottom_bar);
-                drawer= findViewById(R.id.home_drawer_layout);
+                bottomNavigationView = findViewById(R.id.home_bottom_bar);
+                drawer = findViewById(R.id.home_drawer_layout);
                 searchInput = findViewById(R.id.search_input);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
 
+
+                initTopSearchBar();
+                initBottomMenu();
+
+
+        }
+
+        /**
+         * 初始化 顶部搜索栏
+         */
+        private void initTopSearchBar()
+        {
                 //绑定点击监听器到搜索栏
                 searchInput.setOnClickListener(new View.OnClickListener()
                 {
@@ -67,16 +81,10 @@ public class HomeActivity extends AppCompatActivity
                                 SearchActivity.startAction(HomeActivity.this);
                         }
                 });
-
-
-                initBottomMenu();
-
-
-
         }
 
         /**
-         * 配置底部导航栏
+         * 初始化底部导航栏
          */
         private void initBottomMenu()
         {
@@ -93,7 +101,6 @@ public class HomeActivity extends AppCompatActivity
         }
 
 
-
         @Override
         protected void onStop()
         {
@@ -104,11 +111,11 @@ public class HomeActivity extends AppCompatActivity
                 super.onStop();
 
 
-
         }
 
         /**
          * 加载自定义菜单
+         *
          * @param menu
          * @return
          */
@@ -121,6 +128,7 @@ public class HomeActivity extends AppCompatActivity
 
         /**
          * 修正返回键动作
+         *
          * @return
          */
         @Override
@@ -133,11 +141,13 @@ public class HomeActivity extends AppCompatActivity
 
         /**
          * 静态 启动本活动的方法
+         *
          * @param context
          * @param stickyPostList
          * @param postList
          */
-        public static void startAction(Context context, Posts stickyPostList, Posts postList){
+        public static void startAction(Context context, Posts stickyPostList, Posts postList)
+        {
 
                 Intent intent = new Intent(context, HomeActivity.class);
                 intent.putExtra("sticky_post_list", stickyPostList);

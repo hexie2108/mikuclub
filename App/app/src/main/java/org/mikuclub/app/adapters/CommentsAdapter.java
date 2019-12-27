@@ -6,22 +6,19 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.javaBeans.resources.Comment;
-import org.mikuclub.app.ui.activity.ImageActivity;
+import org.mikuclub.app.ui.fragments.FloatCommentRepliesFragment;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
@@ -34,9 +31,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private final static int TYPE_FOOTER = 1;
 
         //数据列表
-        private List<Comment> list;
+        protected List<Comment> list;
         //上下文
-        private Context mConxt;
+        protected Context mConxt;
         //布局创建器
         private LayoutInflater mInflater;
 
@@ -56,7 +53,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          * @param list
          * @param context
          */
-        public CommentsAdapter(List<Comment> list, Context context )
+        public CommentsAdapter(List<Comment> list, Context context)
         {
                 this.list = list;
                 this.mConxt = context;
@@ -88,15 +85,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 {
                         View view = mInflater.inflate(R.layout.list_item_comments, parent, false);
                         holder = new CommentViewHolder(view);
-                        ((CommentViewHolder) holder).getItem().setOnClickListener(new
-                                                                                           View.OnClickListener()
-                                                                                           {
-                                                                                                   @Override
-                                                                                                   public void onClick(View v)
-                                                                                                   {
+                        setItemOnClickListener((CommentViewHolder) holder);
 
-                                                                                                   }
-                                                                                           });
                 }
                 //如果是footer
                 else
@@ -117,7 +107,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         bindCommentViewHolder(holder, position);
 
                 }
-                else if(holder instanceof  FooterViewHolder){
+                else if (holder instanceof FooterViewHolder)
+                {
                         AdapterUtils.bindFooterViewHolder(holder, notMoreError, internetError, internetErrorListener);
                 }
 
@@ -132,34 +123,43 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
 
-        private void bindCommentViewHolder(RecyclerView.ViewHolder holder, int position)
+        protected void bindCommentViewHolder(RecyclerView.ViewHolder viewHolder, int position)
         {
-                CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
+                CommentViewHolder holder = (CommentViewHolder) viewHolder;
                 //先从列表获取对应位置的数据
-                Comment comment = list.get(position);
+                final Comment comment = list.get(position);
 
                 //为视图设置数据
-                commentViewHolder.getItemName().setText(comment.getAuthor_name());
+                holder.getItemName().setText(comment.getAuthor_name());
                 //生成时间格式
                 String dateString = new SimpleDateFormat("yy-MM-dd HH:mm").format(comment.getDate());
-                commentViewHolder.getItemDate().setText(dateString);
-
-
+                holder.getItemDate().setText(dateString);
                 //确保给地址添加上https协议
                 String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(comment.getAuthor_avatar_urls().getSize96());
                 //加载远程图片
-                GlideImageUtils.get(mConxt, commentViewHolder.getItemAvatarImg(), avatarSrc);
+                GlideImageUtils.getSquareImg(mConxt, holder.getItemAvatarImg(), avatarSrc);
 
+                //如果评论有被回复过
+                if (comment.getMetadata().getCount_replies() > 0)
+                {
+                        //显示回复数量
+                        holder.getItemCountReplies().setText(comment.getMetadata().getCount_replies() + " 条回复");
+                        holder.getItemCountReplies().setVisibility(View.VISIBLE);
+                }
+
+                //获取评论内容
                 String htmlContent = comment.getContent().getRendered();
-                //解析 html描述
-                HttpUtils.parseHtml(mConxt, htmlContent, commentViewHolder.getItemContent(), new OnTagClickListener()
+                //移除内容外层P标签
+                htmlContent = HttpUtils.removeHtmlMainTag(htmlContent, "<p>", "</p>");
+                //解析 内容html
+                HttpUtils.parseHtml(mConxt, htmlContent, holder.getItemContent(), new OnTagClickListener()
                 {
                         //设置 点击图片tag的动作
                         @Override
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
-
                         }
+
                         //设置点击链接tag的动作
                         @Override
                         public void onLinkClick(Context context, String url)
@@ -172,8 +172,28 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 mConxt.startActivity(intent);
                         }
                 });
+
+
+
         }
 
+        /**
+         * 绑定评论框点击事件
+         */
+        protected void setItemOnClickListener(final CommentViewHolder holder){
+                //绑定评论框点击动作
+                holder.getItem().setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+
+                                FloatCommentRepliesFragment fragment = FloatCommentRepliesFragment.startAction(list.get(holder.getAdapterPosition()));
+                                fragment.show(((AppCompatActivity)mConxt).getSupportFragmentManager(), "abc");
+
+                        }
+                });
+        }
 
 
         /**
@@ -190,7 +210,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          * 设置 网络错误 和 重试点击监听器
          *
          * @param internetError
-         * @param  internetErrorListener
+         * @param internetErrorListener
          */
         public void setInternetError(boolean internetError, View.OnClickListener internetErrorListener)
         {

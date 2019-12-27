@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 
@@ -53,6 +54,7 @@ public class PostActivity extends AppCompatActivity
         //标题栏幻灯片
         private BannerViewPager sliderViewPager;
         private TextIndicator textIndicator;
+        private FloatingActionButton postDownloadButton;
 
         private List<String> imagesSrc;
 
@@ -75,6 +77,7 @@ public class PostActivity extends AppCompatActivity
                 textIndicator = findViewById(R.id.post_slider_indicator);
                 postViewPager = findViewById(R.id.post_view_pager);
                 postTabsMenuLayout = findViewById(R.id.post_tabs_menu);
+                postDownloadButton = findViewById(R.id.post_download_button);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -96,6 +99,12 @@ public class PostActivity extends AppCompatActivity
 
                 initFragment();
 
+
+                //检测 下载链接不存在 或者 为空
+                if(post.getMetadata().getDown() == null || post.getMetadata().getDown().get(0).trim() ==""){
+                        //隐藏下载按钮
+                        postDownloadButton.setVisibility(View.GONE);
+                }
 
 
         }
@@ -176,7 +185,6 @@ public class PostActivity extends AppCompatActivity
 
 
                 postViewPager.setAdapter(new PostFragmentViewPagerAdapter(this));
-
 
                 new TabLayoutMediator(postTabsMenuLayout, postViewPager,
                         new TabLayoutMediator.TabConfigurationStrategy() {

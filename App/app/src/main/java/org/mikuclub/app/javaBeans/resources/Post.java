@@ -31,7 +31,7 @@ public class Post implements Serializable
         private String comment_status;
         private String ping_status;
         private String format;
-        private MetadataForPost metadata;
+        private Metadata metadata;
         private Boolean sticky;
         private String template;
         private List<Integer> categories;
@@ -227,12 +227,12 @@ public class Post implements Serializable
                 this.format = format;
         }
 
-        public MetadataForPost getMetadata()
+        public Metadata getMetadata()
         {
                 return metadata;
         }
 
-        public void setMetadata(MetadataForPost metadata)
+        public void setMetadata(Metadata metadata)
         {
                 this.metadata = metadata;
         }
@@ -278,42 +278,11 @@ public class Post implements Serializable
         }
 
 
-        @Override
-        public String toString()
-        {
-                return "PostsDelegate{" +
-                        "date=" + date +
-                        ", date_gmt=" + date_gmt +
-                        ", guid=" + guid +
-                        ", id=" + id +
-                        ", link='" + link + '\'' +
-                        ", modified=" + modified +
-                        ", modified_gmt=" + modified_gmt +
-                        ", slug='" + slug + '\'' +
-                        ", status='" + status + '\'' +
-                        ", type='" + type + '\'' +
-                        ", password='" + password + '\'' +
-                        ", title=" + title +
-                        ", content=" + content +
-                        ", author=" + author +
-                        ", excerpt=" + excerpt +
-                        ", featured_media=" + featured_media +
-                        ", comment_status='" + comment_status + '\'' +
-                        ", ping_status='" + ping_status + '\'' +
-                        ", format='" + format + '\'' +
-                        ", metadata=" + metadata +
-                        ", sticky=" + sticky +
-                        ", template='" + template + '\'' +
-                        ", categories=" + categories +
-                        ", tags=" + tags +
-                        '}';
-        }
-
-
-        public class MetadataForPost implements Serializable
+        public class Metadata implements Serializable
         {
 
                 private List<Integer> views;
+                private List<String> down;
 
                 @SerializedName("contenuto")
                 private List<String> content;
@@ -327,6 +296,15 @@ public class Post implements Serializable
 
                 private List<PostAuthor> author;
 
+                public List<String> getDown()
+                {
+                        return down;
+                }
+
+                public void setDown(List<String> down)
+                {
+                        this.down = down;
+                }
 
                 public List<String> getContent()
                 {

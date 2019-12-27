@@ -24,7 +24,7 @@
             android:src = "@drawable/error_outline"
             android:visibility="gone"
 
-            android:layout_marginRight="@dimen/normal"
+            android:layout_marginEnd="@dimen/normal"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toStartOf = "@id/list_item_info_text"
             app:layout_constraintHorizontal_chainStyle = "packed"

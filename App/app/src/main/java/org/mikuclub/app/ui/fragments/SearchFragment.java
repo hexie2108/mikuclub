@@ -124,11 +124,11 @@ public class SearchFragment extends Fragment
                 //隐藏信息提示框(加载进度条)
                 manageInfoUtilView.setVisibility(false);
 
-                recyclerViewAdapter = new PostsAdapter(recyclerDataList, getContext());
+                recyclerViewAdapter = new PostsAdapter(recyclerDataList, getActivity());
                 recyclerView.setAdapter(recyclerViewAdapter);
 
                 //设置网格布局
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                 //让最后一个组件(进度条组件) 占据2个列
                 gridLayoutManager.setSpanSizeLookup(new CustomGridLayoutSpanSizeLookup(recyclerDataList, 2, false));
                 //加载布局

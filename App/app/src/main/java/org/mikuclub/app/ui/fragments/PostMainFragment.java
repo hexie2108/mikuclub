@@ -2,49 +2,29 @@ package org.mikuclub.app.ui.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.text.method.LinkMovementMethod;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-
-import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import de.hdodenhof.circleimageview.CircleImageView;
-import me.wcy.htmltext.HtmlImageLoader;
-import me.wcy.htmltext.HtmlText;
 import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
@@ -113,7 +93,7 @@ public class PostMainFragment extends Fragment
                 postDate.setText(dateString);
 
                 //获取文章元数据
-                Post.MetadataForPost metadata = post.getMetadata();
+                Post.Metadata metadata = post.getMetadata();
 
                 if(metadata.getViews() != null)
                 {
@@ -147,7 +127,7 @@ public class PostMainFragment extends Fragment
                 }
 
                 //解析 html描述
-                HttpUtils.parseHtml(getContext(), htmlDescription, postDescription, new OnTagClickListener()
+                HttpUtils.parseHtml(getActivity(), htmlDescription, postDescription, new OnTagClickListener()
                 {
                         //设置 点击图片tag的动作
                         @Override
@@ -162,7 +142,7 @@ public class PostMainFragment extends Fragment
                                 //以此达到重建新列表的目标
 
                                 //启动单独的图片查看页面
-                                ImageActivity.startAction(getContext(), newImagesSrc );
+                                ImageActivity.startAction(getActivity(), newImagesSrc );
 
 
                         }

@@ -7,4 +7,6 @@
         <color name = "colorAccent">#f78585</color>
 
         <color name = "defaultBackground">#fafafa</color>
+        <color name = "defaultTextColor">#808080</color>
+        <color name = "halfTransparente" >#CDFFFFFF</color>
 </resources>

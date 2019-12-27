@@ -37,6 +37,7 @@
                             android:layout_height = "?attr/actionBarSize"
                             android:layout_gravity = "top"
                             android:layout_marginTop = "@dimen/normal"
+                            android:layout_marginBottom = "@dimen/very_large"
                             app:layout_collapseMode = "pin"
                             app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
 
@@ -49,7 +50,8 @@
                             android:layout_gravity = "bottom"
                             android:background = "@color/defaultBackground"
                             app:tabIndicatorColor = "@color/colorPrimary"
-                            app:tabTextColor = "@android:color/primary_text_light"
+                            app:tabTextAppearance = "@style/TabLayoutTextStyle"
+                            app:tabTextColor = "@color/defaultTextColor"
 
                             />
 
@@ -57,7 +59,6 @@
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
 
         <androidx.viewpager2.widget.ViewPager2
@@ -70,14 +71,12 @@
             />
 
 
-
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id = "@+id/post_download_button"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_margin = "@dimen/large"
-            android:src = "@drawable/share"
+            android:src = "@drawable/cloud_download"
             android:tint = "@android:color/white"
             app:backgroundTint = "@color/colorPrimary"
             app:layout_anchor = "@id/post_app_bar"

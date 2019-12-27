@@ -19,6 +19,8 @@ public class GlobalConfig
         //JSON用的日期格式
         public static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
 
+        //浮动弹窗的高度屏幕占比%
+        public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS = 0.6f;
 
         //后台服务器地址
         public class Server{

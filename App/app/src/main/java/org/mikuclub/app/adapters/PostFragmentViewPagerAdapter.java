@@ -1,16 +1,12 @@
 package org.mikuclub.app.adapters;
 
-import org.mikuclub.app.ui.fragments.CardFragment;
 import org.mikuclub.app.ui.fragments.PostCommentsFragment;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
-import mikuclub.app.R;
 
 /**
  * viewpager 碎片适配器

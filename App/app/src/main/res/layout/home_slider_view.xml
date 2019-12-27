@@ -39,7 +39,7 @@
             app:trans_width="10dp"
             app:trans_height="5dp"
             app:trans_movecolor="@android:color/white"
-            android:layout_marginRight="@dimen/normal"
+            android:layout_marginEnd="@dimen/normal"
             android:layout_marginTop="@dimen/small"
 
 

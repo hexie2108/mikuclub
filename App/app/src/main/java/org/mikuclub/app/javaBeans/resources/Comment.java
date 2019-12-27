@@ -28,6 +28,25 @@ public class Comment  implements Serializable
         private String type;
         private Avatar_urls author_avatar_urls;
         private Object meta;
+        private Metadata metadata;
+
+
+        public class Metadata  implements  Serializable{
+                private int count_replies;
+
+                public int getCount_replies()
+                {
+                        return count_replies;
+                }
+
+                public void setCount_replies(int count_replies)
+                {
+                        this.count_replies = count_replies;
+                }
+        }
+
+
+
 
         public int getId()
         {
@@ -197,5 +216,15 @@ public class Comment  implements Serializable
         public void setMeta(Object meta)
         {
                 this.meta = meta;
+        }
+
+        public Metadata getMetadata()
+        {
+                return metadata;
+        }
+
+        public void setMetadata(Metadata metadata)
+        {
+                this.metadata = metadata;
         }
 }
