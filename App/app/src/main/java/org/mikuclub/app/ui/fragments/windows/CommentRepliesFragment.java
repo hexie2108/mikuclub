@@ -1,8 +1,7 @@
-package org.mikuclub.app.ui.fragments;
+package org.mikuclub.app.ui.fragments.windows;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.mikuclub.app.adapters.CommentRepliesAdapter;
@@ -33,7 +30,6 @@ import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +37,15 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
 /**
- * 文章页 评论页面碎片
+ * 文章页 评论回复窗口碎片
  */
-public class FloatCommentRepliesFragment extends BottomSheetDialogFragment
+public class CommentRepliesFragment extends BottomSheetDialogFragment
 {
 
         public static final int TAG = 5;
@@ -70,7 +65,7 @@ public class FloatCommentRepliesFragment extends BottomSheetDialogFragment
         //数据请求代理人
         private CommentsDelegate delegate;
 
-        //获取文章数据
+        //获取评论数据
         private Comment comment;
 
         //信号标 是否要加载新数据  在评论页 需要默认就开启
@@ -83,7 +78,7 @@ public class FloatCommentRepliesFragment extends BottomSheetDialogFragment
         {
 
                 // 为fragment加载主布局
-                View root = inflater.inflate(R.layout.fragment_float_comment_replies_windows, container, false);
+                View root = inflater.inflate(R.layout.fragment_comment_replies_windows, container, false);
                 return root;
         }
 
@@ -321,11 +316,11 @@ public class FloatCommentRepliesFragment extends BottomSheetDialogFragment
          * @param comment
          * @return
          */
-        public static FloatCommentRepliesFragment startAction(Comment comment)
+        public static CommentRepliesFragment startAction(Comment comment)
         {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("comment", comment);
-                FloatCommentRepliesFragment fragment = new FloatCommentRepliesFragment();
+                CommentRepliesFragment fragment = new CommentRepliesFragment();
                 fragment.setArguments(bundle);
                 return fragment;
         }

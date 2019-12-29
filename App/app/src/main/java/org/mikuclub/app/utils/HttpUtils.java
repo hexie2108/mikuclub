@@ -26,18 +26,23 @@ public class HttpUtils
         private static int htmlImageMaxWidth = 0;
 
         /**
-         * 检测地址是否包含 https协议名, 没有的话就加上
-         *
+         * 检测地址是否是没添加 http协议的链接, 没有的话就加上
          * @param url
          * @return
          */
         public static String checkAndAddHttpsProtocol(String url)
         {
-
-                String new_url = url;
-                if (url.charAt(0) == '/')
+                //去除左右空格
+                String new_url = url.trim();
+                char firstElement = url.charAt(0);
+                //如果只是没有添加http头部
+                if (firstElement == '/')
                 {
                         new_url = "https:" + url;
+                }
+                //如果是连 斜杠//都没有
+                else if(Character.isLetter(firstElement) && Character.toLowerCase(firstElement) != 'h'){
+                        new_url = "https://" + url;
                 }
                 return new_url;
         }

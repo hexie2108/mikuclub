@@ -1,12 +1,15 @@
 package org.mikuclub.app.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.configs.GlobalConfig;
+
+import java.util.List;
 
 /**
  * 通用数据处理函数集
@@ -58,6 +61,33 @@ public class GeneralUtils
                 }
                 return page;
 
+        }
+
+        /**
+         * 检测列表是否为空
+         * 如果不是空的, 而且是 string类型的列表, 继续检测里面的第一个元素是否为空字符串
+         * @param list
+         * @return 是否是空
+         */
+        public static  boolean listIsNullOrHasEmptyElement(List list){
+               boolean output = true;
+               //如果不是空
+                if( list != null && !list.isEmpty()){
+                        //获取第一个元素
+                        Object element = list.get(0);
+                        //如果是字符串
+                        if(element instanceof String){
+                                //检测是否是空字符串
+                                output = ((String) element).trim().isEmpty();
+                        }
+                        //不是字符串则返回 false
+                        else{
+                                output = false;
+                        }
+
+                }
+
+                return output;
         }
 
 

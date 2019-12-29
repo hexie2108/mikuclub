@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+
+    >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id = "@+id/down1_box"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/normal"
+            android:padding = "@dimen/normal"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent">
+
+
+                <TextView
+                    android:id = "@+id/down1_title"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:text = "下载点1"
+                    android:textSize = "@dimen/text_default"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "parent" />
+
+                <View
+                    android:layout_width = "0dp"
+                    android:layout_height = "0.5dp"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:background = "@color/defaultTextColor"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/down1_title" />
+
+                <TextView
+                    android:id = "@+id/down1_password_text"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:text = "访问密码"
+
+                    app:layout_constraintStart_toStartOf = "@id/down1_title"
+                    app:layout_constraintTop_toBottomOf = "@id/down1_title" />
+
+                <TextView
+                    android:id = "@+id/down1_password"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:selectAllOnFocus = "true"
+                    android:textColor = "@android:color/black"
+                    android:textIsSelectable = "true"
+
+                    app:layout_constraintStart_toEndOf = "@id/down1_password_text"
+                    app:layout_constraintTop_toTopOf = "@id/down1_password_text"
+                    tools:text = "abcd" />
+
+                <TextView
+                    android:id = "@+id/down1_unzip_password_text"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:text = "解压密码"
+                    app:layout_constraintStart_toEndOf = "@id/down1_password"
+                    app:layout_constraintTop_toBottomOf = "@id/down1_title"
+                    app:layout_goneMarginStart = "0dp" />
+
+                <TextView
+                    android:id = "@+id/down1_unzip_password"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:selectAllOnFocus = "true"
+                    android:textColor = "@android:color/black"
+                    android:textIsSelectable = "true"
+                    app:layout_constraintStart_toEndOf = "@id/down1_unzip_password_text"
+                    app:layout_constraintTop_toTopOf = "@id/down1_unzip_password_text"
+                    tools:text = "abcd" />
+
+                <com.google.android.material.button.MaterialButton
+
+                    android:id = "@+id/down1_button"
+                    style = "@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:backgroundTint = "@android:color/transparent"
+                    android:textColor = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/down1_password_text"
+                    app:layout_goneMarginTop = "@dimen/super_large"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp"
+
+                    tools:text = "下载" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id = "@+id/down2_box"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/normal"
+            android:padding = "@dimen/normal"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/down1_box"
+            app:layout_goneMarginTop = "@dimen/normal">
+
+                <TextView
+                    android:id = "@+id/down2_title"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:text = "下载点2"
+                    android:textSize = "@dimen/text_default"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "parent" />
+
+                <View
+                    android:layout_width = "0dp"
+                    android:layout_height = "0.5dp"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:background = "@color/defaultTextColor"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/down2_title" />
+
+                <TextView
+                    android:id = "@+id/down2_password_text"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:text = "访问密码"
+                    app:layout_constraintStart_toStartOf = "@id/down2_title"
+                    app:layout_constraintTop_toBottomOf = "@id/down2_title" />
+
+                <TextView
+                    android:id = "@+id/down2_password"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:selectAllOnFocus = "true"
+                    android:textColor = "@android:color/black"
+                    android:textIsSelectable = "true"
+                    app:layout_constraintStart_toEndOf = "@id/down2_password_text"
+                    app:layout_constraintTop_toTopOf = "@id/down2_password_text"
+                    tools:text = "abcd" />
+
+                <TextView
+                    android:id = "@+id/down2_unzip_password_text"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:text = "解压密码"
+                    app:layout_constraintStart_toEndOf = "@id/down2_password"
+                    app:layout_constraintTop_toBottomOf = "@id/down2_title"
+                    app:layout_goneMarginStart = "0dp" />
+
+                <TextView
+                    android:id = "@+id/down2_unzip_password"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:selectAllOnFocus = "true"
+                    android:textColor = "@android:color/black"
+                    android:textIsSelectable = "true"
+
+                    app:layout_constraintStart_toEndOf = "@id/down2_unzip_password_text"
+                    app:layout_constraintTop_toTopOf = "@id/down2_unzip_password_text"
+                    tools:text = "abcd" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id = "@+id/down2_button"
+                    style = "@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:backgroundTint = "@android:color/transparent"
+                    android:textColor = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/down2_password_text"
+                    app:layout_goneMarginTop = "@dimen/super_large"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp"
+                    tools:text = "下载" />
+
+                <!--上下边框线-->
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id = "@+id/down_info"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/very_large"
+            android:gravity = "center"
+            android:text = "点击下载后会自动复制提取码到剪切板"
+            android:textSize = "@dimen/text_default"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/down2_box"
+            app:layout_goneMarginTop = "@dimen/normal" />
+
+
+        <View
+            android:layout_width = "0dp"
+            android:layout_height = "0.5dp"
+            android:background = "@color/splitLineColor"
+            app:layout_constraintBottom_toTopOf = "@id/return_button"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent" />
+
+        <Button
+            android:id = "@+id/return_button"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:background = "@android:color/transparent"
+            android:text = "返回"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

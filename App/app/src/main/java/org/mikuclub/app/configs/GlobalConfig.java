@@ -22,6 +22,17 @@ public class GlobalConfig
         //浮动弹窗的高度屏幕占比%
         public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS = 0.6f;
 
+
+
+        //百度网盘地址判断
+        public static final String BAIDU_PAN_URL_VALIDATE_PATH = "pan.baidu.com/s/";
+        //百度网盘 传递URL的参数名称, 因为百度app策略, 分享id里的第一位数字1, 需要被手动去除, 否则无效
+        public static final String BAIDU_PAN_PARAMETER_NAME = "surl";
+        //百度网盘 url格式
+        public static final String BAIDU_PAN_URL = "bdnetdisk://n/action.SHARE_LINK";
+
+
+
         //后台服务器地址
         public class Server{
 

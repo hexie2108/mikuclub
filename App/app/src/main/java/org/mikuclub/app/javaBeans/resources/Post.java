@@ -283,8 +283,17 @@ public class Post implements Serializable
 
                 private List<Integer> views;
                 private List<String> down;
+                private List<String> down2;
+                private List<String> password;
+                private List<String> password2;
 
-                @SerializedName("contenuto")
+                private List<String> unzip_password;
+                private List<String> unzip_password2;
+
+                private List<String> video;
+                private List<String> source;
+                private List<String> source_name;
+
                 private List<String> content;
 
                 @SerializedName("_thumbnail_src")
@@ -292,7 +301,89 @@ public class Post implements Serializable
                 private List<String> images_src;
                 private List<Integer> count_comments;
                 private List<Integer> count_like;
-               // private List<PostTag> tags;
+                // private List<PostTag> tags;
+
+                public List<String> getVideo()
+                {
+                        return video;
+                }
+
+                public void setVideo(List<String> video)
+                {
+                        this.video = video;
+                }
+
+                public List<String> getSource()
+                {
+                        return source;
+                }
+
+                public void setSource(List<String> source)
+                {
+                        this.source = source;
+                }
+
+                public List<String> getSource_name()
+                {
+                        return source_name;
+                }
+
+                public void setSource_name(List<String> source_name)
+                {
+                        this.source_name = source_name;
+                }
+
+
+
+                public List<String> getPassword()
+                {
+                        return password;
+                }
+
+                public void setPassword(List<String> password)
+                {
+                        this.password = password;
+                }
+
+                public List<String> getPassword2()
+                {
+                        return password2;
+                }
+
+                public void setPassword2(List<String> password2)
+                {
+                        this.password2 = password2;
+                }
+
+                public List<String> getUnzip_password()
+                {
+                        return unzip_password;
+                }
+
+                public void setUnzip_password(List<String> unzip_password)
+                {
+                        this.unzip_password = unzip_password;
+                }
+
+                public List<String> getUnzip_password2()
+                {
+                        return unzip_password2;
+                }
+
+                public void setUnzip_password2(List<String> unzip_password2)
+                {
+                        this.unzip_password2 = unzip_password2;
+                }
+
+                public List<String> getDown2()
+                {
+                        return down2;
+                }
+
+                public void setDown2(List<String> down2)
+                {
+                        this.down2 = down2;
+                }
 
                 private List<PostAuthor> author;
 

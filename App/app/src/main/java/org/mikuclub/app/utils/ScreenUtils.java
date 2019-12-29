@@ -50,7 +50,7 @@ public class ScreenUtils
 
         public static void disableDraggingOfBottomSheetDialogFragment(Dialog dialog) {
                 BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialog;
-                bottomSheetDialog.setContentView(R.layout.empty);
+                bottomSheetDialog.setContentView(R.layout.windows_placeholder_layout);
 
                 try {
                         Field behaviorField = bottomSheetDialog.getClass().getDeclaredField("behavior");

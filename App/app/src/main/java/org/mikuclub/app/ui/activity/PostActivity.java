@@ -22,6 +22,8 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.PostFragmentViewPagerAdapter;
 import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -99,12 +101,7 @@ public class PostActivity extends AppCompatActivity
 
                 initFragment();
 
-
-                //检测 下载链接不存在 或者 为空
-                if(post.getMetadata().getDown() == null || post.getMetadata().getDown().get(0).trim() ==""){
-                        //隐藏下载按钮
-                        postDownloadButton.setVisibility(View.GONE);
-                }
+                initDownButton();
 
 
         }
@@ -156,7 +153,7 @@ public class PostActivity extends AppCompatActivity
                                         {
 
                                                 //找到当前图片地址的列表位置
-                                               int position = imagesSrc.indexOf(itemSrc);
+                                                int position = imagesSrc.indexOf(itemSrc);
                                                 //新建列表
                                                 ArrayList<String> newImagesSrc = new ArrayList<>();
                                                 //截取当前位置和后续位置的地址
@@ -166,7 +163,7 @@ public class PostActivity extends AppCompatActivity
                                                 //以此达到重建新列表的目标
 
                                                 //启动单独的图片查看页面
-                                                ImageActivity.startAction(PostActivity.this, newImagesSrc );
+                                                ImageActivity.startAction(PostActivity.this, newImagesSrc);
 
                                         }
                                 });
@@ -181,22 +178,59 @@ public class PostActivity extends AppCompatActivity
         /**
          * 初始化 文章主体fragment
          */
-        private void initFragment(){
+        private void initFragment()
+        {
 
 
                 postViewPager.setAdapter(new PostFragmentViewPagerAdapter(this));
 
                 new TabLayoutMediator(postTabsMenuLayout, postViewPager,
-                        new TabLayoutMediator.TabConfigurationStrategy() {
-                                @Override public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                                        if(position==0){
+                        new TabLayoutMediator.TabConfigurationStrategy()
+                        {
+                                @Override
+                                public void onConfigureTab(@NonNull TabLayout.Tab tab, int position)
+                                {
+                                        if (position == 0)
+                                        {
                                                 tab.setText("描述");
                                         }
-                                        else if(position == 1){
+                                        else if (position == 1)
+                                        {
                                                 tab.setText("评论");
                                         }
                                 }
                         }).attach();
+
+        }
+
+        /**
+         * 检测是否有下载地址, 有的话绑定动作, 没有的话隐藏
+         */
+        private void initDownButton()
+        {
+
+
+                //检测 是否没有下载链接
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()) || !GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown2()))
+                {
+                        //绑定点击监听器
+                    postDownloadButton.setOnClickListener(new View.OnClickListener()
+                    {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                    //启动下载
+                                    DownloadFragment fragment = DownloadFragment.startAction();
+                                    fragment.show(getSupportFragmentManager(), fragment.getClass().toString());
+                            }
+                    });
+
+                }
+                else{
+                        //没有任何一个下载链接
+                        //隐藏下载按钮
+                        postDownloadButton.setVisibility(View.GONE);
+                }
 
         }
 

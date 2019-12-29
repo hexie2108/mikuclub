@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.javaBeans.resources.Comment;
-import org.mikuclub.app.ui.fragments.FloatCommentRepliesFragment;
+import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -188,8 +188,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         public void onClick(View v)
                         {
 
-                                FloatCommentRepliesFragment fragment = FloatCommentRepliesFragment.startAction(list.get(holder.getAdapterPosition()));
-                                fragment.show(((AppCompatActivity)mConxt).getSupportFragmentManager(), "abc");
+                                CommentRepliesFragment fragment = CommentRepliesFragment.startAction(list.get(holder.getAdapterPosition()));
+                                fragment.show(((AppCompatActivity)mConxt).getSupportFragmentManager(), fragment.getClass().toString());
 
                         }
                 });

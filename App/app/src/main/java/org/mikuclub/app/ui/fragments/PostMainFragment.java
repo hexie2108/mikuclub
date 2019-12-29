@@ -15,6 +15,7 @@ import android.widget.TextView;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -43,6 +44,7 @@ public class PostMainFragment extends Fragment
         private TextView postCountLike;
         private ImageView postAuthorImg;
         private TextView postAuthorName;
+        private TextView postSource;
         private TextView postDescription;
 
         private Post post;
@@ -76,6 +78,7 @@ public class PostMainFragment extends Fragment
                 postCountLike= view.findViewById(R.id.post_count_like);
                 postAuthorImg = view.findViewById(R.id.post_author_img);
                 postAuthorName = view.findViewById(R.id.post_author_name);
+                postSource = view.findViewById(R.id.post_source);
                 postDescription= view.findViewById(R.id.post_description);
 
 
@@ -114,6 +117,22 @@ public class PostMainFragment extends Fragment
                 //获取头像
                 GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatarSrc);
 
+                //如果有来源地址
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource())){
+                        //设置来源地址
+                        postSource.setText(metadata.getSource().get(0));
+                }
+                //如果有来源说明
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource_name())){
+                        //再加上来源说明
+                        postSource.setText(postSource.getText().toString()+"\n"+metadata.getSource_name().get(0));
+                }
+                //如果没有任何来源说明
+                if (postSource.getText().toString().isEmpty()){
+                        //隐藏组件
+                        postSource.setVisibility(View.GONE);
+                }
+
                 //开启超链接支持
                 postDescription.setMovementMethod(LinkMovementMethod.getInstance());
                 String htmlDescription;
@@ -125,6 +144,8 @@ public class PostMainFragment extends Fragment
                 else{
                         htmlDescription = post.getContent().getRendered();
                 }
+
+
 
                 //解析 html描述
                 HttpUtils.parseHtml(getActivity(), htmlDescription, postDescription, new OnTagClickListener()

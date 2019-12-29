@@ -40,13 +40,14 @@
                             android:layout_marginBottom = "@dimen/very_large"
                             app:layout_collapseMode = "pin"
                             app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
-
                             />
 
                         <com.google.android.material.tabs.TabLayout
                             android:id = "@+id/post_tabs_menu"
                             android:layout_width = "match_parent"
-                            android:layout_height = "@dimen/extra_large"
+
+
+                            android:layout_height = "@dimen/ultra_large"
                             android:layout_gravity = "bottom"
                             android:background = "@color/defaultBackground"
                             app:tabIndicatorColor = "@color/colorPrimary"
@@ -75,9 +76,11 @@
             android:id = "@+id/post_download_button"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
-            android:layout_margin = "@dimen/large"
+            app:fabCustomSize="65dp"
+            android:layout_margin = "@dimen/normal"
+
             android:src = "@drawable/cloud_download"
-            android:tint = "@android:color/white"
+            app:tint = "@android:color/white"
             app:backgroundTint = "@color/colorPrimary"
             app:layout_anchor = "@id/post_app_bar"
             app:layout_anchorGravity = "bottom|end" />
