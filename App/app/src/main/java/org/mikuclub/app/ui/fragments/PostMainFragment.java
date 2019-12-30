@@ -9,9 +9,11 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
@@ -41,11 +43,19 @@ public class PostMainFragment extends Fragment
         private TextView postDate;
         private TextView postViews;
         private TextView postCountComments;
-        private TextView postCountLike;
         private ImageView postAuthorImg;
         private TextView postAuthorName;
         private TextView postSource;
         private TextView postDescription;
+        private TextView postCountLike;
+        private Button postCountLikeButton;
+
+        private TextView postCountShare;
+        private Button postCountShareButton;
+        private TextView postCountFailDown;
+        private Button postCountFailDownButton;
+        private TextView postBilibili;
+        private Button postBilibiliButton;
 
         private Post post;
 
@@ -75,12 +85,19 @@ public class PostMainFragment extends Fragment
                 postDate= view.findViewById(R.id.post_date);
                 postViews= view.findViewById(R.id.post_views);
                 postCountComments= view.findViewById(R.id.post_count_comments);
-                postCountLike= view.findViewById(R.id.post_count_like);
+
                 postAuthorImg = view.findViewById(R.id.post_author_img);
                 postAuthorName = view.findViewById(R.id.post_author_name);
                 postSource = view.findViewById(R.id.post_source);
                 postDescription= view.findViewById(R.id.post_description);
-
+                postCountLike= view.findViewById(R.id.post_count_like);
+                postCountLikeButton = view.findViewById(R.id.post_count_like_button);
+                postCountShare=view.findViewById(R.id.post_count_share);
+                postCountShareButton=view.findViewById(R.id.post_count_share_button);
+                postCountFailDown=view.findViewById(R.id.post_count_fail_down);
+                postCountFailDownButton=view.findViewById(R.id.post_count_fail_down_button);
+                postBilibili=view.findViewById(R.id.post_bilibili);
+                postBilibiliButton=view.findViewById(R.id.post_bilibili_button);
 
                 initPost();
         }
@@ -100,22 +117,58 @@ public class PostMainFragment extends Fragment
 
                 if(metadata.getViews() != null)
                 {
-                        postViews.setText(metadata.getViews().get(0).toString()+" 查看");
+                        postViews.setText(metadata.getViews().get(0).toString()+" 次查看");
                 }
                 if(metadata.getCount_comments() != null)
                 {
-                        postCountComments.setText(metadata.getCount_comments().get(0).toString()+" 评论");
-                }
-                if(metadata.getCount_like()!= null){
-                        postCountLike.setText(metadata.getCount_like().get(0).toString()+" 点赞");
+                        postCountComments.setText(metadata.getCount_comments().get(0).toString()+" 条评论");
                 }
 
+                //设置作者信息
                 postAuthorName.setText(metadata.getAuthor().get(0).getDisplay_name());
-
                 //确保给地址添加上https协议
                 String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(metadata.getAuthor().get(0).getAvatar_src());
                 //获取头像
                 GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatarSrc);
+
+                //设置工具栏信息
+                //不是空的 或者默认0
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like())){
+                        postCountLike.setText(metadata.getCount_like().get(0).toString() + " 次点赞");
+                }
+                //不是空的或默认0
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getFail_time())){
+                        if(metadata.getFail_time().get(0)>0){
+                                postCountFailDown.setText(metadata.getFail_time().get(0).toString() + " 次失效");
+                        }
+                }
+                //在线视频不是空的
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getVideo())){
+
+                        String videoSrc = metadata.getVideo().get(0);
+                        //确认是 b站地址
+                        if(videoSrc.indexOf("av") != -1 && videoSrc.indexOf("cid") != -1){
+                                //截取av号
+                                String av= videoSrc.split(",")[0];
+                                final String bilibiliAppSrc = GlobalConfig.BILIBILI_APP_WAKE_URL+av.substring(2);
+                                final String bilibiliWebSrc = GlobalConfig.BILIBILI_HOST+av;
+                                //监听按钮点击
+                                postBilibiliButton.setOnClickListener(new View.OnClickListener()
+                                {
+                                        @Override
+                                        public void onClick(View v)
+                                        {
+                                                //启动第三方应用
+                                                GeneralUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
+                                        }
+                                });
+
+                                //显示b站视频按钮
+                                postBilibiliButton.setVisibility(View.VISIBLE);
+                                postBilibili.setVisibility(View.VISIBLE);
+                        }
+                }
+
 
                 //如果有来源地址
                 if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource())){

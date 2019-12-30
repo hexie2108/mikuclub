@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private TextView itemDate;
         private TextView itemContent;
         private TextView itemCountReplies;
+        private Button returnButton;
 
         //数据请求代理人
         private CommentsDelegate delegate;
@@ -101,6 +103,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 itemDate = view.findViewById(R.id.item_date);
                 itemContent = view.findViewById(R.id.item_content);
                 itemCountReplies = view.findViewById(R.id.item_count_replies);
+                returnButton = view.findViewById(R.id.return_button);
 
                 //创建数据请求 代理人
                 delegate = new CommentsDelegate(((PostActivity) getActivity()).TAG);
@@ -112,6 +115,17 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 //初始化列表
                 initRecyclerView();
 
+                //绑定返回按钮
+                returnButton.setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                //关闭窗口
+                                CommentRepliesFragment.this.dismiss();
+                        }
+                });
+
                 //动态调整布局高度
                 final View myView = view;
                 myView.post(new Runnable()
@@ -122,6 +136,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                                 GeneralUtils.setMaxHeightOfLayout(getActivity(), myView, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS);
                         }
                 });
+
         }
 
 

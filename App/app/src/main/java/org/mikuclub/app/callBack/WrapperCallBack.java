@@ -19,6 +19,8 @@ import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.Parser;
 
+import java.io.UnsupportedEncodingException;
+
 import mikuclub.app.R;
 
 /*questo è un classe wrapper  per gestire operazione callback di richiesta HTTP
@@ -129,7 +131,7 @@ public class WrapperCallBack
                         //获取内容状态码
                         int statusCode = jsonObject.getInt("status");
                         //如果请求内的状态码在200~300之间,   而且 内容主体不是空的, 说明请求结果正常
-                        if (statusCode >= 200 && statusCode <= 300 && jsonObject.getJSONArray("body").length() >0 )
+                        if (statusCode >= 200 && statusCode <= 300 && jsonObject.getJSONArray("body").length() > 0)
                         {
                                 onSuccess(response);
                         }
@@ -181,7 +183,16 @@ public class WrapperCallBack
                 }
                 else if (error instanceof ServerError)
                 {
-                        errorMessage = "服务器内部错误";
+
+                        if (error.networkResponse.statusCode == 404)
+                        {
+                                errorMessage = "404请求的页面不存在";
+                        }
+                        else
+                        {
+
+                                errorMessage = "服务器内部错误";
+                        }
                 }
 
                 LogUtils.w(errorMessage + " : " + error.getMessage());

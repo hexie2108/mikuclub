@@ -3,12 +3,15 @@ package org.mikuclub.app.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -21,9 +24,11 @@ import com.zhengsr.viewpagerlib.indicator.TextIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.PostFragmentViewPagerAdapter;
+import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -34,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
@@ -47,6 +53,9 @@ public class PostActivity extends AppCompatActivity
         private Post post;
 
         private CollapsingToolbarLayout postCollapsingToolbarLayout;
+        private Toolbar toolbar;
+        private AppBarLayout appBarLayout;
+        private LinearLayout postTabsMenuBox;
 
         //分页管理器
         private ViewPager2 postViewPager;
@@ -72,8 +81,12 @@ public class PostActivity extends AppCompatActivity
 
                 setContentView(R.layout.activity_post);
 
-                Toolbar toolbar = findViewById(R.id.post_toolbar);
+                appBarLayout =findViewById(R.id.post_app_bar);
                 postCollapsingToolbarLayout = findViewById(R.id.post_collapsing_toolbar_layout);
+                toolbar = findViewById(R.id.post_toolbar);
+                postTabsMenuBox = findViewById(R.id.post_tabs_menu_box);
+
+
                 //获取幻灯片组件
                 sliderViewPager = findViewById(R.id.post_slider_viewpager);
                 textIndicator = findViewById(R.id.post_slider_indicator);
@@ -103,6 +116,28 @@ public class PostActivity extends AppCompatActivity
 
                 initDownButton();
 
+
+                //根据折叠状态更改标题栏图标颜色
+                appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                        @Override
+                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                                if ((postCollapsingToolbarLayout.getHeight() + verticalOffset) < (1.15 * ViewCompat.getMinimumHeight(postCollapsingToolbarLayout))) {
+                                        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.defaultTextColor), PorterDuff.Mode.SRC_ATOP);
+                                } else {
+                                        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+                                }
+                        }
+                });
+
+                //屏蔽点击事件, 防止穿透菜单栏点击到下层组件
+                postTabsMenuBox.setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                        }
+                });
 
         }
 
@@ -135,16 +170,22 @@ public class PostActivity extends AppCompatActivity
                         {
                                 //加载图片
                                 ImageView imageView = view.findViewById(R.id.item_image);
+
+                                String thumbnailSrc;
                                 //如果是第一张图
                                 if (itemSrc.equals(imagesSrc.get(0)))
                                 {
-                                        String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
-                                        GlideImageUtils.getWithThumbnail(PostActivity.this, imageView, itemSrc, thumbnailSrc);
+                                        //直接使用预设的缩微图
+                                        thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
                                 }
+                                //后续图片
                                 else
                                 {
-                                        GlideImageUtils.get(PostActivity.this, imageView, itemSrc);
+                                        //计算缩微图地址
+                                        thumbnailSrc = GeneralUtils.getThumbnailSrcByImageSrc(itemSrc);
                                 }
+                                //加载图片 (先加载缩微图 之后加载原图)
+                                GlideImageUtils.getWithThumbnail(PostActivity.this, imageView, itemSrc, thumbnailSrc);
 
                                 view.setOnClickListener(new View.OnClickListener()
                                 {

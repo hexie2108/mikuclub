@@ -19,9 +19,9 @@
                     android:id = "@+id/post_collapsing_toolbar_layout"
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
-                    app:collapsedTitleTextAppearance = "@style/CollapsedCollapsingToolBar"
+
                     app:contentScrim = "?attr/colorPrimary"
-                    app:expandedTitleTextAppearance = "@style/ExpandedCollapsingToolBar"
+
 
                     app:layout_scrollFlags = "scroll|exitUntilCollapsed"
 
@@ -33,28 +33,40 @@
 
                         <androidx.appcompat.widget.Toolbar
                             android:id = "@+id/post_toolbar"
-                            android:layout_width = "match_parent"
+                            android:layout_width = "wrap_content"
                             android:layout_height = "?attr/actionBarSize"
                             android:layout_gravity = "top"
-                            android:layout_marginTop = "@dimen/normal"
-                            android:layout_marginBottom = "@dimen/very_large"
+                            android:layout_marginTop="@dimen/normal"
+                            android:paddingTop="@dimen/normal"
                             app:layout_collapseMode = "pin"
                             app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
+                            android:elevation="5dp"
                             />
 
-                        <com.google.android.material.tabs.TabLayout
-                            android:id = "@+id/post_tabs_menu"
+                        <LinearLayout
+                            android:id="@+id/post_tabs_menu_box"
                             android:layout_width = "match_parent"
-
-
-                            android:layout_height = "@dimen/ultra_large"
+                            android:layout_height = "wrap_content"
                             android:layout_gravity = "bottom"
                             android:background = "@color/defaultBackground"
-                            app:tabIndicatorColor = "@color/colorPrimary"
-                            app:tabTextAppearance = "@style/TabLayoutTextStyle"
-                            app:tabTextColor = "@color/defaultTextColor"
+                        >
 
-                            />
+                                <com.google.android.material.tabs.TabLayout
+                                    android:id = "@+id/post_tabs_menu"
+                                    android:layout_width = "match_parent"
+                                    android:layout_marginEnd="@dimen/super_large"
+                                    android:layout_marginStart="@dimen/super_large"
+                                    android:layout_height = "@dimen/ultra_large"
+                                    android:background = "@color/defaultBackground"
+                                    app:tabIndicatorColor = "@color/colorPrimary"
+                                    app:tabTextAppearance = "@style/TabLayoutTextStyle"
+                                    app:tabTextColor = "@color/defaultTextColor"
+
+                                    />
+
+                        </LinearLayout>
+
+
 
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -76,7 +88,7 @@
             android:id = "@+id/post_download_button"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
-            app:fabCustomSize="65dp"
+
             android:layout_margin = "@dimen/normal"
 
             android:src = "@drawable/cloud_download"

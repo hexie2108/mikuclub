@@ -27,6 +27,7 @@ public class HttpUtils
 
         /**
          * 检测地址是否是没添加 http协议的链接, 没有的话就加上
+         *
          * @param url
          * @return
          */
@@ -41,7 +42,8 @@ public class HttpUtils
                         new_url = "https:" + url;
                 }
                 //如果是连 斜杠//都没有
-                else if(Character.isLetter(firstElement) && Character.toLowerCase(firstElement) != 'h'){
+                else if (Character.isLetter(firstElement) && Character.toLowerCase(firstElement) != 'h')
+                {
                         new_url = "https://" + url;
                 }
                 return new_url;
@@ -70,7 +72,7 @@ public class HttpUtils
                                 //截取字符串
                                 text = text.substring(tagStart.length(), endIndex);
                         }
-                     //   LogUtils.e(text + " " + text.length());
+                        //   LogUtils.e(text + " " + text.length());
 
 
                 }
@@ -155,6 +157,7 @@ public class HttpUtils
                 }).setOnTagClickListener(onTagClickListener).into(textView);
 
         }
+
 
 
 }

@@ -4,18 +4,16 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
 
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Post;
@@ -51,10 +49,10 @@ public class DownloadFragment extends BottomSheetDialogFragment
         private TextView down2UnzipPasswordText;
         private TextView down1UnzipPassword;
         private TextView down2UnzipPassword;
-        private Button down1Button;
-        private Button down2Button;
+        private MaterialButton down1Button;
+        private MaterialButton down2Button;
         private TextView downInfo;
-        private Button returnButton;
+        private MaterialButton returnButton;
 
         //获取剪贴板管理器
         private ClipboardManager clipboardManager;
@@ -156,7 +154,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
         /**
          * 配置下载点
          */
-        private void setubDownloadBox(final  List<String> downList, List<String> passwordList, List<String> unzipPasswordList,  ConstraintLayout downBox, TextView downPasswordText, TextView downUnzipPasswordText, final TextView downPassword, TextView downUnzipPassword, Button downButton )
+        private void setubDownloadBox(final  List<String> downList, List<String> passwordList, List<String> unzipPasswordList,  ConstraintLayout downBox, TextView downPasswordText, TextView downUnzipPasswordText, final TextView downPassword, TextView downUnzipPassword, MaterialButton downButton )
         {
 
                 //下载1 不是空的
@@ -215,6 +213,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                 {
                                         //更改按钮文字 为百度
                                         downButton.setText("百度网盘");
+                                        downButton.setIcon(getResources().getDrawable(R.drawable.baidu_pan));
                                         onClickListener = new View.OnClickListener()
                                         {
                                                 @Override
@@ -236,23 +235,10 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                         String identifyUrl = downUrl.substring(downUrl.indexOf(splitSymbole)+splitSymbole.length());
                                                         //去除第一位 的1位数 (百度app政策)
                                                         identifyUrl = identifyUrl.substring(1);
-                                                        String baiduUrl = GlobalConfig.BAIDU_PAN_URL+"?"+GlobalConfig.BAIDU_PAN_PARAMETER_NAME+"="+identifyUrl;
+                                                        String baiduUrl = GlobalConfig.BAIDU_PAN_APP_WAKE_URL +"?"+GlobalConfig.BAIDU_PAN_PARAMETER_NAME+"="+identifyUrl;
+                                                        //启动第三方应用
+                                                        GeneralUtils.startWebViewIntent(getActivity(), baiduUrl, downUrl);
 
-                                                        //创建intent
-                                                        Intent intent = new Intent();
-                                                        intent.setAction("android.intent.action.VIEW");
-                                                        //设置地址
-                                                        intent.setData(Uri.parse(baiduUrl));
-
-                                                        //如果有安装百度网盘APP 能够解析intent
-                                                        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                                                startActivity(intent);
-                                                        } else {
-                                                                // 没有安装所需应用
-                                                                //重新使用默认下载地址
-                                                                intent.setData(Uri.parse(downUrl));
-                                                                startActivity(intent);
-                                                        }
 
                                                 }
                                         };
@@ -276,10 +262,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                                 Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
                                                         }
                                                         // 用游览器打开链接
-                                                        Intent intent = new Intent();
-                                                        intent.setAction("android.intent.action.VIEW");
-                                                        intent.setData( Uri.parse(downUrl));
-                                                        startActivity(intent);
+                                                        GeneralUtils.startWebViewIntent(getActivity(), downUrl, downUrl);
                                                 }
                                         };
 

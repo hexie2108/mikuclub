@@ -26,9 +26,9 @@
 
 
                 <include layout = "@layout/post_info_box" />
-
-
                 <include layout = "@layout/post_author_info_box" />
+                <include layout = "@layout/post_functional_box" />
+
 
                 <TextView
                     android:id = "@+id/post_source"
@@ -40,7 +40,7 @@
                     android:textSize = "@dimen/text_default"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
-                    app:layout_constraintTop_toBottomOf = "@id/post_author_info_box" />
+                    app:layout_constraintTop_toBottomOf = "@id/post_functional_box" />
 
                 <TextView
                     android:id = "@+id/post_description"

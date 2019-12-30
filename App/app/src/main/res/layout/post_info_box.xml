@@ -74,27 +74,8 @@
             app:layout_constraintStart_toEndOf = "@id/post_count_comments_icon"
             app:layout_constraintTop_toTopOf = "parent" />
 
-        <ImageView
-            android:id = "@+id/post_count_like_icon"
-            android:layout_width = "@dimen/normal"
-            android:layout_height = "@dimen/normal"
-            android:layout_marginStart = "@dimen/small"
 
-            android:src = "@drawable/star_border"
-            app:layout_constraintBottom_toBottomOf = "parent"
-            app:layout_constraintStart_toEndOf = "@id/post_count_comments"
-            app:layout_constraintTop_toTopOf = "parent" />
 
-        <TextView
-            android:id = "@+id/post_count_like"
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
-            android:layout_marginStart = "@dimen/small"
-            android:text = "0 点赞"
-            android:textSize = "@dimen/text_small"
-            app:layout_constraintBottom_toBottomOf = "parent"
-            app:layout_constraintStart_toEndOf = "@id/post_count_like_icon"
-            app:layout_constraintTop_toTopOf = "parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

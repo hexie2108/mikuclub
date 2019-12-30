@@ -294,6 +294,8 @@ public class Post implements Serializable
                 private List<String> source;
                 private List<String> source_name;
 
+                private List<Integer> fail_time;
+
                 private List<String> content;
 
                 @SerializedName("_thumbnail_src")
@@ -333,7 +335,15 @@ public class Post implements Serializable
                         this.source_name = source_name;
                 }
 
+                public List<Integer> getFail_time()
+                {
+                        return fail_time;
+                }
 
+                public void setFail_time(List<Integer> fail_time)
+                {
+                        this.fail_time = fail_time;
+                }
 
                 public List<String> getPassword()
                 {

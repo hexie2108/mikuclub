@@ -17,6 +17,7 @@ import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.ui.fragments.HomeMainFragment;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -165,6 +166,11 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
 
+        /**
+         * 首页幻灯片 头部控制器
+         * @param parent
+         * @return
+         */
         public HeaderViewHolder createHeaderViewHolder(ViewGroup parent)
         {
                 //加载布局
@@ -186,10 +192,14 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         @Override
                         public void getItemView(View view, final Post post)
                         {
-
-                                String imgUrl = post.getMetadata().getThumbnail_src().get(0);
+                                //获取原图地址
+                                String imageUrl = post.getMetadata().getImages_src().get(0);
+                                //获取缩微图地址
+                                String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+                                //获取图片组件
                                 ImageView imageView = view.findViewById(R.id.item_image);
-                                GlideImageUtils.get(mConxt, imageView, imgUrl);
+                                //加载图片
+                                GlideImageUtils.getWithThumbnail(mConxt, imageView, imageUrl, thumbnailSrc);
 
                                 TextView textView = view.findViewById(R.id.item_text);
                                 textView.setText(post.getTitle().getRendered());

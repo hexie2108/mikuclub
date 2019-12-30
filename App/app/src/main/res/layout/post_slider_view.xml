@@ -35,7 +35,7 @@
             android:layout_height = "30dp"
 
             android:layout_marginEnd = "@dimen/large"
-            android:layout_marginTop = "@dimen/extra_large"
+            android:layout_marginTop = "35dp"
             app:layout_constraintTop_toTopOf="@id/post_slider_viewpager"
 
             app:layout_constraintEnd_toEndOf = "parent"

@@ -86,6 +86,7 @@ dependencies {
 
     //html代码自定义解析 https://github.com/wangchenyan/html-text
     implementation 'com.github.wangchenyan:html-text:1.0'
+    implementation 'org.apache.commons:commons-text:1.8'
 
 
     //可拖拽放大的图片位

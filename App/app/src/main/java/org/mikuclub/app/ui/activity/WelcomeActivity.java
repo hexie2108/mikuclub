@@ -1,19 +1,23 @@
 package org.mikuclub.app.ui.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import mikuclub.app.BuildConfig;
 import mikuclub.app.R;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,8 +25,11 @@ import android.widget.Toast;
 
 import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.delegates.AppUpdateDelegate;
 import org.mikuclub.app.delegates.PostsDelegate;
+import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.Parser;
 import org.mikuclub.app.utils.http.Request;
@@ -44,6 +51,7 @@ public class WelcomeActivity extends AppCompatActivity
         private ProgressBar welecomeProgressBar;
 
         private PostsDelegate postDelegate;
+        private AppUpdateDelegate appUpdateDelegate;
 
         //存储通过网络获取的文章数据, 需要传递给主页
         private Posts stickyPostList = null;
@@ -65,6 +73,7 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
 
                 postDelegate = new PostsDelegate(TAG);
+                appUpdateDelegate = new AppUpdateDelegate(TAG);
 
                 //检测权限
                 permissionCheck();
@@ -81,8 +90,8 @@ public class WelcomeActivity extends AppCompatActivity
                 boolean isInternetAvailable = internetCheck();
                 if (isInternetAvailable)
                 {
-                        //请求数据 + 跳转主页
-                        getDataForHome();
+                        //检查更新
+                        checkUpdate();
                 }
                 else
                 {
@@ -98,6 +107,100 @@ public class WelcomeActivity extends AppCompatActivity
                 Request.cancelRequest(TAG);
 
                 super.onStop();
+
+        }
+
+        /**
+         * 检查软件更新
+         */
+        private void checkUpdate()
+        {
+
+                appUpdateDelegate.checkUpdate(new WrapperCallBack()
+                {
+                        @Override
+                        public void onSuccess(String response)
+                        {
+                                //修正response乱码问题
+                                response = GeneralUtils.fixStringEncoding(response);
+                                final AppUpdate appUpdate = Parser.appUpdate(response);
+                                //如果更新信息不是空的, 和 当前版本号低于新版本
+                                if (appUpdate != null && BuildConfig.VERSION_CODE < appUpdate.getVersionCode())
+                                {
+
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(WelcomeActivity.this);
+                                        dialog.setTitle("发现应用的新版本");
+                                        String message = "版本名: "+appUpdate.getVersionName() + "\n" + appUpdate.getDescription();
+                                        dialog.setMessage(message);
+                                        //如果是强制更新, 就无法取消
+                                        dialog.setCancelable(!appUpdate.isForceUpdate());
+                                        //设置确认按钮名和动作
+                                        dialog.setPositiveButton("前往下载", new DialogInterface.OnClickListener()
+                                        {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                        GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), "");
+
+                                                }
+                                        });
+                                        //设置取消按钮名和动作
+                                        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                                        {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                        //如果是强制更新, 取消等于关闭应用
+                                                        if (appUpdate.isForceUpdate())
+                                                        {
+                                                                Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
+                                                                finish();
+
+                                                        }
+                                                        //如果不是强制
+                                                        else
+                                                        {
+                                                                //正常请求文章数据
+                                                                getDataForHome();
+                                                        }
+                                                }
+                                        });
+                                        //显示消息框
+                                        dialog.show();
+
+
+                                }
+                                //已经是新版或者更新信息错误
+                                else
+                                {
+                                        //请求文章数据
+                                        getDataForHome();
+                                }
+                        }
+
+                        @Override
+                        public void onSuccessHandler(String response)
+                        {
+                                onSuccess(response);
+                        }
+
+                        //回复错误的情况, 忽视, 下次再检查更新
+                        @Override
+                        public void onError()
+                        {
+                                //请求文章数据
+                                getDataForHome();
+                        }
+
+                        //网络错误的情况, 忽视, 下次再检查更新
+                        @Override
+                        public void onHttpError()
+                        {
+                                //请求文章数据
+                                getDataForHome();
+                        }
+                });
+
 
         }
 
@@ -362,7 +465,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 if (result != PackageManager.PERMISSION_GRANTED)
                                                 {
                                                         //弹出提示 + 结束应用
-                                                        Toast.makeText(this, "必须授权本应用权限才能正常使用", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(this, "必须授权本应用权限才能正常使用", Toast.LENGTH_LONG).show();
                                                         finish();
                                                         return;
                                                 }
@@ -370,7 +473,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 }
                                 else
                                 {
-                                        Toast.makeText(this, "发生未知错误", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "发生未知错误", Toast.LENGTH_LONG).show();
                                 }
                                 break;
                 }

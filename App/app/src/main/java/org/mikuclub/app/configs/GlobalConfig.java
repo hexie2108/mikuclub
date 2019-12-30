@@ -22,16 +22,20 @@ public class GlobalConfig
         //浮动弹窗的高度屏幕占比%
         public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS = 0.6f;
 
-
+        //缩微图大小
+        public static final String THUMBNAIL_SIZE = "-500x280";
 
         //百度网盘地址判断
         public static final String BAIDU_PAN_URL_VALIDATE_PATH = "pan.baidu.com/s/";
         //百度网盘 传递URL的参数名称, 因为百度app策略, 分享id里的第一位数字1, 需要被手动去除, 否则无效
         public static final String BAIDU_PAN_PARAMETER_NAME = "surl";
-        //百度网盘 url格式
-        public static final String BAIDU_PAN_URL = "bdnetdisk://n/action.SHARE_LINK";
+        //百度网盘app url唤醒格式
+        public static final String BAIDU_PAN_APP_WAKE_URL = "bdnetdisk://n/action.SHARE_LINK";
 
-
+        //b站视频前缀地址
+        public static final String BILIBILI_HOST = "https://www.bilibili.com/video/";
+        //bilibili app url唤醒格式
+        public static final String BILIBILI_APP_WAKE_URL = "bilibili://video/";
 
         //后台服务器地址
         public class Server{
@@ -44,6 +48,9 @@ public class GlobalConfig
                 public static final String COMMENTS = "comments/";
                 public static final String MEDIA = "media/";
                 public static final String USERS = "users/";
+
+
+                public static final String APP_UPDATE = "https://www.mikuclub.org/app/update.json";
 
         }
 

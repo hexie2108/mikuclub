@@ -66,7 +66,7 @@ public class GlideImageUtils
         }
 
         /**
-         * 设置加载缩微图的版本
+         * 设置预先加载缩微图的版本
          *
          * @param context
          * @param imageView
