@@ -1,6 +1,6 @@
 package org.mikuclub.app.models;
 
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.Map;
@@ -25,12 +25,12 @@ public class ResourceModel
          *
          * @param id
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void selectById(int id, Map<String, String> params, int tag, WrapperCallBack wrapperCallBack)
+        public void selectById(int id, Map<String, String> params, int tag, HttpCallBack httpCallBack)
         {
                 String url = resource_url + id;
-                Request.get(url, params, null, tag, wrapperCallBack);
+                Request.get(url, params, null, tag, httpCallBack);
         }
 
 
@@ -39,13 +39,13 @@ public class ResourceModel
          *
          * @param params
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void selectForList(Map<String, String> params, int tag, WrapperCallBack wrapperCallBack)
+        public void selectForList(Map<String, String> params, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url;
-                Request.get(url, params, null, tag, wrapperCallBack);
+                Request.get(url, params, null, tag, httpCallBack);
         }
 
         /**
@@ -53,13 +53,13 @@ public class ResourceModel
          *
          * @param params
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void insert(Map<String, String> params, int tag, WrapperCallBack wrapperCallBack)
+        public void insert(Map<String, String> params, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url;
-                Request.post(url, params, null, tag, wrapperCallBack);
+                Request.post(url, params, null, tag, httpCallBack);
 
         }
 
@@ -68,13 +68,13 @@ public class ResourceModel
          *
          * @param params
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void updateById(int id, Map<String, String> params, int tag, WrapperCallBack wrapperCallBack)
+        public void updateById(int id, Map<String, String> params, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url + id;
-                Request.post(url, params, null, tag, wrapperCallBack);
+                Request.post(url, params, null, tag, httpCallBack);
 
         }
 
@@ -84,12 +84,12 @@ public class ResourceModel
          *
          * @param id
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void deleteById(int id, int tag, WrapperCallBack wrapperCallBack)
+        public void deleteById(int id, int tag, HttpCallBack httpCallBack)
         {
                 String url = resource_url + id;
-                Request.delete(url, tag, wrapperCallBack);
+                Request.delete(url, tag, httpCallBack);
         }
 
 

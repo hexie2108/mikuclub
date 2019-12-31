@@ -1,11 +1,7 @@
 package org.mikuclub.app.delegates;
 
-import org.mikuclub.app.callBack.WrapperCallBack;
-import org.mikuclub.app.configs.Constants;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.parameters.ParametersListPosts;
-import org.mikuclub.app.models.ResourceModel;
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.Request;
 
 /**
@@ -23,12 +19,12 @@ public class AppUpdateDelegate
 
         /**
          * 检查更新
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void checkUpdate(WrapperCallBack wrapperCallBack)
+        public void checkUpdate(HttpCallBack httpCallBack)
         {
 
-                Request.get(GlobalConfig.Server.APP_UPDATE, null, null, tag, wrapperCallBack);
+                Request.get(GlobalConfig.Server.APP_UPDATE, null, null, tag, httpCallBack);
 
         }
 

@@ -13,11 +13,10 @@
             android:layout_width = "0dp"
             android:layout_height = "0dp"
 
+            app:layout_constraintBottom_toTopOf = "@id/home_bottom_bar"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toTopOf = "parent"
-            app:layout_constraintBottom_toTopOf = "@id/home_bottom_bar"
-            >
+            app:layout_constraintTop_toTopOf = "parent">
 
                 <com.google.android.material.appbar.AppBarLayout
                     android:id = "@+id/home_app_bar"
@@ -44,7 +43,7 @@
 
 
                                         <TextView
-                                            android:id="@+id/search_input"
+                                            android:id = "@+id/search_input"
                                             android:layout_width = "match_parent"
                                             android:layout_height = "wrap_content"
                                             android:background = "@android:color/white"
@@ -67,10 +66,13 @@
                     android:layout_width = "match_parent"
                     android:layout_height = "match_parent"
                     app:defaultNavHost = "true"
-                    app:navGraph = "@navigation/home_navigation"
                     app:layout_behavior = "@string/appbar_scrolling_view_behavior"
-                    tools:layout="@layout/fragment_home_main"
-                    />
+                    app:navGraph = "@navigation/home_navigation"
+                    tools:layout = "@layout/fragment_home_main" />
+
+
+                <include layout="@layout/list_floating_action_button" />
+
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

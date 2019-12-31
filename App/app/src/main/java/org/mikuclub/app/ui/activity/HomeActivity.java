@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -41,7 +42,7 @@ public class HomeActivity extends AppCompatActivity
         private BottomNavigationView bottomNavigationView;
         private DrawerLayout drawer;
         private TextView searchInput;
-
+        private FloatingActionButton listFloatingActionButton;
 
 
         @Override
@@ -55,6 +56,7 @@ public class HomeActivity extends AppCompatActivity
                 bottomNavigationView = findViewById(R.id.home_bottom_bar);
                 drawer = findViewById(R.id.home_drawer_layout);
                 searchInput = findViewById(R.id.search_input);
+                listFloatingActionButton = findViewById(R.id.list_floating_action_button);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -153,7 +155,15 @@ public class HomeActivity extends AppCompatActivity
                 intent.putExtra("sticky_post_list", stickyPostList);
                 intent.putExtra("post_list", postList);
                 context.startActivity(intent);
+
         }
 
-
+        /**
+         * 获取浮动按钮组件
+         * @return
+         */
+        public FloatingActionButton getListFloatingActionButton()
+        {
+                return listFloatingActionButton;
+        }
 }

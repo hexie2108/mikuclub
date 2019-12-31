@@ -17,14 +17,13 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.mikuclub.app.callBack.MyRunnable;
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.AppUpdateDelegate;
 import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
@@ -116,7 +115,7 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkUpdate()
         {
 
-                appUpdateDelegate.checkUpdate(new WrapperCallBack()
+                appUpdateDelegate.checkUpdate(new HttpCallBack()
                 {
                         @Override
                         public void onSuccess(String response)
@@ -209,23 +208,18 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void getDataForHome()
         {
-
-                //获取置顶文章
-                postDelegate.getStickyPostsList(new WrapperCallBack()
-                {
+                int page=1;
+                //请求置顶文章 回调函数
+                HttpCallBack callBackToGetStickyPost = new HttpCallBack(){
                         //请求成功
                         @Override
                         public void onSuccess(String response)
                         {
-                                //解析数据
-                                Posts posts = Parser.posts(response);
-                                //保存数据
-                                stickyPostList = posts;
-
+                                //解析数据 +保存数据
+                                stickyPostList = Parser.posts(response);
                                 //尝试启动主页
                                 startHomeSafety();
                         }
-
                         //请求失败
                         @Override
                         public void onHttpError()
@@ -240,17 +234,14 @@ public class WelcomeActivity extends AppCompatActivity
                                 //重置请求计数器
                                 requestCount = 0;
                         }
-                });
-
-                //获取最新文章
-                postDelegate.getRecentlyPostsList(0, new WrapperCallBack()
+                };
+                //请求普通文章 回调函数
+                HttpCallBack callBackToGetPost = new HttpCallBack()
                 {
                         @Override
                         public void onSuccess(String response)
                         {
-                                Posts posts = Parser.posts(response);
-                                postList = posts;
-
+                                postList = Parser.posts(response);
                                 startHomeSafety();
                         }
 
@@ -266,7 +257,12 @@ public class WelcomeActivity extends AppCompatActivity
                                 //重置请求计数器
                                 requestCount = 0;
                         }
-                });
+                };
+
+                //获取置顶文章
+                postDelegate.getStickyPostList(page, callBackToGetStickyPost);
+                //获取最新文章
+                postDelegate.getPostList(page, callBackToGetPost);
 
         }
 
@@ -395,6 +391,8 @@ public class WelcomeActivity extends AppCompatActivity
                 return isInternetAvailable;
         }
 
+
+
         /**
          * 定时退出活动 (无网络连接的情况)
          */
@@ -418,7 +416,6 @@ public class WelcomeActivity extends AppCompatActivity
                                                 {
                                                         //通过get方法获取到外部传递的第一个变量
                                                         int seconds = (int) this.getArgument1();
-
                                                         @Override
                                                         public void run()
                                                         {

@@ -5,11 +5,9 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.LogUtils;
@@ -18,8 +16,6 @@ import org.mikuclub.app.utils.data.MapUtils;
 import java.io.File;
 import java.util.Collections;
 import java.util.Map;
-
-import mikuclub.app.R;
 
 /**
  * questo è classe utils che occupa di mandare tutte le richieste
@@ -43,9 +39,9 @@ public class Request
          * @param url
          * @param params
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public static void get(String url, Map params, Map<String, String> headers,  int tag, WrapperCallBack wrapperCallBack)
+        public static void get(String url, Map params, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
         {
                 //如果有参数要传递
                 if (params != null && params.size() > 0)
@@ -55,7 +51,7 @@ public class Request
                         LogUtils.w(url);
                 }
 
-                request(com.android.volley.Request.Method.GET, url, null, headers, tag, wrapperCallBack);
+                request(com.android.volley.Request.Method.GET, url, null, headers, tag, httpCallBack);
         }
 
         /**
@@ -63,11 +59,11 @@ public class Request
          * @param url
          * @param params
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public static void post(String url, Map<String, String> params, Map<String, String> headers, int tag, WrapperCallBack wrapperCallBack)
+        public static void post(String url, Map<String, String> params, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
-                request(com.android.volley.Request.Method.POST, url, params, headers, tag, wrapperCallBack);
+                request(com.android.volley.Request.Method.POST, url, params, headers, tag, httpCallBack);
         }
 
         /**
@@ -75,11 +71,11 @@ public class Request
          *
          * @param url
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public static void delete(String url, int tag, WrapperCallBack wrapperCallBack)
+        public static void delete(String url, int tag, HttpCallBack httpCallBack)
         {
-                request(com.android.volley.Request.Method.DELETE, url, null, null, tag, wrapperCallBack);
+                request(com.android.volley.Request.Method.DELETE, url, null, null, tag, httpCallBack);
         }
 
         /**
@@ -90,9 +86,9 @@ public class Request
          * @param params
          * @param headers
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        private static void request(int method, String url, final Map<String, String> params, final Map<String, String> headers, int tag, final WrapperCallBack wrapperCallBack)
+        private static void request(int method, String url, final Map<String, String> params, final Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
 
                 StringRequest stringRequest  = new StringRequest(method, url,
@@ -101,14 +97,14 @@ public class Request
                                 @Override
                                 public void onResponse(String response)
                                 {
-                                        wrapperCallBack.onSuccessHandler(response);
+                                        httpCallBack.onSuccessHandler(response);
                                 }
                         }, new Response.ErrorListener()
                 {
                         @Override
                         public void onErrorResponse(VolleyError error)
                         {
-                                wrapperCallBack.onErrorHandler(error);
+                                httpCallBack.onErrorHandler(error);
                         }
                 })
                 {
@@ -153,7 +149,7 @@ public class Request
                         public void cancel()
                         {
                                 super.cancel();
-                                wrapperCallBack.onCancel();
+                                httpCallBack.onCancel();
                         }
                 };
 
@@ -172,9 +168,9 @@ public class Request
          * @param headers
          * @param file
          * @param tag
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public static void filePost(String url, Map<String,String> params, Map<String,String> headers, File file, int tag, final WrapperCallBack wrapperCallBack){
+        public static void filePost(String url, Map<String,String> params, Map<String,String> headers, File file, int tag, final HttpCallBack httpCallBack){
 
 
                 FileRequest fileRequest = new FileRequest(com.android.volley.Request.Method.POST, url, params, file ,headers, new Response.Listener<NetworkResponse>()
@@ -191,7 +187,7 @@ public class Request
                         @Override
                         public void onErrorResponse(VolleyError error)
                         {
-                                wrapperCallBack.onErrorHandler(error);
+                                httpCallBack.onErrorHandler(error);
                         }
                 });
 
@@ -216,7 +212,7 @@ public class Request
          * @param tag
          * @param wrapperCallBack
          *//*
-        public static void jsonGet(String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType,int tag, WrapperCallBack wrapperCallBack)
+        public static void jsonGet(String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType,int tag, HttpCallBack wrapperCallBack)
         {
                 //se parametri non è vuoto
                 if (params != null && params.size() > 0)
@@ -237,7 +233,7 @@ public class Request
          * @param tag
          * @param wrapperCallBack
          *//*
-        public static void jsonPost(String url, Map<String,String> params, Map<String,String> headers,Class beanClass, Type listClassesType, int tag, WrapperCallBack wrapperCallBack)
+        public static void jsonPost(String url, Map<String,String> params, Map<String,String> headers,Class beanClass, Type listClassesType, int tag, HttpCallBack wrapperCallBack)
         {
                 jsonRequest(Request.Method.POST, url, params, headers, beanClass, listClassesType, tag, wrapperCallBack);
         }*/
@@ -255,7 +251,7 @@ public class Request
          * @param wrapperCallBack
          */
         /*
-        private static void jsonRequest(int method, String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType, int tag, final WrapperCallBack wrapperCallBack)
+        private static void jsonRequest(int method, String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType, int tag, final HttpCallBack wrapperCallBack)
         {
                 GsonRequest gsonRequest = new GsonRequest(method, url, params, headers, beanClass, listClassesType,
                         new Response.Listener<Object>()

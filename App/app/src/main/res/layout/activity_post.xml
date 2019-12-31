@@ -85,13 +85,14 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
             android:id = "@+id/post_download_button"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
 
             android:layout_margin = "@dimen/normal"
 
-            android:src = "@drawable/cloud_download"
+            app:srcCompat = "@drawable/cloud_download"
             app:tint = "@android:color/white"
             app:backgroundTint = "@color/colorPrimary"
             app:layout_anchor = "@id/post_app_bar"

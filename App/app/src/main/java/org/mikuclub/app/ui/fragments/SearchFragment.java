@@ -1,9 +1,11 @@
 package org.mikuclub.app.ui.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,14 +22,17 @@ import android.widget.TextView;
 import org.mikuclub.app.adapters.PostsAdapter;
 import org.mikuclub.app.adapters.listener.ManageInfoUtilView;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.CallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostsDelegate;
 
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.ui.activity.SearchActivity;
 import org.mikuclub.app.utils.KeyboardUtils;
+import org.mikuclub.app.utils.PostListUtils;
 import org.mikuclub.app.view.CustomGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.Parser;
 
@@ -61,6 +66,11 @@ public class SearchFragment extends Fragment
         //搜索内容
         private String queryString;
 
+        //当前页数
+        private int currentPage;
+        //总页数
+        private int totalPage;
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,6 +101,7 @@ public class SearchFragment extends Fragment
 
                 //初始化列表
                 initRecyclerView();
+
         }
 
         @Override
@@ -100,7 +111,8 @@ public class SearchFragment extends Fragment
 
                 //初始化 活动上的组件
                 initSearchInput();
-
+                //初始化 活动上的浮动按钮
+                initFloatingActionButton();
         }
 
         @Override
@@ -170,38 +182,27 @@ public class SearchFragment extends Fragment
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
                         {
+                                //从键盘点了搜索键
                                 if (actionId == EditorInfo.IME_ACTION_SEARCH)
                                 {
-                                        //发送搜索请求
-                                        sendSearch();
+                                        //触发搜索图标的点击世界
+                                        searchInputIcon.performClick();
                                 }
                                 return true;
                         }
                 });
 
 
-                //创建2个搜索图标的点击监听器
-                final View.OnClickListener sendSearchListener = new View.OnClickListener()
+                //搜索图标点击监听器
+                searchInputIcon.setOnClickListener( new View.OnClickListener()
                 {
                         @Override
                         public void onClick(View v)
                         {
                                 //发送搜索请求
-                                sendSearch();
+                                sendSearch(1);
                         }
-                };
-                final View.OnClickListener cancelInputListener = new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                //清空输入框
-                                searchInput.setText("");
-                                //隐藏图标
-                                searchInputIcon.setVisibility(View.INVISIBLE);
-                        }
-                };
-
+                });
 
                 //监听是否有焦点
                 searchInput.setOnFocusChangeListener(new View.OnFocusChangeListener()
@@ -214,31 +215,14 @@ public class SearchFragment extends Fragment
                                 {
                                         //显示图标
                                         searchInputIcon.setVisibility(View.VISIBLE);
-                                        //改变图标
-                                        searchInputIcon.setImageResource(R.drawable.search);
-                                        //绑定对应动作监听器
-                                        searchInputIcon.setOnClickListener(sendSearchListener);
                                         //把光标移动到末尾
                                         searchInput.setSelection(searchInput.getText().length());
                                 }
                                 //如果无焦点
                                 else
                                 {
-                                        //如果搜索内容不是空的
-                                        if (searchInput.getText().toString().length() > 0)
-                                        {
-                                                //显示图标
-                                                searchInputIcon.setVisibility(View.VISIBLE);
-                                                //改变图标
-                                                searchInputIcon.setImageResource(R.drawable.baseline_clear);
-                                                //绑定对应动作监听器
-                                                searchInputIcon.setOnClickListener(cancelInputListener);
-                                        }
-                                        else
-                                        {
-                                                //如果是空的 就隐藏图标
-                                                searchInputIcon.setVisibility(View.INVISIBLE);
-                                        }
+                                       //隐藏图标
+                                        searchInputIcon.setVisibility(View.INVISIBLE);
 
                                 }
                         }
@@ -248,8 +232,10 @@ public class SearchFragment extends Fragment
 
         /**
          * 发送搜索请求
+         *
+         * @param page 开始页数
          */
-        public void sendSearch()
+        public void sendSearch(final int page)
         {
                 //获取搜索内容, 去除左右空格
                 queryString = searchInput.getText().toString().trim();
@@ -263,7 +249,6 @@ public class SearchFragment extends Fragment
 
                         //隐藏键盘+取消焦点
                         KeyboardUtils.hideKeyboard(searchInput);
-
                         //显示加载进度条
                         manageInfoUtilView.setLoadingInfo();
                         //返回顶部
@@ -271,7 +256,7 @@ public class SearchFragment extends Fragment
                         //隐藏 列表
                         recyclerView.setVisibility(View.GONE);
 
-                        WrapperCallBack wrapperCallBack = new WrapperCallBack()
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //成功的情况
                                 @Override
@@ -305,6 +290,9 @@ public class SearchFragment extends Fragment
                                         manageInfoUtilView.setVisibility(false);
                                         //显示列表
                                         recyclerView.setVisibility(View.VISIBLE);
+                                        //更新页数信息
+                                        currentPage = page;
+                                        totalPage = postList.getHeaders().getTotalPage();
 
 
                                 }
@@ -329,7 +317,7 @@ public class SearchFragment extends Fragment
                                                 @Override
                                                 public void onClick(View v)
                                                 {
-                                                        sendSearch();
+                                                        sendSearch(1);
                                                 }
                                         });
                                 }
@@ -352,10 +340,9 @@ public class SearchFragment extends Fragment
                                         manageInfoUtilView.setVisibility(false);
                                 }
                         };
-                        //获取当前 数据长度
-                        int offset = recyclerDataList.size();
+
                         //委托代理人发送请求
-                        delegate.getPostsListBySearch(queryString, offset, wrapperCallBack);
+                        delegate.getSearchPostList(queryString, page, httpCallBack);
                 }
         }
 
@@ -369,7 +356,7 @@ public class SearchFragment extends Fragment
                 {
                         //关闭信号标
                         wantMore = false;
-                        WrapperCallBack wrapperCallBack = new WrapperCallBack()
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //成功的情况
                                 @Override
@@ -383,6 +370,8 @@ public class SearchFragment extends Fragment
                                         recyclerViewAdapter.notifyItemInserted(recyclerDataList.size());
                                         //重新开启信号标
                                         wantMore = true;
+                                        //更新当前页数
+                                        currentPage++;
                                 }
 
                                 //请求结果包含错误的情况
@@ -423,11 +412,38 @@ public class SearchFragment extends Fragment
                                         wantMore = true;
                                 }
                         };
-                        //获取当前 数据长度
-                        int nextStart = recyclerDataList.size();
+
                         //委托代理人发送请求
-                        delegate.getPostsListBySearch(queryString, nextStart, wrapperCallBack);
+                        delegate.getSearchPostList(queryString, currentPage + 1, httpCallBack);
                 }
+        }
+
+
+        /**
+         * 为父活动上的浮动按钮点击事件绑定动作
+         */
+        private void initFloatingActionButton()
+        {
+                ((SearchActivity) getActivity()).getListFloatingActionButton().setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                PostListUtils.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
+                                {
+                                        @Override
+                                        public void execute(String... args)
+                                        {
+                                                //确保有参数被传送回来
+                                                if (args.length > 0)
+                                                {
+                                                        int page = Integer.valueOf(args[0]);
+                                                        sendSearch(page);
+                                                }
+                                        }
+                                });
+                        }
+                });
         }
 
 }

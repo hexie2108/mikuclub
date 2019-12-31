@@ -1,6 +1,7 @@
 package org.mikuclub.app.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,14 +122,19 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
         {
 
+                LogUtils.e("onBindViewHolder");
+                LogUtils.e(holder.getClass().getName());
+                LogUtils.e(position+"");
                 //需要展示对应子视图的时候
                 //如果是普通数据组件
                 if (holder instanceof PostViewHolder)
                 {
+                        LogUtils.e("PostViewHolder");
                         bindPostViewHolder(holder, position);
                 }
                 else if (holder instanceof FooterViewHolder)
                 {
+                        LogUtils.e("刷新 footer");
                         AdapterUtils.bindFooterViewHolder(holder, notMoreError, internetError, internetErrorListener);
                 }
         }

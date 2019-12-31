@@ -1,12 +1,11 @@
 package org.mikuclub.app.delegates;
 
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.configs.Constants;
 import org.mikuclub.app.javaBeans.parameters.ParametersListComments;
 import org.mikuclub.app.models.ResourceModel;
 import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.LogUtils;
 
 /**
  *  根据需要生成对应资源的请求
@@ -30,9 +29,9 @@ public class CommentsDelegate
          * @param  postId 文章id
          * @param commentParentId 评论ID, 默认为0, 获取所有评论, 其他情况 为获取特定评论收到的回复
          * @param offset 开始位置
-         * @param wrapperCallBack
+         * @param httpCallBack
          */
-        public void getCommentsListByPostId(int postId, int commentParentId,  int offset, WrapperCallBack wrapperCallBack)
+        public void getCommentsListByPostId(int postId, int commentParentId,  int offset, HttpCallBack httpCallBack)
         {
 
                 int page = GeneralUtils.getNextPageNumber(offset, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS);
@@ -45,7 +44,7 @@ public class CommentsDelegate
                 //去除评论收到的回复
                 parameters.setParent(commentParentId);
 
-                commentModel.selectForList(parameters.toMap(), tag, wrapperCallBack);
+                commentModel.selectForList(parameters.toMap(), tag, httpCallBack);
 
         }
 

@@ -27,22 +27,22 @@ import mikuclub.app.R;
  * 空的回调类, 用来处理网络请求的回调
  * 必须重写来实现各种需求
  * */
-public class WrapperCallBack
+public class HttpCallBack
 {
 
         private Object argument1;
         private Object argument2;
 
-        public WrapperCallBack()
+        public HttpCallBack()
         {
         }
 
-        public WrapperCallBack(Object argument1)
+        public HttpCallBack(Object argument1)
         {
                 this.argument1 = argument1;
         }
 
-        public WrapperCallBack(Object argument1, Object argument2)
+        public HttpCallBack(Object argument1, Object argument2)
         {
                 this.argument1 = argument1;
                 this.argument2 = argument2;
@@ -133,11 +133,14 @@ public class WrapperCallBack
                         //如果请求内的状态码在200~300之间,   而且 内容主体不是空的, 说明请求结果正常
                         if (statusCode >= 200 && statusCode <= 300 && jsonObject.getJSONArray("body").length() > 0)
                         {
+
                                 onSuccess(response);
                         }
                         //状态码异常,  或者 主体为空, 说明有异常错误
                         else
                         {
+
+
                                 onError();
                         }
 

@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mikuclub.app.adapters.CommentRepliesAdapter;
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.CommentsDelegate;
 import org.mikuclub.app.javaBeans.resources.Comment;
@@ -238,7 +238,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 {
                         //关闭信号标
                         wantMore = false;
-                        WrapperCallBack wrapperCallBack = new WrapperCallBack()
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //成功的情况
                                 @Override
@@ -308,7 +308,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         int offset = recyclerDataList.size();
                         //LogUtils.e("offset " + offset);
                         //委托代理人发送请求
-                        delegate.getCommentsListByPostId(comment.getPost(), comment.getId(), offset, wrapperCallBack);
+                        delegate.getCommentsListByPostId(comment.getPost(), comment.getId(), offset, httpCallBack);
                 }
         }
 

@@ -1,26 +1,42 @@
 package org.mikuclub.app.ui.fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.adapters.HomeListAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.CallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
+import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.Parser;
+import org.mikuclub.app.utils.PostListUtils;
 import org.mikuclub.app.view.CustomGridLayoutSpanSizeLookup;
+import org.mikuclub.app.view.EditTextNumberFilterMinMax;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,11 +60,13 @@ public class HomeMainFragment extends Fragment
         private Posts stickyPosts;
         private List<Post> stickyPostList;
 
+
         //是否要加载新数据 默认是
         private boolean wantMore = true;
-
-        private int offset = 0;
-
+        //当前页数
+        private int currentPage;
+        //总页数
+        private int totalPage;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,6 +96,10 @@ public class HomeMainFragment extends Fragment
                 Posts postList = (Posts) getActivity().getIntent().getSerializableExtra("post_list");
                 recyclerDataList = postList.getBody();
 
+                //设置总页数
+                totalPage = postList.getHeaders().getTotalPage();
+                //设置当前页数
+                currentPage = 1;
                 //加载文章列表
                 initRecyclerView(postList);
 
@@ -93,6 +115,12 @@ public class HomeMainFragment extends Fragment
                 getMore();
         }
 
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState)
+        {
+                super.onActivityCreated(savedInstanceState);
+                initFloatingActionButton();
+        }
 
         /**
          * 初始化文章列表
@@ -111,7 +139,7 @@ public class HomeMainFragment extends Fragment
                 gridLayoutManager.setSpanSizeLookup(new CustomGridLayoutSpanSizeLookup(recyclerDataList, 2, true));
                 //加载布局
                 recyclerView.setLayoutManager(gridLayoutManager);
-                //recyclerView.setHasFixedSize(true);
+                recyclerView.setHasFixedSize(false);
                 //缓存item的数量
                 recyclerView.setItemViewCacheSize(GlobalConfig.NUMBER_PER_PAGE * 2);
                 //绑定滑动事件
@@ -141,7 +169,8 @@ public class HomeMainFragment extends Fragment
                         @Override
                         public void onRefresh()
                         {
-                                refreshPosts();
+                                //获取最新文章
+                                refreshPosts(1);
                         }
                 });
 
@@ -158,22 +187,23 @@ public class HomeMainFragment extends Fragment
                         //关闭信号标
                         wantMore = false;
 
-                        WrapperCallBack wrapperCallBack = new WrapperCallBack()
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //成功
                                 @Override
                                 public void onSuccess(String response)
                                 {
-
                                         //解析新数据
                                         Posts newPostList = Parser.posts(response);
                                         //插入新数据
                                         recyclerDataList.addAll(newPostList.getBody());
                                         //通知增加了对应位置的数据
-                                        recyclerViewAdapter.notifyItemRangeInserted(recyclerDataList.size(), GlobalConfig.NUMBER_PER_PAGE);
+                                        recyclerViewAdapter.notifyItemRangeInserted(recyclerDataList.size() + 1, newPostList.getBody().size());
 
                                         //重新开启信号标
                                         wantMore = true;
+                                        //当前页数+1
+                                        currentPage++;
 
                                 }
 
@@ -182,15 +212,15 @@ public class HomeMainFragment extends Fragment
                                 public void onError()
                                 {
                                         recyclerViewAdapter.setNotMoreError(true);
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
+                                        //通知更新尾部, 因为有头部存在,额外+1
+                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size() + 1);
                                 }
 
                                 //网络失败
                                 @Override
                                 public void onHttpError()
                                 {
-
+                                        LogUtils.e("onHttpError");
                                         //显示错误信息, 绑定点击事件允许用户手动重试
                                         recyclerViewAdapter.setInternetError(true, new View.OnClickListener()
                                         {
@@ -204,8 +234,8 @@ public class HomeMainFragment extends Fragment
                                                         getMore();
                                                 }
                                         });
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
+                                        //通知更新尾部 , 因为有头部存在,额外+1
+                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size() + 1);
 
                                 }
 
@@ -218,20 +248,30 @@ public class HomeMainFragment extends Fragment
                                 }
                         };
 
-                        int offset = recyclerDataList.size();
-                        //LogUtils.e(start + "");
-                        delegate.getRecentlyPostsList(offset, wrapperCallBack);
+                        delegate.getPostList(currentPage + 1, httpCallBack);
                 }
         }
 
         /**
-         * 下拉刷新最新文章
+         * 拉刷新最新文章
+         *
+         * @param page 请求文章的页数
          */
-
-        private void refreshPosts()
+        private void refreshPosts(final int page)
         {
                 wantMore = false;
-                WrapperCallBack wrapperCallBack = new WrapperCallBack()
+
+                //如果加载进度条没有出现 (跳转页面情况)
+                if (!swipeRefresh.isRefreshing())
+                {
+                        //让加载进度条显示
+                        swipeRefresh.setRefreshing(true);
+                }
+
+                //返回顶部
+                recyclerView.scrollToPosition(1);
+
+                HttpCallBack httpCallBack = new HttpCallBack()
                 {
                         //成功
                         @Override
@@ -240,8 +280,23 @@ public class HomeMainFragment extends Fragment
                                 Posts postList = Parser.posts(response);
                                 recyclerDataList.clear();
                                 recyclerDataList.addAll(postList.getBody());
+
+                                //重置网络错误
+                                recyclerViewAdapter.setInternetError(false, null);
+                                //重置内容错误
+                                recyclerViewAdapter.setNotMoreError(false);
+                                //更新数据
                                 recyclerViewAdapter.notifyDataSetChanged();
 
+                                //更新当前页数
+                                currentPage = page;
+
+                        }
+
+                        @Override
+                        public void onHttpError()
+                        {
+                                Toast.makeText(getActivity(), "请求失败, 请重试", Toast.LENGTH_SHORT).show();
                         }
 
                         //请求结束后
@@ -261,10 +316,36 @@ public class HomeMainFragment extends Fragment
                                 swipeRefresh.setRefreshing(false);
                                 //重置信号标
                                 wantMore = true;
-                                LogUtils.e("我被取消了");
                         }
                 };
-                delegate.getRecentlyPostsList(0, wrapperCallBack);
+                delegate.getPostList(page, httpCallBack);
+        }
+
+        /**
+         * 为父活动上的浮动按钮点击事件绑定动作
+         */
+        private void initFloatingActionButton()
+        {
+                ((HomeActivity) getActivity()).getListFloatingActionButton().setOnClickListener(new View.OnClickListener()
+                {
+                        @Override
+                        public void onClick(View v)
+                        {
+                                PostListUtils.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
+                                {
+                                        @Override
+                                        public void execute(String... args)
+                                        {
+                                                //确保有参数被传送回来
+                                                if (args.length > 0)
+                                                {
+                                                        int page = Integer.valueOf(args[0]);
+                                                        refreshPosts(page);
+                                                }
+                                        }
+                                });
+                        }
+                });
         }
 
 

@@ -1,14 +1,13 @@
 package org.mikuclub.app.delegates;
 
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.configs.Constants;
 import org.mikuclub.app.javaBeans.parameters.ParametersListPosts;
 import org.mikuclub.app.models.ResourceModel;
-import org.mikuclub.app.utils.GeneralUtils;
 
 /**
- *  根据需要生成对应资源的请求
+ * 根据需要生成对应资源的请求
  */
 public class PostsDelegate
 {
@@ -24,61 +23,67 @@ public class PostsDelegate
         }
 
 
-        /*
-        获取置顶文章列表
+        /**
+         * 获取置顶文章列表
+         *
+         * @param page
+         * @param httpCallBack
          */
-        public void getStickyPostsList(WrapperCallBack wrapperCallBack)
+        public void getStickyPostList(int page, HttpCallBack httpCallBack)
         {
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
-                parametersListPosts.setPage(1);
-                parametersListPosts.setPer_page(GlobalConfig.NUMBER_FOR_SLIDERSHOW);
-
                 parametersListPosts.setSticky(true);
-                parametersListPosts.setOrderby(Constants.OrderBy.DATE);
-                parametersListPosts.setStatus(Constants.Status.PUBLISH);
-                postModel.selectForList(parametersListPosts.toMap(), tag, wrapperCallBack);
+                getPostListBase(page, httpCallBack, parametersListPosts);
 
         }
 
         /**
-         * 获取最新发布的都文章列表
-         * @param offset 开始位置
-         * @param wrapperCallBack
+         * 根据搜索文本获取文章列表
+         *
+         * @param query
+         * @param page
+         * @param httpCallBack
          */
-        public void getRecentlyPostsList(int offset, WrapperCallBack wrapperCallBack)
+        public void getSearchPostList(String query, int page, HttpCallBack httpCallBack)
         {
-
-                int page = GeneralUtils.getNextPageNumber(offset, GlobalConfig.NUMBER_PER_PAGE);
                 ParametersListPosts parametersListPosts = new ParametersListPosts();
-                parametersListPosts.setPage(page);
-                parametersListPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE);
-
-                parametersListPosts.setOrderby(Constants.OrderBy.DATE);
-                parametersListPosts.setStatus(Constants.Status.PUBLISH);
-
-                postModel.selectForList(parametersListPosts.toMap(), tag, wrapperCallBack);
-
-        }
-
-
-        /*
-        获取搜索结果的文章列表
-         */
-        public void getPostsListBySearch(String query, int offset, WrapperCallBack wrapperCallBack)
-        {
-                int page = GeneralUtils.getNextPageNumber(offset, GlobalConfig.NUMBER_PER_PAGE);
-
-                ParametersListPosts parametersListPosts = new ParametersListPosts();
-                parametersListPosts.setPage(page);
-                parametersListPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE);
-
                 parametersListPosts.setSearch(query);
-                parametersListPosts.setOrderby(Constants.OrderBy.DATE);
-                parametersListPosts.setStatus(Constants.Status.PUBLISH);
-                postModel.selectForList(parametersListPosts.toMap(), tag, wrapperCallBack);
+                getPostListBase(page, httpCallBack, parametersListPosts);
 
         }
 
+
+        /**
+         * 获取普通文章列表
+         *
+         * @param page            请求页数
+         * @param httpCallBack 回调方法
+         */
+
+        public void getPostList(int page, HttpCallBack httpCallBack)
+        {
+                ParametersListPosts parametersListPosts = new ParametersListPosts();
+                getPostListBase(page, httpCallBack, parametersListPosts);
+
+        }
+
+        /**
+         * 获取文章列表 (基础函数)
+         * @param page                请求页数
+         * @param httpCallBack     回调方法
+         * @param parametersListPosts 请求参数类
+         */
+
+        private void getPostListBase(int page, HttpCallBack httpCallBack, ParametersListPosts parametersListPosts)
+        {
+                parametersListPosts.setPage(page);
+                parametersListPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE);
+                parametersListPosts.setOrderby(Constants.OrderBy.DATE);
+                parametersListPosts.setStatus(Constants.Status.PUBLISH);
+
+                postModel.selectForList(parametersListPosts.toMap(), tag, httpCallBack);
+
+        }
 
 
 }

@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +32,7 @@ public class SearchActivity extends AppCompatActivity
         public static final int TAG = 3;
         private EditText searchInput;
         private ImageView searchInputIcon;
-
+        private FloatingActionButton listFloatingActionButton;
 
 
         @Override
@@ -43,6 +45,7 @@ public class SearchActivity extends AppCompatActivity
                 Toolbar toolbar = findViewById(R.id.search_toolbar);
                 searchInput =findViewById(R.id.search_input);
                 searchInputIcon = findViewById(R.id.search_input_icon);
+                listFloatingActionButton = findViewById(R.id.list_floating_action_button);
 
                 setSupportActionBar(toolbar);
                 ActionBar actionBar = getSupportActionBar();
@@ -82,6 +85,11 @@ public class SearchActivity extends AppCompatActivity
                 Request.cancelRequest(TAG);
 
                 super.onStop();
+        }
+
+        public FloatingActionButton getListFloatingActionButton()
+        {
+                return listFloatingActionButton;
         }
 
         /**

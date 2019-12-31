@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.WrapperCallBack;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.CommentsDelegate;
 import org.mikuclub.app.javaBeans.resources.Comment;
@@ -140,7 +140,7 @@ public class PostCommentsFragment extends Fragment
                 {
                         //关闭信号标
                         wantMore = false;
-                        WrapperCallBack wrapperCallBack = new WrapperCallBack()
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //成功的情况
                                 @Override
@@ -209,7 +209,7 @@ public class PostCommentsFragment extends Fragment
                         int offset = recyclerDataList.size();
                         //LogUtils.e("offset "+  offset);
                         //委托代理人发送请求
-                        delegate.getCommentsListByPostId(post.getId(), 0, offset, wrapperCallBack);
+                        delegate.getCommentsListByPostId(post.getId(), 0, offset, httpCallBack);
                 }
         }
 
