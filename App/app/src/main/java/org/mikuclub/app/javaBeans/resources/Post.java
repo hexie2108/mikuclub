@@ -479,7 +479,8 @@ public class Post implements Serializable
                 }
         }
 
-        public class PostTag implements Serializable{
+        public class PostTag implements Serializable
+        {
                 private int term_id;
                 private String name;
                 private int count;
@@ -516,7 +517,8 @@ public class Post implements Serializable
         }
 
 
-        public class PostAuthor implements Serializable{
+        public class PostAuthor implements Serializable
+        {
 
                 private int author_id;
                 private String display_name;

@@ -1,5 +1,7 @@
 package org.mikuclub.app.configs;
 
+import java.util.ArrayList;
+
 /**
  * 全局配置
  */
@@ -41,18 +43,33 @@ public class GlobalConfig
         public class Server{
 
                 // public static final String ROOT = "http://192.168.1.99/wordpress/wp-json/wp/v2/";
-                public static final String ROOT = "https://www.mikuclub.org/wp-json/wp/v2/";
+                public static final String HOST = "https://www.mikuclub.org/";
+                public static final String ROOT = HOST+"wp-json/wp/v2/";
                 public static final String POSTS = "posts/";
-                public static final String CATEGORIES = "categories/";
+
                 public static final String TAGS = "tags/";
                 public static final String COMMENTS = "comments/";
                 public static final String MEDIA = "media/";
                 public static final String USERS = "users/";
 
 
-                public static final String APP_UPDATE = "https://www.mikuclub.org/app/update.json";
+                public static final String APP_UPDATE = HOST+"app/update.json";
+                public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu";
 
         }
+
+        //软件更新检查周期
+        public static final long APP_UPDATE_CHECK_CYCLE = 1000; //内测阶段 每次都检查更新
+        //public long APP_UPDATE_CHECK_CYCLE = 1000 * 60 * 60 * 24 * 1; //以后上线 可以每天检查一次
+        //最后一次检查更新时间的键名
+        public static final String APP_UPDATE_CACHE_TIME= "app_update_cache_time";
+
+        //菜单更新检查周期
+        public static final long CATEGORIES_CHECK_CYCLE = 1000 * 60 * 60 * 24 * 15; //每半月检查一次
+        //最后一次菜单更新时间的键名
+        public static final String CATEGORIES_CACHE_TIME="categories_cache_time";
+        //储存菜单的键名
+        public static final String CATEGORIES_CACHE ="categories_cache";
 
 
 
@@ -72,6 +89,7 @@ public class GlobalConfig
         public static final int NUMBER_FOR_SLIDERSHOW = 5;
         //提前多少item触发自动加载
         public static final int PRE_LOAD_ITEM_NUMBER = 3;
+
 
 
 }

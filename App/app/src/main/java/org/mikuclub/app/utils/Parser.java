@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.WordpressError;
+import org.mikuclub.app.javaBeans.resources.Categories;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
@@ -76,14 +77,33 @@ public class Parser
         }
 
 
-
-
-        public static WordpressError wordpressError(String response) throws JsonParseException
+        /**
+         * 解析分类菜单
+         * @param response
+         * @return
+         */
+        public static Categories categories(String response)
         {
-                WordpressError wordpressError = gson.fromJson(response, WordpressError.class);
-                return wordpressError;
+
+                Categories categories = gson.fromJson(response, Categories.class);
+                return categories;
 
         }
+
+        /**
+         * 把 分类菜单类 序列化为字符串
+         * @param categories
+         * @return
+         */
+        public static String categoriesToJson(Categories categories)
+        {
+
+                String categoriesString = gson.toJson(categories, Categories.class);
+                return categoriesString;
+
+        }
+
+
 
 
 }

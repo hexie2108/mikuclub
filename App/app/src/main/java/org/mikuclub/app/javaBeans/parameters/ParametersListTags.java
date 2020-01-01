@@ -45,7 +45,7 @@ public class ParametersListTags
                 putIfnotNull(outputMap, "post", post);
                 putIfnotNull(outputMap, "slug", ArrayUtils.arrayListToString(slug, "", ","));
 
-                //parametri in più per ottenere il numero totale di pagina in risposta body, invece in header
+                //追加参数, 让wordpress 在 回复body中增加页数信息, 不然会被加到 回复header头部里
                 putIfnotNull(outputMap, "_envelope", "1");
 
                 return outputMap;

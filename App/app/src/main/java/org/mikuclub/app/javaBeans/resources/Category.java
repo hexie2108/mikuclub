@@ -1,22 +1,18 @@
 package org.mikuclub.app.javaBeans.resources;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class Category  implements Serializable
 {
 
+        @SerializedName("object_id")
         private int id;
-        private int count;
-        private String description;
-        private String link;
-        private String name;
-        private String slug;
-        private String taxonomy;
-        private int parent;
-        private Object meta;
-
-
-
+        private String title;
+        private int post_parent;
+        private List<Category> children;
 
         public int getId()
         {
@@ -28,83 +24,33 @@ public class Category  implements Serializable
                 this.id = id;
         }
 
-        public int getCount()
+        public String getTitle()
         {
-                return count;
+                return title;
         }
 
-        public void setCount(int count)
+        public void setTitle(String title)
         {
-                this.count = count;
+                this.title = title;
         }
 
-        public String getDescription()
+        public int getPost_parent()
         {
-                return description;
+                return post_parent;
         }
 
-        public void setDescription(String description)
+        public void setPost_parent(int post_parent)
         {
-                this.description = description;
+                this.post_parent = post_parent;
         }
 
-        public String getLink()
+        public List<Category> getChildren()
         {
-                return link;
+                return children;
         }
 
-        public void setLink(String link)
+        public void setChildren(List<Category> children)
         {
-                this.link = link;
-        }
-
-        public String getName()
-        {
-                return name;
-        }
-
-        public void setName(String name)
-        {
-                this.name = name;
-        }
-
-        public String getSlug()
-        {
-                return slug;
-        }
-
-        public void setSlug(String slug)
-        {
-                this.slug = slug;
-        }
-
-        public String getTaxonomy()
-        {
-                return taxonomy;
-        }
-
-        public void setTaxonomy(String taxonomy)
-        {
-                this.taxonomy = taxonomy;
-        }
-
-        public int getParent()
-        {
-                return parent;
-        }
-
-        public void setParent(int parent)
-        {
-                this.parent = parent;
-        }
-
-        public Object getMeta()
-        {
-                return meta;
-        }
-
-        public void setMeta(Object meta)
-        {
-                this.meta = meta;
+                this.children = children;
         }
 }

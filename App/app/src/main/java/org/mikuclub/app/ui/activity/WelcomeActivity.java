@@ -5,12 +5,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import mikuclub.app.BuildConfig;
 import mikuclub.app.R;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -24,7 +26,8 @@ import android.widget.Toast;
 
 import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.AppUpdateDelegate;
+import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.resources.Posts;
@@ -46,18 +49,21 @@ public class WelcomeActivity extends AppCompatActivity
 
         public static final int TAG = 1;
 
+
         private TextView welecomeInfoText;
         private ProgressBar welecomeProgressBar;
 
         private PostsDelegate postDelegate;
-        private AppUpdateDelegate appUpdateDelegate;
+        private BaseDelegate baseDelegate;
+        private SharedPreferences preferences;
 
         //存储通过网络获取的文章数据, 需要传递给主页
         private Posts stickyPostList = null;
         private Posts postList = null;
+        private String categoriesCache;
 
         //需要等待的请求数量
-        private int requestNumber = 2;
+        private int requestNumber = 3;
         //已完成的请求数量 (成功和失败都算)
         private int requestCount = 0;
 
@@ -72,7 +78,9 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
 
                 postDelegate = new PostsDelegate(TAG);
-                appUpdateDelegate = new AppUpdateDelegate(TAG);
+                baseDelegate = new BaseDelegate(TAG);
+                //获取软件设置参数文件
+                preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                 //检测权限
                 permissionCheck();
@@ -80,16 +88,17 @@ public class WelcomeActivity extends AppCompatActivity
 
         }
 
-        @Override
-        protected void onStart()
-        {
-                super.onStart();
 
+        /**
+         * 初始化应用配置 和检测
+         */
+        private void initApplication()
+        {
                 //检测网络状态
                 boolean isInternetAvailable = internetCheck();
                 if (isInternetAvailable)
                 {
-                        //检查更新
+                        //检查更新, 之后会回调方法 获取文章和分类的数据
                         checkUpdate();
                 }
                 else
@@ -99,118 +108,83 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
-        @Override
-        protected void onStop()
-        {
-                //取消本活动相关的所有网络请求
-                Request.cancelRequest(TAG);
-
-                super.onStop();
-
-        }
-
         /**
          * 检查软件更新
          */
         private void checkUpdate()
         {
-
-                appUpdateDelegate.checkUpdate(new HttpCallBack()
+                long updateLastCheckTime = preferences.getLong(GlobalConfig.APP_UPDATE_CACHE_TIME, 0);
+                //如果当前时间已经超过了 上次检查时间+更新周期的时间
+                if (System.currentTimeMillis() > updateLastCheckTime + GlobalConfig.APP_UPDATE_CHECK_CYCLE)
                 {
-                        @Override
-                        public void onSuccess(String response)
+                        LogUtils.v("检查应用更新");
+
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
-                                //修正response乱码问题
-                                response = GeneralUtils.fixStringEncoding(response);
-                                final AppUpdate appUpdate = Parser.appUpdate(response);
-                                //如果更新信息不是空的, 和 当前版本号低于新版本
-                                if (appUpdate != null && BuildConfig.VERSION_CODE < appUpdate.getVersionCode())
+                                @Override
+                                public void onSuccess(String response)
                                 {
-
-                                        AlertDialog.Builder dialog = new AlertDialog.Builder(WelcomeActivity.this);
-                                        dialog.setTitle("发现应用的新版本");
-                                        String message = "版本名: "+appUpdate.getVersionName() + "\n" + appUpdate.getDescription();
-                                        dialog.setMessage(message);
-                                        //如果是强制更新, 就无法取消
-                                        dialog.setCancelable(!appUpdate.isForceUpdate());
-                                        //设置确认按钮名和动作
-                                        dialog.setPositiveButton("前往下载", new DialogInterface.OnClickListener()
+                                        //修正response乱码问题
+                                        response = GeneralUtils.fixStringEncoding(response);
+                                        //获取更新信息
+                                        AppUpdate appUpdate = Parser.appUpdate(response);
+                                        //如果更新信息不是空的 和 当前版本号低于新版本
+                                        if (appUpdate != null && BuildConfig.VERSION_CODE < appUpdate.getVersionCode())
                                         {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which)
-                                                {
-                                                        GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), "");
-
-                                                }
-                                        });
-                                        //设置取消按钮名和动作
-                                        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                                                //弹出弹窗
+                                                openAlertDialog(appUpdate);
+                                        }
+                                        //已经是新版 或者 请求发生了错误
+                                        else
                                         {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which)
+                                                //如果已经是新版了, 就写入这次的检查时间, 避免后续重复检查
+                                                if (BuildConfig.VERSION_CODE == appUpdate.getVersionCode())
                                                 {
-                                                        //如果是强制更新, 取消等于关闭应用
-                                                        if (appUpdate.isForceUpdate())
-                                                        {
-                                                                Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
-                                                                finish();
-
-                                                        }
-                                                        //如果不是强制
-                                                        else
-                                                        {
-                                                                //正常请求文章数据
-                                                                getDataForHome();
-                                                        }
+                                                        //保存检查时间
+                                                        preferences.edit().putLong(GlobalConfig.APP_UPDATE_CACHE_TIME, System.currentTimeMillis()).apply();
                                                 }
-                                        });
-                                        //显示消息框
-                                        dialog.show();
-
-
+                                                //请求文章数据
+                                                getDataForHome();
+                                        }
                                 }
-                                //已经是新版或者更新信息错误
-                                else
+
+                                @Override
+                                public void onSuccessHandler(String response)
+                                {
+                                        onSuccess(response);
+                                }
+
+                                //网络错误的情况, 忽视, 下次再检查更新
+                                @Override
+                                public void onHttpError()
                                 {
                                         //请求文章数据
                                         getDataForHome();
                                 }
-                        }
+                        };
+                        baseDelegate.checkUpdate(httpCallBack);
 
-                        @Override
-                        public void onSuccessHandler(String response)
-                        {
-                                onSuccess(response);
-                        }
-
-                        //回复错误的情况, 忽视, 下次再检查更新
-                        @Override
-                        public void onError()
-                        {
-                                //请求文章数据
-                                getDataForHome();
-                        }
-
-                        //网络错误的情况, 忽视, 下次再检查更新
-                        @Override
-                        public void onHttpError()
-                        {
-                                //请求文章数据
-                                getDataForHome();
-                        }
-                });
+                }
+                //如果上次请求的时间 未过期 则不需要检查更新
+                else
+                {
+                        //请求文章数据
+                        getDataForHome();
+                }
 
 
         }
+
 
         /**
          * 请求数据并跳转主页
          */
         private void getDataForHome()
         {
-                int page=1;
+                int page = 1;
                 //请求置顶文章 回调函数
-                HttpCallBack callBackToGetStickyPost = new HttpCallBack(){
+                HttpCallBack callBackToGetStickyPost = new HttpCallBack()
+                {
                         //请求成功
                         @Override
                         public void onSuccess(String response)
@@ -220,6 +194,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 //尝试启动主页
                                 startHomeSafety();
                         }
+
                         //请求失败
                         @Override
                         public void onHttpError()
@@ -264,7 +239,90 @@ public class WelcomeActivity extends AppCompatActivity
                 //获取最新文章
                 postDelegate.getPostList(page, callBackToGetPost);
 
+                //获取分类信息
+                checkCategories();
         }
+
+
+        /**
+         * 检查分类的缓存
+         * 过期或者没有缓存的话 就获取新的
+         */
+        private void checkCategories()
+        {
+
+                final long categoriesLastCheckTime = preferences.getLong(GlobalConfig.CATEGORIES_CACHE_TIME, 0);
+                categoriesCache = preferences.getString(GlobalConfig.CATEGORIES_CACHE, "");
+                LogUtils.e(categoriesLastCheckTime + " " + categoriesCache);
+
+                //如果当前时间已经超过了 上次检查时间+检查周期的时长 或者 分类字符串缓存为空
+
+                if (System.currentTimeMillis() > categoriesLastCheckTime + GlobalConfig.CATEGORIES_CHECK_CYCLE  || categoriesCache.isEmpty())
+                {
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
+
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        //获取分类信息
+                                        categoriesCache = response;
+                                        //更新分类缓存 和 缓存时间
+                                        preferences
+                                                .edit()
+                                                .putString(GlobalConfig.CATEGORIES_CACHE, categoriesCache)
+                                                .putLong(GlobalConfig.CATEGORIES_CACHE_TIME, System.currentTimeMillis())
+                                                .apply();
+
+
+                                        LogUtils.v("重新请求分类信息");
+
+                                        startHomeSafety();
+
+                                }
+
+                                @Override
+                                public void onError()
+                                {
+                                        //只有在无缓存的情况, 才会报错
+                                        if (categoriesCache.isEmpty())
+                                        {
+                                                setError();
+                                        }
+                                        //有缓存的话 无视
+                                        else
+                                        {
+                                                startHomeSafety();
+                                        }
+                                }
+
+                                @Override
+                                public void onHttpError()
+                                {
+                                        onError();
+                                }
+
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
+                                }
+
+                        };
+                        //发送请求
+                        baseDelegate.getCategory(httpCallBack);
+
+                }
+                //直接使用缓存
+                else
+                {
+
+                        LogUtils.v("使用旧分类缓存");
+                        startHomeSafety();
+                }
+        }
+
 
         /**
          * 安全的启动首页活动
@@ -281,7 +339,7 @@ public class WelcomeActivity extends AppCompatActivity
                 if (requestCount == requestNumber)
                 {
                         //数据们都成功获取
-                        if (stickyPostList != null && postList != null)
+                        if (stickyPostList != null && postList != null && !categoriesCache.isEmpty())
                         {
                                 //启动主页
                                 HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
@@ -292,6 +350,7 @@ public class WelcomeActivity extends AppCompatActivity
                         }
                 }
         }
+
 
         /**
          * 错误的情况 , 给用户显示信息, 并允许用户手动重试
@@ -322,6 +381,70 @@ public class WelcomeActivity extends AppCompatActivity
                 });
 
 
+        }
+
+        /**
+         * 创建显示更新提示的弹窗
+         *
+         * @param appUpdate 更新信息
+         */
+        private void openAlertDialog(final AppUpdate appUpdate)
+        {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(WelcomeActivity.this);
+                dialog.setTitle("发现应用的新版本");
+                String message = "版本名: " + appUpdate.getVersionName() + "\n" + appUpdate.getDescription();
+                dialog.setMessage(message);
+                //如果是强制更新, 就无法取消
+                dialog.setCancelable(!appUpdate.isForceUpdate());
+                //设置确认按钮名和动作
+                dialog.setPositiveButton("前往下载", new DialogInterface.OnClickListener()
+                {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                                GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), "");
+
+                        }
+                });
+                //设置取消按钮名和动作
+                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                                //如果是强制更新, 取消等于关闭应用
+                                if (appUpdate.isForceUpdate())
+                                {
+                                        Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
+                                        finish();
+
+                                }
+                                //如果不是强制
+                                else
+                                {
+                                        //正常请求文章数据
+                                        getDataForHome();
+                                }
+                        }
+                });
+                //显示消息框
+                dialog.show();
+        }
+
+
+        @Override
+        protected void onStart()
+        {
+                super.onStart();
+                initApplication();
+        }
+
+        @Override
+        protected void onStop()
+        {
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
+                super.onStop();
         }
 
 
@@ -392,7 +515,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
 
-
         /**
          * 定时退出活动 (无网络连接的情况)
          */
@@ -416,6 +538,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 {
                                                         //通过get方法获取到外部传递的第一个变量
                                                         int seconds = (int) this.getArgument1();
+
                                                         @Override
                                                         public void run()
                                                         {
@@ -476,16 +599,6 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
-
-        private void setStickyPostList(Posts stickyPostList)
-        {
-                this.stickyPostList = stickyPostList;
-        }
-
-        private void setPostList(Posts postList)
-        {
-                this.postList = postList;
-        }
 
         /**
          * 同步增加计数器
