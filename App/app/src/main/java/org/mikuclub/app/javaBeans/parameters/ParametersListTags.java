@@ -1,12 +1,12 @@
 package org.mikuclub.app.javaBeans.parameters;
 
-import org.mikuclub.app.utils.data.ArrayUtils;
+import org.mikuclub.app.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 public class ParametersListTags
 {
@@ -31,22 +31,22 @@ public class ParametersListTags
                 Map<String, String> outputMap = new HashMap<String, String>();
 
 
-                putIfnotNull(outputMap, "context", context);
-                putIfnotNull(outputMap, "page", page);
-                putIfnotNull(outputMap, "per_page", per_page);
-                putIfnotNull(outputMap, "search", search);
-                putIfnotNull(outputMap, "exclude", ArrayUtils.arrayListToString(exclude, "", ","));
-                putIfnotNull(outputMap, "include", ArrayUtils.arrayListToString(include, "", ","));
-                putIfnotNull(outputMap, "offset", offset);
-                putIfnotNull(outputMap, "order", order);
-                putIfnotNull(outputMap, "orderby", orderby);
-                putIfnotNull(outputMap, "hide_empty", hide_empty);
+                putIfNotNull(outputMap, "context", context);
+                putIfNotNull(outputMap, "page", page);
+                putIfNotNull(outputMap, "per_page", per_page);
+                putIfNotNull(outputMap, "search", search);
+                putIfNotNull(outputMap, "exclude", DataUtils.arrayListToString(exclude, "", ","));
+                putIfNotNull(outputMap, "include", DataUtils.arrayListToString(include, "", ","));
+                putIfNotNull(outputMap, "offset", offset);
+                putIfNotNull(outputMap, "order", order);
+                putIfNotNull(outputMap, "orderby", orderby);
+                putIfNotNull(outputMap, "hide_empty", hide_empty);
 
-                putIfnotNull(outputMap, "post", post);
-                putIfnotNull(outputMap, "slug", ArrayUtils.arrayListToString(slug, "", ","));
+                putIfNotNull(outputMap, "post", post);
+                putIfNotNull(outputMap, "slug", DataUtils.arrayListToString(slug, "", ","));
 
                 //追加参数, 让wordpress 在 回复body中增加页数信息, 不然会被加到 回复header头部里
-                putIfnotNull(outputMap, "_envelope", "1");
+                putIfNotNull(outputMap, "_envelope", "1");
 
                 return outputMap;
 

@@ -7,15 +7,12 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.Menu;
@@ -23,7 +20,6 @@ import android.view.View;
 import android.widget.TextView;
 
 
-import org.mikuclub.app.delegates.PostsDelegate;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.http.Request;
 
@@ -34,15 +30,21 @@ import mikuclub.app.R;
  */
 public class HomeActivity extends AppCompatActivity
 {
+        /*静态变量*/
         public static final int TAG = 2;
+        public static final String INTENT_STICKY_POST_LIST = "sticky_post_list";
+        public static final String INTENT_POST_LIST = "post_list";
 
+        /*变量*/
         private AppBarConfiguration mAppBarConfiguration;
+        private Posts stickyPosts;
+        private Posts postList;
 
-
+        /*组件*/
         private BottomNavigationView bottomNavigationView;
         private DrawerLayout drawer;
         private TextView searchInput;
-        private FloatingActionButton listFloatingActionButton;
+        private FloatingActionButton floatingActionButton;
 
 
         @Override
@@ -56,16 +58,44 @@ public class HomeActivity extends AppCompatActivity
                 bottomNavigationView = findViewById(R.id.home_bottom_bar);
                 drawer = findViewById(R.id.home_drawer_layout);
                 searchInput = findViewById(R.id.search_input);
-                listFloatingActionButton = findViewById(R.id.list_floating_action_button);
+                floatingActionButton = findViewById(R.id.list_floating_action_button);
+
+
+                //从intent里读取上个活动传送来的数据
+                stickyPosts = (Posts) getIntent().getSerializableExtra(INTENT_STICKY_POST_LIST);
+                postList = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
 
-
                 initTopSearchBar();
+
                 initBottomMenu();
 
+        }
 
+        @Override
+        protected void onStop()
+        {
+
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
+                super.onStop();
+        }
+
+        /**
+         * 初始化底部导航栏
+         */
+        private void initBottomMenu()
+        {
+                //在其他分页 点击返回后 会回到主页
+                mAppBarConfiguration = new AppBarConfiguration.Builder(
+                        R.id.navigation_home, R.id.navigation_category, R.id.navigation_create)
+                        .setDrawerLayout(drawer)
+                        .build();
+                NavController navController = Navigation.findNavController(this, R.id.home_navigation);
+                NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+                NavigationUI.setupWithNavController(bottomNavigationView, navController);
         }
 
         /**
@@ -86,36 +116,6 @@ public class HomeActivity extends AppCompatActivity
         }
 
         /**
-         * 初始化底部导航栏
-         */
-        private void initBottomMenu()
-        {
-
-                //在其他分页 点击返回后 会回到主页
-                mAppBarConfiguration = new AppBarConfiguration.Builder(
-                        R.id.navigation_home, R.id.navigation_category, R.id.navigation_create)
-                        .setDrawerLayout(drawer)
-                        .build();
-                NavController navController = Navigation.findNavController(this, R.id.home_navigation);
-                NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-                NavigationUI.setupWithNavController(bottomNavigationView, navController);
-
-        }
-
-
-        @Override
-        protected void onStop()
-        {
-
-                //取消本活动相关的所有网络请求
-                Request.cancelRequest(TAG);
-
-                super.onStop();
-
-
-        }
-
-        /**
          * 加载自定义菜单
          *
          * @param menu
@@ -126,7 +126,6 @@ public class HomeActivity extends AppCompatActivity
         {
                 return super.onCreateOptionsMenu(menu);
         }
-
 
         /**
          * 修正返回键动作
@@ -160,10 +159,20 @@ public class HomeActivity extends AppCompatActivity
 
         /**
          * 获取浮动按钮组件
+         *
          * @return
          */
-        public FloatingActionButton getListFloatingActionButton()
+        public FloatingActionButton getFloatingActionButton()
         {
-                return listFloatingActionButton;
+                return floatingActionButton;
+        }
+
+        public Posts getStickyPosts()
+        {
+                return stickyPosts;
+        }
+        public Posts getPostList()
+        {
+                return postList;
         }
 }

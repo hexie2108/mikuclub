@@ -9,13 +9,13 @@ import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.CommentsDelegate;
+import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.Parser;
+import org.mikuclub.app.utils.ParserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class PostCommentsFragment extends Fragment
         private ConstraintLayout postCommentsSendBox;
 
         //数据请求代理人
-        private CommentsDelegate delegate;
+        private CommentDelegate delegate;
 
         //获取文章数据
         private Post post;
@@ -51,11 +51,11 @@ public class PostCommentsFragment extends Fragment
         //信号标 是否要加载新数据  在评论页 需要默认就开启
         private boolean wantMore = true;
 
+        //当前页数
+        private int currentPage;
+        //总页数
+        private int totalPage;
 
-        public PostCommentsFragment()
-        {
-                // Required empty public constructor
-        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,9 +77,12 @@ public class PostCommentsFragment extends Fragment
                 //从活动中获取文章数据
                 post = ((PostActivity) getActivity()).getPost();
                 //创建数据请求 代理人
-                delegate = new CommentsDelegate(((PostActivity) getActivity()).TAG);
+                delegate = new CommentDelegate(((PostActivity) getActivity()).TAG);
 
                 recyclerDataList = new ArrayList<>();
+
+                currentPage = 0;
+                totalPage = -1;
 
 
                 //初始化列表
@@ -148,7 +151,7 @@ public class PostCommentsFragment extends Fragment
                                 {
 
                                         //解析数据
-                                        Comments commentList = Parser.comments(response);
+                                        Comments commentList = ParserUtils.comments(response);
                                         //加载数据
                                         recyclerDataList.addAll(commentList.getBody());
                                         //通知更新
@@ -158,6 +161,13 @@ public class PostCommentsFragment extends Fragment
                                         {
                                                 //重新开启信号标
                                                 wantMore = true;
+                                                //当前页数+1
+                                                currentPage++;
+                                                //如果是第一次获取总页数
+                                                if(totalPage == -1)
+                                                {
+                                                        totalPage = commentList.getHeaders().getTotalPage();
+                                                }
                                         }
                                         else{
                                                 //没有更多内容了
@@ -205,11 +215,9 @@ public class PostCommentsFragment extends Fragment
                                         wantMore = true;
                                 }
                         };
-                        //获取当前 数据长度
-                        int offset = recyclerDataList.size();
-                        //LogUtils.e("offset "+  offset);
+
                         //委托代理人发送请求
-                        delegate.getCommentsListByPostId(post.getId(), 0, offset, httpCallBack);
+                        delegate.getCommentsListByPostId(post.getId(), 0, currentPage+1, httpCallBack);
                 }
         }
 

@@ -27,6 +27,7 @@
                 <activity android:name = "org.mikuclub.app.ui.activity.HomeActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.SearchActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
+                <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
         </application>
 
 </manifest>

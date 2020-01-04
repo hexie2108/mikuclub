@@ -14,12 +14,9 @@ public class GlobalConfig
         //网络请求(上传大文件) 重试间隔 (毫秒)
         public static final int RETRY_TIME_FOR_FILE= 3000;
 
-        //网络请求标签名, 用来区分请求来源, 以便在需要的时候取消请求
-//        public static final String TAG_HOME = "home";
-//        public static final String TAG_SEARCH = "search";
-
         //JSON用的日期格式
         public static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
+        public static final String DATE_FORMAT = "yy-MM-dd HH:mm";
 
         //浮动弹窗的高度屏幕占比%
         public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS = 0.6f;
@@ -72,23 +69,28 @@ public class GlobalConfig
         public static final String CATEGORIES_CACHE ="categories_cache";
 
 
-
+        //魔法区分类id
+        public static final int CATEGORY_ID_MOFA = 1120;
 
 
         //每页显示的文章数量
         public static final int NUMBER_PER_PAGE = 12;
         //每页显示的p评论数量
         public static final int NUMBER_PER_PAGE_OF_COMMENTS = 10;
-
-        //每个列表能存放的最大文章数量
-        public static final int MAX_NUMBER_POST_FOR_LIST = NUMBER_PER_PAGE * 3;
-
-        //每页显示的文章数量 (最近发布)
-        public static final int NUMBER_FOR_RECENTLY_POSTS_LIST = 10;
         //首页幻灯片的文章数量
-        public static final int NUMBER_FOR_SLIDERSHOW = 5;
+        public static final int NUMBER_PER_PAGE_OF_SLIDERSHOW = 5;
         //提前多少item触发自动加载
         public static final int PRE_LOAD_ITEM_NUMBER = 3;
+
+
+
+        public class OrderBy{
+                public static final String DATE = "date";
+        }
+
+        public class Status{
+                public static final String PUBLISH = "publish";
+        }
 
 
 

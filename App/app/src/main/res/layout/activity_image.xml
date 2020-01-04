@@ -9,7 +9,7 @@
     tools:context = "org.mikuclub.app.ui.activity.ImageActivity">
 
 
-        <include layout = "@layout/image_slider_view" />
+        <include layout = "@layout/slider_view_image" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

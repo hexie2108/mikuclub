@@ -1,14 +1,13 @@
 package org.mikuclub.app.javaBeans.parameters;
 
-import org.mikuclub.app.utils.data.DateUtils;
-import org.mikuclub.app.utils.data.ArrayUtils;
+import org.mikuclub.app.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 public class ParametersUpdatePost
 {
@@ -30,17 +29,17 @@ public class ParametersUpdatePost
         {
                 Map<String, String> outputMap = new HashMap<String, String>();
 
-                putIfnotNull(outputMap, "id", id);
-                putIfnotNull(outputMap, "date", DateUtils.dateToString(date));
-                putIfnotNull(outputMap, "date_gmt", DateUtils.dateToString(date_gmt));
-                putIfnotNull(outputMap, "status", status);
-                putIfnotNull(outputMap, "title", title);
-                putIfnotNull(outputMap, "content", content);
-                putIfnotNull(outputMap, "author", author);
-                putIfnotNull(outputMap, "featured_media", featured_media);
-                putIfnotNull(outputMap, "sticky", sticky);
-                putIfnotNull(outputMap, "categories", ArrayUtils.arrayListToString(categories, "", ","));
-                putIfnotNull(outputMap, "tags", ArrayUtils.arrayListToString(tags, "", ","));
+                putIfNotNull(outputMap, "id", id);
+                putIfNotNull(outputMap, "date", DataUtils.dateToString(date));
+                putIfNotNull(outputMap, "date_gmt", DataUtils.dateToString(date_gmt));
+                putIfNotNull(outputMap, "status", status);
+                putIfNotNull(outputMap, "title", title);
+                putIfNotNull(outputMap, "content", content);
+                putIfNotNull(outputMap, "author", author);
+                putIfNotNull(outputMap, "featured_media", featured_media);
+                putIfNotNull(outputMap, "sticky", sticky);
+                putIfNotNull(outputMap, "categories", DataUtils.arrayListToString(categories, "", ","));
+                putIfNotNull(outputMap, "tags", DataUtils.arrayListToString(tags, "", ","));
 
                 return outputMap;
 

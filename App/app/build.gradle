@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1"
+        versionName "v0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,12 +23,16 @@ android {
         }
 
         debug {
-            versionNameSuffix ".beta"
+            versionNameSuffix ".debug"
             resValue "string", "app_version_name", "${defaultConfig.versionName}${versionNameSuffix}"
         }
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 
 }
@@ -37,12 +41,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.13-rc-2'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //import material design
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
 
     //import PreferenceManager
     implementation 'androidx.preference:preference:1.1.0'
@@ -100,4 +104,11 @@ dependencies {
     //implementation 'com.xingen:volleyHelper:1.0.0'
 
 
+    //谷歌数据分析
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+
+
 }
+
+//谷歌数据分析
+apply plugin: 'com.google.gms.google-services'

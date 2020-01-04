@@ -83,7 +83,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 //如果是普通数据类型
                 if (viewType == TYPE_ITEM)
                 {
-                        View view = mInflater.inflate(R.layout.list_item_comments, parent, false);
+                        View view = mInflater.inflate(R.layout.list_item_comment, parent, false);
                         holder = new CommentViewHolder(view);
                         setItemOnClickListener((CommentViewHolder) holder);
 
@@ -109,7 +109,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 else if (holder instanceof FooterViewHolder)
                 {
-                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, internetError, internetErrorListener);
+                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, true, internetError, internetErrorListener);
                 }
 
         }
@@ -216,6 +216,32 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         {
                 this.internetError = internetError;
                 this.internetErrorListener = internetErrorListener;
+        }
+
+
+        /**
+         * 子评论列表的适配器 继承了普通评论列表
+         */
+        public static class RepliesAdapter extends CommentsAdapter
+        {
+
+                /**
+                 * 构建函数
+                 *
+                 * @param list
+                 * @param context
+                 */
+                public RepliesAdapter(List<Comment> list, Context context)
+                {
+                        super(list, context);
+                }
+
+
+                @Override
+                protected void setItemOnClickListener(final CommentViewHolder holder)
+                {
+
+                }
         }
 
 }

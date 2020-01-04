@@ -17,11 +17,9 @@ public class MyApplication extends Application
         public void onCreate()
         {
                 super.onCreate();
-                //salvare context in variabile statico
                 context = getApplicationContext();
-                // inizializzare coda di richiesta HTTP
+                //创建网络请求队列
                 RequestQueue.getInstance(context);
-
         }
 
         public static Context getContext()

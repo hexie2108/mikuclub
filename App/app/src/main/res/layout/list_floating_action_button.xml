@@ -9,6 +9,6 @@
     android:layout_gravity = "bottom|right"
     android:layout_margin = "@dimen/normal"
     app:backgroundTint = "@color/defaultBackground"
-    app:layout_behavior = "org.mikuclub.app.view.MyFloatingActionButtonScrollBehavior"
+    app:layout_behavior = "org.mikuclub.app.utils.custom.MyFloatingActionButtonScrollBehavior"
     app:srcCompat = "@drawable/double_arrow"
     app:tint = "@color/colorPrimary" />

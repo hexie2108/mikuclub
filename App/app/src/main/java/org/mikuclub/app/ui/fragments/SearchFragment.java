@@ -1,6 +1,5 @@
 package org.mikuclub.app.ui.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,16 +24,15 @@ import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.callBack.CallBack;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.PostsDelegate;
+import org.mikuclub.app.delegates.PostDelegate;
 
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.ui.activity.SearchActivity;
 import org.mikuclub.app.utils.KeyboardUtils;
-import org.mikuclub.app.utils.PostListUtils;
-import org.mikuclub.app.view.CustomGridLayoutSpanSizeLookup;
-import org.mikuclub.app.utils.Parser;
+import org.mikuclub.app.controller.PostController;
+import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
+import org.mikuclub.app.utils.ParserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,7 @@ public class SearchFragment extends Fragment
         private List<Post> recyclerDataList;
 
         //数据请求代理人
-        private PostsDelegate delegate;
+        private PostDelegate delegate;
 
         //搜索栏组件
         private EditText searchInput;
@@ -96,7 +94,7 @@ public class SearchFragment extends Fragment
                 manageInfoUtilView = new ManageInfoUtilView(view);
 
                 //创建数据请求 代理人
-                delegate = new PostsDelegate(((SearchActivity) getActivity()).TAG);
+                delegate = new PostDelegate(((SearchActivity) getActivity()).TAG);
                 recyclerDataList = new ArrayList<>();
 
                 //初始化列表
@@ -139,10 +137,11 @@ public class SearchFragment extends Fragment
                 recyclerViewAdapter = new PostsAdapter(recyclerDataList, getActivity());
                 recyclerView.setAdapter(recyclerViewAdapter);
 
-                //设置网格布局
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-                //让最后一个组件(进度条组件) 占据2个列
-                gridLayoutManager.setSpanSizeLookup(new CustomGridLayoutSpanSizeLookup(recyclerDataList, 2, false));
+                //创建网格布局
+                int numberColumn = 2;
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), numberColumn);
+                //让最后一个组件(尾部) 占据2个列
+                gridLayoutManager.setSpanSizeLookup(new MyGridLayoutSpanSizeLookup(recyclerDataList, numberColumn, false));
                 //加载布局
                 recyclerView.setLayoutManager(gridLayoutManager);
                 //缓存item的数量
@@ -171,8 +170,8 @@ public class SearchFragment extends Fragment
         {
 
                 //绑定activity里的组件
-                searchInput = getActivity().findViewById(R.id.search_input);
-                searchInputIcon = getActivity().findViewById(R.id.search_input_icon);
+                searchInput = ((SearchActivity) getActivity()).getSearchInput();
+                searchInputIcon = ((SearchActivity) getActivity()).getSearchInputIcon();
                 //弹出键盘+获取焦点
                 KeyboardUtils.showKeyboard(searchInput);
 
@@ -263,7 +262,7 @@ public class SearchFragment extends Fragment
                                 public void onSuccess(String response)
                                 {
                                         //解析新数据
-                                        Posts postList = Parser.posts(response);
+                                        Posts postList = ParserUtils.posts(response);
                                         //清空旧数据
                                         recyclerDataList.clear();
                                         //添加数据到列表
@@ -293,7 +292,6 @@ public class SearchFragment extends Fragment
                                         //更新页数信息
                                         currentPage = page;
                                         totalPage = postList.getHeaders().getTotalPage();
-
 
                                 }
 
@@ -363,7 +361,7 @@ public class SearchFragment extends Fragment
                                 public void onSuccess(String response)
                                 {
                                         //解析数据
-                                        Posts postList = Parser.posts(response);
+                                        Posts postList = ParserUtils.posts(response);
                                         //加载数据
                                         recyclerDataList.addAll(postList.getBody());
                                         //通知更新
@@ -424,12 +422,12 @@ public class SearchFragment extends Fragment
          */
         private void initFloatingActionButton()
         {
-                ((SearchActivity) getActivity()).getListFloatingActionButton().setOnClickListener(new View.OnClickListener()
+                ((SearchActivity) getActivity()).getFloatingActionButton().setOnClickListener(new View.OnClickListener()
                 {
                         @Override
                         public void onClick(View v)
                         {
-                                PostListUtils.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
+                                PostController.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
                                 {
                                         @Override
                                         public void execute(String... args)

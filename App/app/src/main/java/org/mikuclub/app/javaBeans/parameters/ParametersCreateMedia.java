@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 public class ParametersCreateMedia
 {
@@ -18,8 +18,8 @@ public class ParametersCreateMedia
         {
                 Map<String, String> outputMap = new HashMap<String, String>();
 
-                putIfnotNull(outputMap, "title", title);
-                putIfnotNull(outputMap, "post", post);
+                putIfNotNull(outputMap, "title", title);
+                putIfNotNull(outputMap, "post", post);
 
 
                 return outputMap;

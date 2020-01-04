@@ -38,8 +38,6 @@ public class MyListOnScrollListener extends RecyclerView.OnScrollListener
                 {
                         //获取列表最后一个可见item的位置
                         lastVisibleItem = manager.findLastVisibleItemPosition();
-                        //LogUtils.e("lastitem: " + lastVisibleItem + " / total: " + homeListAdapter.getItemCount());
-
                         //如果可见item 到达了加载范围里, 触发加载
                         if (lastVisibleItem >= (adapter.getItemCount() - 1) - GlobalConfig.PRE_LOAD_ITEM_NUMBER)
                         {

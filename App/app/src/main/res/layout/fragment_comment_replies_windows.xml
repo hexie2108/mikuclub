@@ -9,7 +9,7 @@
     android:padding = "@dimen/normal">
 
         <include
-            layout = "@layout/list_item_comments"
+            layout = "@layout/list_item_comment"
             app:layout_constraintTop_toTopOf = "parent" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -17,6 +17,7 @@
             android:layout_width = "0dp"
             android:layout_height = "0dp"
             android:layout_marginTop = "@dimen/normal"
+            android:paddingLeft="@dimen/very_large"
             app:layout_constraintBottom_toTopOf="@id/return_button"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"

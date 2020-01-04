@@ -1,14 +1,13 @@
 package org.mikuclub.app.javaBeans.parameters;
 
-import org.mikuclub.app.utils.data.DateUtils;
-import org.mikuclub.app.utils.data.ArrayUtils;
+import org.mikuclub.app.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 public class ParametersListPosts
 {
@@ -40,31 +39,31 @@ public class ParametersListPosts
                 Map<String, String> outputMap = new HashMap<String, String>();
 
 
-                putIfnotNull(outputMap, "before", DateUtils.dateToString(before));
-                putIfnotNull(outputMap, "after", DateUtils.dateToString(after));
+                putIfNotNull(outputMap, "before", DataUtils.dateToString(before));
+                putIfNotNull(outputMap, "after", DataUtils.dateToString(after));
 
-                putIfnotNull(outputMap, "context", context);
-                putIfnotNull(outputMap, "page", page);
-                putIfnotNull(outputMap, "per_page", per_page);
-                putIfnotNull(outputMap, "search", search);
+                putIfNotNull(outputMap, "context", context);
+                putIfNotNull(outputMap, "page", page);
+                putIfNotNull(outputMap, "per_page", per_page);
+                putIfNotNull(outputMap, "search", search);
 
-                putIfnotNull(outputMap, "author", ArrayUtils.arrayListToString(author, "", ","));
-                putIfnotNull(outputMap, "author_exclude", ArrayUtils.arrayListToString(author_exclude, "", ","));
-                putIfnotNull(outputMap, "exclude", ArrayUtils.arrayListToString(exclude, "", ","));
-                putIfnotNull(outputMap, "include", ArrayUtils.arrayListToString(include, "", ","));
-                putIfnotNull(outputMap, "offset", offset);
-                putIfnotNull(outputMap, "order", order);
-                putIfnotNull(outputMap, "orderby", orderby);
-                putIfnotNull(outputMap, "slug", ArrayUtils.arrayListToString(slug, "", ","));
-                putIfnotNull(outputMap, "status", status);
-                putIfnotNull(outputMap, "categories", ArrayUtils.arrayListToString(categories, "", ","));
-                putIfnotNull(outputMap, "categories_exclude", ArrayUtils.arrayListToString(categories_exclude, "", ","));
-                putIfnotNull(outputMap, "tags", ArrayUtils.arrayListToString(tags, "", ","));
-                putIfnotNull(outputMap, "tags_exclude", ArrayUtils.arrayListToString(tags_exclude, "", ","));
-                putIfnotNull(outputMap, "sticky", sticky);
+                putIfNotNull(outputMap, "author", DataUtils.arrayListToString(author, "", ","));
+                putIfNotNull(outputMap, "author_exclude", DataUtils.arrayListToString(author_exclude, "", ","));
+                putIfNotNull(outputMap, "exclude", DataUtils.arrayListToString(exclude, "", ","));
+                putIfNotNull(outputMap, "include", DataUtils.arrayListToString(include, "", ","));
+                putIfNotNull(outputMap, "offset", offset);
+                putIfNotNull(outputMap, "order", order);
+                putIfNotNull(outputMap, "orderby", orderby);
+                putIfNotNull(outputMap, "slug", DataUtils.arrayListToString(slug, "", ","));
+                putIfNotNull(outputMap, "status", status);
+                putIfNotNull(outputMap, "categories", DataUtils.arrayListToString(categories, "", ","));
+                putIfNotNull(outputMap, "categories_exclude", DataUtils.arrayListToString(categories_exclude, "", ","));
+                putIfNotNull(outputMap, "tags", DataUtils.arrayListToString(tags, "", ","));
+                putIfNotNull(outputMap, "tags_exclude", DataUtils.arrayListToString(tags_exclude, "", ","));
+                putIfNotNull(outputMap, "sticky", sticky);
 
                 //追加参数, 让wordpress 在 回复body中增加页数信息, 不然会被加到 回复header头部里
-                putIfnotNull(outputMap, "_envelope", "1");
+                putIfNotNull(outputMap, "_envelope", "1");
 
                 return outputMap;
 

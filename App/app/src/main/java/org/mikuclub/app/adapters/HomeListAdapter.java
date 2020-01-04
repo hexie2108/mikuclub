@@ -1,7 +1,6 @@
 package org.mikuclub.app.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +14,12 @@ import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.adapters.viewHolder.HeaderViewHolder;
 import org.mikuclub.app.adapters.viewHolder.PostViewHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.ui.fragments.HomeMainFragment;
-import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
@@ -132,7 +126,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 else if (holder instanceof FooterViewHolder)
                 {
 
-                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, internetError, internetErrorListener);
+                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, false, internetError, internetErrorListener);
                 }
         }
 
@@ -147,7 +141,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public PostViewHolder createPostViewHolder(ViewGroup parent)
         {
                 //加载布局
-                View view = mInflater.inflate(R.layout.list_item_posts, parent, false);
+                View view = mInflater.inflate(R.layout.list_item_post, parent, false);
                 //生成控制器
                 final PostViewHolder holder = new PostViewHolder(view);
                 //绑定监听器
@@ -177,7 +171,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public HeaderViewHolder createHeaderViewHolder(ViewGroup parent)
         {
                 //加载布局
-                View view = mInflater.inflate(R.layout.home_slider_view, parent, false);
+                View view = mInflater.inflate(R.layout.slider_view_home, parent, false);
                 final HeaderViewHolder holder = new HeaderViewHolder(view);
 
                 //配置幻灯片
@@ -190,7 +184,7 @@ public class HomeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 // MzTransformer, DepthPageTransformer，ZoomOutPageTransformer
                 //sliderViewPager.setPageTransformer(false, new DepthPageTransformer());
 
-                holder.getSliderViewPager().setPageListener(bean, R.layout.home_slider_view_item, new PageHelperListener<Post>()
+                holder.getSliderViewPager().setPageListener(bean, R.layout.slider_view_item_home, new PageHelperListener<Post>()
                 {
                         @Override
                         public void getItemView(View view, final Post post)

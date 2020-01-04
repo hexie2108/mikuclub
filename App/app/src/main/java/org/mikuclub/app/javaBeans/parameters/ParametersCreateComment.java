@@ -3,7 +3,7 @@ package org.mikuclub.app.javaBeans.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 public class ParametersCreateComment
 {
@@ -19,11 +19,11 @@ public class ParametersCreateComment
         {
                 Map<String, String> outputMap = new HashMap<String, String>();
 
-                putIfnotNull(outputMap, "content", content);
-                putIfnotNull(outputMap, "author_ip", author_ip);
-                putIfnotNull(outputMap, "parent", parent);
-                putIfnotNull(outputMap, "post", post);
-                putIfnotNull(outputMap, "status", status);
+                putIfNotNull(outputMap, "content", content);
+                putIfNotNull(outputMap, "author_ip", author_ip);
+                putIfNotNull(outputMap, "parent", parent);
+                putIfNotNull(outputMap, "post", post);
+                putIfNotNull(outputMap, "status", status);
 
                 return outputMap;
 

@@ -1,41 +1,29 @@
 package org.mikuclub.app.ui.fragments;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.adapters.HomeListAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.callBack.CallBack;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.PostsDelegate;
+import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
-import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.Parser;
-import org.mikuclub.app.utils.PostListUtils;
-import org.mikuclub.app.view.CustomGridLayoutSpanSizeLookup;
-import org.mikuclub.app.view.EditTextNumberFilterMinMax;
+import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.controller.PostController;
+import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -43,10 +31,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
+/**
+ * 主页活动-首页碎片
+ */
 public class HomeMainFragment extends Fragment
 {
 
-        private PostsDelegate delegate;
+        private PostDelegate delegate;
 
         //文章列表
         private RecyclerView recyclerView;
@@ -89,19 +80,21 @@ public class HomeMainFragment extends Fragment
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
 
                 //创建数据请求 代理人
-                delegate = new PostsDelegate(HomeActivity.TAG);
+                delegate = new PostDelegate(HomeActivity.TAG);
                 //从intent里读取上个活动传送来的数据
-                stickyPosts = (Posts) getActivity().getIntent().getSerializableExtra("sticky_post_list");
+                stickyPosts = ((HomeActivity) getActivity()).getStickyPosts();
                 stickyPostList = stickyPosts.getBody();
-                Posts postList = (Posts) getActivity().getIntent().getSerializableExtra("post_list");
+                Posts postList = ((HomeActivity) getActivity()).getPostList();
+
                 recyclerDataList = postList.getBody();
 
                 //设置总页数
                 totalPage = postList.getHeaders().getTotalPage();
                 //设置当前页数
                 currentPage = 1;
+
                 //加载文章列表
-                initRecyclerView(postList);
+                initRecyclerView();
 
                 //配置下拉刷新
                 initSwipeRefresh();
@@ -124,19 +117,19 @@ public class HomeMainFragment extends Fragment
 
         /**
          * 初始化文章列表
-         *
-         * @param postList
          */
-        private void initRecyclerView(Posts postList)
+        private void initRecyclerView()
         {
                 //创建适配器
                 recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getActivity());
                 recyclerView.setAdapter(recyclerViewAdapter);
 
-                //设置网格布局
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-                //让最后一个组件(进度条组件) 占据2个列
-                gridLayoutManager.setSpanSizeLookup(new CustomGridLayoutSpanSizeLookup(recyclerDataList, 2, true));
+                //创建网格布局
+                //设置行数
+                int numberColumn = 2;
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), numberColumn);
+                //让最后一个组件(尾部) 占据2个列
+                gridLayoutManager.setSpanSizeLookup(new MyGridLayoutSpanSizeLookup(recyclerDataList, numberColumn, true));
                 //加载布局
                 recyclerView.setLayoutManager(gridLayoutManager);
                 recyclerView.setHasFixedSize(false);
@@ -194,7 +187,7 @@ public class HomeMainFragment extends Fragment
                                 public void onSuccess(String response)
                                 {
                                         //解析新数据
-                                        Posts newPostList = Parser.posts(response);
+                                        Posts newPostList = ParserUtils.posts(response);
                                         //插入新数据
                                         recyclerDataList.addAll(newPostList.getBody());
                                         //通知增加了对应位置的数据
@@ -220,7 +213,6 @@ public class HomeMainFragment extends Fragment
                                 @Override
                                 public void onHttpError()
                                 {
-                                        LogUtils.e("onHttpError");
                                         //显示错误信息, 绑定点击事件允许用户手动重试
                                         recyclerViewAdapter.setInternetError(true, new View.OnClickListener()
                                         {
@@ -268,8 +260,6 @@ public class HomeMainFragment extends Fragment
                         swipeRefresh.setRefreshing(true);
                 }
 
-                //返回顶部
-                recyclerView.scrollToPosition(1);
 
                 HttpCallBack httpCallBack = new HttpCallBack()
                 {
@@ -277,7 +267,7 @@ public class HomeMainFragment extends Fragment
                         @Override
                         public void onSuccess(String response)
                         {
-                                Posts postList = Parser.posts(response);
+                                Posts postList = ParserUtils.posts(response);
                                 recyclerDataList.clear();
                                 recyclerDataList.addAll(postList.getBody());
 
@@ -291,12 +281,20 @@ public class HomeMainFragment extends Fragment
                                 //更新当前页数
                                 currentPage = page;
 
+                                //返回顶部
+                                recyclerView.scrollToPosition(1);
+                        }
+
+                        @Override
+                        public void onError()
+                        {
+                                Toast.makeText(getActivity(), "请求错误", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onHttpError()
                         {
-                                Toast.makeText(getActivity(), "请求失败, 请重试", Toast.LENGTH_SHORT).show();
+                                onError();
                         }
 
                         //请求结束后
@@ -326,12 +324,12 @@ public class HomeMainFragment extends Fragment
          */
         private void initFloatingActionButton()
         {
-                ((HomeActivity) getActivity()).getListFloatingActionButton().setOnClickListener(new View.OnClickListener()
+                ((HomeActivity) getActivity()).getFloatingActionButton().setOnClickListener(new View.OnClickListener()
                 {
                         @Override
                         public void onClick(View v)
                         {
-                                PostListUtils.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
+                                PostController.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
                                 {
                                         @Override
                                         public void execute(String... args)

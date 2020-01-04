@@ -9,17 +9,17 @@
             android:id = "@+id/navigation_home"
             android:name = "org.mikuclub.app.ui.fragments.HomeMainFragment"
             android:label = "主页"
-            tools:layout = "@layout/empty_view" />
+            tools:layout = "@layout/fragment_home_main" />
 
         <fragment
             android:id = "@+id/navigation_category"
-            android:name = "org.mikuclub.app.ui.fragments.EmptyFragment"
+            android:name = "org.mikuclub.app.ui.fragments.HomeCategoriesFragment"
             android:label = "分类"
-            tools:layout = "@layout/empty_activity" />
+            tools:layout = "@layout/fragment_home_categories" />
 
         <fragment
             android:id = "@+id/navigation_create"
             android:name = "org.mikuclub.app.ui.fragments.EmptyFragment"
             android:label = "投稿"
-            tools:layout = "@layout/empty_activity" />
+            tools:layout = "" />
 </navigation>

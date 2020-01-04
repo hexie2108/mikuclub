@@ -1,17 +1,13 @@
 package org.mikuclub.app.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -140,7 +136,7 @@ public class HttpUtils
                         @Override
                         public Drawable getErrorDrawable()
                         {
-                                return ContextCompat.getDrawable(context, R.drawable.baseline_error_black);
+                                return ContextCompat.getDrawable(context, R.drawable.error_black);
                         }
 
                         @Override

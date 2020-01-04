@@ -14,19 +14,15 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import org.mikuclub.app.adapters.CommentRepliesAdapter;
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.CommentsDelegate;
+import org.mikuclub.app.controller.CommentController;
+import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.resources.Comment;
-import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.Parser;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
@@ -48,13 +44,29 @@ import mikuclub.app.R;
  */
 public class CommentRepliesFragment extends BottomSheetDialogFragment
 {
-
+        /*静态变量*/
         public static final int TAG = 5;
+        public static final String BUNDLE_COMMENT = "comment";
 
-        //文章列表
-        private RecyclerView recyclerView;
+        /*变量*/
+        //数据请求代理人
+        private CommentDelegate delegate;
+        //数据控制器
+        private CommentController controller;
+        //列表适配器
         private CommentsAdapter recyclerViewAdapter;
+        //列表数据
         private List<Comment> recyclerDataList;
+        //获取评论数据
+        private Comment comment;
+        //信号标 是否要加载新数据  在评论页 需要默认就开启
+        private boolean wantMore = true;
+        //当前页数
+        private int currentPage;
+        //总页数
+        private int totalPage;
+
+        /*组件*/
         //父评论主体
         private ConstraintLayout item;
         private ImageView itemAvatarImg;
@@ -62,26 +74,14 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private TextView itemDate;
         private TextView itemContent;
         private TextView itemCountReplies;
+        private RecyclerView recyclerView;
         private Button returnButton;
-
-        //数据请求代理人
-        private CommentsDelegate delegate;
-
-        //获取评论数据
-        private Comment comment;
-
-        //信号标 是否要加载新数据  在评论页 需要默认就开启
-        private boolean wantMore = true;
-
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
         {
-
-                // 为fragment加载主布局
-                View root = inflater.inflate(R.layout.fragment_comment_replies_windows, container, false);
-                return root;
+                return inflater.inflate(R.layout.fragment_comment_replies_windows, container, false);
         }
 
         @Override
@@ -90,52 +90,39 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
 
                 super.onViewCreated(view, savedInstanceState);
 
-                //获取传递的数据
-                comment = (Comment) getArguments().getSerializable("comment");
-
                 //绑定组件
-                recyclerView = view.findViewById(R.id.post_comments_replies_recycler_view);
-                //管理器绑定各项 视图
                 item = view.findViewById(R.id.item_comment);
-
                 itemAvatarImg = view.findViewById(R.id.item_avatar_img);
                 itemName = view.findViewById(R.id.item_name);
                 itemDate = view.findViewById(R.id.item_date);
                 itemContent = view.findViewById(R.id.item_content);
                 itemCountReplies = view.findViewById(R.id.item_count_replies);
+                recyclerView = view.findViewById(R.id.post_comments_replies_recycler_view);
                 returnButton = view.findViewById(R.id.return_button);
 
+                //获取传递的数据
+                comment = (Comment) getArguments().getSerializable(BUNDLE_COMMENT);
                 //创建数据请求 代理人
-                delegate = new CommentsDelegate(((PostActivity) getActivity()).TAG);
+                delegate = new CommentDelegate(((PostActivity) getActivity()).TAG);
+
+                //初始化变量
                 recyclerDataList = new ArrayList<>();
 
                 //初始化父评论
                 initParentComment();
-
                 //初始化列表
                 initRecyclerView();
 
                 //绑定返回按钮
-                returnButton.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                //关闭窗口
-                                CommentRepliesFragment.this.dismiss();
-                        }
+                returnButton.setOnClickListener(v -> {
+                        //关闭窗口
+                        CommentRepliesFragment.this.dismiss();
                 });
+                //调整窗口高度
+               ScreenUtils.setFixWindowsHeight(getActivity(), view);
 
-                //动态调整布局高度
-                final View myView = view;
-                myView.post(new Runnable()
-                {
-                        @Override
-                        public void run()
-                        {
-                                GeneralUtils.setMaxHeightOfLayout(getActivity(), myView, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS);
-                        }
-                });
+                //创建数据控制器
+                controller = new CommentController(delegate, recyclerView,  recyclerViewAdapter, recyclerDataList);
 
         }
 
@@ -145,21 +132,23 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         {
                 super.onStart();
                 //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                getMore();
+                controller.getMore(comment.getPost(), comment.getId());
         }
 
+        /**
+         * 初始化父评论
+         */
         private void initParentComment()
         {
                 //为视图设置数据
                 itemName.setText(comment.getAuthor_name());
                 //生成时间格式
-                String dateString = new SimpleDateFormat("yy-MM-dd HH:mm").format(comment.getDate());
+                String dateString = new SimpleDateFormat(GlobalConfig.DATE_FORMAT).format(comment.getDate());
                 itemDate.setText(dateString);
                 //确保给地址添加上https协议
                 String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(comment.getAuthor_avatar_urls().getSize96());
                 //加载远程图片
                 GlideImageUtils.getSquareImg(getActivity(), itemAvatarImg, avatarSrc);
-
                 //获取评论内容
                 String htmlContent = comment.getContent().getRendered();
                 //移除内容外层P标签
@@ -172,7 +161,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
                         }
-
                         //设置点击链接tag的动作
                         @Override
                         public void onLinkClick(Context context, String url)
@@ -187,130 +175,40 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 });
         }
 
-
         /**
          * 初始化 评论列表
          */
         private void initRecyclerView()
         {
                 //配置recyclerView
-                recyclerViewAdapter = new CommentRepliesAdapter(recyclerDataList, getActivity());
-                recyclerView.setAdapter(recyclerViewAdapter);
+                recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity());
+                //创建列表主布局
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                layoutManager.setOrientation(RecyclerView.VERTICAL);
 
-
-                //创建加载布局
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-                linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-                recyclerView.setLayoutManager(linearLayoutManager);
-                //缓存item的数量
-                recyclerView.setItemViewCacheSize(GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2);
-                //禁止内嵌滑动, 帮助禁止浮动页面滑动
-                recyclerView.setNestedScrollingEnabled(false);
-
-                //绑定滑动事件
-                recyclerView.addOnScrollListener(new MyListOnScrollListener(recyclerViewAdapter, linearLayoutManager)
-                {
-                        //只有满足位置条件才会触发方法
+                //创建列表滑动监听器
+                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager){
                         @Override
                         public void onExecute()
                         {
                                 //加载更多
-                                getMore();
+                                controller.getMore(comment.getPost(), comment.getId());
                         }
-                });
+                };
 
+                //配置列表, (hasNestedScrollingEnabled 为否, 是因为要禁用窗口滑动)
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, false, listener);
+
+                //如果没有任何子回复
                 if (comment.getMetadata().getCount_replies() == 0)
                 {
-                        //没有回复, 关闭自动加载
+                        //关闭自动加载
                         wantMore = false;
                         recyclerView.setVisibility(View.INVISIBLE);
                 }
 
         }
 
-        /*
-        加载更多
-         */
-        private void getMore()
-        {
-                //检查信号标
-                if (wantMore)
-                {
-                        //关闭信号标
-                        wantMore = false;
-                        HttpCallBack httpCallBack = new HttpCallBack()
-                        {
-                                //成功的情况
-                                @Override
-                                public void onSuccess(String response)
-                                {
-
-                                        //解析数据
-                                        Comments commentList = Parser.comments(response);
-                                        //加载数据
-                                        recyclerDataList.addAll(commentList.getBody());
-                                        //通知更新
-                                        recyclerViewAdapter.notifyItemInserted(recyclerDataList.size());
-                                        //如果返回的文章等于规定数量, 正常
-                                        if (commentList.getBody().size() == GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS)
-                                        {
-                                                //重新开启信号标
-                                                wantMore = true;
-                                        }
-                                        else
-                                        {
-                                                //没有更多内容了
-                                                //调用错误处理方法
-                                                onError();
-                                        }
-                                }
-
-                                //请求结果包含错误的情况
-                                //结果主体为空, 无更多内容
-                                @Override
-                                public void onError()
-                                {
-                                        recyclerViewAdapter.setNotMoreError(true);
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
-                                }
-
-                                //网络失败的情况
-                                @Override
-                                public void onHttpError()
-                                {
-                                        //显示错误信息, 绑定点击事件允许用户手动重试
-                                        recyclerViewAdapter.setInternetError(true, new View.OnClickListener()
-                                        {
-                                                @Override
-                                                public void onClick(View v)
-                                                {
-                                                        //重置请求状态
-                                                        wantMore = true;
-                                                        //重置错误显示
-                                                        recyclerViewAdapter.setInternetError(false, null);
-                                                        getMore();
-                                                }
-                                        });
-                                        LogUtils.e("错误");
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
-                                }
-
-                                //取消请求的情况
-                                @Override
-                                public void onCancel()
-                                {
-                                        wantMore = true;
-                                }
-                        };
-                        //获取当前 数据长度
-                        int offset = recyclerDataList.size();
-                        //LogUtils.e("offset " + offset);
-                        //委托代理人发送请求
-                        delegate.getCommentsListByPostId(comment.getPost(), comment.getId(), offset, httpCallBack);
-                }
-        }
 
         /**
          * 禁止浮动页面滑动
@@ -324,6 +222,14 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 ScreenUtils.disableDraggingOfBottomSheetDialogFragment(dialog);
         }
 
+        @Override
+        public void onStop()
+        {
+                //取消本碎片相关的所有网络请求
+                Request.cancelRequest(TAG);
+
+                super.onStop();
+        }
 
         /**
          * 本碎片的静态启动方法
@@ -334,19 +240,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         public static CommentRepliesFragment startAction(Comment comment)
         {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("comment", comment);
+                bundle.putSerializable(BUNDLE_COMMENT, comment);
                 CommentRepliesFragment fragment = new CommentRepliesFragment();
                 fragment.setArguments(bundle);
                 return fragment;
         }
 
 
-        @Override
-        public void onStop()
-        {
-                //取消本碎片相关的所有网络请求
-                Request.cancelRequest(TAG);
-
-                super.onStop();
-        }
 }

@@ -4,23 +4,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.android.volley.toolbox.NetworkImageView;
 
 import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.adapters.viewHolder.PostViewHolder;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
@@ -85,7 +78,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //如果是普通数据类型
                 if (viewType == TYPE_ITEM)
                 {
-                        View view = mInflater.inflate(R.layout.list_item_posts, parent, false);
+                        View view = mInflater.inflate(R.layout.list_item_post, parent, false);
                         holder = new PostViewHolder(view);
                         ((PostViewHolder) holder).getCardView().setOnClickListener(new
                                                                                            View.OnClickListener()
@@ -121,7 +114,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 }
                 else if(holder instanceof  FooterViewHolder){
-                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, internetError, internetErrorListener);
+                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, false, internetError, internetErrorListener);
                 }
 
         }

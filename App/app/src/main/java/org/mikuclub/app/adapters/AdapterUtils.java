@@ -17,11 +17,12 @@ public class AdapterUtils
         /**
          * 错误信息显示
          * @param holder
-         * @param notMoreError
-         * @param internetError
-         * @param internetErrorListener
+         * @param notMoreError 没有更多内容的错误
+         * @param notMoreHideFooter 在没有更多内容的情况下是否隐藏尾部
+         * @param internetError 网络错误
+         * @param internetErrorListener 网络错误监听器
          */
-        public static void bindFooterViewHolder(RecyclerView.ViewHolder holder, boolean notMoreError, boolean internetError, final View.OnClickListener internetErrorListener)
+        public static void bindFooterViewHolder(RecyclerView.ViewHolder holder, boolean notMoreError, boolean notMoreHideFooter, boolean internetError, final View.OnClickListener internetErrorListener)
         {
                 FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
                 //获取子组件
@@ -32,15 +33,21 @@ public class AdapterUtils
                 //没有更多的 错误
                 if (notMoreError)
                 {
-                        String errorMessage = "已经到底了~";
-
-                        //切换组件们的显示状态
-                        itemListProgressBar.setVisibility(View.INVISIBLE);
-                        itemListInfoIcon.setVisibility(View.VISIBLE);
-                        itemListInfoText.setVisibility(View.VISIBLE);
-                        itemListInfoText.setText(errorMessage);
+                        //如果需要隐藏尾部
+                        if(notMoreHideFooter){
+                                itemView.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                                String errorMessage = "已经到底了~";
+                                //切换组件们的显示状态
+                                itemListProgressBar.setVisibility(View.INVISIBLE);
+                                itemListInfoIcon.setVisibility(View.VISIBLE);
+                                itemListInfoText.setVisibility(View.VISIBLE);
+                                itemListInfoText.setText(errorMessage);
+                        }
                         //删除组件上的监听器
                         itemView.setOnClickListener(null);
+
                 }
                 //网络错误
                 else if (internetError)

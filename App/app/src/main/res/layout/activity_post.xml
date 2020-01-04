@@ -28,7 +28,7 @@
                     app:titleEnabled = "false"
                     app:toolbarId = "@id/post_toolbar">
 
-                        <include layout = "@layout/post_slider_view" />
+                        <include layout = "@layout/slider_view_post" />
 
 
                         <androidx.appcompat.widget.Toolbar

@@ -1,27 +1,18 @@
 package org.mikuclub.app.callBack;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.google.gson.JsonParseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.Parser;
-
-import java.io.UnsupportedEncodingException;
-
-import mikuclub.app.R;
 
 /*questo è un classe wrapper  per gestire operazione callback di richiesta HTTP
  * 空的回调类, 用来处理网络请求的回调
@@ -139,7 +130,6 @@ public class HttpCallBack
                         //状态码异常,  或者 主体为空, 说明有异常错误
                         else
                         {
-
 
                                 onError();
                         }

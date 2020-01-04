@@ -3,7 +3,7 @@ package org.mikuclub.app.javaBeans.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mikuclub.app.utils.data.MapUtils.putIfnotNull;
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 public class ParametersCreateTag
 {
@@ -18,9 +18,9 @@ public class ParametersCreateTag
         {
                 Map<String, String> outputMap = new HashMap<String, String>();
 
-                putIfnotNull(outputMap, "description", description);
-                putIfnotNull(outputMap, "name", name);
-                putIfnotNull(outputMap, "slug", slug);
+                putIfNotNull(outputMap, "description", description);
+                putIfNotNull(outputMap, "name", name);
+                putIfNotNull(outputMap, "slug", slug);
 
                 return outputMap;
 

@@ -28,12 +28,12 @@ import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.BaseDelegate;
-import org.mikuclub.app.delegates.PostsDelegate;
+import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.Parser;
+import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
@@ -46,27 +46,24 @@ import java.util.List;
  */
 public class WelcomeActivity extends AppCompatActivity
 {
-
+        /*静态变量*/
         public static final int TAG = 1;
+        //需要等待的请求数量
+        private static final int REQUEST_TAOTAL_NUMBER = 3;
 
-
-        private TextView welecomeInfoText;
-        private ProgressBar welecomeProgressBar;
-
-        private PostsDelegate postDelegate;
+        /*变量*/
+        private PostDelegate postDelegate;
         private BaseDelegate baseDelegate;
         private SharedPreferences preferences;
-
-        //存储通过网络获取的文章数据, 需要传递给主页
         private Posts stickyPostList = null;
         private Posts postList = null;
         private String categoriesCache;
-
-        //需要等待的请求数量
-        private int requestNumber = 3;
         //已完成的请求数量 (成功和失败都算)
         private int requestCount = 0;
 
+        /*组件*/
+        private TextView welecomeInfoText;
+        private ProgressBar welecomeProgressBar;
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -77,17 +74,22 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeInfoText = findViewById(R.id.welcome_info_text);
                 welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
 
-                postDelegate = new PostsDelegate(TAG);
+                //创建代理人
+                postDelegate = new PostDelegate(TAG);
                 baseDelegate = new BaseDelegate(TAG);
                 //获取软件设置参数文件
                 preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                 //检测权限
                 permissionCheck();
-
-
         }
 
+        @Override
+        protected void onStart()
+        {
+                super.onStart();
+                initApplication();
+        }
 
         /**
          * 初始化应用配置 和检测
@@ -127,7 +129,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //修正response乱码问题
                                         response = GeneralUtils.fixStringEncoding(response);
                                         //获取更新信息
-                                        AppUpdate appUpdate = Parser.appUpdate(response);
+                                        AppUpdate appUpdate = ParserUtils.appUpdate(response);
                                         //如果更新信息不是空的 和 当前版本号低于新版本
                                         if (appUpdate != null && BuildConfig.VERSION_CODE < appUpdate.getVersionCode())
                                         {
@@ -175,7 +177,6 @@ public class WelcomeActivity extends AppCompatActivity
 
         }
 
-
         /**
          * 请求数据并跳转主页
          */
@@ -190,7 +191,7 @@ public class WelcomeActivity extends AppCompatActivity
                         public void onSuccess(String response)
                         {
                                 //解析数据 +保存数据
-                                stickyPostList = Parser.posts(response);
+                                stickyPostList = ParserUtils.posts(response);
                                 //尝试启动主页
                                 startHomeSafety();
                         }
@@ -216,7 +217,7 @@ public class WelcomeActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(String response)
                         {
-                                postList = Parser.posts(response);
+                                postList = ParserUtils.posts(response);
                                 startHomeSafety();
                         }
 
@@ -243,7 +244,6 @@ public class WelcomeActivity extends AppCompatActivity
                 checkCategories();
         }
 
-
         /**
          * 检查分类的缓存
          * 过期或者没有缓存的话 就获取新的
@@ -253,11 +253,10 @@ public class WelcomeActivity extends AppCompatActivity
 
                 final long categoriesLastCheckTime = preferences.getLong(GlobalConfig.CATEGORIES_CACHE_TIME, 0);
                 categoriesCache = preferences.getString(GlobalConfig.CATEGORIES_CACHE, "");
-                LogUtils.e(categoriesLastCheckTime + " " + categoriesCache);
+
 
                 //如果当前时间已经超过了 上次检查时间+检查周期的时长 或者 分类字符串缓存为空
-
-                if (System.currentTimeMillis() > categoriesLastCheckTime + GlobalConfig.CATEGORIES_CHECK_CYCLE  || categoriesCache.isEmpty())
+                if (System.currentTimeMillis() > categoriesLastCheckTime + GlobalConfig.CATEGORIES_CHECK_CYCLE || categoriesCache.isEmpty())
                 {
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
@@ -275,7 +274,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 .apply();
 
 
-                                        LogUtils.v("重新请求分类信息");
+                                        LogUtils.v("已重新请求分类信息");
 
                                         startHomeSafety();
 
@@ -312,21 +311,17 @@ public class WelcomeActivity extends AppCompatActivity
                         };
                         //发送请求
                         baseDelegate.getCategory(httpCallBack);
-
                 }
                 //直接使用缓存
                 else
                 {
-
-                        LogUtils.v("使用旧分类缓存");
+                        LogUtils.v("已使用旧分类缓存");
                         startHomeSafety();
                 }
         }
 
-
         /**
-         * 安全的启动首页活动
-         * 检测请求是否都已经成功
+         * 检测请求是否都已经完成, 并且数据都已获取
          * 都成功的情况 才会 启动主页
          * 否则 报错
          */
@@ -335,22 +330,16 @@ public class WelcomeActivity extends AppCompatActivity
                 //增加请求计数器
                 addRequestCount();
 
-                //所有请求都成功的情况
-                if (requestCount == requestNumber)
+                //所有请求都完成, 并且数据都成功获取的情况
+                if (requestCount == REQUEST_TAOTAL_NUMBER && stickyPostList != null && postList != null && !categoriesCache.isEmpty())
                 {
-                        //数据们都成功获取
-                        if (stickyPostList != null && postList != null && !categoriesCache.isEmpty())
-                        {
-                                //启动主页
-                                HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
-                                //结束欢迎页
-                                finish();
-                                //Toast.makeText(this, "获取成功 Yeah!   " + stickyPostList.getStatus() + " " + postList.getStatus(), Toast.LENGTH_SHORT).show();
 
-                        }
+                        //启动主页
+                        HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
+                        //结束欢迎页
+                        finish();
                 }
         }
-
 
         /**
          * 错误的情况 , 给用户显示信息, 并允许用户手动重试
@@ -431,23 +420,6 @@ public class WelcomeActivity extends AppCompatActivity
                 dialog.show();
         }
 
-
-        @Override
-        protected void onStart()
-        {
-                super.onStart();
-                initApplication();
-        }
-
-        @Override
-        protected void onStop()
-        {
-                //取消本活动相关的所有网络请求
-                Request.cancelRequest(TAG);
-                super.onStop();
-        }
-
-
         /**
          * 检查应用是否已获取敏感权限授权
          * 还没有的话, 则请求权限
@@ -513,7 +485,6 @@ public class WelcomeActivity extends AppCompatActivity
 
                 return isInternetAvailable;
         }
-
 
         /**
          * 定时退出活动 (无网络连接的情况)
@@ -599,6 +570,13 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
+        @Override
+        protected void onStop()
+        {
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
+                super.onStop();
+        }
 
         /**
          * 同步增加计数器
@@ -607,4 +585,5 @@ public class WelcomeActivity extends AppCompatActivity
         {
                 this.requestCount++;
         }
+
 }

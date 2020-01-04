@@ -10,8 +10,8 @@ import com.android.volley.toolbox.StringRequest;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.utils.DataUtils;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.data.MapUtils;
 
 import java.io.File;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class Request
                 if (params != null && params.size() > 0)
                 {
                         //把参数拼入url中
-                        url = url + "?" + MapUtils.mapToString(params, "=", "&");
+                        url = url + "?" + DataUtils.mapToString(params, "=", "&");
                         LogUtils.w(url);
                 }
 
@@ -218,7 +218,7 @@ public class Request
                 if (params != null && params.size() > 0)
                 {
                         //contenare i parametri sul URL
-                        url = url + "?" + MapUtils.mapToString(params, "=", "&");
+                        url = url + "?" + DataUtils.mapToString(params, "=", "&");
                 }
 
                 jsonRequest(Request.Method.GET, url, null, headers, beanClass, listClassesType, tag, wrapperCallBack);
