@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/post_functional_box"
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content"
+    android:layout_marginTop = "@dimen/normal"
+    app:layout_constraintTop_toBottomOf = "@id/post_author_info_box"
+
+    >
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id = "@+id/post_count_like_button"
+            style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width = "@dimen/ultra_large"
+            android:layout_height = "@dimen/ultra_large"
+            android:layout_marginTop = "@dimen/small"
+            android:insetLeft = "0dp"
+            android:insetTop = "0dp"
+            android:insetRight = "0dp"
+            android:insetBottom = "0dp"
+            android:padding = "0dp"
+            app:icon = "@drawable/thumb_up"
+            app:iconGravity = "textStart"
+            app:iconPadding = "0dp"
+            app:iconTint = "@color/defaultTextColor"
+            app:layout_constraintEnd_toStartOf = "@id/post_count_share_button"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent"
+            app:rippleColor = "@color/rippleColor"
+            app:shapeAppearanceOverlay = "@style/MyCircleButton"
+            app:strokeWidth = "0.5dp" />
+
+        <TextView
+            android:id = "@+id/post_count_like"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/small"
+            android:layout_marginBottom = "@dimen/small"
+            android:text = "0 次点赞"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "@id/post_count_like_button"
+            app:layout_constraintStart_toStartOf = "@id/post_count_like_button"
+            app:layout_constraintTop_toBottomOf = "@id/post_count_like_button" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id = "@+id/post_count_share_button"
+            style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width = "@dimen/ultra_large"
+            android:layout_height = "@dimen/ultra_large"
+            android:insetLeft = "0dp"
+            android:insetTop = "0dp"
+            android:insetRight = "0dp"
+            android:insetBottom = "0dp"
+            android:padding = "0dp"
+            app:icon = "@drawable/share"
+            app:iconGravity = "textStart"
+            app:iconPadding = "0dp"
+            app:iconTint = "@color/defaultTextColor"
+            app:layout_constraintBottom_toBottomOf = "@id/post_count_like_button"
+            app:layout_constraintEnd_toStartOf = "@id/post_count_fail_down_button"
+
+            app:layout_constraintStart_toEndOf = "@id/post_count_like_button"
+            app:layout_constraintTop_toTopOf = "@id/post_count_like_button"
+            app:rippleColor = "@color/rippleColor"
+            app:shapeAppearanceOverlay = "@style/MyCircleButton"
+            app:strokeWidth = "0.5dp" />
+
+        <TextView
+            android:id = "@+id/post_count_share"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/small"
+            android:layout_marginBottom = "@dimen/small"
+            android:text = "0 次分享"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "@id/post_count_share_button"
+            app:layout_constraintStart_toStartOf = "@id/post_count_share_button"
+            app:layout_constraintTop_toBottomOf = "@id/post_count_share_button" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id = "@+id/post_count_fail_down_button"
+            style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width = "@dimen/ultra_large"
+            android:layout_height = "@dimen/ultra_large"
+            android:insetLeft = "0dp"
+            android:insetTop = "0dp"
+            android:insetRight = "0dp"
+            android:insetBottom = "0dp"
+            android:padding = "0dp"
+            app:icon = "@drawable/report"
+            app:iconGravity = "textStart"
+
+            app:iconPadding = "0dp"
+            app:iconTint = "@color/defaultTextColor"
+
+            app:layout_constraintBottom_toBottomOf = "@id/post_count_share_button"
+            app:layout_constraintEnd_toStartOf = "@id/post_bilibili_button"
+            app:layout_constraintStart_toEndOf = "@id/post_count_share_button"
+            app:layout_constraintTop_toTopOf = "@id/post_count_share_button"
+            app:rippleColor = "@color/rippleColor"
+            app:shapeAppearanceOverlay = "@style/MyCircleButton"
+            app:strokeWidth = "0.5dp" />
+
+        <TextView
+            android:id = "@+id/post_count_fail_down"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/small"
+            android:layout_marginBottom = "@dimen/small"
+            android:text = "0 次失效"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "@id/post_count_fail_down_button"
+            app:layout_constraintStart_toStartOf = "@id/post_count_fail_down_button"
+            app:layout_constraintTop_toBottomOf = "@id/post_count_fail_down_button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id = "@+id/post_bilibili_button"
+            style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width = "@dimen/ultra_large"
+            android:layout_height = "@dimen/ultra_large"
+            android:insetLeft = "0dp"
+            android:insetTop = "0dp"
+            android:insetRight = "0dp"
+            android:insetBottom = "0dp"
+            android:padding = "0dp"
+            android:visibility = "gone"
+            app:icon = "@drawable/bilibili"
+            app:iconGravity = "textStart"
+            app:iconPadding = "0dp"
+            app:iconTint = "@color/defaultTextColor"
+            app:layout_constraintBottom_toBottomOf = "@id/post_count_fail_down_button"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toEndOf = "@id/post_count_fail_down_button"
+            app:layout_constraintTop_toTopOf = "@id/post_count_fail_down_button"
+            app:rippleColor = "@color/rippleColor"
+            app:shapeAppearanceOverlay = "@style/MyCircleButton"
+            app:strokeWidth = "0.5dp"
+
+            />
+
+        <TextView
+            android:id = "@+id/post_bilibili"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/small"
+            android:layout_marginBottom = "@dimen/small"
+            android:text = "去B站观看"
+            android:textSize = "@dimen/text_small"
+            android:visibility = "gone"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "@id/post_bilibili_button"
+            app:layout_constraintStart_toStartOf = "@id/post_bilibili_button"
+            app:layout_constraintTop_toBottomOf = "@id/post_bilibili_button" />
+
+
+        <View
+            android:layout_width = "0dp"
+            android:layout_height = "0.5dp"
+            android:background = "@color/splitLineColor"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+        <View
+            android:layout_width = "0dp"
+            android:layout_height = "0.5dp"
+            android:background = "@color/splitLineColor"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

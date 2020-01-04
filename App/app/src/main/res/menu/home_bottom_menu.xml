@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app = "http://schemas.android.com/apk/res-auto"
+      xmlns:android = "http://schemas.android.com/apk/res/android">
+
+        <item
+            android:id="@+id/navigation_home"
+            android:icon="@drawable/home"
+            android:title="主页" />
+        <item
+            android:id="@+id/navigation_category"
+            android:icon="@drawable/dashboard_black_24dp"
+            android:title="分类"
+            />
+        <item
+            android:id="@+id/navigation_create"
+            android:icon="@drawable/publish"
+            android:title="投稿" />
+
+
+
+</menu>

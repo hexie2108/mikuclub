@@ -1,29 +1,114 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "29.0.0"
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
     defaultConfig {
+        //application package path
         applicationId "mikuclub.app"
-        minSdkVersion 22
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName "v0.1"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
+            //obfuscate the code
             minifyEnabled false
+            //the rules to obfuscate the code
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue "string", "app_version_name", "${defaultConfig.versionName}"
+        }
+
+        debug {
+            versionNameSuffix ".debug"
+            resValue "string", "app_version_name", "${defaultConfig.versionName}${versionNameSuffix}"
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //import material design
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
+
+    //import PreferenceManager
+    implementation 'androidx.preference:preference:1.1.0'
+    //import Gson (json support)
+    implementation 'com.google.code.gson:gson:2.8.6'
+    //import RecyclerView
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    //import CardView
+    implementation 'androidx.cardview:cardview:1.0.0'
+    //navigation UI
+    implementation 'androidx.navigation:navigation-fragment:2.1.0'
+    implementation 'androidx.navigation:navigation-ui:2.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    //网络请求框架
+    implementation 'com.android.volley:volley:1.1.1'
+    //图片加载框架
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    //图片加载框架调用的网络框架
+    implementation 'com.github.bumptech.glide:volley-integration:4.10.0'
+    //implementation "com.github.bumptech.glide:okhttp3-integration:4.10.0"
+    //java fileUtils
+    implementation 'org.apache.commons:commons-io:1.3.2'
+    //implementation 'commons-io:commons-io:2.6'
+
+    //get file mime type
+    implementation 'com.sun.activation:javax.activation:1.2.0'
+
+    //import ViewPager
+    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    //轮播幻灯片组件 https://github.com/LillteZheng/ViewPagerHelper
+    implementation 'com.github.LillteZheng:ViewPagerHelper:v1.9'
+
+
+    //圆角图片支持
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
+
+    //可放大和移动的图片查看组件
+    implementation 'com.github.MikeOrtiz:TouchImageView:2.3.1'
+
+    //html代码自定义解析 https://github.com/wangchenyan/html-text
+    implementation 'com.github.wangchenyan:html-text:1.0'
+    implementation 'org.apache.commons:commons-text:1.8'
+
+
+    //可拖拽放大的图片位
+
+    // implementation 'org.apache.httpcomponents:httpmime:4.5.9'
+
+    //EasyRecyclerView https://github.com/zhou-you/EasyXRecyclerView
+    //implementation 'com.zhouyou:easyrecyclerview:1.0.6'
+
+    //repository link https://github.com/13767004362/VolleyHelper
+    //implementation 'com.xingen:volleyHelper:1.0.0'
+
+
+    //谷歌数据分析
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+
+
 }
+
+//谷歌数据分析
+apply plugin: 'com.google.gms.google-services'

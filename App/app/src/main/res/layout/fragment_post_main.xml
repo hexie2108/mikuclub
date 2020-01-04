@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+
+    tools:context = "org.mikuclub.app.ui.activity.PostActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent">
+
+                <TextView
+                    android:id = "@+id/post_title"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginEnd = "60dp"
+                    android:maxLines = "2"
+                    android:textColor = "@android:color/black"
+                    android:textStyle = "bold"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+
+                    app:layout_constraintTop_toTopOf = "parent" />
+
+
+                <include layout = "@layout/post_info_box" />
+                <include layout = "@layout/post_author_info_box" />
+                <include layout = "@layout/post_functional_box" />
+
+
+                <TextView
+                    android:id = "@+id/post_source"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:selectAllOnFocus = "true"
+                    android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_default"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_functional_box" />
+
+                <TextView
+                    android:id = "@+id/post_description"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/small"
+                    app:layout_goneMarginTop="@dimen/normal"
+                    android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_default"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_source" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>

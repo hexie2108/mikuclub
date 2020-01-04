@@ -1,11 +1,38 @@
-<resources>
+<resources >
 
         <!-- Base application theme. -->
-        <style name = "AppTheme" parent = "Theme.AppCompat.Light.DarkActionBar">
-                <!-- Customize your theme here. -->
+        <style name = "AppTheme" parent = "Theme.MaterialComponents.Light.NoActionBar.Bridge">
+                <!-- Customize your theme here.-->
                 <item name = "colorPrimary">@color/colorPrimary</item>
                 <item name = "colorPrimaryDark">@color/colorPrimaryDark</item>
                 <item name = "colorAccent">@color/colorAccent</item>
+                <item name="android:statusBarColor">@color/colorPrimary</item>
+                <item name="android:actionMenuTextColor">@android:color/white</item>
+
         </style>
 
+
+        <!--  修改标题栏默认图标颜色-->
+        <style name="ToolbarColoredBackArrow" parent="AppTheme">
+                <item name="android:textColorSecondary">@android:color/tertiary_text_dark</item>
+        </style>
+
+
+        <!--    文章页分页菜单文字大小-->
+        <style name="TabLayoutTextStyle">
+                <item name="android:textSize">@dimen/text_default</item>
+        </style>
+
+        <!--  圆形按钮-->
+        <style name="MyCircleButton">
+                <item name="cornerFamily">rounded</item>
+                <item name="cornerSize">50%</item>
+        </style>
+
+
+
+
+
+
+        .
 </resources>

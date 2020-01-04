@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--文章页分页菜单背景渐变-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+        <gradient
+            android:angle="270"
+            android:startColor="@android:color/transparent"
+            android:endColor="@color/defaultBackground"
+            />
+</shape>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+
+    tools:context = "org.mikuclub.app.ui.activity.PostActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id = "@+id/post_app_bar"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:background = "@color/defaultBackground"
+
+            android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id = "@+id/post_collapsing_toolbar_layout"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+
+                    app:contentScrim = "?attr/colorPrimary"
+
+
+                    app:layout_scrollFlags = "scroll|exitUntilCollapsed"
+
+                    app:titleEnabled = "false"
+                    app:toolbarId = "@id/post_toolbar">
+
+                        <include layout = "@layout/slider_view_post" />
+
+
+                        <androidx.appcompat.widget.Toolbar
+                            android:id = "@+id/post_toolbar"
+                            android:layout_width = "wrap_content"
+                            android:layout_height = "?attr/actionBarSize"
+                            android:layout_gravity = "top"
+                            android:layout_marginTop="@dimen/normal"
+                            android:paddingTop="@dimen/normal"
+                            app:layout_collapseMode = "pin"
+                            app:popupTheme = "@style/ThemeOverlay.AppCompat.Light"
+                            android:elevation="5dp"
+                            />
+
+                        <LinearLayout
+                            android:id="@+id/post_tabs_menu_box"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_gravity = "bottom"
+                            android:background = "@color/defaultBackground"
+                        >
+
+                                <com.google.android.material.tabs.TabLayout
+                                    android:id = "@+id/post_tabs_menu"
+                                    android:layout_width = "match_parent"
+                                    android:layout_marginEnd="@dimen/super_large"
+                                    android:layout_marginStart="@dimen/super_large"
+                                    android:layout_height = "@dimen/ultra_large"
+                                    android:background = "@color/defaultBackground"
+                                    app:tabIndicatorColor = "@color/colorPrimary"
+                                    app:tabTextAppearance = "@style/TabLayoutTextStyle"
+                                    app:tabTextColor = "@color/defaultTextColor"
+
+                                    />
+
+                        </LinearLayout>
+
+
+
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id = "@+id/post_view_pager"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            android:padding = "@dimen/normal"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+
+            />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:id = "@+id/post_download_button"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+
+            android:layout_margin = "@dimen/normal"
+
+            app:srcCompat = "@drawable/cloud_download"
+            app:tint = "@android:color/white"
+            app:backgroundTint = "@color/colorPrimary"
+            app:layout_anchor = "@id/post_app_bar"
+            app:layout_anchorGravity = "bottom|end" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

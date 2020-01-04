@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/post_info_box"
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content"
+    android:layout_marginTop = "@dimen/small"
+
+    app:layout_constraintTop_toBottomOf = "@id/post_title">
+
+        <ImageView
+            android:id = "@+id/post_date_icon"
+            android:layout_width = "@dimen/normal"
+            android:layout_height = "@dimen/normal"
+
+            android:src = "@drawable/access_time"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+        <TextView
+            android:id = "@+id/post_date"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginStart = "@dimen/small"
+            android:text = "-"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintStart_toEndOf = "@id/post_date_icon"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+        <ImageView
+            android:id = "@+id/post_views_icon"
+            android:layout_width = "@dimen/normal"
+            android:layout_height = "@dimen/normal"
+            android:layout_marginStart = "@dimen/small"
+            android:src = "@drawable/visibility"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintStart_toEndOf = "@id/post_date"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+        <TextView
+            android:id = "@+id/post_views"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginStart = "@dimen/small"
+            android:text = "0 查看"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintStart_toEndOf = "@id/post_views_icon"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+        <ImageView
+            android:id = "@+id/post_count_comments_icon"
+            android:layout_width = "@dimen/normal"
+            android:layout_height = "@dimen/normal"
+            android:layout_marginStart = "@dimen/small"
+
+            android:src = "@drawable/comment"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintStart_toEndOf = "@id/post_views"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+        <TextView
+            android:id = "@+id/post_count_comments"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginStart = "@dimen/small"
+            android:text = "0 评论"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintStart_toEndOf = "@id/post_count_comments_icon"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

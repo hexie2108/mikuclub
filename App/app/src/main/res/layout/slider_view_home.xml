@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content"
+
+    tools:showIn = "@layout/fragment_home_main"
+
+    >
+
+        <com.zhengsr.viewpagerlib.view.BannerViewPager
+            android:id = "@+id/home_slider_viewpager"
+            android:layout_width = "0dp"
+            android:layout_height = "0dp"
+
+
+            app:banner_isAutoLoop = "true"
+            app:banner_iscycle = "true"
+            app:banner_looptime = "6000"
+            app:banner_switchtime = "2000"
+
+            app:layout_constraintDimensionRatio = "H,16:8"
+
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+
+        <com.zhengsr.viewpagerlib.indicator.TransIndicator
+            android:id = "@+id/home_slider_indicator"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintTop_toTopOf = "@id/home_slider_viewpager"
+
+            app:trans_width="10dp"
+            app:trans_height="5dp"
+            app:trans_movecolor="@android:color/white"
+            android:layout_marginEnd="@dimen/normal"
+            android:layout_marginTop="@dimen/small"
+
+
+            />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

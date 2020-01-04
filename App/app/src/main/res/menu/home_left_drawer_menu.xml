@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    tools:showIn = "navigation_view">
+
+        <group android:checkableBehavior = "single">
+
+                <item
+                    android:id = "@+id/nav_slideshow"
+                    android:icon = "@drawable/slideshow"
+                    android:title = "登陆" />
+                <item
+                    android:id = "@+id/nav_gallery"
+                    android:icon = "@drawable/gallery"
+                    android:title = "相册" />
+
+
+        </group>
+
+        <item android:title = "设置">
+                <menu>
+                        <item
+                            android:id = "@+id/nav_share"
+                            android:icon = "@drawable/share"
+                            android:title = "分享" />
+                        <item
+                            android:id = "@+id/nav_send"
+                            android:icon = "@drawable/send"
+                            android:title = "发送" />
+                        <item
+                            android:id = "@+id/nav_tools"
+                            android:icon = "@drawable/manage"
+                            android:title = "配置" />
+                </menu>
+        </item>
+
+</menu>

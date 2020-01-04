@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/swipe_refresh"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+
+    tools:showIn = "@layout/activity_home_main"
+
+    >
+
+
+        <LinearLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+                android:padding="@dimen/normal"
+            android:orientation = "vertical">
+
+                <!--                        <include layout = "@layout/home_slider_view" />-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id = "@+id/recycler_view"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "match_parent"
+
+                    android:scrollbars = "vertical"
+                    app:layout_behavior = "@string/appbar_scrolling_view_behavior" />
+
+        </LinearLayout>
+
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
