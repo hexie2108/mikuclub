@@ -38,7 +38,11 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
  */
 public class PostMainFragment extends Fragment
 {
+        /*变量*/
+        //当前页面需要的文章数据
+        private Post post;
 
+        /*组件*/
         private TextView postTitle;
         private TextView postDate;
         private TextView postViews;
@@ -49,7 +53,6 @@ public class PostMainFragment extends Fragment
         private TextView postDescription;
         private TextView postCountLike;
         private Button postCountLikeButton;
-
         private TextView postCountShare;
         private Button postCountShareButton;
         private TextView postCountFailDown;
@@ -57,19 +60,11 @@ public class PostMainFragment extends Fragment
         private TextView postBilibili;
         private Button postBilibiliButton;
 
-        private Post post;
-
-
-        public PostMainFragment()
-        {
-                // Required empty public constructor
-        }
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
-                // Inflate the layout for this fragment
+                // 为fragment加载主布局
                 return inflater.inflate(R.layout.fragment_post_main, container, false);
         }
 
@@ -78,26 +73,25 @@ public class PostMainFragment extends Fragment
         {
                 super.onViewCreated(view, savedInstanceState);
 
-                //从活动中获取文章数据
-                post = ((PostActivity)getActivity()).getPost();
-
                 postTitle = view.findViewById(R.id.post_title);
-                postDate= view.findViewById(R.id.post_date);
-                postViews= view.findViewById(R.id.post_views);
-                postCountComments= view.findViewById(R.id.post_count_comments);
-
+                postDate = view.findViewById(R.id.post_date);
+                postViews = view.findViewById(R.id.post_views);
+                postCountComments = view.findViewById(R.id.post_count_comments);
                 postAuthorImg = view.findViewById(R.id.post_author_img);
                 postAuthorName = view.findViewById(R.id.post_author_name);
                 postSource = view.findViewById(R.id.post_source);
-                postDescription= view.findViewById(R.id.post_description);
-                postCountLike= view.findViewById(R.id.post_count_like);
+                postDescription = view.findViewById(R.id.post_description);
+                postCountLike = view.findViewById(R.id.post_count_like);
                 postCountLikeButton = view.findViewById(R.id.post_count_like_button);
-                postCountShare=view.findViewById(R.id.post_count_share);
-                postCountShareButton=view.findViewById(R.id.post_count_share_button);
-                postCountFailDown=view.findViewById(R.id.post_count_fail_down);
-                postCountFailDownButton=view.findViewById(R.id.post_count_fail_down_button);
-                postBilibili=view.findViewById(R.id.post_bilibili);
-                postBilibiliButton=view.findViewById(R.id.post_bilibili_button);
+                postCountShare = view.findViewById(R.id.post_count_share);
+                postCountShareButton = view.findViewById(R.id.post_count_share_button);
+                postCountFailDown = view.findViewById(R.id.post_count_fail_down);
+                postCountFailDownButton = view.findViewById(R.id.post_count_fail_down_button);
+                postBilibili = view.findViewById(R.id.post_bilibili);
+                postBilibiliButton = view.findViewById(R.id.post_bilibili_button);
+
+                //从活动中获取文章数据
+                post = ((PostActivity) getActivity()).getPost();
 
                 initPost();
         }
@@ -105,23 +99,24 @@ public class PostMainFragment extends Fragment
         /**
          * 初始化文章描述
          */
-        private void initPost(){
+        private void initPost()
+        {
 
                 postTitle.setText(post.getTitle().getRendered());
 
-                String dateString = new SimpleDateFormat("yy-MM-dd HH:mm").format(post.getDate());
+                String dateString = new SimpleDateFormat(GlobalConfig.DATE_FORMAT).format(post.getDate());
                 postDate.setText(dateString);
 
                 //获取文章元数据
                 Post.Metadata metadata = post.getMetadata();
-
-                if(metadata.getViews() != null)
+                //如果数据不是空
+                if (metadata.getViews() != null)
                 {
-                        postViews.setText(metadata.getViews().get(0).toString()+" 次查看");
+                        postViews.setText(metadata.getViews().get(0).toString() + " 次查看");
                 }
-                if(metadata.getCount_comments() != null)
+                if (metadata.getCount_comments() != null)
                 {
-                        postCountComments.setText(metadata.getCount_comments().get(0).toString()+" 条评论");
+                        postCountComments.setText(metadata.getCount_comments().get(0).toString() + " 条评论");
                 }
 
                 //设置作者信息
@@ -133,34 +128,33 @@ public class PostMainFragment extends Fragment
 
                 //设置工具栏信息
                 //不是空的 或者默认0
-                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like())){
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like()))
+                {
                         postCountLike.setText(metadata.getCount_like().get(0).toString() + " 次点赞");
                 }
                 //不是空的或默认0
-                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getFail_time())){
-                        if(metadata.getFail_time().get(0)>0){
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getFail_time()))
+                {
+                        if (metadata.getFail_time().get(0) > 0)
+                        {
                                 postCountFailDown.setText(metadata.getFail_time().get(0).toString() + " 次失效");
                         }
                 }
                 //在线视频不是空的
-                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getVideo())){
-
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getVideo()))
+                {
                         String videoSrc = metadata.getVideo().get(0);
-                        //确认是 b站地址
-                        if(videoSrc.indexOf("av") != -1 && videoSrc.indexOf("cid") != -1){
+                        //确如果是 b站地址
+                        if (videoSrc.indexOf("av") != -1 && videoSrc.indexOf("cid") != -1)
+                        {
                                 //截取av号
-                                String av= videoSrc.split(",")[0];
-                                final String bilibiliAppSrc = GlobalConfig.BILIBILI_APP_WAKE_URL+av.substring(2);
-                                final String bilibiliWebSrc = GlobalConfig.BILIBILI_HOST+av;
+                                String av = videoSrc.split(",")[0];
+                                final String bilibiliAppSrc = GlobalConfig.BILIBILI_APP_WAKE_URL + av.substring(2);
+                                final String bilibiliWebSrc = GlobalConfig.BILIBILI_HOST + av;
                                 //监听按钮点击
-                                postBilibiliButton.setOnClickListener(new View.OnClickListener()
-                                {
-                                        @Override
-                                        public void onClick(View v)
-                                        {
-                                                //启动第三方应用
-                                                GeneralUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
-                                        }
+                                postBilibiliButton.setOnClickListener(v -> {
+                                        //启动第三方应用
+                                        GeneralUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
                                 });
 
                                 //显示b站视频按钮
@@ -169,19 +163,21 @@ public class PostMainFragment extends Fragment
                         }
                 }
 
-
                 //如果有来源地址
-                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource())){
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource()))
+                {
                         //设置来源地址
                         postSource.setText(metadata.getSource().get(0));
                 }
                 //如果有来源说明
-                if(!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource_name())){
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource_name()))
+                {
                         //再加上来源说明
-                        postSource.setText(postSource.getText().toString()+"\n"+metadata.getSource_name().get(0));
+                        postSource.setText(postSource.getText().toString() + "\n" + metadata.getSource_name().get(0));
                 }
                 //如果没有任何来源说明
-                if (postSource.getText().toString().isEmpty()){
+                if (postSource.getText().toString().isEmpty())
+                {
                         //隐藏组件
                         postSource.setVisibility(View.GONE);
                 }
@@ -190,14 +186,15 @@ public class PostMainFragment extends Fragment
                 postDescription.setMovementMethod(LinkMovementMethod.getInstance());
                 String htmlDescription;
                 //如果描述元数据存在
-                if(metadata.getContent()!= null){
+                if (metadata.getContent() != null)
+                {
                         htmlDescription = metadata.getContent().get(0);
                 }
                 //如果不存在 则只能去获取已被格式化的文章描述
-                else{
+                else
+                {
                         htmlDescription = post.getContent().getRendered();
                 }
-
 
 
                 //解析 html描述
@@ -216,28 +213,18 @@ public class PostMainFragment extends Fragment
                                 //以此达到重建新列表的目标
 
                                 //启动单独的图片查看页面
-                                ImageActivity.startAction(getActivity(), newImagesSrc );
-
-
+                                ImageActivity.startAction(getActivity(), newImagesSrc);
                         }
+
                         //设置点击链接tag的动作
                         @Override
                         public void onLinkClick(Context context, String url)
                         {
-                                // link click
-                                Uri uri = Uri.parse(HttpUtils.checkAndAddHttpsProtocol(url));
-                                Intent intent = new Intent();
-                                intent.setAction("android.intent.action.VIEW");
-                                intent.setData(uri);
-                                startActivity(intent);
+                                //检测链接格式时候正确
+                                url = HttpUtils.checkAndAddHttpsProtocol(url);
+                                //启动第三方应用
+                                GeneralUtils.startWebViewIntent(context, url, "");
                         }
                 });
-
-
-
-
-
-
         }
-
 }

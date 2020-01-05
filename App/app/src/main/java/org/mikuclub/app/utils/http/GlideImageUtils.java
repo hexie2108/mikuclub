@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.mikuclub.app.utils.HttpUtils;
+
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 import mikuclub.app.R;
@@ -21,6 +23,8 @@ public class GlideImageUtils
          */
         public static void get(Context context, ImageView imageView, String url)
         {
+                //确保URL格式正确
+                url = HttpUtils.checkAndAddHttpsProtocol(url);
 
                 Glide.with(context)
                         .load(url)
@@ -34,33 +38,14 @@ public class GlideImageUtils
 
         public static void getSquareImg(Context context, ImageView imageView, String url)
         {
+                //确保URL格式正确
+                url = HttpUtils.checkAndAddHttpsProtocol(url);
 
                 Glide.with(context)
                         .load(url)
                         .placeholder(R.drawable.loop_grey_1x1)
                         .error(R.drawable.error_grey_1x1)
                         .transition(withCrossFade())
-                        .into(imageView);
-
-        }
-
-        /**
-         * 关闭缓存的版本
-         * @param context
-         * @param imageView
-         * @param url
-         */
-        public static void getWithoutCache(Context context, ImageView imageView, String url)
-        {
-
-                Glide.with(context)
-                        .load(url)
-                        .placeholder(R.drawable.loop_grey_16x9)
-                        .error(R.drawable.error_grey_16x9)
-                        .transition(withCrossFade())
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-
                         .into(imageView);
 
         }
@@ -75,6 +60,9 @@ public class GlideImageUtils
          */
         public static void getWithThumbnail(Context context, ImageView imageView, String url, String thumbnailUrl)
         {
+                //确保URL格式正确
+                url = HttpUtils.checkAndAddHttpsProtocol(url);
+                thumbnailUrl = HttpUtils.checkAndAddHttpsProtocol(thumbnailUrl);
 
                 Glide.with(context)
                         .load(url)
@@ -92,6 +80,9 @@ public class GlideImageUtils
 
         public static void getForZoomImageView(Context context, ImageView imageView, String url, String thumbnailUrl)
         {
+                //确保URL格式正确
+                url = HttpUtils.checkAndAddHttpsProtocol(url);
+                thumbnailUrl = HttpUtils.checkAndAddHttpsProtocol(thumbnailUrl);
 
                 Glide.with(context)
                         .load(url)
@@ -102,7 +93,6 @@ public class GlideImageUtils
                         )
                         .error(R.drawable.error_grey_1x1)
                         .transition(withCrossFade())
-
                         .into(imageView);
 
         }

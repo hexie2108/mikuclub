@@ -12,14 +12,18 @@ import org.mikuclub.app.callBack.CallBack;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.ui.activity.CategoryActivity;
 import org.mikuclub.app.ui.activity.HomeActivity;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.controller.PostController;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -36,38 +40,35 @@ import mikuclub.app.R;
  */
 public class HomeMainFragment extends Fragment
 {
-
+        /*变量*/
+        //数据请求代理人
         private PostDelegate delegate;
+        private PostController controller;
 
-        //文章列表
-        private RecyclerView recyclerView;
+        //列表适配器
         private HomeListAdapter recyclerViewAdapter;
+        //列表数据
         private List<Post> recyclerDataList;
+        //当前页面需要的数据
+        private Posts stickyPosts;
+        private Posts posts;
 
+
+        /*组件*/
+        //列表
+        private RecyclerView recyclerView;
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
 
-
-        private Posts stickyPosts;
-        private List<Post> stickyPostList;
-
-
-        //是否要加载新数据 默认是
-        private boolean wantMore = true;
-        //当前页数
-        private int currentPage;
-        //总页数
-        private int totalPage;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
-
                 // 为fragment加载主布局
-                View root = inflater.inflate(R.layout.fragment_home_main, container, false);
+                return inflater.inflate(R.layout.fragment_home_main, container, false);
 
-                return root;
+
         }
 
 
@@ -81,23 +82,19 @@ public class HomeMainFragment extends Fragment
 
                 //创建数据请求 代理人
                 delegate = new PostDelegate(HomeActivity.TAG);
-                //从intent里读取上个活动传送来的数据
+                //从父活动里读取数据
                 stickyPosts = ((HomeActivity) getActivity()).getStickyPosts();
-                stickyPostList = stickyPosts.getBody();
-                Posts postList = ((HomeActivity) getActivity()).getPostList();
-
-                recyclerDataList = postList.getBody();
-
-                //设置总页数
-                totalPage = postList.getHeaders().getTotalPage();
-                //设置当前页数
-                currentPage = 1;
+                posts = ((HomeActivity) getActivity()).getPosts();
+                recyclerDataList = posts.getBody();
 
                 //加载文章列表
                 initRecyclerView();
 
                 //配置下拉刷新
                 initSwipeRefresh();
+
+                //初始化控制器
+                initController();
         }
 
         @Override
@@ -105,7 +102,7 @@ public class HomeMainFragment extends Fragment
         {
                 super.onStart();
                 //每次开始的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                getMore();
+                controller.getMore();
         }
 
         @Override
@@ -121,31 +118,27 @@ public class HomeMainFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建适配器
-                recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPostList, getActivity());
-                recyclerView.setAdapter(recyclerViewAdapter);
+                recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPosts.getBody(), getActivity());
 
-                //创建网格布局
+                //创建列表网格布局
                 //设置行数
                 int numberColumn = 2;
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), numberColumn);
+                GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), numberColumn);
                 //让最后一个组件(尾部) 占据2个列
-                gridLayoutManager.setSpanSizeLookup(new MyGridLayoutSpanSizeLookup(recyclerDataList, numberColumn, true));
-                //加载布局
-                recyclerView.setLayoutManager(gridLayoutManager);
-                recyclerView.setHasFixedSize(false);
-                //缓存item的数量
-                recyclerView.setItemViewCacheSize(GlobalConfig.NUMBER_PER_PAGE * 2);
-                //绑定滑动事件
-                recyclerView.addOnScrollListener(new MyListOnScrollListener(recyclerViewAdapter, gridLayoutManager)
+                layoutManager.setSpanSizeLookup(new MyGridLayoutSpanSizeLookup(recyclerDataList, numberColumn, true));
+
+                //创建列表滑动监听器
+                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager)
                 {
-                        //只有满足位置条件才会触发方法
                         @Override
                         public void onExecute()
                         {
                                 //加载更多
-                                getMore();
+                                controller.getMore();
                         }
-                });
+                };
+                //配置列表
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE * 2, false, true, listener);
 
         }
 
@@ -157,166 +150,28 @@ public class HomeMainFragment extends Fragment
                 //设置进度条颜色
                 swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
                 //绑定动作
-                swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-                {
-                        @Override
-                        public void onRefresh()
-                        {
-                                //获取最新文章
-                                refreshPosts(1);
-                        }
+                swipeRefresh.setOnRefreshListener(() -> {
+                        //获取最新文章
+                        controller.refreshPosts(1);
                 });
-
         }
 
         /**
-         * 加载更多
+         * 初始化控制器
          */
-        private void getMore()
+        private void initController()
         {
-                //检查信号标
-                if (wantMore)
-                {
-                        //关闭信号标
-                        wantMore = false;
+                //设置查询参数
+                PostParameters parameters = new PostParameters();
+                //参数里 需要排除的分类id
+                parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
 
-                        HttpCallBack httpCallBack = new HttpCallBack()
-                        {
-                                //成功
-                                @Override
-                                public void onSuccess(String response)
-                                {
-                                        //解析新数据
-                                        Posts newPostList = ParserUtils.posts(response);
-                                        //插入新数据
-                                        recyclerDataList.addAll(newPostList.getBody());
-                                        //通知增加了对应位置的数据
-                                        recyclerViewAdapter.notifyItemRangeInserted(recyclerDataList.size() + 1, newPostList.getBody().size());
-
-                                        //重新开启信号标
-                                        wantMore = true;
-                                        //当前页数+1
-                                        currentPage++;
-
-                                }
-
-                                //内容错误的情况
-                                @Override
-                                public void onError()
-                                {
-                                        recyclerViewAdapter.setNotMoreError(true);
-                                        //通知更新尾部, 因为有头部存在,额外+1
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size() + 1);
-                                }
-
-                                //网络失败
-                                @Override
-                                public void onHttpError()
-                                {
-                                        //显示错误信息, 绑定点击事件允许用户手动重试
-                                        recyclerViewAdapter.setInternetError(true, new View.OnClickListener()
-                                        {
-                                                @Override
-                                                public void onClick(View v)
-                                                {
-                                                        //重置请求状态
-                                                        wantMore = true;
-                                                        //重置错误显示
-                                                        recyclerViewAdapter.setInternetError(false, null);
-                                                        getMore();
-                                                }
-                                        });
-                                        //通知更新尾部 , 因为有头部存在,额外+1
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size() + 1);
-
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置信号标
-                                        wantMore = true;
-
-                                }
-                        };
-
-                        delegate.getPostList(currentPage + 1, httpCallBack);
-                }
-        }
-
-        /**
-         * 拉刷新最新文章
-         *
-         * @param page 请求文章的页数
-         */
-        private void refreshPosts(final int page)
-        {
-                wantMore = false;
-
-                //如果加载进度条没有出现 (跳转页面情况)
-                if (!swipeRefresh.isRefreshing())
-                {
-                        //让加载进度条显示
-                        swipeRefresh.setRefreshing(true);
-                }
-
-
-                HttpCallBack httpCallBack = new HttpCallBack()
-                {
-                        //成功
-                        @Override
-                        public void onSuccess(String response)
-                        {
-                                Posts postList = ParserUtils.posts(response);
-                                recyclerDataList.clear();
-                                recyclerDataList.addAll(postList.getBody());
-
-                                //重置网络错误
-                                recyclerViewAdapter.setInternetError(false, null);
-                                //重置内容错误
-                                recyclerViewAdapter.setNotMoreError(false);
-                                //更新数据
-                                recyclerViewAdapter.notifyDataSetChanged();
-
-                                //更新当前页数
-                                currentPage = page;
-
-                                //返回顶部
-                                recyclerView.scrollToPosition(1);
-                        }
-
-                        @Override
-                        public void onError()
-                        {
-                                Toast.makeText(getActivity(), "请求错误", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onHttpError()
-                        {
-                                onError();
-                        }
-
-                        //请求结束后
-                        @Override
-                        public void onFinally()
-                        {
-                                //关闭进度条
-                                swipeRefresh.setRefreshing(false);
-                                wantMore = true;
-                        }
-
-                        //如果请求被取消
-                        @Override
-                        public void onCancel()
-                        {
-                                //关闭加载进度条
-                                swipeRefresh.setRefreshing(false);
-                                //重置信号标
-                                wantMore = true;
-                        }
-                };
-                delegate.getPostList(page, httpCallBack);
+                //创建数据控制器
+                controller = new PostController(getActivity(), delegate, recyclerView, swipeRefresh, parameters);
+                //设置总页数
+                controller.setTotalPage(posts.getHeaders().getTotalPage());
+                //设置当前页数
+                controller.setCurrentPage(1);
         }
 
         /**
@@ -324,27 +179,9 @@ public class HomeMainFragment extends Fragment
          */
         private void initFloatingActionButton()
         {
-                ((HomeActivity) getActivity()).getFloatingActionButton().setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                PostController.openAlertDialog((AppCompatActivity) getActivity(), currentPage, totalPage, new CallBack()
-                                {
-                                        @Override
-                                        public void execute(String... args)
-                                        {
-                                                //确保有参数被传送回来
-                                                if (args.length > 0)
-                                                {
-                                                        int page = Integer.valueOf(args[0]);
-                                                        refreshPosts(page);
-                                                }
-                                        }
-                                });
-                        }
+                ((HomeActivity) getActivity()).getFloatingActionButton().setOnClickListener(v -> {
+                        controller.openJumPageAlertDialog();
                 });
         }
-
 
 }

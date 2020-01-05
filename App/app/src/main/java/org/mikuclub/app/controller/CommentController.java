@@ -1,56 +1,42 @@
 package org.mikuclub.app.controller;
 
-import android.view.View;
+import android.content.Context;
 
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.CommentDelegate;
-import org.mikuclub.app.javaBeans.resources.Comment;
+import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.javaBeans.parameters.BaseParameters;
+import org.mikuclub.app.javaBeans.parameters.CommentParameters;
+import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Comments;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-
-import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CommentController
+public class CommentController extends BaseController
 {
 
-        //数据请求代理人
-        private CommentDelegate delegate;
-        //列表组件
-        private RecyclerView recyclerView;
-        //列表适配器
-        private CommentsAdapter recyclerViewAdapter;
-        //列表数据
-        private List<Comment> recyclerDataList;
-        //信号标 决定是否要加载新数据
-        private boolean wantMore = true;
-        //总页数
-        private int totalPage = -1;
-        //当前页数
-        private int currentPage = 0;
 
-        public CommentController(CommentDelegate delegate, RecyclerView recyclerView, CommentsAdapter recyclerViewAdapter, List<Comment> recyclerDataList)
+        public CommentController(Context context , BaseDelegate delegate, RecyclerView recyclerView, BaseParameters parameters)
         {
-                this.delegate = delegate;
-                this.recyclerView = recyclerView;
-                this.recyclerViewAdapter = recyclerViewAdapter;
-                this.recyclerDataList = recyclerDataList;
+                super(context, delegate, recyclerView, parameters);
         }
 
         /*
        加载更多
         */
-        public void getMore(int postId, int commentParentId)
+        public void getMore()
         {
                 //检查信号标
-                if (wantMore)
+                if (isWantMore())
                 {
                         //关闭信号标
-                        wantMore = false;
+                        setWantMore(false);
+                        //显示尾部加载
+                        getRecyclerViewAdapter().updateFooterStatus(true, false, false);
+
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //成功的情况
@@ -58,25 +44,26 @@ public class CommentController
                                 public void onSuccess(String response)
                                 {
                                         //解析数据
-                                        Comments commentList = ParserUtils.comments(response);
+                                        Comments newComments = ParserUtils.comments(response);
                                         //加载数据
-                                        recyclerDataList.addAll(commentList.getBody());
-                                        //通知更新  (插入位置, 和新插入的数量)
-                                        recyclerViewAdapter.notifyItemInserted(recyclerDataList.size());
+                                        getRecyclerDataList().addAll(newComments.getBody());
+                                        //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
+                                        int position = getRecyclerDataList().size()+getRecyclerViewAdapter().getHeaderRow();
+                                        getRecyclerViewAdapter().notifyItemInserted(position);
 
                                         //当前页数+1
-                                        currentPage++;
+                                        setCurrentPage(getCurrentPage()+1);
                                         //如果是还未获取过总页数
-                                        if (totalPage == -1)
+                                        if (getTotalPage() == -1)
                                         {
-                                                totalPage = commentList.getHeaders().getTotalPage();
+                                                setTotalPage(newComments.getHeaders().getTotalPage());
                                         }
 
                                         //如果还未到最后一页
-                                        if (currentPage < totalPage)
+                                        if (getCurrentPage() < getTotalPage())
                                         {
                                                 //重新开启信号标
-                                                wantMore = true;
+                                                setWantMore(true);
                                         }
                                         //如果已经到最后一页了
                                         else
@@ -91,9 +78,8 @@ public class CommentController
                                 @Override
                                 public void onError()
                                 {
-                                        recyclerViewAdapter.setNotMoreError(true);
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
+                                        //隐藏尾部
+                                        getRecyclerViewAdapter().updateFooterStatus(false, false, false);
                                 }
 
                                 //网络失败的情况
@@ -101,28 +87,35 @@ public class CommentController
                                 public void onHttpError()
                                 {
                                         //显示错误信息, 绑定点击事件允许用户手动重试
-                                        recyclerViewAdapter.setInternetError(true, v -> {
+                                        getRecyclerViewAdapter().setInternetErrorListener(v -> {
                                                 //重置请求状态
-                                                wantMore = true;
-                                                //重置错误显示
-                                                recyclerViewAdapter.setInternetError(false, null);
-                                                getMore(postId, commentParentId);
+                                                setWantMore(true);
+                                                getMore();
                                         });
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
+                                        getRecyclerViewAdapter().updateFooterStatus(false, false, true);
                                 }
 
                                 //取消请求的情况
                                 @Override
                                 public void onCancel()
                                 {
-                                        wantMore = true;
+                                        setWantMore(true);
                                 }
                         };
-                        LogUtils.e(postId+"/"+commentParentId);
-                        //委托代理人发送请求
-                        delegate.getCommentsListByPostId(postId, commentParentId, currentPage + 1, httpCallBack);
+
+                        startDelegate(httpCallBack);
                 }
         }
+
+        /**
+         * 启动代理人发送请求
+         * @param httpCallBack
+         */
+        private void startDelegate(HttpCallBack httpCallBack)
+        {
+                ( (CommentDelegate)getDelegate()).getCommentList(httpCallBack, getCurrentPage()+1, (CommentParameters) getParameters());
+        }
+
+
 
 }

@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity
         /*变量*/
         private AppBarConfiguration mAppBarConfiguration;
         private Posts stickyPosts;
-        private Posts postList;
+        private Posts posts;
 
         /*组件*/
         private BottomNavigationView bottomNavigationView;
@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity
 
                 //从intent里读取上个活动传送来的数据
                 stickyPosts = (Posts) getIntent().getSerializableExtra(INTENT_STICKY_POST_LIST);
-                postList = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
+                posts = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -171,8 +171,8 @@ public class HomeActivity extends AppCompatActivity
         {
                 return stickyPosts;
         }
-        public Posts getPostList()
+        public Posts getPosts()
         {
-                return postList;
+                return posts;
         }
 }

@@ -10,13 +10,11 @@
     android:orientation = "vertical"
     tools:showIn = "@layout/activity_search">
 
-        <include layout = "@layout/list_item_info_util" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id = "@+id/recycler_view"
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
-            android:visibility = "invisible"
             android:scrollbars="vertical"
         />
 

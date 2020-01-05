@@ -27,9 +27,10 @@ import android.widget.Toast;
 import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.BaseDelegate;
+import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
+import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
@@ -37,6 +38,7 @@ import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -49,11 +51,11 @@ public class WelcomeActivity extends AppCompatActivity
         /*静态变量*/
         public static final int TAG = 1;
         //需要等待的请求数量
-        private static final int REQUEST_TAOTAL_NUMBER = 3;
+        private static final int REQUEST_TOTAL_NUMBER = 3;
 
         /*变量*/
         private PostDelegate postDelegate;
-        private BaseDelegate baseDelegate;
+        private UtilsDelegate utilsDelegate;
         private SharedPreferences preferences;
         private Posts stickyPostList = null;
         private Posts postList = null;
@@ -76,7 +78,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                 //创建代理人
                 postDelegate = new PostDelegate(TAG);
-                baseDelegate = new BaseDelegate(TAG);
+                utilsDelegate = new UtilsDelegate(TAG);
                 //获取软件设置参数文件
                 preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -164,7 +166,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         getDataForHome();
                                 }
                         };
-                        baseDelegate.checkUpdate(httpCallBack);
+                        utilsDelegate.checkUpdate(httpCallBack);
 
                 }
                 //如果上次请求的时间 未过期 则不需要检查更新
@@ -236,9 +238,13 @@ public class WelcomeActivity extends AppCompatActivity
                 };
 
                 //获取置顶文章
-                postDelegate.getStickyPostList(page, callBackToGetStickyPost);
+                postDelegate.getStickyPostList(callBackToGetStickyPost, page);
+
                 //获取最新文章
-                postDelegate.getPostList(page, callBackToGetPost);
+                //设置请求参数
+                PostParameters parameters = new PostParameters();
+                parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
+                postDelegate.getPostList(callBackToGetPost, page, parameters);
 
                 //获取分类信息
                 checkCategories();
@@ -272,7 +278,6 @@ public class WelcomeActivity extends AppCompatActivity
                                                 .putString(GlobalConfig.CATEGORIES_CACHE, categoriesCache)
                                                 .putLong(GlobalConfig.CATEGORIES_CACHE_TIME, System.currentTimeMillis())
                                                 .apply();
-
 
                                         LogUtils.v("已重新请求分类信息");
 
@@ -310,7 +315,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                         };
                         //发送请求
-                        baseDelegate.getCategory(httpCallBack);
+                        utilsDelegate.getCategory(httpCallBack);
                 }
                 //直接使用缓存
                 else
@@ -331,7 +336,7 @@ public class WelcomeActivity extends AppCompatActivity
                 addRequestCount();
 
                 //所有请求都完成, 并且数据都成功获取的情况
-                if (requestCount == REQUEST_TAOTAL_NUMBER && stickyPostList != null && postList != null && !categoriesCache.isEmpty())
+                if (requestCount == REQUEST_TOTAL_NUMBER && stickyPostList != null && postList != null && !categoriesCache.isEmpty())
                 {
 
                         //启动主页
@@ -357,16 +362,11 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeInfoText.setVisibility(View.VISIBLE);
 
                 //绑定点击事件 允许用户手动重试
-                welecomeInfoText.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                welecomeInfoText.setVisibility(View.INVISIBLE);
-                                welecomeProgressBar.setVisibility(View.VISIBLE);
+                welecomeInfoText.setOnClickListener(v -> {
 
-                                getDataForHome();
-                        }
+                        welecomeInfoText.setVisibility(View.INVISIBLE);
+                        welecomeProgressBar.setVisibility(View.VISIBLE);
+                        getDataForHome();
                 });
 
 
@@ -386,34 +386,22 @@ public class WelcomeActivity extends AppCompatActivity
                 //如果是强制更新, 就无法取消
                 dialog.setCancelable(!appUpdate.isForceUpdate());
                 //设置确认按钮名和动作
-                dialog.setPositiveButton("前往下载", new DialogInterface.OnClickListener()
-                {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
+                dialog.setPositiveButton("前往下载", (dialog1, which) -> GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), ""));
+                //设置取消按钮名和动作
+                dialog.setNegativeButton("取消", (dialog12, which) -> {
+
+                        //如果是强制更新, 取消等于关闭应用
+                        if (appUpdate.isForceUpdate())
                         {
-                                GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), "");
+                                Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
+                                finish();
 
                         }
-                });
-                //设置取消按钮名和动作
-                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
-                {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
+                        //如果不是强制
+                        else
                         {
-                                //如果是强制更新, 取消等于关闭应用
-                                if (appUpdate.isForceUpdate())
-                                {
-                                        Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
-                                        finish();
-
-                                }
-                                //如果不是强制
-                                else
-                                {
-                                        //正常请求文章数据
-                                        getDataForHome();
-                                }
+                                //正常请求文章数据
+                                getDataForHome();
                         }
                 });
                 //显示消息框

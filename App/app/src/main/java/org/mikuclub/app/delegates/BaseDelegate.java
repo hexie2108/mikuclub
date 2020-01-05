@@ -1,20 +1,13 @@
 package org.mikuclub.app.delegates;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.parameters.ParametersBase;
-import org.mikuclub.app.utils.http.Request;
-
-import java.security.Policy;
-
-import androidx.appcompat.view.menu.BaseMenuPresenter;
+import org.mikuclub.app.delegates.models.ResourceModel;
 
 /**
- *  根据需要生成对应资源的请求
+ * 根据需要生成对应资源的请求
  */
 public class BaseDelegate
 {
-
+        private ResourceModel model;
         private int tag;
 
         public BaseDelegate(int tag)
@@ -22,29 +15,24 @@ public class BaseDelegate
                 this.tag = tag;
         }
 
-        /**
-         * 检查更新
-         * @param httpCallBack
-         */
-        public void checkUpdate(HttpCallBack httpCallBack)
+        public BaseDelegate(int tag, ResourceModel model)
         {
-
-                Request.get(GlobalConfig.Server.APP_UPDATE, null, null, tag, httpCallBack);
-
+                this.tag = tag;
+                this.model = model;
         }
 
-        /**
-         * 获取分类信息
-         * @param httpCallBack
-         */
-        public void getCategory(HttpCallBack httpCallBack)
+        public ResourceModel getModel()
         {
-                ParametersBase parametersBase = new ParametersBase();
-                Request.get(GlobalConfig.Server.CATEGORIES, parametersBase.toMap(), null, tag, httpCallBack);
-
+                return model;
         }
 
+        public int getTag()
+        {
+                return tag;
+        }
 
-
-
+        public void setModel(ResourceModel model)
+        {
+                this.model = model;
+        }
 }

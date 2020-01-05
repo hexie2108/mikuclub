@@ -9,13 +9,16 @@ import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
+import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,33 +38,30 @@ public class PostCommentsFragment extends Fragment
 {
 
 
-        //文章列表
-        private RecyclerView recyclerView;
-        private CommentsAdapter recyclerViewAdapter;
-        private List<Comment> recyclerDataList;
-
-        private ConstraintLayout postCommentsSendBox;
-
+        /*变量*/
         //数据请求代理人
         private CommentDelegate delegate;
+        //数据控制器
+        private CommentController controller;
+        //列表适配器
+        private CommentsAdapter recyclerViewAdapter;
 
-        //获取文章数据
+        private List<Comment> recyclerDataList;
+        //当前页面的文章数据
         private Post post;
 
-        //信号标 是否要加载新数据  在评论页 需要默认就开启
-        private boolean wantMore = true;
 
-        //当前页数
-        private int currentPage;
-        //总页数
-        private int totalPage;
+        /*组件*/
+        //文章列表
+        private RecyclerView recyclerView;
+        private ConstraintLayout postCommentsSendBox;
 
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
-                // Inflate the layout for this fragment
+                // 为fragment加载主布局
                 return inflater.inflate(R.layout.fragment_post_comments, container, false);
         }
 
@@ -78,147 +78,60 @@ public class PostCommentsFragment extends Fragment
                 post = ((PostActivity) getActivity()).getPost();
                 //创建数据请求 代理人
                 delegate = new CommentDelegate(((PostActivity) getActivity()).TAG);
-
+                //初始化变量
                 recyclerDataList = new ArrayList<>();
-
-                currentPage = 0;
-                totalPage = -1;
-
 
                 //初始化列表
                 initRecyclerView();
+                //初始化控制器
+                initController();
         }
-
-
-
 
         @Override
         public void onStart()
         {
                 super.onStart();
-
                 //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                getMore();
-
-
+                controller.getMore();
         }
+
 
         /**
          * 初始化 评论列表
          */
         private void initRecyclerView()
         {
-                //配置recyclerView
+                //创建数据适配器
                 recyclerViewAdapter = new CommentsAdapter(recyclerDataList, getActivity());
-                recyclerView.setAdapter(recyclerViewAdapter);
+                //创建列表主布局
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                layoutManager.setOrientation(RecyclerView.VERTICAL);
 
-                //创建加载布局
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-                linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-                recyclerView.setLayoutManager(linearLayoutManager);
-                //缓存item的数量
-                recyclerView.setItemViewCacheSize(GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2);
-
-                //绑定滑动事件
-                recyclerView.addOnScrollListener(new MyListOnScrollListener(recyclerViewAdapter, linearLayoutManager)
-                {
-                        //只有满足位置条件才会触发方法
+                //创建列表滑动监听器
+                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager){
                         @Override
                         public void onExecute()
                         {
                                 //加载更多
-                                getMore();
+                                controller.getMore();
                         }
-                });
-
+                };
+                //配置列表
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, true, listener);
         }
 
-        /*
-        加载更多
+        /**
+         * 初始化控制器
          */
-        private void getMore()
-        {
-                //检查信号标
-                if (wantMore)
-                {
-                        //关闭信号标
-                        wantMore = false;
-                        HttpCallBack httpCallBack = new HttpCallBack()
-                        {
-                                //成功的情况
-                                @Override
-                                public void onSuccess(String response)
-                                {
+        private void initController(){
+                //设置查询参数
+                CommentParameters parameters = new CommentParameters();
+                parameters.setPost(post.getId());
+                //过滤评论的子回复
+                parameters.setParent(0);
 
-                                        //解析数据
-                                        Comments commentList = ParserUtils.comments(response);
-                                        //加载数据
-                                        recyclerDataList.addAll(commentList.getBody());
-                                        //通知更新
-                                        recyclerViewAdapter.notifyItemInserted(recyclerDataList.size());
-                                        //如果返回的文章等于规定数量, 正常
-                                        if (commentList.getBody().size() == GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS)
-                                        {
-                                                //重新开启信号标
-                                                wantMore = true;
-                                                //当前页数+1
-                                                currentPage++;
-                                                //如果是第一次获取总页数
-                                                if(totalPage == -1)
-                                                {
-                                                        totalPage = commentList.getHeaders().getTotalPage();
-                                                }
-                                        }
-                                        else{
-                                                //没有更多内容了
-                                                //调用错误处理方法
-                                                onError();
-                                        }
-                                }
-
-                                //请求结果包含错误的情况
-                                //结果主体为空, 无更多内容
-                                @Override
-                                public void onError()
-                                {
-                                        recyclerViewAdapter.setNotMoreError(true);
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
-                                }
-
-                                //网络失败的情况
-                                @Override
-                                public void onHttpError()
-                                {
-                                        //显示错误信息, 绑定点击事件允许用户手动重试
-                                        recyclerViewAdapter.setInternetError(true, new View.OnClickListener()
-                                        {
-                                                @Override
-                                                public void onClick(View v)
-                                                {
-                                                        //重置请求状态
-                                                        wantMore = true;
-                                                        //重置错误显示
-                                                        recyclerViewAdapter.setInternetError(false, null);
-                                                        getMore();
-                                                }
-                                        });
-                                        LogUtils.e("错误");
-                                        //通知更新尾部
-                                        recyclerViewAdapter.notifyItemChanged(recyclerDataList.size());
-                                }
-
-                                //取消请求的情况
-                                @Override
-                                public void onCancel()
-                                {
-                                        wantMore = true;
-                                }
-                        };
-
-                        //委托代理人发送请求
-                        delegate.getCommentsListByPostId(post.getId(), 0, currentPage+1, httpCallBack);
-                }
+                //创建数据控制器
+                controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
         }
 
 

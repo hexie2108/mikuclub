@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.mikuclub.app.configs.GlobalConfig;
 
@@ -144,8 +145,17 @@ public class GeneralUtils
                         //使用备用地址
                         intent.setData(Uri.parse(SecondaryUrl));
                 }
-                //启动
-                context.startActivity(intent);
+
+                //第二次检查, 确保只有在能被解析的情况下 才尝试启动
+                if(intent.resolveActivity(context.getPackageManager()) != null){
+                        //启动
+                        context.startActivity(intent);
+                }
+                //否则 消息框提示
+                else{
+                        Toast.makeText(context, "无法找到相关联的应用", Toast.LENGTH_SHORT).show();
+                }
+
 
 
         }

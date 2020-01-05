@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersCreatePost
+public class CreatePostParameters extends BaseParameters
 {
 
         private String status;

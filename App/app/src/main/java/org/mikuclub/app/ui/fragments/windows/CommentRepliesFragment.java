@@ -19,6 +19,7 @@ import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
+import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.HttpUtils;
@@ -59,12 +60,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private List<Comment> recyclerDataList;
         //获取评论数据
         private Comment comment;
-        //信号标 是否要加载新数据  在评论页 需要默认就开启
-        private boolean wantMore = true;
-        //当前页数
-        private int currentPage;
-        //总页数
-        private int totalPage;
 
         /*组件*/
         //父评论主体
@@ -112,6 +107,8 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 initParentComment();
                 //初始化列表
                 initRecyclerView();
+                //初始化控制器
+                initController();
 
                 //绑定返回按钮
                 returnButton.setOnClickListener(v -> {
@@ -121,8 +118,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 //调整窗口高度
                ScreenUtils.setFixWindowsHeight(getActivity(), view);
 
-                //创建数据控制器
-                controller = new CommentController(delegate, recyclerView,  recyclerViewAdapter, recyclerDataList);
+
 
         }
 
@@ -132,7 +128,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         {
                 super.onStart();
                 //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                controller.getMore(comment.getPost(), comment.getId());
+                controller.getMore();
         }
 
         /**
@@ -180,8 +176,9 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
          */
         private void initRecyclerView()
         {
-                //配置recyclerView
+                //创建数据适配器
                 recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity());
+
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -192,21 +189,33 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         public void onExecute()
                         {
                                 //加载更多
-                                controller.getMore(comment.getPost(), comment.getId());
+                                controller.getMore();
                         }
                 };
 
                 //配置列表, (hasNestedScrollingEnabled 为否, 是因为要禁用窗口滑动)
                 RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, false, listener);
+        }
 
+
+
+        /**
+         * 初始化控制器
+         */
+        private void initController(){
+                //设置查询参数
+                CommentParameters parameters = new CommentParameters();
+                parameters.setPost(comment.getPost());
+                parameters.setParent(comment.getId());
+
+                //创建数据控制器
+                controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
                 //如果没有任何子回复
                 if (comment.getMetadata().getCount_replies() == 0)
                 {
                         //关闭自动加载
-                        wantMore = false;
-                        recyclerView.setVisibility(View.INVISIBLE);
+                        controller.setWantMore(false);
                 }
-
         }
 
 
@@ -245,6 +254,9 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 fragment.setArguments(bundle);
                 return fragment;
         }
+
+
+
 
 
 }

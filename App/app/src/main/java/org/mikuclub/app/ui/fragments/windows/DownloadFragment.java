@@ -36,6 +36,13 @@ import mikuclub.app.R;
 public class DownloadFragment extends BottomSheetDialogFragment
 {
 
+        /*变量*/
+        //获取剪贴板管理器
+        private ClipboardManager clipboardManager;
+        //获取文章数据
+        private Post post;
+
+        /*组件*/
         private ConstraintLayout down1Box;
         private ConstraintLayout down2Box;
         private TextView DownInfo;
@@ -54,21 +61,14 @@ public class DownloadFragment extends BottomSheetDialogFragment
         private TextView downInfo;
         private MaterialButton returnButton;
 
-        //获取剪贴板管理器
-        private ClipboardManager clipboardManager;
 
-
-        //获取文章数据
-        private Post post;
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
         {
-
                 // 为fragment加载主布局
-                View root = inflater.inflate(R.layout.fragment_download_windows, container, false);
-                return root;
+                return  inflater.inflate(R.layout.fragment_download_windows, container, false);
         }
 
         @Override
@@ -76,11 +76,6 @@ public class DownloadFragment extends BottomSheetDialogFragment
         {
 
                 super.onViewCreated(view, savedInstanceState);
-
-                //获取文章的数据
-                post = ((PostActivity) getActivity()).getPost();
-                //获取剪切板
-                clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
                 //绑定组件
                 down1Box = view.findViewById(R.id.down1_box);
@@ -101,19 +96,17 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 downInfo = view.findViewById(R.id.down_info);
                 returnButton = view.findViewById(R.id.return_button);
 
+                //获取文章的数据
+                post = ((PostActivity) getActivity()).getPost();
+                //获取剪切板
+                clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+
                 //初始化父评论
                 initDownloadView();
 
                 //动态调整布局高度
                 final View myView = view;
-                myView.post(new Runnable()
-                {
-                        @Override
-                        public void run()
-                        {
-                                GeneralUtils.setMaxHeightOfLayout(getActivity(), myView, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS);
-                        }
-                });
+                myView.post(() -> GeneralUtils.setMaxHeightOfLayout(getActivity(), myView, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS));
         }
 
         /**
@@ -126,38 +119,36 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 setubDownloadBox(metadata.getDown2(), metadata.getPassword2(), metadata.getUnzip_password2(), down2Box, down2PasswordText, down2UnzipPasswordText, down2Password, down2UnzipPassword, down2Button);
 
                 //如果没有访问密码
-                if(GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword()) && GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword2())){
+                if (GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword()) && GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword2()))
+                {
                         //隐藏提示
                         downInfo.setVisibility(View.GONE);
                 }
 
                 //绑定返回按钮
-                returnButton.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                //关闭窗口
-                                DownloadFragment.this.dismiss();
-                        }
+                returnButton.setOnClickListener(v -> {
+                        //关闭窗口
+                        DownloadFragment.this.dismiss();
                 });
         }
 
 
-        @Override
-        public void onDestroy()
-        {
-                LogUtils.e(" fragment onDestroy");
-                super.onDestroy();
-        }
-
         /**
-         * 配置下载点
+         * 单独配置下载窗口
+         * @param downList
+         * @param passwordList
+         * @param unzipPasswordList
+         * @param downBox
+         * @param downPasswordText
+         * @param downUnzipPasswordText
+         * @param downPassword
+         * @param downUnzipPassword
+         * @param downButton
          */
-        private void setubDownloadBox(final  List<String> downList, List<String> passwordList, List<String> unzipPasswordList,  ConstraintLayout downBox, TextView downPasswordText, TextView downUnzipPasswordText, final TextView downPassword, TextView downUnzipPassword, MaterialButton downButton )
+        private void setubDownloadBox(final List<String> downList, List<String> passwordList, List<String> unzipPasswordList, ConstraintLayout downBox, TextView downPasswordText, TextView downUnzipPasswordText, final TextView downPassword, TextView downUnzipPassword, MaterialButton downButton)
         {
 
-                //下载1 不是空的
+                //下载地址 不是空的
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(downList))
                 {
                         //访问密码不是空的
@@ -192,17 +183,12 @@ public class DownloadFragment extends BottomSheetDialogFragment
                         if (downUrl.indexOf("magnet:") != -1)
                         {
                                 downButton.setText("复制磁链");
-                                onClickListener = new View.OnClickListener()
-                                {
-                                        @Override
-                                        public void onClick(View v)
-                                        {
-                                                //创建字符剪切内容, 因为是磁链, 不需要http头部,所以重新从原列表获取下载地址
-                                                ClipData clipData = ClipData.newPlainText("", downList.get(0));
-                                                //添加到剪切板
-                                                clipboardManager.setPrimaryClip(clipData);
-                                                Toast.makeText(getActivity(), "已复制磁链到剪切板", Toast.LENGTH_SHORT).show();
-                                        }
+                                onClickListener = v -> {
+                                        //创建字符剪切内容, 因为是磁链, 不需要http头部,所以重新从原列表获取下载地址
+                                        ClipData clipData = ClipData.newPlainText("", downList.get(0));
+                                        //添加到剪切板
+                                        clipboardManager.setPrimaryClip(clipData);
+                                        Toast.makeText(getActivity(), "已复制磁链到剪切板", Toast.LENGTH_SHORT).show();
                                 };
                         }
                         //如果普通下载地址
@@ -213,68 +199,57 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                 {
                                         //更改按钮文字 为百度
                                         downButton.setText("百度网盘");
+                                        //设置图标
                                         downButton.setIcon(getResources().getDrawable(R.drawable.baidu_pan));
-                                        onClickListener = new View.OnClickListener()
-                                        {
-                                                @Override
-                                                public void onClick(View v)
+                                        //绑定动作
+                                        onClickListener = v -> {
+                                                //如果访问密码不是空
+                                                if (!downPassword.getText().toString().isEmpty())
                                                 {
-                                                        //如果访问密码不是空
-                                                        if (!downPassword.getText().toString().isEmpty())
-                                                        {
-                                                                //创建字符剪切内容
-                                                                ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
-                                                                //添加到剪切板
-                                                                clipboardManager.setPrimaryClip(clipData);
-                                                                Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                        // 打开链接的方式
-
-                                                        //百度地址 开始切割识别码的位置
-                                                        String splitSymbole = "/s/";
-                                                        String identifyUrl = downUrl.substring(downUrl.indexOf(splitSymbole)+splitSymbole.length());
-                                                        //去除第一位 的1位数 (百度app政策)
-                                                        identifyUrl = identifyUrl.substring(1);
-                                                        String baiduUrl = GlobalConfig.BAIDU_PAN_APP_WAKE_URL +"?"+GlobalConfig.BAIDU_PAN_PARAMETER_NAME+"="+identifyUrl;
-                                                        //启动第三方应用
-                                                        GeneralUtils.startWebViewIntent(getActivity(), baiduUrl, downUrl);
-
-
+                                                        //创建字符剪切内容
+                                                        ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
+                                                        //添加到剪切板
+                                                        clipboardManager.setPrimaryClip(clipData);
+                                                        Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
                                                 }
+                                                // 打开链接的方式
+
+                                                //百度地址 开始切割识别码的位置
+                                                String splitSymbole = "/s/";
+                                                String identifyUrl = downUrl.substring(downUrl.indexOf(splitSymbole) + splitSymbole.length());
+                                                //去除第一位 的1位数 (百度app政策)
+                                                identifyUrl = identifyUrl.substring(1);
+                                                String baiduUrl = GlobalConfig.BAIDU_PAN_APP_WAKE_URL + "?" + GlobalConfig.BAIDU_PAN_PARAMETER_NAME + "=" + identifyUrl;
+                                                //启动第三方应用
+                                                GeneralUtils.startWebViewIntent(getActivity(), baiduUrl, downUrl);
                                         };
 
                                 }
-                                else {
+                                else
+                                {
                                         //设置默认文字
                                         downButton.setText("普通下载");
-                                        onClickListener = new View.OnClickListener()
-                                        {
-                                                @Override
-                                                public void onClick(View v)
+                                        onClickListener = v -> {
+                                                //如果访问密码不是空
+                                                if (!downPassword.getText().toString().isEmpty())
                                                 {
-                                                        //如果访问密码不是空
-                                                        if (!downPassword.getText().toString().isEmpty())
-                                                        {
-                                                                //创建字符剪切内容
-                                                                ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
-                                                                //添加到剪切板
-                                                                clipboardManager.setPrimaryClip(clipData);
-                                                                Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                        // 用游览器打开链接
-                                                        GeneralUtils.startWebViewIntent(getActivity(), downUrl, downUrl);
+                                                        //创建字符剪切内容
+                                                        ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
+                                                        //添加到剪切板
+                                                        clipboardManager.setPrimaryClip(clipData);
+                                                        Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
                                                 }
+                                                // 用游览器打开链接
+                                                GeneralUtils.startWebViewIntent(getActivity(), downUrl, downUrl);
                                         };
-
                                 }
-
-
                         }
+
                         //绑定点击监听器
                         downButton.setOnClickListener(onClickListener);
 
                 }
-                //否则隐藏
+                //没有下载地址就直接隐藏这个下载位
                 else
                 {
                         downBox.setVisibility(View.GONE);

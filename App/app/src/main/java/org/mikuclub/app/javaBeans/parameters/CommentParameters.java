@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersListPosts
+public class CommentParameters extends BaseParameters
 {
         private String context;
         private Integer page;
@@ -18,21 +18,18 @@ public class ParametersListPosts
         private Date after;
         private ArrayList<Integer> author;
         private ArrayList<Integer> author_exclude;
+        private String author_email;
         private Date before;
         private ArrayList<Integer> exclude;
         private ArrayList<Integer> include;
         private Integer offset;
         private String order;
         private String orderby;
-        private ArrayList<String> slug;
+        private Integer parent;
+        private Integer post;
         private String status;
-        private ArrayList<Integer> categories;
-        private ArrayList<Integer> categories_exclude;
-        private ArrayList<Integer> tags;
-        private ArrayList<Integer> tags_exclude;
-        private Boolean sticky;
 
-
+        @Override
         public Map<String, String> toMap()
         {
 
@@ -49,18 +46,15 @@ public class ParametersListPosts
 
                 putIfNotNull(outputMap, "author", DataUtils.arrayListToString(author, "", ","));
                 putIfNotNull(outputMap, "author_exclude", DataUtils.arrayListToString(author_exclude, "", ","));
+                putIfNotNull(outputMap, "author_email", author_email);
                 putIfNotNull(outputMap, "exclude", DataUtils.arrayListToString(exclude, "", ","));
                 putIfNotNull(outputMap, "include", DataUtils.arrayListToString(include, "", ","));
                 putIfNotNull(outputMap, "offset", offset);
                 putIfNotNull(outputMap, "order", order);
                 putIfNotNull(outputMap, "orderby", orderby);
-                putIfNotNull(outputMap, "slug", DataUtils.arrayListToString(slug, "", ","));
+                putIfNotNull(outputMap, "parent", parent);
+                putIfNotNull(outputMap, "post", post);
                 putIfNotNull(outputMap, "status", status);
-                putIfNotNull(outputMap, "categories", DataUtils.arrayListToString(categories, "", ","));
-                putIfNotNull(outputMap, "categories_exclude", DataUtils.arrayListToString(categories_exclude, "", ","));
-                putIfNotNull(outputMap, "tags", DataUtils.arrayListToString(tags, "", ","));
-                putIfNotNull(outputMap, "tags_exclude", DataUtils.arrayListToString(tags_exclude, "", ","));
-                putIfNotNull(outputMap, "sticky", sticky);
 
                 //追加参数, 让wordpress 在 回复body中增加页数信息, 不然会被加到 回复header头部里
                 putIfNotNull(outputMap, "_envelope", "1");
@@ -140,6 +134,16 @@ public class ParametersListPosts
                 this.author_exclude = author_exclude;
         }
 
+        public String getAuthor_email()
+        {
+                return author_email;
+        }
+
+        public void setAuthor_email(String author_email)
+        {
+                this.author_email = author_email;
+        }
+
         public Date getBefore()
         {
                 return before;
@@ -200,14 +204,24 @@ public class ParametersListPosts
                 this.orderby = orderby;
         }
 
-        public ArrayList<String> getSlug()
+        public Integer getParent()
         {
-                return slug;
+                return parent;
         }
 
-        public void setSlug(ArrayList<String> slug)
+        public void setParent(Integer parent)
         {
-                this.slug = slug;
+                this.parent = parent;
+        }
+
+        public Integer getPost()
+        {
+                return post;
+        }
+
+        public void setPost(Integer post)
+        {
+                this.post = post;
         }
 
         public String getStatus()
@@ -219,55 +233,4 @@ public class ParametersListPosts
         {
                 this.status = status;
         }
-
-        public ArrayList<Integer> getCategories()
-        {
-                return categories;
-        }
-
-        public void setCategories(ArrayList<Integer> categories)
-        {
-                this.categories = categories;
-        }
-
-        public ArrayList<Integer> getCategories_exclude()
-        {
-                return categories_exclude;
-        }
-
-        public void setCategories_exclude(ArrayList<Integer> categories_exclude)
-        {
-                this.categories_exclude = categories_exclude;
-        }
-
-        public ArrayList<Integer> getTags()
-        {
-                return tags;
-        }
-
-        public void setTags(ArrayList<Integer> tags)
-        {
-                this.tags = tags;
-        }
-
-        public ArrayList<Integer> getTags_exclude()
-        {
-                return tags_exclude;
-        }
-
-        public void setTags_exclude(ArrayList<Integer> tags_exclude)
-        {
-                this.tags_exclude = tags_exclude;
-        }
-
-        public Boolean getSticky()
-        {
-                return sticky;
-        }
-
-        public void setSticky(Boolean sticky)
-        {
-                this.sticky = sticky;
-        }
-
 }

@@ -6,10 +6,10 @@ import java.util.Map;
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 /**
- * 空值请求
+ * 基本的请求参数
  * 只包含 _envelope 参数
  */
-public class ParametersBase
+public class BaseParameters
 {
 
         public Map<String, String> toMap()

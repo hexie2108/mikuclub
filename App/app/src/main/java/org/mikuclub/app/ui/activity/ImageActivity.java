@@ -30,7 +30,7 @@ public class ImageActivity extends AppCompatActivity
         public static final String INTENT_IMAGES_SRC = "images_src";
 
         /*变量*/
-        //储存图片URL地址
+        //当前页面需要的图片URL地址
         List<String> imagesSrc;
 
         /*组件*/

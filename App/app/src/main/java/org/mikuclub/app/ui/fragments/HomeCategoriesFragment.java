@@ -10,6 +10,7 @@ import org.mikuclub.app.adapters.CategoriesAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Category;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.List;
 
@@ -22,18 +23,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
 /**
- 主页活动-分类碎片
+ * 主页活动-分类碎片
  */
 public class HomeCategoriesFragment extends Fragment
 {
 
 
-        //文章列表
-        private RecyclerView recyclerView;
+        //列表适配器
         private CategoriesAdapter recyclerViewAdapter;
+        //列表数据
         private List<Category> recyclerDataList;
         //应用参数
         private SharedPreferences preferences;
+
+        /*组件*/
+        //列表
+        private RecyclerView recyclerView;
 
 
         @Override
@@ -41,8 +46,8 @@ public class HomeCategoriesFragment extends Fragment
                                  Bundle savedInstanceState)
         {
                 // 为fragment加载主布局
-                View root = inflater.inflate(R.layout.fragment_home_categories, container, false);
-                return root;
+                return inflater.inflate(R.layout.fragment_home_categories, container, false);
+
         }
 
 
@@ -53,6 +58,7 @@ public class HomeCategoriesFragment extends Fragment
                 super.onViewCreated(view, savedInstanceState);
 
                 recyclerView = view.findViewById(R.id.recycler_view);
+
                 //获取软件应用参数文件
                 preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 //从参数里获取分类信息
@@ -73,15 +79,14 @@ public class HomeCategoriesFragment extends Fragment
         {
                 //创建适配器
                 recyclerViewAdapter = new CategoriesAdapter(recyclerDataList, getActivity());
-                recyclerView.setAdapter(recyclerViewAdapter);
 
-                //设置网格布局
+                //创建列表网格布局
                 //设置行数
                 int numberColumn = 2;
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), numberColumn);
-                //加载布局
-                recyclerView.setLayoutManager(gridLayoutManager);
-                recyclerView.setHasFixedSize(true);
+                GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), numberColumn);
+
+                //配置列表
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, recyclerDataList.size() , true, true, null);
 
         }
 
