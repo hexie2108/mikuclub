@@ -180,7 +180,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                         final String downUrl = HttpUtils.checkAndAddHttpsProtocol(downList.get(0));
                         View.OnClickListener onClickListener;
                         //检测是否是磁链地址
-                        if (downUrl.indexOf("magnet:") != -1)
+                        if (downUrl.indexOf("magnet:") != -1 || downUrl.indexOf("ed2k:") != -1 )
                         {
                                 downButton.setText("复制磁链");
                                 onClickListener = v -> {

@@ -17,12 +17,12 @@
             android:layout_height = "match_parent" />
 
         <com.google.android.material.navigation.NavigationView
-            android:id = "@+id/nav_view"
+            android:id = "@+id/home_left_navigation_view"
             android:layout_width = "wrap_content"
             android:layout_height = "match_parent"
             android:layout_gravity = "start"
             android:fitsSystemWindows = "true"
             app:headerLayout = "@layout/home_left_drawer_header"
-            app:menu = "@menu/home_left_drawer_menu" />
+            app:menu = "@menu/home_left_drawer_menu_logout" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

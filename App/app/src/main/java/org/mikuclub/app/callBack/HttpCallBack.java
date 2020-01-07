@@ -189,7 +189,7 @@ public class HttpCallBack
                 }
 
                 LogUtils.w(errorMessage + " : " + error.getMessage());
-                Toast.makeText(MyApplication.getContext(), errorMessage, Toast.LENGTH_LONG).show();
+               // Toast.makeText(MyApplication.getContext(), errorMessage, Toast.LENGTH_LONG).show();
                 error.printStackTrace();
 
                 onFinally();

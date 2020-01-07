@@ -4,43 +4,32 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.mikuclub.app.adapters.PostsAdapter;
-import org.mikuclub.app.adapters.listener.ManageInfoUtilView;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.CallBack;
-import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.SearchPostController;
 import org.mikuclub.app.delegates.PostDelegate;
 
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.ui.activity.SearchActivity;
 import org.mikuclub.app.utils.KeyboardUtils;
-import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
-import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import mikuclub.app.R;

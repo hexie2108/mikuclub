@@ -5,14 +5,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 import mikuclub.app.BuildConfig;
 import mikuclub.app.R;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -35,6 +32,7 @@ import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.PreferencesUtlis;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
@@ -56,7 +54,7 @@ public class WelcomeActivity extends AppCompatActivity
         /*变量*/
         private PostDelegate postDelegate;
         private UtilsDelegate utilsDelegate;
-        private SharedPreferences preferences;
+
         private Posts stickyPostList = null;
         private Posts postList = null;
         private String categoriesCache;
@@ -79,8 +77,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //创建代理人
                 postDelegate = new PostDelegate(TAG);
                 utilsDelegate = new UtilsDelegate(TAG);
-                //获取软件设置参数文件
-                preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 
                 //检测权限
                 permissionCheck();
@@ -117,9 +114,9 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void checkUpdate()
         {
-                long updateLastCheckTime = preferences.getLong(GlobalConfig.APP_UPDATE_CACHE_TIME, 0);
-                //如果当前时间已经超过了 上次检查时间+更新周期的时间
-                if (System.currentTimeMillis() > updateLastCheckTime + GlobalConfig.APP_UPDATE_CHECK_CYCLE)
+                long appUpdateExipire = PreferencesUtlis.getApplicationPreference(WelcomeActivity.this).getLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, 0);
+                //如果检查更新已过期
+                if (System.currentTimeMillis() > appUpdateExipire)
                 {
                         LogUtils.v("检查应用更新");
 
@@ -144,8 +141,9 @@ public class WelcomeActivity extends AppCompatActivity
                                                 //如果已经是新版了, 就写入这次的检查时间, 避免后续重复检查
                                                 if (BuildConfig.VERSION_CODE == appUpdate.getVersionCode())
                                                 {
-                                                        //保存检查时间
-                                                        preferences.edit().putLong(GlobalConfig.APP_UPDATE_CACHE_TIME, System.currentTimeMillis()).apply();
+                                                        long expire = System.currentTimeMillis() + GlobalConfig.Preferences.APP_UPDATE_EXPIRE_TIME;
+                                                        //保存 这次检查更新的过期时间
+                                                        PreferencesUtlis.getApplicationPreference(WelcomeActivity.this).edit().putLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, expire).apply();
                                                 }
                                                 //请求文章数据
                                                 getDataForHome();
@@ -257,12 +255,12 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkCategories()
         {
 
-                final long categoriesLastCheckTime = preferences.getLong(GlobalConfig.CATEGORIES_CACHE_TIME, 0);
-                categoriesCache = preferences.getString(GlobalConfig.CATEGORIES_CACHE, "");
+                final long categoriesCacheExpire = PreferencesUtlis.getCategoryPreference(WelcomeActivity.this).getLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, 0);
+                categoriesCache = PreferencesUtlis.getCategoryPreference(WelcomeActivity.this).getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
 
 
-                //如果当前时间已经超过了 上次检查时间+检查周期的时长 或者 分类字符串缓存为空
-                if (System.currentTimeMillis() > categoriesLastCheckTime + GlobalConfig.CATEGORIES_CHECK_CYCLE || categoriesCache.isEmpty())
+                //如果分类缓存 已过期 或者 缓存为null
+                if (System.currentTimeMillis() > categoriesCacheExpire || categoriesCache == null)
                 {
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
@@ -272,11 +270,13 @@ public class WelcomeActivity extends AppCompatActivity
                                 {
                                         //获取分类信息
                                         categoriesCache = response;
-                                        //更新分类缓存 和 缓存时间
-                                        preferences
+                                        //计算缓存过期时间
+                                        long expire = System.currentTimeMillis() + GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE_TIME;
+                                        //更新分类缓存 和 缓存过期时间
+                                        PreferencesUtlis.getCategoryPreference(WelcomeActivity.this)
                                                 .edit()
-                                                .putString(GlobalConfig.CATEGORIES_CACHE, categoriesCache)
-                                                .putLong(GlobalConfig.CATEGORIES_CACHE_TIME, System.currentTimeMillis())
+                                                .putString(GlobalConfig.Preferences.CATEGORIES_CACHE, categoriesCache)
+                                                .putLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, expire)
                                                 .apply();
 
                                         LogUtils.v("已重新请求分类信息");

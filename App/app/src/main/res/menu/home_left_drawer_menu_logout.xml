@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    tools:showIn = "@layout/activity_home">
+
+        <group android:checkableBehavior = "single">
+
+                <item
+                    android:id = "@+id/item_login"
+                    android:icon = "@drawable/sign_in"
+                    android:title = "登陆" />
+
+
+        </group>
+
+        <item android:title = "设置">
+                <menu>
+                        <item
+                            android:id = "@+id/item_manage"
+                            android:icon = "@drawable/manage"
+                            android:title = "配置" />
+                </menu>
+        </item>
+
+</menu>

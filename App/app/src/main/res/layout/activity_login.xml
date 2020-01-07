@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id = "@+id/home_app_bar"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id = "@+id/toolbar"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "?attr/actionBarSize"
+                    android:background = "?attr/colorPrimary"
+                    app:popupTheme = "@style/ThemeOverlay.AppCompat.Light" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id = "@+id/container"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            android:padding = "@dimen/normal"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+            tools:context = "org.mikuclub.app.ui.activity.LoginActivity">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id = "@+id/input_user_name_layout"
+                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:hint = "用户ID或邮箱"
+                    app:endIconMode = "clear_text"
+                    app:errorEnabled = "true"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id = "@+id/input_user_name"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:imeActionLabel = "下个"
+
+                            android:imeOptions = "actionNext"
+                            android:inputType = "text|textEmailAddress"
+                            android:maxLines = "1" />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id = "@+id/input_user_password_layout"
+                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:hint = "密码"
+                    app:endIconMode = "password_toggle"
+                    app:errorEnabled = "true"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/input_user_name_layout">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id = "@+id/input_user_password"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:imeActionLabel = "登陆"
+                            android:imeOptions = "actionDone"
+                            android:inputType = "textPassword"
+                            android:maxLines = "1"
+                            android:selectAllOnFocus = "true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id = "@+id/login_button"
+                    style = "@style/Widget.MaterialComponents.Button"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:enabled = "false"
+                    android:paddingLeft = "@dimen/super_large"
+                    android:paddingRight = "@dimen/super_large"
+                    android:text = "登陆"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/input_user_password_layout" />
+
+                <ProgressBar
+                    android:id = "@+id/progress_bar"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:indeterminateTint = "@color/colorPrimary"
+                    android:visibility = "invisible"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/login_button" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

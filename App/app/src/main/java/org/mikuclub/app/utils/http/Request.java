@@ -43,12 +43,11 @@ public class Request
          */
         public static void get(String url, Map params, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
         {
-                //如果有参数要传递
+                //如果有URL参数要传递
                 if (params != null && params.size() > 0)
                 {
                         //把参数拼入url中
                         url = url + "?" + DataUtils.mapToString(params, "=", "&");
-                        LogUtils.w(url);
                 }
 
                 request(com.android.volley.Request.Method.GET, url, null, headers, tag, httpCallBack);
@@ -61,9 +60,15 @@ public class Request
          * @param tag
          * @param httpCallBack
          */
-        public static void post(String url, Map<String, String> params, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
+        public static void post(String url, Map<String, String> params, Map<String, String> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
-                request(com.android.volley.Request.Method.POST, url, params, headers, tag, httpCallBack);
+                //如果有URL参数要传递
+                if (params != null && params.size() > 0)
+                {
+                        //把参数拼入url中
+                        url = url + "?" + DataUtils.mapToString(params, "=", "&");
+                }
+                request(com.android.volley.Request.Method.POST, url, bodyParams, headers, tag, httpCallBack);
         }
 
         /**

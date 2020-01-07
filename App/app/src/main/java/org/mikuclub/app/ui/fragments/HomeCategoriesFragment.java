@@ -62,7 +62,7 @@ public class HomeCategoriesFragment extends Fragment
                 //获取软件应用参数文件
                 preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 //从参数里获取分类信息
-                String categoriesCache = preferences.getString(GlobalConfig.CATEGORIES_CACHE, "");
+                String categoriesCache = preferences.getString(GlobalConfig.Preferences.CATEGORIES_CACHE, "");
                 //反序列化
                 recyclerDataList = ParserUtils.categories(categoriesCache).getBody();
 

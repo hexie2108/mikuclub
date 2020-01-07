@@ -16,6 +16,8 @@
             android:roundIcon = "@mipmap/ic_launcher_round"
             android:supportsRtl = "true"
             android:theme = "@style/AppTheme">
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.LoginActivity" android:label="登陆"></activity>
                 <activity android:name = "org.mikuclub.app.ui.activity.ImageActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.WelcomeActivity">
                         <intent-filter>

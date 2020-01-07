@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,6 +28,7 @@ import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -70,6 +72,9 @@ public class PostActivity extends AppCompatActivity
         //分页显示器
         private ViewPager2 viewPager;
         private FloatingActionButton postDownloadButton;
+
+
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -261,10 +266,10 @@ public class PostActivity extends AppCompatActivity
         }
 
 
+
         @Override
         protected void onStop()
         {
-
                 //取消本活动相关的所有网络请求
                 Request.cancelRequest(TAG);
                 super.onStop();

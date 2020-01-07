@@ -51,22 +51,43 @@ public class GlobalConfig
 
 
                 public static final String APP_UPDATE = HOST+"app/update.json";
-                public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu";
-
+                public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu/";
+                public static final String LOGIN = HOST+"wp-json/jwt-auth/v1/token/";
         }
 
-        //软件更新检查周期
-        public static final long APP_UPDATE_CHECK_CYCLE = 1000; //内测阶段 每次都检查更新
-        //public long APP_UPDATE_CHECK_CYCLE = 1000 * 60 * 60 * 24 * 1; //以后上线 可以每天检查一次
-        //最后一次检查更新时间的键名
-        public static final String APP_UPDATE_CACHE_TIME= "app_update_cache_time";
+        /**
+         * sharePreference专用变量名
+         */
+        public class Preferences{
+                //一天的毫秒数
+                public static final long DAY_IN_MILLISECONDS = 1000 * 60 *60 *24;
 
-        //菜单更新检查周期
-        public static final long CATEGORIES_CHECK_CYCLE = 1000 * 60 * 60 * 24 * 15; //每半月检查一次
-        //最后一次菜单更新时间的键名
-        public static final String CATEGORIES_CACHE_TIME="categories_cache_time";
-        //储存菜单的键名
-        public static final String CATEGORIES_CACHE ="categories_cache";
+                //每次更新检查的有效戒指时间
+                public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";
+                //每次更新检查的有效周期
+                public static final long APP_UPDATE_EXPIRE_TIME = 1000; //内测阶段 每1秒过期
+                //public long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; //以后上线 可以每天检查一次
+
+
+                //菜单缓存
+                public static final String CATEGORIES_CACHE ="categories_cache";
+                //菜单缓存的时间
+                public static final String CATEGORIES_CACHE_EXPIRE ="categories_cache_expire";
+                //菜单缓存的有效期
+                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 15; //每15天检查一次
+
+
+                //用户登陆信息
+                public static final String USER_LOGIN ="user_login";
+                //用户令牌
+                public static final String USER_TOKEN="user_token";
+                //用户令牌的过期时间
+                public static final String USER_TOKEN_EXPIRE="user_token_time";
+                //用户令牌的有效周期
+                public static final long USER_TOKEN_EXPIRE_TIME = 1000 * 60 * 10; //每10分钟过期
+
+
+        }
 
 
         //魔法区分类id

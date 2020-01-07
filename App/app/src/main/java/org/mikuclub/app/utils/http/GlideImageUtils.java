@@ -84,6 +84,8 @@ public class GlideImageUtils
                 url = HttpUtils.checkAndAddHttpsProtocol(url);
                 thumbnailUrl = HttpUtils.checkAndAddHttpsProtocol(thumbnailUrl);
 
+
+
                 Glide.with(context)
                         .load(url)
                         .placeholder(R.drawable.loop_grey_1x1)
@@ -91,6 +93,7 @@ public class GlideImageUtils
                                 Glide.with(context)
                                         .load(thumbnailUrl).centerInside()
                         )
+
                         .error(R.drawable.error_grey_1x1)
                         .transition(withCrossFade())
                         .into(imageView);

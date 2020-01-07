@@ -3,6 +3,7 @@ package org.mikuclub.app.delegates;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
+import org.mikuclub.app.javaBeans.parameters.LoginParameters;
 import org.mikuclub.app.utils.http.Request;
 
 /**
@@ -34,6 +35,20 @@ public class UtilsDelegate extends BaseDelegate
         {
                 BaseParameters baseParameters = new BaseParameters();
                 Request.get(GlobalConfig.Server.CATEGORIES, baseParameters.toMap(), null, getTag(), httpCallBack);
+
+        }
+
+        /**
+         * 登陆
+         * @param httpCallBack
+         */
+        public void login(HttpCallBack httpCallBack,  String userName, String userPassword)
+        {
+                BaseParameters baseParameters = new BaseParameters();
+                LoginParameters loginParameters = new LoginParameters();
+                loginParameters.setUsername(userName);
+                loginParameters.setPassword(userPassword);
+                Request.post(GlobalConfig.Server.LOGIN, baseParameters.toMap(), loginParameters.toMap(), null, getTag(), httpCallBack);
 
         }
 
