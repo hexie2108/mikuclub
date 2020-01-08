@@ -15,6 +15,7 @@
         <com.google.android.material.button.MaterialButton
             android:id = "@+id/post_count_like_button"
             style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+
             android:layout_width = "@dimen/ultra_large"
             android:layout_height = "@dimen/ultra_large"
             android:layout_marginTop = "@dimen/small"

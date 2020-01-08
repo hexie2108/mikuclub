@@ -22,6 +22,7 @@ import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ScreenUtils;
@@ -30,6 +31,7 @@ import org.mikuclub.app.utils.http.Request;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -205,16 +207,27 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private void initController(){
                 //设置查询参数
                 CommentParameters parameters = new CommentParameters();
-                parameters.setPost(comment.getPost());
-                parameters.setParent(comment.getId());
+                //如果有子回复
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
+                {
+                        //生成子回复id列表
+                        ArrayList<Integer> parentList = new ArrayList();
+                        parentList.add(comment.getId());
+                        parentList.addAll(comment.getMetadata().getComment_reply_ids());
+                        //设置参数
+                        parameters.setPost(new ArrayList<>(Arrays.asList(comment.getPost())));
+                        parameters.setParent(parentList);
+                        parameters.setOrder(GlobalConfig.Order.ASC);
+                }
 
                 //创建数据控制器
                 controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
                 //如果没有任何子回复
-                if (comment.getMetadata().getCount_replies() == 0)
+                if (GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
                         //关闭自动加载
                         controller.setWantMore(false);
+
                 }
         }
 

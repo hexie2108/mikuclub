@@ -10,6 +10,7 @@ import org.mikuclub.app.adapters.CategoriesAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Category;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.PreferencesUtlis;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.List;
@@ -33,8 +34,7 @@ public class HomeCategoriesFragment extends Fragment
         private CategoriesAdapter recyclerViewAdapter;
         //列表数据
         private List<Category> recyclerDataList;
-        //应用参数
-        private SharedPreferences preferences;
+
 
         /*组件*/
         //列表
@@ -59,10 +59,8 @@ public class HomeCategoriesFragment extends Fragment
 
                 recyclerView = view.findViewById(R.id.recycler_view);
 
-                //获取软件应用参数文件
-                preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 //从参数里获取分类信息
-                String categoriesCache = preferences.getString(GlobalConfig.Preferences.CATEGORIES_CACHE, "");
+                String categoriesCache = PreferencesUtlis.getCategoryPreference(getContext()).getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
                 //反序列化
                 recyclerDataList = ParserUtils.categories(categoriesCache).getBody();
 

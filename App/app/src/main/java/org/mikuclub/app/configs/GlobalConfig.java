@@ -50,9 +50,14 @@ public class GlobalConfig
                 public static final String USERS = "users/";
 
 
+                //GET 检查更新
                 public static final String APP_UPDATE = HOST+"app/update.json";
+                //GET 获取缓存评论
                 public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu/";
+                //POST 登陆接口
                 public static final String LOGIN = HOST+"wp-json/jwt-auth/v1/token/";
+                //POST  设置文章点赞
+                public static final String LIKE_POST = HOST+"wp-json/utils/v2/post_like_count/";
         }
 
         /**
@@ -87,6 +92,10 @@ public class GlobalConfig
                 public static final long USER_TOKEN_EXPIRE_TIME = 1000 * 60 * 10; //每10分钟过期
 
 
+                //点赞过的文章ID数组
+                public static final String POST_LIKED_ARRAY="user_token_time";
+                //点赞过的文章ID数组长度
+                public static final int POST_LIKED_ARRAY_SIZE = 5;
         }
 
 
@@ -109,6 +118,10 @@ public class GlobalConfig
                 public static final String DATE = "date";
         }
 
+        public class Order{
+                public static final String ASC = "asc";
+                public static final String DESC = "desc";
+        }
         public class Status{
                 public static final String PUBLISH = "publish";
         }

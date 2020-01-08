@@ -12,6 +12,7 @@ public class PreferencesUtlis
         private static final String NAME_APPLICATION = "application_preference";
         private static final String NAME_CATEGORY = "category_preference";
         private static final String NAME_USER = "user_preference";
+        private static final String NAME_POST = "post_preference";
 
         //应用参数
         private static SharedPreferences applicationPreference;
@@ -19,6 +20,9 @@ public class PreferencesUtlis
         private static SharedPreferences categoryPreference;
         //用户信息参数
         private static SharedPreferences userPreference;
+
+        //文章信息参数
+        private static SharedPreferences postPreference;
 
         public static SharedPreferences getApplicationPreference(Context context)
         {
@@ -47,5 +51,14 @@ public class PreferencesUtlis
                 }
                 return userPreference;
         }
+        public static SharedPreferences getPostPreference(Context context)
+        {
+                if (postPreference == null)
+                {
+                        postPreference = context.getSharedPreferences(NAME_POST, Context.MODE_PRIVATE);
+                }
+                return postPreference;
+        }
+
 
 }

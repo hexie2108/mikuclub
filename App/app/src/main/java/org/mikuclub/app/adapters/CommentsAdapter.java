@@ -10,6 +10,7 @@ import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -24,6 +25,7 @@ import mikuclub.app.R;
 public class CommentsAdapter extends BaseAdapterWithFooter
 {
 
+        private boolean displayReplyCount = true;
         /**
          * 构建函数
          *
@@ -64,11 +66,11 @@ public class CommentsAdapter extends BaseAdapterWithFooter
                 //加载远程图片
                 GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), avatarSrc);
 
-                //如果评论有被回复过
-                if (comment.getMetadata().getCount_replies() > 0)
+                //如果要显示回复数 和 回复不为空
+                if (displayReplyCount && !GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
                         //显示回复数量
-                        viewHolder.getItemCountReplies().setText(comment.getMetadata().getCount_replies() + " 条回复");
+                        viewHolder.getItemCountReplies().setText(comment.getMetadata().getComment_reply_ids().size() + " 条回复");
                         viewHolder.getItemCountReplies().setVisibility(View.VISIBLE);
                 }
 
@@ -114,7 +116,10 @@ public class CommentsAdapter extends BaseAdapterWithFooter
 
         }
 
-
+        public void setDisplayReplyCount(boolean displayReplyCount)
+        {
+                this.displayReplyCount = displayReplyCount;
+        }
 
         /**
          * 子评论列表的适配器 继承了普通评论的适配器, 只是改变了动作
@@ -125,6 +130,7 @@ public class CommentsAdapter extends BaseAdapterWithFooter
                 public RepliesAdapter(List<Comment> list, Context context)
                 {
                         super(list, context);
+                        setDisplayReplyCount(false);
                 }
 
                 @Override

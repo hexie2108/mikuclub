@@ -96,6 +96,8 @@ public class Request
         private static void request(int method, String url, final Map<String, String> params, final Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
 
+                LogUtils.v("请求地址 "+url);
+
                 StringRequest stringRequest  = new StringRequest(method, url,
                         new Response.Listener<String>()
                         {

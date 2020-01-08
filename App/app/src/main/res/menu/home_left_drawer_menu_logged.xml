@@ -18,6 +18,7 @@
                         <item
                             android:id = "@+id/item_manage"
                             android:icon = "@drawable/manage"
+                            android:visible="false"
                             android:title = "配置" />
                 </menu>
         </item>

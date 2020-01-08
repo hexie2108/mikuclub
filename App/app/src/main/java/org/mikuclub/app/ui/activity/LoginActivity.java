@@ -28,6 +28,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikuclub.app.callBack.HttpCallBack;
+import org.mikuclub.app.callBack.HttpCallBackForUtils;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
@@ -67,8 +68,8 @@ public class LoginActivity extends AppCompatActivity
 
                 inputUserName = findViewById(R.id.input_user_name);
                 inputUserPassword = findViewById(R.id.input_user_password);
-                inputUserNameLayout =findViewById(R.id.input_user_name_layout);
-                inputUserPasswordLayout =findViewById(R.id.input_user_password_layout);
+                inputUserNameLayout = findViewById(R.id.input_user_name_layout);
+                inputUserPasswordLayout = findViewById(R.id.input_user_password_layout);
                 loginButton = findViewById(R.id.login_button);
                 progressBar = findViewById(R.id.progress_bar);
 
@@ -141,7 +142,8 @@ public class LoginActivity extends AppCompatActivity
                                 //产生点击事件
                                 loginButton.performClick();
                         }
-                        else{
+                        else
+                        {
                                 Toast.makeText(this, "用户名和密码不能为空", Toast.LENGTH_SHORT).show();
                         }
                         return true;
@@ -164,94 +166,85 @@ public class LoginActivity extends AppCompatActivity
                 loginButton.setEnabled(false);
 
 
-                HttpCallBack httpCallBack = new HttpCallBack()
+                HttpCallBackForUtils httpCallBackForUtils = new HttpCallBackForUtils()
                 {
 
                         /**
-                         * 分析请求结果
-                         * @param response
-                         */
-                        @Override
-                        public void onSuccessHandler(String response)
-                        {
-                                try
-                                {
-                                        //先解析一遍返回数据
-                                        JSONObject jsonObject = new JSONObject(response);
-                                        //获取内容状态码
-                                        int statusCode = jsonObject.getInt("status");
-                                        //如果回复的状态码在200~300之间
-                                        if (statusCode >= 200 && statusCode <= 300)
-                                        {
-                                                //请求正常
-                                                onSuccess(jsonObject.getString("body"));
-                                        }
-                                        //如果状态码异常
-                                        else
-                                        {
-                                                //显示错误信息
-                                                onError(jsonObject.getJSONObject("body").getString("code"));
-                                        }
-                                }
-                                catch (JSONException exception)
-                                {
-                                        LogUtils.w("JSONObject无法解析返回数据");
-                                        exception.printStackTrace();
-                                }
-                        }
-
-                        /**
                          * 请求成功的情况
+                         *
                          * @param response
                          */
                         @Override
                         public void onSuccess(String response)
                         {
-                                //设置登陆成功的信息
-                                setLoginResult(response);
+                                try
+                                {
+                                        //先解析一遍返回数据
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        response = jsonObject.getString("body");
+                                        //设置登陆成功的信息
+                                        setLoginResult(response);
+                                }
+                                catch (JSONException e)
+                                {
+                                        e.printStackTrace();
+                                }
                         }
 
                         /**
                          * 返回错误信息的情况
-                         * @param code
+                         *
+                         * @param response
                          */
-                        public void onError(String code)
+                        public void onError(String response)
                         {
                                 progressBar.setVisibility(View.INVISIBLE);
 
-                                LogUtils.e(code);
-                                if(code.indexOf("username")!=-1){
+                                String code = null;
+                                try
+                                {
+                                        //先解析一遍返回数据
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        code = jsonObject.getJSONObject("body").getString("code");
+                                }
+                                catch (JSONException e)
+                                {
+                                        e.printStackTrace();
+                                }
+
+                                if (code.indexOf("username") != -1)
+                                {
                                         //显示错误信息
                                         inputUserNameLayout.setError("用户名错误");
 
                                 }
-                               else if(code.indexOf("email")!=-1){
+                                else if (code.indexOf("email") != -1)
+                                {
                                         //显示错误信息
                                         inputUserNameLayout.setError("邮箱地址错误");
 
                                 }
-                                else if(code.indexOf("password")!=-1){
+                                else if (code.indexOf("password") != -1)
+                                {
                                         //显示错误信息
                                         inputUserPasswordLayout.setError("密码错误");
-
                                 }
-                                else{
+                                else
+                                {
                                         //显示错误信息
                                         inputUserPasswordLayout.setError("未知错误");
-
                                 }
                         }
 
                         @Override
                         public void onHttpError()
                         {
-
                                 progressBar.setVisibility(View.INVISIBLE);
                                 loginButton.setEnabled(true);
 
                                 //显示错误信息
                                 inputUserPasswordLayout.setError("网络请求错误, 请重试");
-                             //   inputUserPasswordLayout.setErrorEnabled(true);
+                                //   inputUserPasswordLayout.setErrorEnabled(true);
                         }
 
                         @Override
@@ -261,8 +254,7 @@ public class LoginActivity extends AppCompatActivity
                                 loginButton.setEnabled(true);
                         }
                 };
-
-                delegate.login(httpCallBack, inputUserName.getText().toString(), inputUserPassword.getText().toString());
+                delegate.login(httpCallBackForUtils, inputUserName.getText().toString(), inputUserPassword.getText().toString());
 
         }
 

@@ -21,6 +21,7 @@ import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -124,11 +125,12 @@ public class PostCommentsFragment extends Fragment
          * 初始化控制器
          */
         private void initController(){
+
                 //设置查询参数
                 CommentParameters parameters = new CommentParameters();
-                parameters.setPost(post.getId());
-                //过滤评论的子回复
-                parameters.setParent(0);
+                parameters.setPost(new ArrayList<>(Arrays.asList(post.getId())));
+                //过滤子回复
+                parameters.setParent(new ArrayList<>(Arrays.asList(0)));
 
                 //创建数据控制器
                 controller = new CommentController(getActivity(), delegate, recyclerView, parameters);

@@ -25,8 +25,9 @@ public class CommentParameters extends BaseParameters
         private Integer offset;
         private String order;
         private String orderby;
-        private Integer parent;
-        private Integer post;
+        private ArrayList<Integer> parent;
+        private ArrayList<Integer> parent_exclude;
+        private ArrayList<Integer> post;
         private String status;
 
         @Override
@@ -52,8 +53,9 @@ public class CommentParameters extends BaseParameters
                 putIfNotNull(outputMap, "offset", offset);
                 putIfNotNull(outputMap, "order", order);
                 putIfNotNull(outputMap, "orderby", orderby);
-                putIfNotNull(outputMap, "parent", parent);
-                putIfNotNull(outputMap, "post", post);
+                putIfNotNull(outputMap, "parent", DataUtils.arrayListToString(parent, "", ","));
+                putIfNotNull(outputMap, "parent", DataUtils.arrayListToString(parent_exclude, "", ","));
+                putIfNotNull(outputMap, "post", DataUtils.arrayListToString(post, "", ","));
                 putIfNotNull(outputMap, "status", status);
 
                 //追加参数, 让wordpress 在 回复body中增加页数信息, 不然会被加到 回复header头部里
@@ -204,25 +206,6 @@ public class CommentParameters extends BaseParameters
                 this.orderby = orderby;
         }
 
-        public Integer getParent()
-        {
-                return parent;
-        }
-
-        public void setParent(Integer parent)
-        {
-                this.parent = parent;
-        }
-
-        public Integer getPost()
-        {
-                return post;
-        }
-
-        public void setPost(Integer post)
-        {
-                this.post = post;
-        }
 
         public String getStatus()
         {
@@ -232,5 +215,35 @@ public class CommentParameters extends BaseParameters
         public void setStatus(String status)
         {
                 this.status = status;
+        }
+
+        public ArrayList<Integer> getParent()
+        {
+                return parent;
+        }
+
+        public void setParent(ArrayList<Integer> parent)
+        {
+                this.parent = parent;
+        }
+
+        public ArrayList<Integer> getParent_exclude()
+        {
+                return parent_exclude;
+        }
+
+        public void setParent_exclude(ArrayList<Integer> parent_exclude)
+        {
+                this.parent_exclude = parent_exclude;
+        }
+
+        public ArrayList<Integer> getPost()
+        {
+                return post;
+        }
+
+        public void setPost(ArrayList<Integer> post)
+        {
+                this.post = post;
         }
 }

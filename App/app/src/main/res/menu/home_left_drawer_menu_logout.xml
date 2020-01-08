@@ -13,13 +13,5 @@
 
         </group>
 
-        <item android:title = "设置">
-                <menu>
-                        <item
-                            android:id = "@+id/item_manage"
-                            android:icon = "@drawable/manage"
-                            android:title = "配置" />
-                </menu>
-        </item>
 
 </menu>

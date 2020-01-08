@@ -6,6 +6,7 @@ import org.mikuclub.app.javaBeans.resources.modules.Rendered;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Comment  implements Serializable
 {
@@ -32,16 +33,16 @@ public class Comment  implements Serializable
 
 
         public class Metadata  implements  Serializable{
-                private int count_replies;
+              private List<Integer> comment_reply_ids;
 
-                public int getCount_replies()
+                public List<Integer> getComment_reply_ids()
                 {
-                        return count_replies;
+                        return comment_reply_ids;
                 }
 
-                public void setCount_replies(int count_replies)
+                public void setComment_reply_ids(List<Integer> comment_reply_ids)
                 {
-                        this.count_replies = count_replies;
+                        this.comment_reply_ids = comment_reply_ids;
                 }
         }
 

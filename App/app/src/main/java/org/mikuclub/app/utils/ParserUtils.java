@@ -2,6 +2,7 @@ package org.mikuclub.app.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
@@ -11,6 +12,9 @@ import org.mikuclub.app.javaBeans.resources.Categories;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 负责反序列化 和 序列化 数据
@@ -110,8 +114,21 @@ public class ParserUtils
 
         }
 
+        /**
+         * 解析数据为 整数列表
+         * @param response
+         * @return
+         */
+        public static List<Integer> integerArrayList(String response){
+                return  gson.fromJson(response, new TypeToken<List<Integer>>(){}.getType());
+        }
 
-
-
-
+        /**
+         * 序列化整数列表 为 JSON字符串
+         * @param integerList
+         * @return
+         */
+        public static String integerArrayListToJson(List<Integer> integerList){
+                return  gson.toJson(integerList, new TypeToken<List<Integer>>(){}.getType());
+        }
 }
