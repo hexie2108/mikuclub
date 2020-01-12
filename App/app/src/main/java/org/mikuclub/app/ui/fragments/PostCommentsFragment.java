@@ -7,17 +7,14 @@ import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.resources.Comment;
-import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.ArrayList;
@@ -26,7 +23,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,8 +51,6 @@ public class PostCommentsFragment extends Fragment
         /*组件*/
         //文章列表
         private RecyclerView recyclerView;
-        private ConstraintLayout postCommentsSendBox;
-
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,7 +67,7 @@ public class PostCommentsFragment extends Fragment
 
                 //绑定组件
                 recyclerView = view.findViewById(R.id.post_comments_recycler_view);
-                postCommentsSendBox = view.findViewById(R.id.post_comments_send_box);
+
 
                 //从活动中获取文章数据
                 post = ((PostActivity) getActivity()).getPost();
@@ -104,6 +98,11 @@ public class PostCommentsFragment extends Fragment
         {
                 //创建数据适配器
                 recyclerViewAdapter = new CommentsAdapter(recyclerDataList, getActivity());
+                //如果评论数为0  修改默认错误信息
+                if(GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_comments())){
+                        recyclerViewAdapter.setNotMoreErrorMessage("目前还没有评论哦");
+                }
+
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);

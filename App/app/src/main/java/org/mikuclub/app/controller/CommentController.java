@@ -1,16 +1,12 @@
 package org.mikuclub.app.controller;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.CommentDelegate;
-import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
-import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.utils.ParserUtils;
 
@@ -70,17 +66,16 @@ public class CommentController extends BaseController
                                         else
                                         {
                                                 //调用错误处理方法
-                                                onError();
+                                                onError(null);
                                         }
                                 }
 
                                 //请求结果包含错误的情况
                                 //结果主体为空, 无更多内容
                                 @Override
-                                public void onError()
+                                public void onError(String response)
                                 {
-                                        //隐藏尾部
-                                        getRecyclerViewAdapter().updateFooterStatus(false, false, false);
+                                        getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                                 }
 
                                 //网络失败的情况

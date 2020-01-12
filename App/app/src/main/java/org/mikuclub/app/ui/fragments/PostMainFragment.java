@@ -4,17 +4,15 @@ import android.content.Context;
 import android.os.Bundle;
 
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.mikuclub.app.callBack.HttpCallBackForUtils;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
@@ -24,7 +22,8 @@ import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtlis;
+import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +51,7 @@ public class PostMainFragment extends Fragment
         private UtilsDelegate delegate;
         //点赞过的文章id数组
         private List<Integer> likedPostIds;
+        private int countLike;
 
         /*组件*/
         private TextView postTitle;
@@ -106,11 +106,12 @@ public class PostMainFragment extends Fragment
                 delegate = new UtilsDelegate(TAG);
 
                 //获取点赞数据
-                String likedPostIdsString = PreferencesUtlis.getPostPreference(getContext()).getString(GlobalConfig.Preferences.POST_LIKED_ARRAY, null);
-                LogUtils.e(likedPostIdsString);
+                String likedPostIdsString = PreferencesUtils.getPostPreference().getString(GlobalConfig.Preferences.POST_LIKED_ARRAY, null);
+
                 //如果相关点赞数据字符串存在
                 if (likedPostIdsString != null)
                 {
+                        LogUtils.e(likedPostIdsString);
                         //解析为数组
                         likedPostIds = ParserUtils.integerArrayList(likedPostIdsString);
                 }
@@ -149,12 +150,8 @@ public class PostMainFragment extends Fragment
                 //获取头像
                 GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatarSrc);
 
-                //设置工具栏信息
-                //不是空的 或者默认0
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like()))
-                {
-                        postCountLike.setText(metadata.getCount_like().get(0).toString() + " 次点赞");
-                }
+
+
                 //不是空的或默认0
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getFail_time()))
                 {
@@ -256,15 +253,22 @@ public class PostMainFragment extends Fragment
          */
         private void initLikeButton()
         {
-
                 boolean buttonIsActivated = false;
-
+                //点赞数 不是空的也不是0
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_like()))
+                {
+                        countLike = post.getMetadata().getCount_like().get(0);
+                }
 
                 //如果点赞文章数组不是空+这个文章已经点过赞
                 if (likedPostIds != null && likedPostIds.contains(post.getId()))
                 {
                         buttonIsActivated = true;
+                        //检查是否是点过赞
+                        countLike++;
                 }
+                postCountLike.setText(countLike + " 次点赞");
+
 
                 //根据激活状态 设置 按钮样式和动作
                 setLikeButtonAction(buttonIsActivated);
@@ -292,22 +296,29 @@ public class PostMainFragment extends Fragment
                 postCountLikeButton.setOnClickListener(v -> {
                         //屏蔽按钮
                         postCountLikeButton.setEnabled(false);
-                        delegate.likePost(new HttpCallBackForUtils()
+                        //设置按钮
+                        setLikeButtonAction(!isActivated);
+
+                        delegate.likePost(new HttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        //设置按钮
-                                        setLikeButtonAction(!isActivated);
                                         //更新数组
                                         manageLikedPost(!isActivated);
 
+                                        //提示信息
+                                        String toastMessage= "已点赞";
+                                        if(isActivated){
+                                                toastMessage= "已取消点赞";
+                                        }
+                                        ToastUtils.shortToast(toastMessage);
                                 }
 
                                 @Override
                                 public void onHttpError()
                                 {
-                                        Toast.makeText(getActivity(), "网络错误", Toast.LENGTH_SHORT).show();
+                                        ToastUtils.shortToast("网络错误");
                                 }
 
                                 @Override
@@ -361,18 +372,21 @@ public class PostMainFragment extends Fragment
                         likedPostIds.remove(position);
                 }
                 //保存数组参数里
-                PreferencesUtlis.getPostPreference(getActivity())
+                PreferencesUtils.getPostPreference()
                         .edit()
                         .putString(GlobalConfig.Preferences.POST_LIKED_ARRAY, ParserUtils.integerArrayListToJson(likedPostIds))
                         .apply();
 
 
-                //获取当前点赞数 , 根据当前操作 加+1 减-1
-                int currentCountLike = (isAdd == true) ? post.getMetadata().getCount_like().get(0) + 1 : post.getMetadata().getCount_like().get(0) - 1;
-                //根据数值到数据变量
-                post.getMetadata().getCount_like().set(0, currentCountLike);
+                //根据当前操作  增加或减少点赞数
+                if(isAdd){
+                        countLike++;
+                }
+                else{
+                        countLike--;
+                }
                 //更新UI
-                postCountLike.setText(currentCountLike+" 次点赞");
+                postCountLike.setText(countLike+" 次点赞");
         }
 
 

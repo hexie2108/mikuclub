@@ -96,16 +96,46 @@
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/input_user_password_layout" />
 
-                <ProgressBar
-                    android:id = "@+id/progress_bar"
+                <TextView
+                    android:id = "@+id/social_login_info"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/super_large"
+                    android:text="使用快捷登陆 (无需注册)\n\n注意: 如果是已经半年以上没用QQ登陆过本站的老用户的话, 请先在本站的网页版用QQ登陆一次后再使用QQ登陆, 否则可能会导致无法获取正确的账号"
+                    android:layout_width = "0dp"
+                    android:textSize="@dimen/text_default"
+                    android:layout_height = "wrap_content"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/login_button"
+
+                    />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id = "@+id/social_button_qq"
+                    style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginTop = "@dimen/very_large"
-                    android:indeterminateTint = "@color/colorPrimary"
-                    android:visibility = "invisible"
-                    app:layout_constraintEnd_toEndOf = "parent"
+                    android:textSize="@dimen/text_default"
+                    android:text = "腾讯账号登陆"
+                    app:icon = "@drawable/qq"
+                    app:layout_constraintEnd_toStartOf = "@id/social_button_weibo"
                     app:layout_constraintStart_toStartOf = "parent"
-                    app:layout_constraintTop_toBottomOf = "@id/login_button" />
+                    app:layout_constraintTop_toBottomOf = "@id/social_login_info" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id = "@+id/social_button_weibo"
+                    style = "@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:textSize="@dimen/text_default"
+                    android:text = "微博账号登陆"
+                    app:icon = "@drawable/weibo"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toEndOf = "@id/social_button_qq"
+                    app:layout_constraintTop_toBottomOf = "@id/social_login_info" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

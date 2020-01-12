@@ -1,6 +1,5 @@
 package org.mikuclub.app.ui.fragments;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +8,18 @@ import android.view.ViewGroup;
 import org.mikuclub.app.adapters.CategoriesAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Category;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtlis;
+import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
@@ -60,9 +61,12 @@ public class HomeCategoriesFragment extends Fragment
                 recyclerView = view.findViewById(R.id.recycler_view);
 
                 //从参数里获取分类信息
-                String categoriesCache = PreferencesUtlis.getCategoryPreference(getContext()).getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
+                String categoriesCache = PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
+
                 //反序列化
                 recyclerDataList = ParserUtils.categories(categoriesCache).getBody();
+                //检查用户是否登陆 , 没登陆的情况去除魔法区
+                checkAndRemoveMofaCategory();
 
                 //初始化数据列表
                 initRecyclerView();
@@ -84,8 +88,32 @@ public class HomeCategoriesFragment extends Fragment
                 GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), numberColumn);
 
                 //配置列表
-                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, recyclerDataList.size() , true, true, null);
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, recyclerDataList.size(), true, true, null);
 
+        }
+
+        /**
+         * 检查用户是否登陆
+         * 没登陆的情况去除魔法区
+         */
+        private void checkAndRemoveMofaCategory()
+        {
+                //如果用户未登陆, 从数组中去除 魔法区
+                if (!GeneralUtils.userIsLogin())
+                {
+                        //从尾部开始遍历列表
+                        for (int i = recyclerDataList.size() - 1; i >= 0; i--)
+                        {
+                                //如果抽到 魔法区分类
+                                if (recyclerDataList.get(i).getId() == GlobalConfig.CATEGORY_ID_MOFA)
+                                {
+                                        //从列表中移除
+                                        recyclerDataList.remove(i);
+                                        //结束遍历
+                                        i = 0;
+                                }
+                        }
+                }
         }
 
 

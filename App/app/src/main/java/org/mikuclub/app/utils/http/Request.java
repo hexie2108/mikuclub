@@ -93,10 +93,11 @@ public class Request
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
          * @param httpCallBack
          */
-        private static void request(int method, String url, final Map<String, String> params, final Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
+        private static void request(int method, String url, final Map<String, String> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
 
                 LogUtils.v("请求地址 "+url);
+
 
                 StringRequest stringRequest  = new StringRequest(method, url,
                         new Response.Listener<String>()

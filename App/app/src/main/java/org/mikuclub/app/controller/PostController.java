@@ -7,12 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
@@ -20,6 +19,7 @@ import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyEditTextNumberFilterMinMax;
 
 import androidx.appcompat.app.AlertDialog;
@@ -95,14 +95,14 @@ public class PostController extends BaseController
                                         else
                                         {
                                                 //调用错误处理方法
-                                                onError();
+                                                onError(null);
                                         }
                                 }
 
                                 //请求结果包含错误的情况
                                 //结果主体为空, 无更多内容
                                 @Override
-                                public void onError()
+                                public void onError(String response)
                                 {
                                         //隐藏尾部
                                         getRecyclerViewAdapter().updateFooterStatus(false, true, false);
@@ -176,15 +176,15 @@ public class PostController extends BaseController
                         }
 
                         @Override
-                        public void onError()
+                        public void onError(String response)
                         {
-                                Toast.makeText(MyApplication.getContext(), "请求错误", Toast.LENGTH_SHORT).show();
+                                ToastUtils.shortToast("请求错误");
                         }
 
                         @Override
                         public void onHttpError()
                         {
-                                onError();
+                                onError(null);
                         }
 
                         //请求结束后
@@ -256,15 +256,15 @@ public class PostController extends BaseController
                         }
                         else
                         {
-                                Toast.makeText(activity, "未输入页数!", Toast.LENGTH_SHORT).show();
+                                ToastUtils.shortToast("未输入页数!");
                         }
 
                 });
                 //设置取消按钮 和 无动作
                 builder.setNegativeButton("取消", (dialog, which) -> {
                 });
-                //显示弹出
-                final AlertDialog alertDialog = builder.show();
+                //创建弹窗
+                final AlertDialog alertDialog = builder.create();
 
                 //监听键盘动作
                 input.setOnEditorActionListener((v, actionId, event) -> {
@@ -276,6 +276,8 @@ public class PostController extends BaseController
                         }
                         return true;
                 });
+                //显示弹窗
+                alertDialog.show();
 
         }
 

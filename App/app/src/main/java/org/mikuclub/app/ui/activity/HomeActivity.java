@@ -21,15 +21,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtlis;
+import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -150,10 +151,10 @@ public class HomeActivity extends AppCompatActivity
 
                                 case R.id.item_logout:
                                         //删除用户登陆信息
-                                        deleteUserInfo();
+                                        GeneralUtils.userLogout();
                                         //更新侧边栏用户信息和菜单
                                         setLogoutUserInfoAndMenu();
-                                        Toast.makeText(this, "已登出", Toast.LENGTH_SHORT).show();
+                                        ToastUtils.shortToast("已登出");
                                         break;
                         }
                         //关闭侧边栏
@@ -172,32 +173,18 @@ public class HomeActivity extends AppCompatActivity
          */
         private void checkLoginStatus()
         {
-                String userToken = PreferencesUtlis.getUserPreference(this).getString(GlobalConfig.Preferences.USER_TOKEN, null);
-                long userTokenExpire = PreferencesUtlis.getUserPreference(this).getLong(GlobalConfig.Preferences.USER_TOKEN_EXPIRE, 0);
-
-                //如果令牌不是空, 说明用户登陆过
-                if (userToken != null)
+                //如果用户有登陆
+                if (GeneralUtils.userIsLogin())
                 {
-                        //如果令牌已过期
-                        if (System.currentTimeMillis() > userTokenExpire)
-                        {
-                                LogUtils.v("登录令牌已过期");
-                                //删除用户登陆信息
-                                deleteUserInfo();
-                                //启动登录页
-                                LoginActivity.startActionForResult(this);
-                        }
-                        //如果令牌还有效
-                        else
-                        {
-                                LogUtils.v("使用登录用户缓存信息");
-                                setLoggingUserInfoAndMenu();
-                        }
+
+                        LogUtils.v("已登陆用户");
+                        setLoggingUserInfoAndMenu();
+
                 }
                 // 如果没登陆过
                 else
                 {
-                        LogUtils.v("用户尚未登录");
+                        LogUtils.v("未登录用户");
                         setLogoutUserInfoAndMenu();
                 }
 
@@ -232,7 +219,7 @@ public class HomeActivity extends AppCompatActivity
         private void setLoggingUserInfoAndMenu()
         {
                 //获取数据字符串
-                String userLoginString = PreferencesUtlis.getUserPreference(this).getString(GlobalConfig.Preferences.USER_LOGIN, null);
+                String userLoginString = PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_LOGIN, null);
                 //避免null值
                 if (userLoginString != null)
                 {
@@ -256,25 +243,13 @@ public class HomeActivity extends AppCompatActivity
 
         }
 
-        /**
-         * 从配置文件里删除用户本地信息
-         */
-        private void deleteUserInfo()
-        {
-                //删除用户信息
-                PreferencesUtlis.getUserPreference(this)
-                        .edit()
-                        .remove(GlobalConfig.Preferences.USER_LOGIN)
-                        .remove(GlobalConfig.Preferences.USER_TOKEN)
-                        .remove(GlobalConfig.Preferences.USER_TOKEN_EXPIRE)
-                        .apply();
-        }
+
 
 
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
         {
-                LogUtils.e("request " + requestCode + "/" + "result " + resultCode);
+
                 super.onActivityResult(requestCode, resultCode, data);
                 //判断请求id
                 switch (requestCode)

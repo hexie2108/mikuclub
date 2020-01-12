@@ -21,8 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.HttpCallBack;
+import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
@@ -32,7 +32,8 @@ import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtlis;
+import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
@@ -99,8 +100,8 @@ public class WelcomeActivity extends AppCompatActivity
                 boolean isInternetAvailable = internetCheck();
                 if (isInternetAvailable)
                 {
-                        //检查更新, 之后会回调方法 获取文章和分类的数据
-                        checkUpdate();
+                        //检测登陆令牌是否失效
+                        checkTokenValidity();
                 }
                 else
                 {
@@ -109,14 +110,67 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
+
+        /**
+         * 检测登陆令牌是否失效
+         */
+        private void checkTokenValidity()
+        {
+
+                //如果用户有登陆
+                if (GeneralUtils.userIsLogin())
+                {
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
+                                //token正常
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        LogUtils.v("登陆信息还有效");
+                                        //检查更新, 之后会回调方法 获取文章和分类的数据
+                                        checkUpdate();
+                                }
+
+                                //令牌过期了
+                                @Override
+                                public void onError(String response)
+                                {
+                                        LogUtils.v("登陆信息已过期");
+                                        //注销用户相关信息
+                                        GeneralUtils.userLogout();
+                                        ToastUtils.shortToast("登陆信息已过期, 请重新登陆");
+                                        //然后继续
+                                        onSuccess(null);
+                                }
+
+                                //网络错误
+                                @Override
+                                public void onHttpError()
+                                {
+                                        displayErrorInfo();
+                                }
+                        };
+                        //检测令牌是否还有效
+                        utilsDelegate.tokenValidate(httpCallBack);
+
+                }
+                //如果无登陆, 就不需要检查token有效性
+                else
+                {
+                        //检查更新, 之后会回调方法 获取文章和分类的数据
+                        checkUpdate();
+                }
+
+        }
+
         /**
          * 检查软件更新
          */
         private void checkUpdate()
         {
-                long appUpdateExipire = PreferencesUtlis.getApplicationPreference(WelcomeActivity.this).getLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, 0);
+                long appUpdateExpire = PreferencesUtils.getApplicationPreference().getLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, 0);
                 //如果检查更新已过期
-                if (System.currentTimeMillis() > appUpdateExipire)
+                if (System.currentTimeMillis() > appUpdateExpire)
                 {
                         LogUtils.v("检查应用更新");
 
@@ -132,6 +186,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //如果更新信息不是空的 和 当前版本号低于新版本
                                         if (appUpdate != null && BuildConfig.VERSION_CODE < appUpdate.getVersionCode())
                                         {
+                                                LogUtils.v("发现新版本");
                                                 //弹出弹窗
                                                 openAlertDialog(appUpdate);
                                         }
@@ -141,15 +196,17 @@ public class WelcomeActivity extends AppCompatActivity
                                                 //如果已经是新版了, 就写入这次的检查时间, 避免后续重复检查
                                                 if (BuildConfig.VERSION_CODE == appUpdate.getVersionCode())
                                                 {
+                                                        LogUtils.v("已经是最新版了");
                                                         long expire = System.currentTimeMillis() + GlobalConfig.Preferences.APP_UPDATE_EXPIRE_TIME;
                                                         //保存 这次检查更新的过期时间
-                                                        PreferencesUtlis.getApplicationPreference(WelcomeActivity.this).edit().putLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, expire).apply();
+                                                        PreferencesUtils.getApplicationPreference().edit().putLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, expire).apply();
                                                 }
                                                 //请求文章数据
                                                 getDataForHome();
                                         }
                                 }
 
+                                //因为格式不一样 所以需要跳过默认格式检查
                                 @Override
                                 public void onSuccessHandler(String response)
                                 {
@@ -170,6 +227,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //如果上次请求的时间 未过期 则不需要检查更新
                 else
                 {
+                        LogUtils.v("无需检查");
                         //请求文章数据
                         getDataForHome();
                 }
@@ -196,12 +254,17 @@ public class WelcomeActivity extends AppCompatActivity
                                 startHomeSafety();
                         }
 
+                        @Override
+                        public void onError(String response)
+                        {
+                                displayErrorInfo();
+                        }
+
                         //请求失败
                         @Override
                         public void onHttpError()
                         {
-                                //增加请求计数器
-                                setError();
+                                displayErrorInfo();
                         }
 
                         @Override
@@ -222,9 +285,15 @@ public class WelcomeActivity extends AppCompatActivity
                         }
 
                         @Override
+                        public void onError(String response)
+                        {
+                                displayErrorInfo();
+                        }
+
+                        @Override
                         public void onHttpError()
                         {
-                                setError();
+                                displayErrorInfo();
                         }
 
                         @Override
@@ -255,8 +324,8 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkCategories()
         {
 
-                final long categoriesCacheExpire = PreferencesUtlis.getCategoryPreference(WelcomeActivity.this).getLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, 0);
-                categoriesCache = PreferencesUtlis.getCategoryPreference(WelcomeActivity.this).getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
+                final long categoriesCacheExpire = PreferencesUtils.getCategoryPreference().getLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, 0);
+                categoriesCache = PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
 
 
                 //如果分类缓存 已过期 或者 缓存为null
@@ -273,7 +342,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //计算缓存过期时间
                                         long expire = System.currentTimeMillis() + GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE_TIME;
                                         //更新分类缓存 和 缓存过期时间
-                                        PreferencesUtlis.getCategoryPreference(WelcomeActivity.this)
+                                        PreferencesUtils.getCategoryPreference()
                                                 .edit()
                                                 .putString(GlobalConfig.Preferences.CATEGORIES_CACHE, categoriesCache)
                                                 .putLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, expire)
@@ -286,12 +355,12 @@ public class WelcomeActivity extends AppCompatActivity
                                 }
 
                                 @Override
-                                public void onError()
+                                public void onError(String response)
                                 {
                                         //只有在无缓存的情况, 才会报错
                                         if (categoriesCache.isEmpty())
                                         {
-                                                setError();
+                                                displayErrorInfo();
                                         }
                                         //有缓存的话 无视
                                         else
@@ -303,7 +372,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 @Override
                                 public void onHttpError()
                                 {
-                                        onError();
+                                        onError(null);
                                 }
 
                                 @Override
@@ -349,7 +418,7 @@ public class WelcomeActivity extends AppCompatActivity
         /**
          * 错误的情况 , 给用户显示信息, 并允许用户手动重试
          */
-        private void setError()
+        private void displayErrorInfo()
         {
                 //取消所有连接
                 Request.cancelRequest(TAG);
@@ -389,13 +458,11 @@ public class WelcomeActivity extends AppCompatActivity
                 dialog.setPositiveButton("前往下载", (dialog1, which) -> GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), ""));
                 //设置取消按钮名和动作
                 dialog.setNegativeButton("取消", (dialog12, which) -> {
-
                         //如果是强制更新, 取消等于关闭应用
                         if (appUpdate.isForceUpdate())
                         {
-                                Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
+                                ToastUtils.shortToast("本次更新非常重要, 请下载安装新版本");
                                 finish();
-
                         }
                         //如果不是强制
                         else
@@ -421,6 +488,12 @@ public class WelcomeActivity extends AppCompatActivity
                 {
                         //添加权限名到 待申请列表
                         permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+                //检查是否拥有权限
+                if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                {
+                        //添加权限名到 待申请列表
+                        permissionList.add(Manifest.permission.READ_PHONE_STATE);
                 }
                 //如果申请列表不是空的
                 if (!permissionList.isEmpty())
@@ -544,7 +617,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 if (result != PackageManager.PERMISSION_GRANTED)
                                                 {
                                                         //弹出提示 + 结束应用
-                                                        Toast.makeText(this, "必须授权本应用权限才能正常使用", Toast.LENGTH_LONG).show();
+                                                        ToastUtils.longToast("必须授权本应用权限才能正常使用");
                                                         finish();
                                                         return;
                                                 }
@@ -552,7 +625,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 }
                                 else
                                 {
-                                        Toast.makeText(this, "发生未知错误", Toast.LENGTH_LONG).show();
+                                        ToastUtils.shortToast("发生未知错误");
                                 }
                                 break;
                 }

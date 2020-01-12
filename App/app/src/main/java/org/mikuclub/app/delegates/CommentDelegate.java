@@ -37,7 +37,7 @@ public class CommentDelegate extends  BaseDelegate
                         parameters.setOrderby(GlobalConfig.OrderBy.DATE);
                 }
 
-                getModel().selectForList(parameters.toMap(), getTag(), httpCallBack);
+                getModel().selectForList(parameters.toMap(), null, getTag(), httpCallBack);
 
         }
 

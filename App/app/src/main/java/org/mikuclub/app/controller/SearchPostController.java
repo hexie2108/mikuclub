@@ -1,32 +1,17 @@
 package org.mikuclub.app.controller;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.text.InputFilter;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.custom.MyEditTextNumberFilterMinMax;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import mikuclub.app.R;
 
 /**
  * 文章列表控制器
@@ -96,7 +81,7 @@ public class SearchPostController extends PostController
                         }
 
                         @Override
-                        public void onError()
+                        public void onError(String response)
                         {
                                 getRecyclerViewAdapter().setNotMoreErrorMessage("抱歉, 没有找到相关内容");
                                 getRecyclerViewAdapter().updateFooterStatus(false, true, false);

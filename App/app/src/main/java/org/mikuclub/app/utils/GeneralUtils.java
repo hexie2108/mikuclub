@@ -12,7 +12,11 @@ import android.widget.Toast;
 import org.mikuclub.app.configs.GlobalConfig;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 通用数据处理函数集
@@ -95,7 +99,7 @@ public class GeneralUtils
                         else if (element instanceof Integer)
                         {
                                 //如果是0 返回 true
-                                output = (((int)element) == 0 ? true : false);
+                                output = (((int) element) == 0 ? true : false);
                         }
                         //不是字符串则返回 false
                         else
@@ -126,8 +130,9 @@ public class GeneralUtils
 
         /**
          * 创建隐式intent 启动第三方应用
+         *
          * @param context
-         * @param url 主要地址
+         * @param url          主要地址
          * @param SecondaryUrl 备用地址
          */
         public static void startWebViewIntent(Context context, String url, String SecondaryUrl)
@@ -147,15 +152,16 @@ public class GeneralUtils
                 }
 
                 //第二次检查, 确保只有在能被解析的情况下 才尝试启动
-                if(intent.resolveActivity(context.getPackageManager()) != null){
+                if (intent.resolveActivity(context.getPackageManager()) != null)
+                {
                         //启动
                         context.startActivity(intent);
                 }
                 //否则 消息框提示
-                else{
-                        Toast.makeText(context, "无法找到相关联的应用", Toast.LENGTH_SHORT).show();
+                else
+                {
+                        ToastUtils.shortToast("无法找到相关联的应用");
                 }
-
 
 
         }
@@ -163,21 +169,72 @@ public class GeneralUtils
 
         /**
          * 修正乱码字符串, 忽视错误
+         *
          * @param text
          * @return
          */
-        public static String fixStringEncoding(String text){
+        public static String fixStringEncoding(String text)
+        {
                 String newText = "";
-                try{
+                try
+                {
                         newText = new String(text.getBytes("ISO-8859-1"), "UTF-8");
                 }
-                catch (UnsupportedEncodingException e){
+                catch (UnsupportedEncodingException e)
+                {
                         e.printStackTrace();
                 }
 
                 return newText;
 
 
+        }
+
+        /**
+         * 检查用户是否登陆了
+         *
+         * @return
+         */
+        public static boolean userIsLogin()
+        {
+                boolean isLogin = true;
+                if (PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_TOKEN, null) == null)
+                {
+                        isLogin = false;
+                }
+                return isLogin;
+        }
+
+        /**
+         * 注销登陆用户相关信息
+         *
+         * @return
+         */
+        public static void userLogout()
+        {
+                //删除用户信息
+                PreferencesUtils.getUserPreference()
+                        .edit()
+                        .remove(GlobalConfig.Preferences.USER_LOGIN)
+                        .remove(GlobalConfig.Preferences.USER_TOKEN)
+                        .apply();
+        }
+
+
+        /**
+         * 创建一个带token数据的 map用作网络请求的头部信息
+         * 用户必须登陆
+         * @return Map 如果用户有登陆, null 如果没登陆
+         */
+        public static Map<String, String> createHeaderWithTokenForLoggedUser(){
+                Map<String, String> headers = null;
+                //如果用户有登陆
+                if(GeneralUtils.userIsLogin())
+                {
+                        headers = new HashMap<>();
+                        headers.put("Authorization", "Bearer " + PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_TOKEN,null));
+                }
+                return headers;
         }
 
 

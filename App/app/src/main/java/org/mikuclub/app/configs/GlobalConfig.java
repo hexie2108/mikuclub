@@ -56,8 +56,14 @@ public class GlobalConfig
                 public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu/";
                 //POST 登陆接口
                 public static final String LOGIN = HOST+"wp-json/jwt-auth/v1/token/";
+                //POST 令牌有效性检查
+                public static final String TOKEN_VALIDATE = HOST+"wp-json/jwt-auth/v1/token/validate/";
+
                 //POST  设置文章点赞
                 public static final String LIKE_POST = HOST+"wp-json/utils/v2/post_like_count/";
+
+                //忘记密码地址
+                public static final String FORGOTTEN_PASSWORD = HOST+"wp-login.php?action=lostpassword";
         }
 
         /**
@@ -86,16 +92,12 @@ public class GlobalConfig
                 public static final String USER_LOGIN ="user_login";
                 //用户令牌
                 public static final String USER_TOKEN="user_token";
-                //用户令牌的过期时间
-                public static final String USER_TOKEN_EXPIRE="user_token_time";
-                //用户令牌的有效周期
-                public static final long USER_TOKEN_EXPIRE_TIME = 1000 * 60 * 10; //每10分钟过期
 
 
                 //点赞过的文章ID数组
                 public static final String POST_LIKED_ARRAY="user_token_time";
                 //点赞过的文章ID数组长度
-                public static final int POST_LIKED_ARRAY_SIZE = 5;
+                public static final int POST_LIKED_ARRAY_SIZE = 300;
         }
 
 

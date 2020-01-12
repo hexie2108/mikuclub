@@ -4,6 +4,9 @@ import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
+import org.mikuclub.app.utils.GeneralUtils;
+
+import java.util.Map;
 
 /**
  * 根据需要生成对应资源的请求
@@ -60,8 +63,15 @@ public class PostDelegate extends BaseDelegate
                         parameters.setStatus(GlobalConfig.Status.PUBLISH);
                 }
 
+                //如果是搜索文章
+                Map<String, String> headers = null;
+                if(parameters.getSearch()!=null)
+                {
+                        headers = GeneralUtils.createHeaderWithTokenForLoggedUser();
+                }
 
-                getModel().selectForList(parameters.toMap(), getTag(), httpCallBack);
+
+                getModel().selectForList(parameters.toMap(), headers, getTag(), httpCallBack);
 
         }
 

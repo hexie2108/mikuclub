@@ -1,7 +1,9 @@
 package org.mikuclub.app.ui.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
@@ -12,30 +14,31 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.tencent.connect.common.Constants;
+import com.tencent.tauth.Tencent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.callBack.HttpCallBackForUtils;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
+import org.mikuclub.app.javaBeans.parameters.LoginParameters;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
-import org.mikuclub.app.utils.KeyboardUtils;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtlis;
+import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.social.TencentListener;
+import org.mikuclub.app.utils.social.TencentUtils;
+import org.mikuclub.app.utils.social.WeiboListener;
+import org.mikuclub.app.utils.social.WeiboUtils;
 
 import mikuclub.app.R;
 
@@ -52,9 +55,13 @@ public class LoginActivity extends AppCompatActivity
         private TextInputLayout inputUserNameLayout;
         private TextInputLayout inputUserPasswordLayout;
         private Button loginButton;
-        private ProgressBar progressBar;
+        private Button socialButtonWeibo;
+        private Button socialButtonQQ;
+        private AlertDialog progressDialog;
 
         private UtilsDelegate delegate;
+
+        private TencentListener tencentListener;
 
         /*组件*/
 
@@ -71,8 +78,9 @@ public class LoginActivity extends AppCompatActivity
                 inputUserNameLayout = findViewById(R.id.input_user_name_layout);
                 inputUserPasswordLayout = findViewById(R.id.input_user_password_layout);
                 loginButton = findViewById(R.id.login_button);
-                progressBar = findViewById(R.id.progress_bar);
 
+                socialButtonWeibo = findViewById(R.id.social_button_weibo);
+                socialButtonQQ = findViewById(R.id.social_button_qq);
                 Toolbar toolbar = findViewById(R.id.toolbar);
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -87,6 +95,10 @@ public class LoginActivity extends AppCompatActivity
 
                 //初始化输入框
                 initEditText();
+                //初始化社会登陆按钮
+                initSocialButton();
+                //创建进度条弹窗
+                initProgressDialog();
 
         }
 
@@ -96,7 +108,7 @@ public class LoginActivity extends AppCompatActivity
         private void initEditText()
         {
                 //获取焦点+弹出键盘
-                KeyboardUtils.showKeyboard(inputUserName);
+                //KeyboardUtils.showKeyboard(inputUserName);
                 //input内容监听器, 在都不为空的情况激活登陆按钮
                 TextWatcher textWatcher = new TextWatcher()
                 {
@@ -144,14 +156,31 @@ public class LoginActivity extends AppCompatActivity
                         }
                         else
                         {
-                                Toast.makeText(this, "用户名和密码不能为空", Toast.LENGTH_SHORT).show();
+                                ToastUtils.shortToast("用户名和密码不能为空");
                         }
                         return true;
                 });
 
                 loginButton.setOnClickListener(v -> {
+                        //本地登录方式
+                        LoginParameters loginParameters = new LoginParameters();
+                        loginParameters.setUsername(inputUserName.getText().toString());
+                        loginParameters.setPassword(inputUserPassword.getText().toString());
+                        sendLogin(loginParameters);
+                });
+        }
 
-                        sendLogin();
+
+        /**
+         * 初始化微博登陆按钮
+         */
+        private void initSocialButton()
+        {
+                socialButtonWeibo.setOnClickListener(v -> {
+                        startWeiboAuth();
+                });
+                socialButtonQQ.setOnClickListener(v -> {
+                        startQQAuth();
                 });
         }
 
@@ -159,75 +188,70 @@ public class LoginActivity extends AppCompatActivity
         /**
          * 发送登陆请求
          */
-        private void sendLogin()
+        private void sendLogin(LoginParameters loginParameters)
         {
-
-                progressBar.setVisibility(View.VISIBLE);
+                progressDialog.show();
                 loginButton.setEnabled(false);
 
-
-                HttpCallBackForUtils httpCallBackForUtils = new HttpCallBackForUtils()
+                HttpCallBack httpCallBack = new HttpCallBack()
                 {
-
                         /**
-                         * 请求成功的情况
-                         *
+                         * 请求成功的情况, 但是返回数据还未验证
                          * @param response
                          */
                         @Override
-                        public void onSuccess(String response)
+                        public void onSuccessHandler(String response)
                         {
                                 try
                                 {
                                         //先解析一遍返回数据
                                         JSONObject jsonObject = new JSONObject(response);
-                                        response = jsonObject.getString("body");
-                                        //设置登陆成功的信息
-                                        setLoginResult(response);
+                                        JSONObject bodyObject = jsonObject.getJSONObject("body");
+                                        //如果没有错误码, 说明登录成功
+                                        if (!bodyObject.has("code"))
+                                        {
+                                                //设置登陆成功的信息
+                                                setLoginResult(bodyObject.toString());
+                                        }
+                                        //如果有错误码
+                                        else
+                                        {
+                                                //调用错误处理
+                                                onError(bodyObject.getString("code"));
+                                        }
                                 }
                                 catch (JSONException e)
                                 {
-                                        e.printStackTrace();
+                                        onError("social_login_error");
                                 }
                         }
 
-                        /**
-                         * 返回错误信息的情况
-                         *
-                         * @param response
-                         */
-                        public void onError(String response)
+                        public void onError(String errorCode)
                         {
-                                progressBar.setVisibility(View.INVISIBLE);
+                                progressDialog.dismiss();
+                                loginButton.setEnabled(true);
 
-                                String code = null;
-                                try
-                                {
-                                        //先解析一遍返回数据
-                                        JSONObject jsonObject = new JSONObject(response);
-                                        code = jsonObject.getJSONObject("body").getString("code");
-                                }
-                                catch (JSONException e)
-                                {
-                                        e.printStackTrace();
-                                }
-
-                                if (code.indexOf("username") != -1)
+                                if (errorCode.indexOf("username") != -1)
                                 {
                                         //显示错误信息
                                         inputUserNameLayout.setError("用户名错误");
 
                                 }
-                                else if (code.indexOf("email") != -1)
+                                else if (errorCode.indexOf("email") != -1)
                                 {
                                         //显示错误信息
                                         inputUserNameLayout.setError("邮箱地址错误");
 
                                 }
-                                else if (code.indexOf("password") != -1)
+                                else if (errorCode.indexOf("password") != -1)
                                 {
                                         //显示错误信息
                                         inputUserPasswordLayout.setError("密码错误");
+                                }
+                                else if (errorCode.indexOf("social_login_error") != -1)
+                                {
+                                        //显示错误信息
+                                        inputUserPasswordLayout.setError("社会化登录错误");
                                 }
                                 else
                                 {
@@ -239,22 +263,20 @@ public class LoginActivity extends AppCompatActivity
                         @Override
                         public void onHttpError()
                         {
-                                progressBar.setVisibility(View.INVISIBLE);
+                                progressDialog.dismiss();
                                 loginButton.setEnabled(true);
-
                                 //显示错误信息
                                 inputUserPasswordLayout.setError("网络请求错误, 请重试");
-                                //   inputUserPasswordLayout.setErrorEnabled(true);
                         }
 
                         @Override
                         public void onCancel()
                         {
-                                progressBar.setVisibility(View.INVISIBLE);
+                                progressDialog.dismiss();
                                 loginButton.setEnabled(true);
                         }
                 };
-                delegate.login(httpCallBackForUtils, inputUserName.getText().toString(), inputUserPassword.getText().toString());
+                delegate.login(httpCallBack, loginParameters);
 
         }
 
@@ -264,20 +286,104 @@ public class LoginActivity extends AppCompatActivity
          */
         private void setLoginResult(String response)
         {
-
                 UserLogin userLogin = ParserUtils.userLogin(response);
                 //储存登陆信息
-                PreferencesUtlis.getUserPreference(LoginActivity.this)
+                PreferencesUtils.getUserPreference()
                         .edit()
                         .putString(GlobalConfig.Preferences.USER_TOKEN, userLogin.getToken())
                         .putString(GlobalConfig.Preferences.USER_LOGIN, response)
-                        .putLong(GlobalConfig.Preferences.USER_TOKEN_EXPIRE, System.currentTimeMillis() + GlobalConfig.Preferences.USER_TOKEN_EXPIRE_TIME)
                         .apply();
                 //设置请求结果 为 成功
                 setResult(RESULT_OK);
                 finish();
 
         }        //监听标题栏菜单动作
+
+
+        /**
+         * 启动QQ登陆
+         */
+        private void startQQAuth()
+        {
+                tencentListener = new TencentListener(this)
+                {
+                        @Override
+                        public void onSuccess()
+                        {
+                                //本地登录方式
+                                LoginParameters loginParameters = new LoginParameters();
+                                loginParameters.setOpen_type(TencentUtils.OPEN_TYPE);
+                                loginParameters.setAccess_token(getAccessToken());
+                                loginParameters.setOpen_id(getOpenID());
+                                loginParameters.setUnion_id(getUnionId());
+                                sendLogin(loginParameters);
+                                //释放QQ api
+                                TencentUtils.getInstance(LoginActivity.this).logout(LoginActivity.this);
+                        }
+                };
+                TencentUtils.getInstance(this).login(this, "all", tencentListener);
+        }
+
+        /**
+         * 启动微博登陆
+         */
+        private void startWeiboAuth()
+        {
+                WeiboListener listener = new WeiboListener()
+                {
+                        @Override
+                        public void onSuccess()
+                        {
+                                //本地登录方式
+                                LoginParameters loginParameters = new LoginParameters();
+                                loginParameters.setOpen_type(WeiboUtils.OPEN_TYPE);
+                                loginParameters.setAccess_token(getAccessToken());
+                                loginParameters.setOpen_id(getOpenID());
+                                sendLogin(loginParameters);
+                                //释放微博api
+                                WeiboUtils.removeINstance();
+                        }
+                };
+                WeiboUtils.getInstance(this).authorize(listener);
+
+        }
+
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+        {
+                super.onActivityResult(requestCode, resultCode, data);
+                if (requestCode == Constants.REQUEST_LOGIN)
+                {
+                        LogUtils.v("QQ登陆回调");
+                        Tencent.onActivityResultData(requestCode, resultCode, data, tencentListener);
+                }
+                else
+                {
+                        LogUtils.v("微博登陆回调");
+                        WeiboUtils.getInstance(this).authorizeCallback(requestCode, resultCode, data);
+                }
+        }
+
+        /**
+         * 创建进度条弹窗
+         */
+        public void initProgressDialog(){
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setView(R.layout.alert_dialog_progress_bar);
+                builder.setCancelable(false);
+                progressDialog = builder.create();
+
+        }
+
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu)
+        {
+                getMenuInflater().inflate(R.menu.login_menu, menu);
+                return true;
+        }
 
         @Override
         public boolean onOptionsItemSelected(@NonNull MenuItem item)
@@ -288,6 +394,10 @@ public class LoginActivity extends AppCompatActivity
                         case android.R.id.home:
                                 //结束当前活动页
                                 finish();
+                                return true;
+                        case R.id.forgotten_password:
+                                //启动游览器 访问重置密码网页
+                                GeneralUtils.startWebViewIntent(this, GlobalConfig.Server.FORGOTTEN_PASSWORD, null);
                                 return true;
                 }
                 return super.onOptionsItemSelected(item);
@@ -301,6 +411,7 @@ public class LoginActivity extends AppCompatActivity
          */
         public static void startActionForResult(Context context)
         {
+
                 Intent intent = new Intent(context, LoginActivity.class);
                 ((AppCompatActivity) context).startActivityForResult(intent, REQUEST_CODE);
         }

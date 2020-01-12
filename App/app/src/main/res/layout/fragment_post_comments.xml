@@ -7,7 +7,8 @@
     android:orientation="vertical"
     android:paddingTop = "@dimen/normal">
 
-<!--        <include layout="@layout/comment_send_box"/>-->
+        <include
+            layout = "@layout/post_comment_input_box"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id = "@+id/post_comments_recycler_view"

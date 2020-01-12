@@ -1,7 +1,5 @@
 package org.mikuclub.app.callBack;
 
-import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -9,55 +7,17 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.LogUtils;
 
-/*questo è un classe wrapper  per gestire operazione callback di richiesta HTTP
- * 空的回调类, 用来处理网络请求的回调
- * 必须重写来实现各种需求
+/**
+ *  utilsDelegate 专用
+ *  去除了 body内容长度的检查
  * */
 public class HttpCallBack
 {
-
-        private Object argument1;
-        private Object argument2;
-
-        public HttpCallBack()
-        {
-        }
-
-        public HttpCallBack(Object argument1)
-        {
-                this.argument1 = argument1;
-        }
-
-        public HttpCallBack(Object argument1, Object argument2)
-        {
-                this.argument1 = argument1;
-                this.argument2 = argument2;
-        }
-
-        public Object getArgument1()
-        {
-                return argument1;
-        }
-
-        public void setArgument1(Object argument1)
-        {
-                this.argument1 = argument1;
-        }
-
-        public Object getArgument2()
-        {
-                return argument2;
-        }
-
-        public void setArgument2(Object argument2)
-        {
-                this.argument2 = argument2;
-        }
 
         /**
          * 自定义成功处理函数
@@ -73,8 +33,9 @@ public class HttpCallBack
         /**
          * 自定义内容错误处理函数 (请求成功,但是内容有问题)
          * 默认为空
+         * @param response
          */
-        public void onError()
+        public void onError(String response)
         {
 
         }
@@ -123,15 +84,25 @@ public class HttpCallBack
                         JSONObject jsonObject = new JSONObject(response);
                         //获取内容状态码
                         int statusCode = jsonObject.getInt("status");
-                        //如果请求内的状态码在200~300之间,   而且 内容主体不是空的, 说明请求结果正常
-                        if (statusCode >= 200 && statusCode <= 300 && jsonObject.getJSONArray("body").length() > 0)
+                        //如果请求内的状态码在200~300之间
+                        if (statusCode >= 200 && statusCode <= 300)
                         {
-                                onSuccess(response);
+                                //获取body内容
+                                Object body = jsonObject.get("body");
+                                //如果是一个json数组 , 但是长度为0
+                                if(body instanceof JSONArray && ((JSONArray)body).length()==0){
+                                        //报空内容错误
+                                        onError(response);
+                                }
+                                else
+                                {
+                                        onSuccess(response);
+                                }
                         }
-                        //状态码异常,  或者 主体为空, 说明有异常错误
+                        //状态码异常, 报错
                         else
                         {
-                                onError();
+                                onError(response);
                         }
                         onFinally();
                 }
@@ -140,7 +111,6 @@ public class HttpCallBack
                         LogUtils.w("JSONObject无法解析返回数据");
                         exception.printStackTrace();
                 }
-
         }
 
 
@@ -188,11 +158,10 @@ public class HttpCallBack
                 }
 
                 LogUtils.w(errorMessage + " : " + error.getMessage());
-               // Toast.makeText(MyApplication.getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                //ToastUtils.shortToast(errorMessage);
                 error.printStackTrace();
 
                 onFinally();
         }
-
 
 }

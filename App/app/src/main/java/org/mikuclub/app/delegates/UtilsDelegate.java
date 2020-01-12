@@ -4,6 +4,7 @@ import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.HashMap;
@@ -47,15 +48,28 @@ public class UtilsDelegate extends BaseDelegate
          * 登陆
          * @param httpCallBack
          */
-        public void login(HttpCallBack httpCallBack,  String userName, String userPassword)
+        public void login(HttpCallBack httpCallBack, LoginParameters loginParameters)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                LoginParameters loginParameters = new LoginParameters();
-                loginParameters.setUsername(userName);
-                loginParameters.setPassword(userPassword);
+
                 Request.post(GlobalConfig.Server.LOGIN, baseParameters.toMap(), loginParameters.toMap(), null, getTag(), httpCallBack);
 
         }
+
+        /**
+         * token有效性检查
+         * @param httpCallBack
+         */
+        public void tokenValidate(HttpCallBack httpCallBack)
+        {
+                BaseParameters baseParameters = new BaseParameters();
+                Map header = GeneralUtils.createHeaderWithTokenForLoggedUser();
+
+                Request.post(GlobalConfig.Server.TOKEN_VALIDATE, baseParameters.toMap(), null, header, getTag(), httpCallBack);
+
+        }
+
+
 
 
         /**

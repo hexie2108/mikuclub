@@ -24,12 +24,15 @@ import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.SearchActivity;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
+import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mikuclub.app.R;

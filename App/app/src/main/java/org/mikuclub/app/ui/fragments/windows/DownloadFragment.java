@@ -22,6 +22,7 @@ import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ScreenUtils;
+import org.mikuclub.app.utils.ToastUtils;
 
 import java.util.List;
 
@@ -188,7 +189,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                         ClipData clipData = ClipData.newPlainText("", downList.get(0));
                                         //添加到剪切板
                                         clipboardManager.setPrimaryClip(clipData);
-                                        Toast.makeText(getActivity(), "已复制磁链到剪切板", Toast.LENGTH_SHORT).show();
+                                        ToastUtils.shortToast("已复制磁链到剪切板");
                                 };
                         }
                         //如果普通下载地址
@@ -210,7 +211,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                         ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
                                                         //添加到剪切板
                                                         clipboardManager.setPrimaryClip(clipData);
-                                                        Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
+                                                        ToastUtils.shortToast("已复制访问密码到剪切板");
                                                 }
                                                 // 打开链接的方式
 
@@ -237,7 +238,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                         ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
                                                         //添加到剪切板
                                                         clipboardManager.setPrimaryClip(clipData);
-                                                        Toast.makeText(getActivity(), "已复制访问密码到剪切板", Toast.LENGTH_SHORT).show();
+                                                        ToastUtils.shortToast("已复制访问密码到剪切板");
                                                 }
                                                 // 用游览器打开链接
                                                 GeneralUtils.startWebViewIntent(getActivity(), downUrl, downUrl);
