@@ -6,9 +6,9 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersCreateMedia
+public class UpdateMediaParameters extends BaseParameters
 {
-
+        private Integer id;
         private File file;
         private String title;
         private Integer post;
@@ -17,7 +17,7 @@ public class ParametersCreateMedia
         public Map<String, String> toMap()
         {
                 Map<String, String> outputMap = new HashMap<String, String>();
-
+                putIfNotNull(outputMap, "id", id);
                 putIfNotNull(outputMap, "title", title);
                 putIfNotNull(outputMap, "post", post);
 
@@ -26,6 +26,16 @@ public class ParametersCreateMedia
 
         }
 
+
+        public Integer getId()
+        {
+                return id;
+        }
+
+        public void setId(Integer id)
+        {
+                this.id = id;
+        }
 
         public File getFile()
         {

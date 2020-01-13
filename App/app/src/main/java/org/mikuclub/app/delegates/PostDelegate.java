@@ -2,122 +2,76 @@ package org.mikuclub.app.delegates;
 
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.parameters.ParametersListPosts;
+import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
+import org.mikuclub.app.utils.GeneralUtils;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * 根据需要生成对应资源的请求
  */
-public class PostDelegate
+public class PostDelegate extends BaseDelegate
 {
-
-        private ResourceModel postModel;
-        private int tag;
 
         public PostDelegate(int tag)
         {
-                this.tag = tag;
-                this.postModel = new ResourceModel(GlobalConfig.Server.ROOT + GlobalConfig.Server.POSTS);
-
+                super(tag, new ResourceModel(GlobalConfig.Server.ROOT + GlobalConfig.Server.POSTS));
         }
 
 
         /**
          * 获取置顶文章列表
          *
-         * @param page
          * @param httpCallBack
-         */
-        public void getStickyPostList(int page, HttpCallBack httpCallBack)
-        {
-                ParametersListPosts parametersListPosts = new ParametersListPosts();
-                parametersListPosts.setSticky(true);
-                parametersListPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_SLIDERSHOW);
-                getPostListBase(page, httpCallBack, parametersListPosts);
-
-        }
-
-        /**
-         * 根据搜索文本获取文章列表
-         *
-         * @param query
          * @param page
-         * @param httpCallBack
          */
-        public void getSearchPostList(String query, int page, HttpCallBack httpCallBack)
+        public void getStickyPostList(HttpCallBack httpCallBack, int page)
         {
-                ParametersListPosts parametersListPosts = new ParametersListPosts();
-                parametersListPosts.setSearch(query);
-                getPostListBase(page, httpCallBack, parametersListPosts);
-
+                PostParameters parametersPosts = new PostParameters();
+                parametersPosts.setSticky(true);
+                parametersPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_SLIDERSHOW);
+                getPostList(httpCallBack, page, parametersPosts);
         }
 
-
-        /**
-         * 获取分类文章列表
-         *
-         * @param categoryId   分类id
-         * @param page         请求页数
-         * @param httpCallBack 回调方法
-         */
-
-        public void getCategoryPostList(int categoryId, int page, HttpCallBack httpCallBack)
-        {
-                ParametersListPosts parametersListPosts = new ParametersListPosts();
-                //创建分类id列表
-                ArrayList<Integer> categoryList = new ArrayList();
-                categoryList.add(categoryId);
-                //添加进参数中
-                parametersListPosts.setCategories(new ArrayList<Integer>(categoryList));
-
-                getPostListBase(page, httpCallBack, parametersListPosts);
-
-        }
-
-        /**
-         * 获取普通文章列表
-         * 排除魔法区
-         *
-         * @param page         请求页数
-         * @param httpCallBack 回调方法
-         */
-
-        public void getPostList(int page, HttpCallBack httpCallBack)
-        {
-                ParametersListPosts parametersListPosts = new ParametersListPosts();
-                //创建分类id列表
-                ArrayList<Integer> excludeCategoryList = new ArrayList();
-                excludeCategoryList.add(GlobalConfig.CATEGORY_ID_MOFA);
-                //添加进参数中
-                parametersListPosts.setCategories_exclude(excludeCategoryList);
-                getPostListBase(page, httpCallBack, parametersListPosts);
-
-        }
 
 
         /**
          * 获取文章列表 (基础函数)
-         *
+         *  @param httpCallBack        回调方法
          * @param page                请求页数
-         * @param httpCallBack        回调方法
-         * @param parametersListPosts 请求参数类
+         * @param parameters 请求参数类
          */
 
-        private void getPostListBase(int page, HttpCallBack httpCallBack, ParametersListPosts parametersListPosts)
+        public void getPostList(HttpCallBack httpCallBack, int page, PostParameters parameters)
         {
-                parametersListPosts.setPage(page);
+                parameters.setPage(page);
 
-                //如果每页文章数量未初始化
-                if (parametersListPosts.getPer_page() == null)
+                //如果每页文章数量未设置
+                if (parameters.getPer_page() == null)
                 {
-                        parametersListPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE);
+                        parameters.setPer_page(GlobalConfig.NUMBER_PER_PAGE);
                 }
-                parametersListPosts.setOrderby(GlobalConfig.OrderBy.DATE);
-                parametersListPosts.setStatus(GlobalConfig.Status.PUBLISH);
+                //如果排列顺序未设置
+                if (parameters.getOrderby() == null)
+                {
+                        parameters.setOrderby(GlobalConfig.OrderBy.DATE);
+                }
+                //如果文章状态未设置
+                if (parameters.getStatus() == null)
+                {
+                        parameters.setStatus(GlobalConfig.Status.PUBLISH);
+                }
 
-                postModel.selectForList(parametersListPosts.toMap(), tag, httpCallBack);
+                //如果是搜索文章
+                Map<String, String> headers = null;
+                if(parameters.getSearch()!=null)
+                {
+                        headers = GeneralUtils.createHeaderWithTokenForLoggedUser();
+                }
+
+
+                getModel().selectForList(parameters.toMap(), headers, getTag(), httpCallBack);
 
         }
 

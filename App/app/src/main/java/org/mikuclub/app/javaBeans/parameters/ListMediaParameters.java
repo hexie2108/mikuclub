@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersListMedia
+public class ListMediaParameters extends BaseParameters
 {
         private String context;
         private Integer page;

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersUpdatePost
+public class UpdatePostParameters extends BaseParameters
 {
         private Integer id;
         private Date date;

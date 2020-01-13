@@ -13,15 +13,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
+import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
+import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
@@ -29,10 +35,12 @@ import org.mikuclub.app.utils.http.Request;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,12 +67,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private List<Comment> recyclerDataList;
         //获取评论数据
         private Comment comment;
-        //信号标 是否要加载新数据  在评论页 需要默认就开启
-        private boolean wantMore = true;
-        //当前页数
-        private int currentPage;
-        //总页数
-        private int totalPage;
 
         /*组件*/
         //父评论主体
@@ -76,6 +78,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private TextView itemCountReplies;
         private RecyclerView recyclerView;
         private Button returnButton;
+
+        //用户评论发送框
+        private ImageView avatarImage;
+        private TextInputLayout inputLayout;
+        private TextInputEditText input;
 
         @Nullable
         @Override
@@ -100,6 +107,10 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 recyclerView = view.findViewById(R.id.post_comments_replies_recycler_view);
                 returnButton = view.findViewById(R.id.return_button);
 
+                avatarImage = view.findViewById(R.id.comment_input_avatar_img);
+                inputLayout = view.findViewById(R.id.input_layout);
+                input = view.findViewById(R.id.input);
+
                 //获取传递的数据
                 comment = (Comment) getArguments().getSerializable(BUNDLE_COMMENT);
                 //创建数据请求 代理人
@@ -112,6 +123,12 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 initParentComment();
                 //初始化列表
                 initRecyclerView();
+                //初始化控制器
+                initController();
+                //初始化评论输入框
+                initCommentInput();
+
+
 
                 //绑定返回按钮
                 returnButton.setOnClickListener(v -> {
@@ -119,10 +136,8 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         CommentRepliesFragment.this.dismiss();
                 });
                 //调整窗口高度
-               ScreenUtils.setFixWindowsHeight(getActivity(), view);
+                ScreenUtils.setFixWindowsHeight(getActivity(), view);
 
-                //创建数据控制器
-                controller = new CommentController(delegate, recyclerView,  recyclerViewAdapter, recyclerDataList);
 
         }
 
@@ -132,7 +147,17 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         {
                 super.onStart();
                 //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                controller.getMore(comment.getPost(), comment.getId());
+                controller.getMore();
+        }
+
+        /**
+         * 初始化评论框
+         */
+        private void initCommentInput()
+        {
+                controller.initCommentInput(avatarImage, inputLayout, input);
+                //设置默认回复对象
+                controller.changeParentComment(comment, true);
         }
 
         /**
@@ -161,6 +186,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
                         }
+
                         //设置点击链接tag的动作
                         @Override
                         public void onLinkClick(Context context, String url)
@@ -173,6 +199,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                                 getActivity().startActivity(intent);
                         }
                 });
+
+                item.setOnClickListener(v -> {
+                        //原始父评论点击的话 就恢复为默认回复对象
+                        controller.changeParentComment(comment, false);
+                });
         }
 
         /**
@@ -180,32 +211,73 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
          */
         private void initRecyclerView()
         {
-                //配置recyclerView
-                recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity());
+                //创建数据适配器
+                recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity())
+                {
+                        //修改默认item点击事件
+                        @Override
+                        protected void setItemOnClickListener(CommentViewHolder holder)
+                        {
+                                //绑定评论框点击动作
+                                holder.getItem().setOnClickListener(v -> {
+                                        //某个评论点击的话 就变更为被回复对象
+                                        Comment parentComment = (Comment) getAdapterList().get(holder.getAdapterPosition());
+                                        controller.changeParentComment(parentComment, false);
+                                });
+                        }
+                };
+
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
 
                 //创建列表滑动监听器
-                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager){
+                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager)
+                {
                         @Override
                         public void onExecute()
                         {
                                 //加载更多
-                                controller.getMore(comment.getPost(), comment.getId());
+                                controller.getMore();
                         }
                 };
 
                 //配置列表, (hasNestedScrollingEnabled 为否, 是因为要禁用窗口滑动)
                 RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, false, listener);
+        }
 
+
+        /**
+         * 初始化控制器
+         */
+        private void initController()
+        {
+                //设置查询参数
+                CommentParameters parameters = new CommentParameters();
+                //如果有子回复
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
+                {
+                        //生成子回复id列表
+                        ArrayList<Integer> parentList = new ArrayList();
+                        parentList.add(comment.getId());
+                        parentList.addAll(comment.getMetadata().getComment_reply_ids());
+                        //设置参数
+                        parameters.setPost(new ArrayList<>(Arrays.asList(comment.getPost())));
+                        parameters.setParent(parentList);
+                        parameters.setOrder(GlobalConfig.Order.ASC);
+                }
+
+                //创建数据控制器
+                controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
                 //如果没有任何子回复
-                if (comment.getMetadata().getCount_replies() == 0)
+                if (GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
                         //关闭自动加载
-                        wantMore = false;
-                        recyclerView.setVisibility(View.INVISIBLE);
+                        controller.setWantMore(false);
+
                 }
+                //设置数据
+                controller.setPostId(comment.getPost());
 
         }
 

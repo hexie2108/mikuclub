@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#qq
+-keep class com.tencent.**{*;}
+-keep class * extends android.app.Dialog
+#微博
+-keep public class com.sina.weibo.sdk.**{*;}
+
+#Gson
+-keep class com.google.gson.** {*;}
+-keep class com.google.**{*;}
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.examples.android.model.** { *; }

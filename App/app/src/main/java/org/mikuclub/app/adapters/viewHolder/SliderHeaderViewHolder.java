@@ -15,14 +15,14 @@ import mikuclub.app.R;
 /**
  * 文章列表 头部控制器 (显示 置顶文章幻灯片)
  */
-public class HeaderViewHolder extends RecyclerView.ViewHolder{
+public class SliderHeaderViewHolder extends RecyclerView.ViewHolder{
 
         //首页幻灯片
         private BannerViewPager sliderViewPager;
         private TransIndicator transIndicator;
 
 
-        public HeaderViewHolder(@NonNull View itemView)
+        public SliderHeaderViewHolder(@NonNull View itemView)
         {
                 super(itemView);
                 //管理器绑定各项 视图

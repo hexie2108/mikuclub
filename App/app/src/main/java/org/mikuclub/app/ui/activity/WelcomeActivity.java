@@ -5,14 +5,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 import mikuclub.app.BuildConfig;
 import mikuclub.app.R;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -24,19 +21,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.callBack.HttpCallBack;
+import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.BaseDelegate;
+import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
+import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -49,12 +50,12 @@ public class WelcomeActivity extends AppCompatActivity
         /*静态变量*/
         public static final int TAG = 1;
         //需要等待的请求数量
-        private static final int REQUEST_TAOTAL_NUMBER = 3;
+        private static final int REQUEST_TOTAL_NUMBER = 5;
 
         /*变量*/
         private PostDelegate postDelegate;
-        private BaseDelegate baseDelegate;
-        private SharedPreferences preferences;
+        private UtilsDelegate utilsDelegate;
+
         private Posts stickyPostList = null;
         private Posts postList = null;
         private String categoriesCache;
@@ -76,9 +77,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                 //创建代理人
                 postDelegate = new PostDelegate(TAG);
-                baseDelegate = new BaseDelegate(TAG);
-                //获取软件设置参数文件
-                preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                utilsDelegate = new UtilsDelegate(TAG);
 
                 //检测权限
                 permissionCheck();
@@ -98,10 +97,18 @@ public class WelcomeActivity extends AppCompatActivity
         {
                 //检测网络状态
                 boolean isInternetAvailable = internetCheck();
+                //如果有网络连接
                 if (isInternetAvailable)
                 {
+                        //检测登陆令牌是否失效
+                        checkTokenValidity();
                         //检查更新, 之后会回调方法 获取文章和分类的数据
                         checkUpdate();
+                        //获取分类信息
+                        checkCategories();
+                        //获取主页文章数据
+                        getDataForHome();
+
                 }
                 else
                 {
@@ -110,29 +117,86 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
+
+        /**
+         * 检测登陆令牌是否失效
+         */
+        private void checkTokenValidity()
+        {
+                //如果用户有登陆
+                if (GeneralUtils.userIsLogin())
+                {
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
+                                //token正常
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        LogUtils.v("登陆信息还有效");
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                //令牌错误
+                                @Override
+                                public void onTokenError()
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+
+                                //内容错误
+                                @Override
+                                public void onError(String response)
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                //网络错误
+                                @Override
+                                public void onHttpError()
+                                {
+                                        displayErrorInfo();
+                                }
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
+                                }
+                        };
+                        //检测令牌是否还有效
+                        utilsDelegate.tokenValidate(httpCallBack);
+
+                }
+                //如果未登陆
+                else{
+                        //增加计数器
+                        startHomeSafety();
+                }
+
+        }
+
         /**
          * 检查软件更新
          */
         private void checkUpdate()
         {
-                long updateLastCheckTime = preferences.getLong(GlobalConfig.APP_UPDATE_CACHE_TIME, 0);
-                //如果当前时间已经超过了 上次检查时间+更新周期的时间
-                if (System.currentTimeMillis() > updateLastCheckTime + GlobalConfig.APP_UPDATE_CHECK_CYCLE)
+                long appUpdateExpire = PreferencesUtils.getApplicationPreference().getLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, 0);
+                //如果检查更新已过期
+                if (System.currentTimeMillis() > appUpdateExpire)
                 {
-                        LogUtils.v("检查应用更新");
-
+                        LogUtils.v("检测时间已过期, 重新检测更新");
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        //修正response乱码问题
-                                        response = GeneralUtils.fixStringEncoding(response);
                                         //获取更新信息
                                         AppUpdate appUpdate = ParserUtils.appUpdate(response);
-                                        //如果更新信息不是空的 和 当前版本号低于新版本
-                                        if (appUpdate != null && BuildConfig.VERSION_CODE < appUpdate.getVersionCode())
+                                        //如果当前版本号低于新版本
+                                        if (BuildConfig.VERSION_CODE < appUpdate.getBody().getVersionCode())
                                         {
+                                                LogUtils.v("发现新版本");
                                                 //弹出弹窗
                                                 openAlertDialog(appUpdate);
                                         }
@@ -140,48 +204,132 @@ public class WelcomeActivity extends AppCompatActivity
                                         else
                                         {
                                                 //如果已经是新版了, 就写入这次的检查时间, 避免后续重复检查
-                                                if (BuildConfig.VERSION_CODE == appUpdate.getVersionCode())
+                                                if (BuildConfig.VERSION_CODE == appUpdate.getBody().getVersionCode())
                                                 {
-                                                        //保存检查时间
-                                                        preferences.edit().putLong(GlobalConfig.APP_UPDATE_CACHE_TIME, System.currentTimeMillis()).apply();
+                                                        LogUtils.v("已经是最新版了");
+                                                        long expire = System.currentTimeMillis() + GlobalConfig.Preferences.APP_UPDATE_EXPIRE_TIME;
+                                                        //保存 这次检查更新的过期时间
+                                                        PreferencesUtils.getApplicationPreference().edit().putLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, expire).apply();
                                                 }
-                                                //请求文章数据
-                                                getDataForHome();
+                                                //增加计数器
+                                                startHomeSafety();
                                         }
                                 }
-
+                                //内容错误的情况, 忽视, 下次再检查更新
                                 @Override
-                                public void onSuccessHandler(String response)
+                                public void onError(String response)
                                 {
-                                        onSuccess(response);
+                                        LogUtils.v("更新信息内容有错误, 下次再检测");
+                                        //增加计数器
+                                        startHomeSafety();
                                 }
 
                                 //网络错误的情况, 忽视, 下次再检查更新
                                 @Override
                                 public void onHttpError()
                                 {
-                                        //请求文章数据
-                                        getDataForHome();
+                                        LogUtils.v("更新请求失败, 下次再检测");
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
                                 }
                         };
-                        baseDelegate.checkUpdate(httpCallBack);
+                        utilsDelegate.checkUpdate(httpCallBack);
 
                 }
                 //如果上次请求的时间 未过期 则不需要检查更新
                 else
                 {
-                        //请求文章数据
-                        getDataForHome();
+                        LogUtils.v("更新时间未过期, 无需检查");
+                        //增加计数器
+                        startHomeSafety();
                 }
+        }
 
 
+
+        /**
+         * 检查分类的缓存
+         * 过期或者没有缓存的话 就获取新的
+         */
+        private void checkCategories()
+        {
+
+                final long categoriesCacheExpire = PreferencesUtils.getCategoryPreference().getLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, 0);
+                categoriesCache = PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
+
+                //如果分类缓存 已过期 或者 缓存为null
+                if (System.currentTimeMillis() > categoriesCacheExpire || categoriesCache == null)
+                {
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
+
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        //获取分类信息
+                                        categoriesCache = response;
+                                        //计算缓存过期时间
+                                        long expire = System.currentTimeMillis() + GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE_TIME;
+                                        //更新分类缓存 和 缓存过期时间
+                                        PreferencesUtils.getCategoryPreference()
+                                                .edit()
+                                                .putString(GlobalConfig.Preferences.CATEGORIES_CACHE, categoriesCache)
+                                                .putLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, expire)
+                                                .apply();
+                                        LogUtils.v("已重新请求分类信息");
+                                        startHomeSafety();
+                                }
+                                @Override
+                                public void onError(String response)
+                                {
+                                        //只有在无缓存的情况, 才会报错
+                                        if (categoriesCache.isEmpty())
+                                        {
+                                                displayErrorInfo();
+                                        }
+                                        //有缓存的话 无视
+                                        else
+                                        {
+                                                startHomeSafety();
+                                        }
+                                }
+
+                                @Override
+                                public void onHttpError()
+                                {
+                                        onError(null);
+                                }
+
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
+                                }
+                        };
+                        //发送请求
+                        utilsDelegate.getCategory(httpCallBack);
+                }
+                //直接使用缓存
+                else
+                {
+                        LogUtils.v("已使用旧分类缓存");
+                        startHomeSafety();
+                }
         }
 
         /**
-         * 请求数据并跳转主页
+         * 获取主页数据
          */
         private void getDataForHome()
         {
+
                 int page = 1;
                 //请求置顶文章 回调函数
                 HttpCallBack callBackToGetStickyPost = new HttpCallBack()
@@ -196,14 +344,17 @@ public class WelcomeActivity extends AppCompatActivity
                                 startHomeSafety();
                         }
 
+                        @Override
+                        public void onError(String response)
+                        {
+                                displayErrorInfo();
+                        }
                         //请求失败
                         @Override
                         public void onHttpError()
                         {
-                                //增加请求计数器
-                                setError();
+                                onError(null);
                         }
-
                         @Override
                         public void onCancel()
                         {
@@ -222,11 +373,15 @@ public class WelcomeActivity extends AppCompatActivity
                         }
 
                         @Override
+                        public void onError(String response)
+                        {
+                                displayErrorInfo();
+                        }
+                        @Override
                         public void onHttpError()
                         {
-                                setError();
+                                onError(null);
                         }
-
                         @Override
                         public void onCancel()
                         {
@@ -236,88 +391,14 @@ public class WelcomeActivity extends AppCompatActivity
                 };
 
                 //获取置顶文章
-                postDelegate.getStickyPostList(page, callBackToGetStickyPost);
+                postDelegate.getStickyPostList(callBackToGetStickyPost, page);
+
                 //获取最新文章
-                postDelegate.getPostList(page, callBackToGetPost);
+                //设置请求参数
+                PostParameters parameters = new PostParameters();
+                parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
+                postDelegate.getPostList(callBackToGetPost, page, parameters);
 
-                //获取分类信息
-                checkCategories();
-        }
-
-        /**
-         * 检查分类的缓存
-         * 过期或者没有缓存的话 就获取新的
-         */
-        private void checkCategories()
-        {
-
-                final long categoriesLastCheckTime = preferences.getLong(GlobalConfig.CATEGORIES_CACHE_TIME, 0);
-                categoriesCache = preferences.getString(GlobalConfig.CATEGORIES_CACHE, "");
-
-
-                //如果当前时间已经超过了 上次检查时间+检查周期的时长 或者 分类字符串缓存为空
-                if (System.currentTimeMillis() > categoriesLastCheckTime + GlobalConfig.CATEGORIES_CHECK_CYCLE || categoriesCache.isEmpty())
-                {
-                        HttpCallBack httpCallBack = new HttpCallBack()
-                        {
-
-                                @Override
-                                public void onSuccess(String response)
-                                {
-                                        //获取分类信息
-                                        categoriesCache = response;
-                                        //更新分类缓存 和 缓存时间
-                                        preferences
-                                                .edit()
-                                                .putString(GlobalConfig.CATEGORIES_CACHE, categoriesCache)
-                                                .putLong(GlobalConfig.CATEGORIES_CACHE_TIME, System.currentTimeMillis())
-                                                .apply();
-
-
-                                        LogUtils.v("已重新请求分类信息");
-
-                                        startHomeSafety();
-
-                                }
-
-                                @Override
-                                public void onError()
-                                {
-                                        //只有在无缓存的情况, 才会报错
-                                        if (categoriesCache.isEmpty())
-                                        {
-                                                setError();
-                                        }
-                                        //有缓存的话 无视
-                                        else
-                                        {
-                                                startHomeSafety();
-                                        }
-                                }
-
-                                @Override
-                                public void onHttpError()
-                                {
-                                        onError();
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置请求计数器
-                                        requestCount = 0;
-                                }
-
-                        };
-                        //发送请求
-                        baseDelegate.getCategory(httpCallBack);
-                }
-                //直接使用缓存
-                else
-                {
-                        LogUtils.v("已使用旧分类缓存");
-                        startHomeSafety();
-                }
         }
 
         /**
@@ -331,9 +412,8 @@ public class WelcomeActivity extends AppCompatActivity
                 addRequestCount();
 
                 //所有请求都完成, 并且数据都成功获取的情况
-                if (requestCount == REQUEST_TAOTAL_NUMBER && stickyPostList != null && postList != null && !categoriesCache.isEmpty())
+                if (requestCount == REQUEST_TOTAL_NUMBER && stickyPostList != null && postList != null && !categoriesCache.isEmpty())
                 {
-
                         //启动主页
                         HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
                         //结束欢迎页
@@ -344,7 +424,7 @@ public class WelcomeActivity extends AppCompatActivity
         /**
          * 错误的情况 , 给用户显示信息, 并允许用户手动重试
          */
-        private void setError()
+        private void displayErrorInfo()
         {
                 //取消所有连接
                 Request.cancelRequest(TAG);
@@ -357,19 +437,14 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeInfoText.setVisibility(View.VISIBLE);
 
                 //绑定点击事件 允许用户手动重试
-                welecomeInfoText.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                welecomeInfoText.setVisibility(View.INVISIBLE);
-                                welecomeProgressBar.setVisibility(View.VISIBLE);
-
-                                getDataForHome();
-                        }
+                welecomeInfoText.setOnClickListener(v -> {
+                        welecomeInfoText.setVisibility(View.INVISIBLE);
+                        welecomeProgressBar.setVisibility(View.VISIBLE);
+                        //清零计数器
+                        requestCount = 0;
+                        //重试
+                        initApplication();
                 });
-
-
         }
 
         /**
@@ -381,39 +456,25 @@ public class WelcomeActivity extends AppCompatActivity
         {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(WelcomeActivity.this);
                 dialog.setTitle("发现应用的新版本");
-                String message = "版本名: " + appUpdate.getVersionName() + "\n" + appUpdate.getDescription();
+                String message = "版本名: " + appUpdate.getBody().getVersionName() + "\n" + appUpdate.getBody().getDescription();
                 dialog.setMessage(message);
                 //如果是强制更新, 就无法取消
-                dialog.setCancelable(!appUpdate.isForceUpdate());
+                dialog.setCancelable(!appUpdate.getBody().isForceUpdate());
                 //设置确认按钮名和动作
-                dialog.setPositiveButton("前往下载", new DialogInterface.OnClickListener()
-                {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                                GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getDownUrl(), "");
-
-                        }
-                });
+                dialog.setPositiveButton("前往下载", (dialog1, which) -> GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getBody().getDownUrl(), ""));
                 //设置取消按钮名和动作
-                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
-                {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
+                dialog.setNegativeButton("取消", (dialog12, which) -> {
+                        //如果是强制更新, 取消等于关闭应用
+                        if (appUpdate.getBody().isForceUpdate())
                         {
-                                //如果是强制更新, 取消等于关闭应用
-                                if (appUpdate.isForceUpdate())
-                                {
-                                        Toast.makeText(WelcomeActivity.this, "本次更新非常重要, 请下载安装新版本", Toast.LENGTH_LONG).show();
-                                        finish();
-
-                                }
-                                //如果不是强制
-                                else
-                                {
-                                        //正常请求文章数据
-                                        getDataForHome();
-                                }
+                                ToastUtils.shortToast("本次更新非常重要, 请下载安装新版本");
+                                finish();
+                        }
+                        //如果不是强制
+                        else
+                        {
+                                //正常请求文章数据
+                                startHomeSafety();
                         }
                 });
                 //显示消息框
@@ -434,6 +495,12 @@ public class WelcomeActivity extends AppCompatActivity
                         //添加权限名到 待申请列表
                         permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 }
+                //检查是否拥有权限
+                if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                {
+                        //添加权限名到 待申请列表
+                        permissionList.add(Manifest.permission.READ_PHONE_STATE);
+                }
                 //如果申请列表不是空的
                 if (!permissionList.isEmpty())
                 {
@@ -451,7 +518,6 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private boolean internetCheck()
         {
-
                 boolean isInternetAvailable = false;
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 if (connectivityManager != null)
@@ -481,8 +547,6 @@ public class WelcomeActivity extends AppCompatActivity
                                 }
                         }
                 }
-
-
                 return isInternetAvailable;
         }
 
@@ -556,7 +620,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 if (result != PackageManager.PERMISSION_GRANTED)
                                                 {
                                                         //弹出提示 + 结束应用
-                                                        Toast.makeText(this, "必须授权本应用权限才能正常使用", Toast.LENGTH_LONG).show();
+                                                        ToastUtils.longToast("必须授权本应用权限才能正常使用");
                                                         finish();
                                                         return;
                                                 }
@@ -564,7 +628,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 }
                                 else
                                 {
-                                        Toast.makeText(this, "发生未知错误", Toast.LENGTH_LONG).show();
+                                        ToastUtils.shortToast("发生未知错误");
                                 }
                                 break;
                 }

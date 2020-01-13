@@ -16,7 +16,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder
 {
 
 
-        private CardView cardView;
+        private CardView item;
         private ImageView itemImage;
         private TextView itemText;
 
@@ -24,20 +24,20 @@ public class PostViewHolder extends RecyclerView.ViewHolder
         {
                 super(itemView);
                 //管理器绑定各项 视图
-                cardView = (CardView) itemView;
+                item = (CardView) itemView;
                 itemImage = itemView.findViewById(R.id.item_image);
                 itemText = itemView.findViewById(R.id.item_text);
 
         }
 
-        public CardView getCardView()
+        public CardView getItem()
         {
-                return cardView;
+                return item;
         }
 
-        public void setCardView(CardView cardView)
+        public void setItem(CardView item)
         {
-                this.cardView = cardView;
+                this.item = item;
         }
 
         public ImageView getItemImage()

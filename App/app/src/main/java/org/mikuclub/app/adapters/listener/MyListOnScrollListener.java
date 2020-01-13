@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyListOnScrollListener extends RecyclerView.OnScrollListener
+public abstract  class MyListOnScrollListener extends RecyclerView.OnScrollListener
 {
         private int lastVisibleItem;
         private LinearLayoutManager manager;
@@ -21,14 +21,11 @@ public class MyListOnScrollListener extends RecyclerView.OnScrollListener
         {
                 this.adapter = adapter;
                 this.manager = manager;
-
         }
 
         //满足条件时, 触发的方法
         // 需要被重写
-        public void onExecute(){
-
-        }
+        public abstract void onExecute();
 
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState)

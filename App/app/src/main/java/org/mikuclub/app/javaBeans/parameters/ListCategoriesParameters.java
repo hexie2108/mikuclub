@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersListCategories
+public class ListCategoriesParameters extends BaseParameters
 {
         private String context;
         private Integer page;

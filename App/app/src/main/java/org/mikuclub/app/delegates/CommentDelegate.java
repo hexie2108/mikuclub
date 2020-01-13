@@ -2,46 +2,60 @@ package org.mikuclub.app.delegates;
 
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.parameters.ParametersListComments;
+import org.mikuclub.app.javaBeans.parameters.BaseParameters;
+import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
+import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
+import org.mikuclub.app.utils.GeneralUtils;
+
+import java.util.Map;
 
 /**
  *  根据需要生成对应资源的请求
  */
-public class CommentDelegate
+public class CommentDelegate extends  BaseDelegate
 {
-
-        private ResourceModel commentModel;
-        private int tag;
 
         public CommentDelegate(int tag)
         {
-                this.tag = tag;
-                this.commentModel = new ResourceModel(GlobalConfig.Server.ROOT + GlobalConfig.Server.COMMENTS);
-
+                super(tag, new ResourceModel(GlobalConfig.Server.ROOT + GlobalConfig.Server.COMMENTS));
         }
-
 
         /**
          * 获和某文章id 相关的评论列表
-         * @param  postId 文章id
-         * @param commentParentId 评论ID, 默认为0, 获取所有评论, 其他情况 为获取特定评论收到的回复
-         * @param page 页数
          * @param httpCallBack
+         * @param page                请求页数
+         * @param parameters 请求参数类
          */
-        public void getCommentsListByPostId(int postId, int commentParentId,  int page, HttpCallBack httpCallBack)
+        public void getCommentList(HttpCallBack httpCallBack, int page, CommentParameters parameters)
         {
 
-                ParametersListComments parameters = new ParametersListComments();
                 parameters.setPage(page);
-                parameters.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS);
-                parameters.setOrderby(GlobalConfig.OrderBy.DATE);
-                parameters.setPost(postId);
-                //去除评论收到的回复
-                parameters.setParent(commentParentId);
+                //如果每页评论数量未设置
+                if (parameters.getPer_page() == null)
+                {
+                        parameters.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS);
+                }
+                //如果排列顺序未设置
+                if (parameters.getOrderby() == null)
+                {
+                        parameters.setOrderby(GlobalConfig.OrderBy.DATE);
+                }
 
-                commentModel.selectForList(parameters.toMap(), tag, httpCallBack);
+                getModel().selectForList(parameters.toMap(), null, getTag(), httpCallBack);
 
+        }
+
+        /**
+         * 创建评论
+         * @param httpCallBack
+         * @param createCommentParameters
+         */
+        public void createComment(HttpCallBack httpCallBack, CreateCommentParameters createCommentParameters){
+
+
+                Map<String, String> headers = GeneralUtils.createHeaderWithTokenForLoggedUser();
+                getModel().insert(new BaseParameters().toMap(), createCommentParameters.toMap(), headers,getTag(), httpCallBack);
         }
 
 

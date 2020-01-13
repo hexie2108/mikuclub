@@ -27,25 +27,25 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void selectById(int id, Map<String, String> params, int tag, HttpCallBack httpCallBack)
+        public void selectById(int id, Map<String, String> params,Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
         {
                 String url = resource_url + id;
-                Request.get(url, params, null, tag, httpCallBack);
+                Request.get(url, params, headers, tag, httpCallBack);
         }
 
 
         /**
          * 获取多个资源
-         *
-         * @param params
+         *  @param params
+         * @param headers
          * @param tag
          * @param httpCallBack
          */
-        public void selectForList(Map<String, String> params, int tag, HttpCallBack httpCallBack)
+        public void selectForList(Map<String, String> params, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url;
-                Request.get(url, params, null, tag, httpCallBack);
+                Request.get(url, params, headers, tag, httpCallBack);
         }
 
         /**
@@ -55,11 +55,11 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void insert(Map<String, String> params, int tag, HttpCallBack httpCallBack)
+        public void insert(Map<String, String> params, Map<String, String> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url;
-                Request.post(url, params, null, tag, httpCallBack);
+                Request.post(url, params, bodyParams, headers, tag, httpCallBack);
 
         }
 
@@ -70,11 +70,11 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void updateById(int id, Map<String, String> params, int tag, HttpCallBack httpCallBack)
+        public void updateById(int id, Map<String, String> params, Map<String, String> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url + id;
-                Request.post(url, params, null, tag, httpCallBack);
+                Request.post(url, params, bodyParams, headers, tag, httpCallBack);
 
         }
 

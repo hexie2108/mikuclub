@@ -6,8 +6,11 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -15,12 +18,20 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import mikuclub.app.R;
@@ -38,13 +49,21 @@ public class HomeActivity extends AppCompatActivity
         /*变量*/
         private AppBarConfiguration mAppBarConfiguration;
         private Posts stickyPosts;
-        private Posts postList;
+        private Posts posts;
+        //用户信息
+        UserLogin userLogin;
 
         /*组件*/
-        private BottomNavigationView bottomNavigationView;
         private DrawerLayout drawer;
+        private NavigationView leftNavigationView;
+        private BottomNavigationView bottomNavigationView;
+
         private TextView searchInput;
         private FloatingActionButton floatingActionButton;
+        //侧边栏头部
+        private ImageView userAvatar;
+        private TextView userName;
+        private TextView userEmail;
 
 
         @Override
@@ -53,17 +72,23 @@ public class HomeActivity extends AppCompatActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home);
 
+                Toolbar toolbar = findViewById(R.id.toolbar);
 
-                Toolbar toolbar = findViewById(R.id.home_toolbar);
-                bottomNavigationView = findViewById(R.id.home_bottom_bar);
                 drawer = findViewById(R.id.home_drawer_layout);
+                leftNavigationView = findViewById(R.id.home_left_navigation_view);
+                //获取侧边栏头部布局
+                View header = leftNavigationView.getHeaderView(0);
+                userAvatar = header.findViewById(R.id.user_avatar);
+                userName = header.findViewById(R.id.user_name);
+                userEmail = header.findViewById(R.id.user_email);
+
+                bottomNavigationView = findViewById(R.id.home_bottom_bar);
                 searchInput = findViewById(R.id.search_input);
                 floatingActionButton = findViewById(R.id.list_floating_action_button);
 
-
                 //从intent里读取上个活动传送来的数据
                 stickyPosts = (Posts) getIntent().getSerializableExtra(INTENT_STICKY_POST_LIST);
-                postList = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
+                posts = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -72,15 +97,25 @@ public class HomeActivity extends AppCompatActivity
 
                 initBottomMenu();
 
+                initLeftNavigationVIew();
+
+                //检查登陆状态
+                checkLoginStatus();
+
+
         }
 
-        @Override
-        protected void onStop()
-        {
 
-                //取消本活动相关的所有网络请求
-                Request.cancelRequest(TAG);
-                super.onStop();
+        /**
+         * 初始化 顶部搜索栏
+         */
+        private void initTopSearchBar()
+        {
+                //绑定点击监听器到搜索栏
+                searchInput.setOnClickListener(v -> {
+                        //启动搜索页面
+                        SearchActivity.startAction(HomeActivity.this);
+                });
         }
 
         /**
@@ -99,32 +134,150 @@ public class HomeActivity extends AppCompatActivity
         }
 
         /**
-         * 初始化 顶部搜索栏
+         * 初始化侧边栏, 绑定item动作监听
          */
-        private void initTopSearchBar()
+        private void initLeftNavigationVIew()
         {
-                //绑定点击监听器到搜索栏
-                searchInput.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
+
+                //绑定侧边栏菜单动作监听
+                leftNavigationView.setNavigationItemSelectedListener(item -> {
+
+                        switch (item.getItemId())
                         {
-                                //启动搜索页面
-                                SearchActivity.startAction(HomeActivity.this);
+                                case R.id.item_login:
+                                        //启动登录页
+                                        LoginActivity.startActionForResult(this);
+                                        break;
+
+                                case R.id.item_logout:
+                                        //删除用户登陆信息
+                                        GeneralUtils.userLogout();
+                                        //更新侧边栏用户信息和菜单
+                                        setLogoutUserInfoAndMenu();
+                                        ToastUtils.shortToast("已登出");
+                                        break;
                         }
+                        //关闭侧边栏
+                        drawer.closeDrawer(GravityCompat.START);
+                        return true;
                 });
+
+        }
+
+
+        /**
+         * 检测用户登陆状态
+         * 如果从未登陆过, 就什么都不做
+         * 如果是登陆令牌过期, 则跳转到登陆页面
+         * 如果登陆令牌有效, 则在主页侧边栏显示用户信息和替换默认侧边栏菜单
+         */
+        private void checkLoginStatus()
+        {
+                //如果用户有登陆
+                if (GeneralUtils.userIsLogin())
+                {
+
+                        LogUtils.v("已登陆用户");
+                        setLoggingUserInfoAndMenu();
+
+                }
+                // 如果没登陆过
+                else
+                {
+                        LogUtils.v("未登录用户");
+                        setLogoutUserInfoAndMenu();
+                }
+
         }
 
         /**
-         * 加载自定义菜单
-         *
-         * @param menu
-         * @return
+         * 设置未登陆用户的信息和菜单
          */
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu)
+        private void setLogoutUserInfoAndMenu()
         {
-                return super.onCreateOptionsMenu(menu);
+
+                userAvatar.setImageResource(R.drawable.person);
+                userName.setText("点击头像登陆");
+                userEmail.setVisibility(View.GONE);
+
+                //头像绑定点击监听器
+                userAvatar.setOnClickListener(v -> {
+                        //启动登录页
+                        LoginActivity.startActionForResult(this);
+                });
+
+                //替换菜单
+                leftNavigationView.getMenu().clear();
+                leftNavigationView.inflateMenu(R.menu.home_left_drawer_menu_logout);
+
+
+        }
+
+        /**
+         * 设置已登陆用户的信息和菜单
+         */
+        private void setLoggingUserInfoAndMenu()
+        {
+                //获取数据字符串
+                String userLoginString = PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_LOGIN, null);
+                //避免null值
+                if (userLoginString != null)
+                {
+                        //解析用户数据
+                        userLogin = ParserUtils.userLogin(userLoginString);
+
+                        //设置头像
+                        GlideImageUtils.getSquareImg(this, userAvatar, userLogin.getAvatar_urls());
+                        //设置头像的动作监听器
+                        userAvatar.setOnClickListener(null);
+                        //设置名称
+                        userName.setText(userLogin.getUser_display_name());
+                        //设置+显示邮箱
+                        userEmail.setText(userLogin.getUser_email());
+                        userEmail.setVisibility(View.VISIBLE);
+                }
+
+                //替换菜单
+                leftNavigationView.getMenu().clear();
+                leftNavigationView.inflateMenu(R.menu.home_left_drawer_menu_logged);
+
+        }
+
+
+
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+        {
+
+                super.onActivityResult(requestCode, resultCode, data);
+                //判断请求id
+                switch (requestCode)
+                {
+                        //如果是登陆页面返回的请求结果
+                        case LoginActivity.REQUEST_CODE:
+                                //如果结果是成功
+                                if (resultCode == RESULT_OK)
+                                {
+                                        //在侧边栏显示已登陆用户信息 和 登陆用户菜单
+                                        setLoggingUserInfoAndMenu();
+                                }
+                                else
+                                {
+                                        //如果未成功登陆, 设置未登陆菜单
+                                        setLogoutUserInfoAndMenu();
+                                }
+                                break;
+
+                }
+        }
+
+        @Override
+        protected void onStop()
+        {
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
+                super.onStop();
         }
 
         /**
@@ -171,8 +324,9 @@ public class HomeActivity extends AppCompatActivity
         {
                 return stickyPosts;
         }
-        public Posts getPostList()
+
+        public Posts getPosts()
         {
-                return postList;
+                return posts;
         }
 }

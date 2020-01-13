@@ -3,50 +3,30 @@ package org.mikuclub.app.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
-import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
+import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
-public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class CommentsAdapter extends BaseAdapterWithFooter
 {
-        //正常内容
-        private final static int TYPE_ITEM = 0;
-        //尾部加载刷新布局
-        private final static int TYPE_FOOTER = 1;
 
-        //数据列表
-        protected List<Comment> list;
-        //上下文
-        protected Context mConxt;
-        //布局创建器
-        private LayoutInflater mInflater;
-
-        //尾部占据的列数
-        private int footerRow = 1;
-
-        //错误情况 指示器
-        private boolean notMoreError = false;
-        private boolean internetError = false;
-        //错误情况的 点击事件监听器
-        private View.OnClickListener internetErrorListener = null;
-
-
+        private boolean displayReplyCount = true;
         /**
          * 构建函数
          *
@@ -55,96 +35,44 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          */
         public CommentsAdapter(List<Comment> list, Context context)
         {
-                this.list = list;
-                this.mConxt = context;
-                this.mInflater = LayoutInflater.from(context);
+                super(list, context);
         }
 
 
         @Override
-        public int getItemViewType(int position)
+        protected RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent)
         {
-                if (position == list.size())
-                {
-                        return TYPE_FOOTER;
-                }
-                else
-                {
-                        return TYPE_ITEM;
-                }
-        }
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-        {
-                //创建控制器
-                final RecyclerView.ViewHolder holder;
-                //如果是普通数据类型
-                if (viewType == TYPE_ITEM)
-                {
-                        View view = mInflater.inflate(R.layout.list_item_comment, parent, false);
-                        holder = new CommentViewHolder(view);
-                        setItemOnClickListener((CommentViewHolder) holder);
-
-                }
-                //如果是footer
-                else
-                {
-                        View view = mInflater.inflate(R.layout.list_item_info_util, parent, false);
-                        holder = new FooterViewHolder(view);
-                }
+                View view = getAdpterInflater().inflate(R.layout.list_item_comment, parent, false);
+                //创建item控制器
+                CommentViewHolder holder = new CommentViewHolder(view);
+                //绑定动作
+                setItemOnClickListener(holder);
                 return holder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
+        protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position)
         {
-                //需要展示对应子视图的时候
-                //如果是普通数据组件
-                if (holder instanceof CommentViewHolder)
-                {
-                        bindCommentViewHolder(holder, position);
-
-                }
-                else if (holder instanceof FooterViewHolder)
-                {
-                        AdapterUtils.bindFooterViewHolder(holder, notMoreError, true, internetError, internetErrorListener);
-                }
-
-        }
-
-        @Override
-        public int getItemCount()
-        {
-                //获取列表长度
-                //因为增加了 footer组件, 所以长度要加上footer占据的数量
-                return list.size() + footerRow;
-        }
-
-
-        protected void bindCommentViewHolder(RecyclerView.ViewHolder viewHolder, int position)
-        {
-                CommentViewHolder holder = (CommentViewHolder) viewHolder;
+                CommentViewHolder viewHolder = (CommentViewHolder) holder;
                 //先从列表获取对应位置的数据
-                final Comment comment = list.get(position);
+                final Comment comment = (Comment) getAdapterList().get(position);
 
                 //为视图设置数据
-                holder.getItemName().setText(comment.getAuthor_name());
+                viewHolder.getItemName().setText(comment.getAuthor_name());
                 //生成时间格式
-                String dateString = new SimpleDateFormat("yy-MM-dd HH:mm").format(comment.getDate());
-                holder.getItemDate().setText(dateString);
+                String dateString = new SimpleDateFormat(GlobalConfig.DATE_FORMAT).format(comment.getDate());
+                viewHolder.getItemDate().setText(dateString);
                 //确保给地址添加上https协议
                 String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(comment.getAuthor_avatar_urls().getSize96());
                 //加载远程图片
-                GlideImageUtils.getSquareImg(mConxt, holder.getItemAvatarImg(), avatarSrc);
+                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), avatarSrc);
 
-                //如果评论有被回复过
-                if (comment.getMetadata().getCount_replies() > 0)
+                //如果要显示回复数 和 回复不为空
+                if (displayReplyCount && !GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
                         //显示回复数量
-                        holder.getItemCountReplies().setText(comment.getMetadata().getCount_replies() + " 条回复");
-                        holder.getItemCountReplies().setVisibility(View.VISIBLE);
+                        viewHolder.getItemCountReplies().setText(comment.getMetadata().getComment_reply_ids().size() + " 条回复");
+                        viewHolder.getItemCountReplies().setVisibility(View.VISIBLE);
                 }
 
                 //获取评论内容
@@ -152,7 +80,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 //移除内容外层P标签
                 htmlContent = HttpUtils.removeHtmlMainTag(htmlContent, "<p>", "</p>");
                 //解析 内容html
-                HttpUtils.parseHtml(mConxt, htmlContent, holder.getItemContent(), new OnTagClickListener()
+                HttpUtils.parseHtml(getAdapterContext(), htmlContent, viewHolder.getItemContent(), new OnTagClickListener()
                 {
                         //设置 点击图片tag的动作
                         @Override
@@ -169,73 +97,72 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 Intent intent = new Intent();
                                 intent.setAction("android.intent.action.VIEW");
                                 intent.setData(uri);
-                                mConxt.startActivity(intent);
+                                getAdapterContext().startActivity(intent);
                         }
                 });
-
-
-
         }
+
 
         /**
          * 绑定评论框点击事件
          */
-        protected void setItemOnClickListener(final CommentViewHolder holder){
+        protected void setItemOnClickListener(final CommentViewHolder holder)
+        {
                 //绑定评论框点击动作
-                holder.getItem().setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-
-                                CommentRepliesFragment fragment = CommentRepliesFragment.startAction(list.get(holder.getAdapterPosition()));
-                                fragment.show(((AppCompatActivity)mConxt).getSupportFragmentManager(), fragment.getClass().toString());
-
-                        }
+                holder.getItem().setOnClickListener(v ->{
+                        Comment comment= (Comment) getAdapterList().get(holder.getAdapterPosition());
+                        CommentRepliesFragment fragment = CommentRepliesFragment.startAction(comment);
+                        fragment.show(((AppCompatActivity) getAdapterContext()).getSupportFragmentManager(), fragment.getClass().toString());
                 });
+
         }
 
-
-        /**
-         * 设置 没有更多 错误
-         *
-         * @param notMoreError
-         */
-        public void setNotMoreError(boolean notMoreError)
+        public void setDisplayReplyCount(boolean displayReplyCount)
         {
-                this.notMoreError = notMoreError;
+                this.displayReplyCount = displayReplyCount;
         }
 
         /**
-         * 设置 网络错误 和 重试点击监听器
-         *
-         * @param internetError
-         * @param internetErrorListener
-         */
-        public void setInternetError(boolean internetError, View.OnClickListener internetErrorListener)
-        {
-                this.internetError = internetError;
-                this.internetErrorListener = internetErrorListener;
-        }
-
-
-        /**
-         * 子评论列表的适配器 继承了普通评论列表
+         * 子评论列表的适配器 继承了普通评论的适配器, 只是改变了动作
          */
         public static class RepliesAdapter extends CommentsAdapter
         {
 
-                /**
-                 * 构建函数
-                 *
-                 * @param list
-                 * @param context
-                 */
                 public RepliesAdapter(List<Comment> list, Context context)
                 {
                         super(list, context);
+                        setDisplayReplyCount(false);
                 }
 
+
+                @Override
+                protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position)
+                {
+                        //先从列表获取对应位置的数据
+                        Comment comment = (Comment) getAdapterList().get(position);
+                        //获取评论内容
+                        String commentContent = comment.getContent().getRendered();
+                        //如果固定回复头部存在
+                        String startText  = "回复";
+                        String endText  = " : ";
+                        if(commentContent.indexOf(startText) < 5){
+                                commentContent = commentContent.substring(commentContent.indexOf(endText)+endText.length());
+                        }
+                        /*
+                        //被回复用户的用户名
+                        String parentUserName = comment.getMetadata().getParent_user_name();
+                        //如果用户名不是空
+                        if(parentUserName!=null){
+                                //添加到评论内容里
+                                commentContent ="<b>"+parentUserName+"</b>"+commentContent+" ";
+                        }
+                        */
+
+                        //更新评论内容
+                        comment.getContent().setRendered(commentContent);
+
+                        super.onBindItemViewHolder(holder, position);
+                }
 
                 @Override
                 protected void setItemOnClickListener(final CommentViewHolder holder)

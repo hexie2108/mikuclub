@@ -5,7 +5,7 @@ import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
-public class ParametersCreateComment
+public class CreateCommentParameters extends BaseParameters
 {
 
         private String content;

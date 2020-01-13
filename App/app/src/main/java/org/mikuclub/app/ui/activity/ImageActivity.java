@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.ortiz.touchview.TouchImageView;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
@@ -17,6 +18,7 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.networkImageSupport.GetRemoteImage;
 import org.mikuclub.app.utils.http.networkImageSupport.ZoomNetworkImageView;
@@ -30,7 +32,7 @@ public class ImageActivity extends AppCompatActivity
         public static final String INTENT_IMAGES_SRC = "images_src";
 
         /*变量*/
-        //储存图片URL地址
+        //当前页面需要的图片URL地址
         List<String> imagesSrc;
 
         /*组件*/
@@ -54,6 +56,9 @@ public class ImageActivity extends AppCompatActivity
 
                 //获取图片地址的列表
                 imagesSrc = getIntent().getStringArrayListExtra("images_src");
+
+
+
 
                 initSliders();
         }
@@ -104,5 +109,6 @@ public class ImageActivity extends AppCompatActivity
 
                 context.startActivity(intent);
         }
+
 
 }
