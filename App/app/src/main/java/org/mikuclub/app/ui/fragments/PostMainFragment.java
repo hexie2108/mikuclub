@@ -111,7 +111,6 @@ public class PostMainFragment extends Fragment
                 //如果相关点赞数据字符串存在
                 if (likedPostIdsString != null)
                 {
-                        LogUtils.e(likedPostIdsString);
                         //解析为数组
                         likedPostIds = ParserUtils.integerArrayList(likedPostIdsString);
                 }
@@ -316,12 +315,6 @@ public class PostMainFragment extends Fragment
                                 }
 
                                 @Override
-                                public void onHttpError()
-                                {
-                                        ToastUtils.shortToast("网络错误");
-                                }
-
-                                @Override
                                 public void onFinally()
                                 {
                                         //激活按钮
@@ -376,7 +369,6 @@ public class PostMainFragment extends Fragment
                         .edit()
                         .putString(GlobalConfig.Preferences.POST_LIKED_ARRAY, ParserUtils.integerArrayListToJson(likedPostIds))
                         .apply();
-
 
                 //根据当前操作  增加或减少点赞数
                 if(isAdd){

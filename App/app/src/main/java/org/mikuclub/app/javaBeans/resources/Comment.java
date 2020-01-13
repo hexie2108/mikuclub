@@ -34,6 +34,17 @@ public class Comment  implements Serializable
 
         public class Metadata  implements  Serializable{
               private List<Integer> comment_reply_ids;
+              private String parent_user_name;
+
+                public String getParent_user_name()
+                {
+                        return parent_user_name;
+                }
+
+                public void setParent_user_name(String parent_user_name)
+                {
+                        this.parent_user_name = parent_user_name;
+                }
 
                 public List<Integer> getComment_reply_ids()
                 {

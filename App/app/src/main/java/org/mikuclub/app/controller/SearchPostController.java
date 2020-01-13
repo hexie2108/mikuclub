@@ -81,6 +81,13 @@ public class SearchPostController extends PostController
                         }
 
                         @Override
+                        public void onTokenError()
+                        {
+                                getRecyclerViewAdapter().setNotMoreErrorMessage("请重新登陆");
+                                getRecyclerViewAdapter().updateFooterStatus(false, true, false);
+                        }
+
+                        @Override
                         public void onError(String response)
                         {
                                 getRecyclerViewAdapter().setNotMoreErrorMessage("抱歉, 没有找到相关内容");

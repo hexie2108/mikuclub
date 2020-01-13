@@ -12,6 +12,7 @@ import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.text.SimpleDateFormat;
@@ -131,6 +132,36 @@ public class CommentsAdapter extends BaseAdapterWithFooter
                 {
                         super(list, context);
                         setDisplayReplyCount(false);
+                }
+
+
+                @Override
+                protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position)
+                {
+                        //先从列表获取对应位置的数据
+                        Comment comment = (Comment) getAdapterList().get(position);
+                        //获取评论内容
+                        String commentContent = comment.getContent().getRendered();
+                        //如果固定回复头部存在
+                        String startText  = "回复";
+                        String endText  = " : ";
+                        if(commentContent.indexOf(startText) < 5){
+                                commentContent = commentContent.substring(commentContent.indexOf(endText)+endText.length());
+                        }
+                        /*
+                        //被回复用户的用户名
+                        String parentUserName = comment.getMetadata().getParent_user_name();
+                        //如果用户名不是空
+                        if(parentUserName!=null){
+                                //添加到评论内容里
+                                commentContent ="<b>"+parentUserName+"</b>"+commentContent+" ";
+                        }
+                        */
+
+                        //更新评论内容
+                        comment.getContent().setRendered(commentContent);
+
+                        super.onBindItemViewHolder(holder, position);
                 }
 
                 @Override

@@ -50,8 +50,8 @@ public class GlobalConfig
                 public static final String USERS = "users/";
 
 
-                //GET 检查更新
-                public static final String APP_UPDATE = HOST+"app/update.json";
+                //GET 检查应用更新
+                public static final String APP_UPDATE = HOST+"wp-json/utils/v2/app_update/";
                 //GET 获取缓存评论
                 public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu/";
                 //POST 登陆接口

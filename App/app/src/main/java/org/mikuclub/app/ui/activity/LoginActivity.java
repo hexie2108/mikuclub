@@ -39,6 +39,7 @@ import org.mikuclub.app.utils.social.TencentListener;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;
 import org.mikuclub.app.utils.social.WeiboUtils;
+import org.mikuclub.app.utils.ViewUtils;
 
 import mikuclub.app.R;
 
@@ -98,7 +99,7 @@ public class LoginActivity extends AppCompatActivity
                 //初始化社会登陆按钮
                 initSocialButton();
                 //创建进度条弹窗
-                initProgressDialog();
+                progressDialog = ViewUtils.initProgressDialog(this);
 
         }
 
@@ -365,17 +366,6 @@ public class LoginActivity extends AppCompatActivity
                 }
         }
 
-        /**
-         * 创建进度条弹窗
-         */
-        public void initProgressDialog(){
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setView(R.layout.alert_dialog_progress_bar);
-                builder.setCancelable(false);
-                progressDialog = builder.create();
-
-        }
 
 
         @Override

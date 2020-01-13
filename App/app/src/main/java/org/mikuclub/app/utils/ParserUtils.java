@@ -10,11 +10,15 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.resources.Categories;
 import org.mikuclub.app.javaBeans.resources.Comments;
+import org.mikuclub.app.javaBeans.resources.CreateComment;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.javaBeans.resources.WpError;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mikuclub.app.BuildConfig;
 
 /**
  * 负责反序列化 和 序列化 数据
@@ -63,6 +67,21 @@ public class ParserUtils
 
         }
 
+
+        /**
+         * 解析新建评论
+         *
+         * @param response
+         * @return
+         */
+        public static CreateComment createComment(String response)
+        {
+
+                CreateComment createComment = gson.fromJson(response, CreateComment.class);
+                return createComment;
+
+        }
+
         /**
          * 解析软件更新信息
          *
@@ -72,16 +91,7 @@ public class ParserUtils
         public static AppUpdate appUpdate(String response)
         {
 
-                AppUpdate appUpdate = null;
-                try
-                {
-                        appUpdate = gson.fromJson(response, AppUpdate.class);
-                }
-                catch (Exception e)
-                {
-                        //屏蔽可能的解析错误, 避免程序崩溃
-                        e.printStackTrace();
-                }
+                AppUpdate  appUpdate = gson.fromJson(response, AppUpdate.class);
                 return appUpdate;
         }
 
@@ -94,11 +104,10 @@ public class ParserUtils
          */
         public static Categories categories(String response)
         {
-
                 Categories categories = gson.fromJson(response, Categories.class);
                 return categories;
-
         }
+
 
         /**
          * 解析用户登陆信息
@@ -111,24 +120,45 @@ public class ParserUtils
 
                 UserLogin userLogin = gson.fromJson(response, UserLogin.class);
                 return userLogin;
-
         }
 
+
         /**
-         * 解析数据为 整数列表
+         * 解析wordpress错误
+         *
          * @param response
          * @return
          */
-        public static List<Integer> integerArrayList(String response){
-                return  gson.fromJson(response, new TypeToken<List<Integer>>(){}.getType());
+        public static WpError wpError(String response)
+        {
+                WpError wpError = gson.fromJson(response, WpError.class);
+                return wpError;
+        }
+
+
+        /**
+         * 解析数据为 整数列表
+         *
+         * @param response
+         * @return
+         */
+        public static List<Integer> integerArrayList(String response)
+        {
+                return gson.fromJson(response, new TypeToken<List<Integer>>()
+                {
+                }.getType());
         }
 
         /**
          * 序列化整数列表 为 JSON字符串
+         *
          * @param integerList
          * @return
          */
-        public static String integerArrayListToJson(List<Integer> integerList){
-                return  gson.toJson(integerList, new TypeToken<List<Integer>>(){}.getType());
+        public static String integerArrayListToJson(List<Integer> integerList)
+        {
+                return gson.toJson(integerList, new TypeToken<List<Integer>>()
+                {
+                }.getType());
         }
 }

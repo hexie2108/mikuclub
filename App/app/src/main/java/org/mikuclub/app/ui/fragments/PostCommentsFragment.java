@@ -1,9 +1,15 @@
 package org.mikuclub.app.ui.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ImageView;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
@@ -13,9 +19,14 @@ import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,9 +59,14 @@ public class PostCommentsFragment extends Fragment
         private Post post;
 
 
+
         /*组件*/
         //文章列表
         private RecyclerView recyclerView;
+        private ImageView avatarImage;
+        private TextInputLayout inputLayout;
+        private TextInputEditText input;
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +83,9 @@ public class PostCommentsFragment extends Fragment
 
                 //绑定组件
                 recyclerView = view.findViewById(R.id.post_comments_recycler_view);
+                avatarImage=view.findViewById(R.id.comment_input_avatar_img);
+                inputLayout = view.findViewById(R.id.input_layout);
+                input = view.findViewById(R.id.input);
 
 
                 //从活动中获取文章数据
@@ -76,10 +95,13 @@ public class PostCommentsFragment extends Fragment
                 //初始化变量
                 recyclerDataList = new ArrayList<>();
 
+
                 //初始化列表
                 initRecyclerView();
                 //初始化控制器
                 initController();
+                //初始化评论输入框
+                initCommentInput();
         }
 
         @Override
@@ -88,6 +110,13 @@ public class PostCommentsFragment extends Fragment
                 super.onStart();
                 //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
                 controller.getMore();
+        }
+
+        /**
+         * 初始化评论框
+         */
+        private void initCommentInput(){
+                controller.initCommentInput(avatarImage, inputLayout, input);
         }
 
 
@@ -133,6 +162,9 @@ public class PostCommentsFragment extends Fragment
 
                 //创建数据控制器
                 controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
+                //设置数据
+                controller.setPostId(post.getId());
+                controller.setParentCommentId(0);
         }
 
 

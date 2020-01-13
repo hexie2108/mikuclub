@@ -2,8 +2,13 @@ package org.mikuclub.app.delegates;
 
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
+import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
+import org.mikuclub.app.utils.GeneralUtils;
+
+import java.util.Map;
 
 /**
  *  根据需要生成对应资源的请求
@@ -39,6 +44,18 @@ public class CommentDelegate extends  BaseDelegate
 
                 getModel().selectForList(parameters.toMap(), null, getTag(), httpCallBack);
 
+        }
+
+        /**
+         * 创建评论
+         * @param httpCallBack
+         * @param createCommentParameters
+         */
+        public void createComment(HttpCallBack httpCallBack, CreateCommentParameters createCommentParameters){
+
+
+                Map<String, String> headers = GeneralUtils.createHeaderWithTokenForLoggedUser();
+                getModel().insert(new BaseParameters().toMap(), createCommentParameters.toMap(), headers,getTag(), httpCallBack);
         }
 
 

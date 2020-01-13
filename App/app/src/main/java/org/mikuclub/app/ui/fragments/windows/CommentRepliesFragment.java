@@ -13,9 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.adapters.CommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
+import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
@@ -24,6 +27,7 @@ import org.mikuclub.app.javaBeans.resources.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
@@ -36,6 +40,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,6 +79,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private RecyclerView recyclerView;
         private Button returnButton;
 
+        //用户评论发送框
+        private ImageView avatarImage;
+        private TextInputLayout inputLayout;
+        private TextInputEditText input;
+
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -97,6 +107,10 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 recyclerView = view.findViewById(R.id.post_comments_replies_recycler_view);
                 returnButton = view.findViewById(R.id.return_button);
 
+                avatarImage = view.findViewById(R.id.comment_input_avatar_img);
+                inputLayout = view.findViewById(R.id.input_layout);
+                input = view.findViewById(R.id.input);
+
                 //获取传递的数据
                 comment = (Comment) getArguments().getSerializable(BUNDLE_COMMENT);
                 //创建数据请求 代理人
@@ -111,6 +125,10 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 initRecyclerView();
                 //初始化控制器
                 initController();
+                //初始化评论输入框
+                initCommentInput();
+
+
 
                 //绑定返回按钮
                 returnButton.setOnClickListener(v -> {
@@ -118,8 +136,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         CommentRepliesFragment.this.dismiss();
                 });
                 //调整窗口高度
-               ScreenUtils.setFixWindowsHeight(getActivity(), view);
-
+                ScreenUtils.setFixWindowsHeight(getActivity(), view);
 
 
         }
@@ -131,6 +148,16 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 super.onStart();
                 //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
                 controller.getMore();
+        }
+
+        /**
+         * 初始化评论框
+         */
+        private void initCommentInput()
+        {
+                controller.initCommentInput(avatarImage, inputLayout, input);
+                //设置默认回复对象
+                controller.changeParentComment(comment, true);
         }
 
         /**
@@ -159,6 +186,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
                         }
+
                         //设置点击链接tag的动作
                         @Override
                         public void onLinkClick(Context context, String url)
@@ -171,6 +199,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                                 getActivity().startActivity(intent);
                         }
                 });
+
+                item.setOnClickListener(v -> {
+                        //原始父评论点击的话 就恢复为默认回复对象
+                        controller.changeParentComment(comment, false);
+                });
         }
 
         /**
@@ -179,14 +212,28 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity())
+                {
+                        //修改默认item点击事件
+                        @Override
+                        protected void setItemOnClickListener(CommentViewHolder holder)
+                        {
+                                //绑定评论框点击动作
+                                holder.getItem().setOnClickListener(v -> {
+                                        //某个评论点击的话 就变更为被回复对象
+                                        Comment parentComment = (Comment) getAdapterList().get(holder.getAdapterPosition());
+                                        controller.changeParentComment(parentComment, false);
+                                });
+                        }
+                };
 
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
 
                 //创建列表滑动监听器
-                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager){
+                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager)
+                {
                         @Override
                         public void onExecute()
                         {
@@ -200,11 +247,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         }
 
 
-
         /**
          * 初始化控制器
          */
-        private void initController(){
+        private void initController()
+        {
                 //设置查询参数
                 CommentParameters parameters = new CommentParameters();
                 //如果有子回复
@@ -229,6 +276,9 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         controller.setWantMore(false);
 
                 }
+                //设置数据
+                controller.setPostId(comment.getPost());
+
         }
 
 
@@ -267,9 +317,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 fragment.setArguments(bundle);
                 return fragment;
         }
-
-
-
 
 
 }

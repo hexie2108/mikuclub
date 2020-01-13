@@ -29,7 +29,8 @@ public class UtilsDelegate extends BaseDelegate
          */
         public void checkUpdate(HttpCallBack httpCallBack)
         {
-                Request.get(GlobalConfig.Server.APP_UPDATE, null, null, getTag(), httpCallBack);
+                BaseParameters baseParameters = new BaseParameters();
+                Request.get(GlobalConfig.Server.APP_UPDATE, baseParameters.toMap(), null, getTag(), httpCallBack);
 
         }
 

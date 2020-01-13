@@ -4,43 +4,50 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
     xmlns:tools = "http://schemas.android.com/tools"
-    android:id = "@+id/item_comment"
+    android:id = "@+id/comment_input_box"
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
-    android:layout_marginTop = "@dimen/small"
-    android:layout_marginBottom = "@dimen/small"
+    android:layout_marginTop = "@dimen/normal"
+    android:layout_marginBottom = "@dimen/normal"
     android:clickable = "true"
     android:focusable = "true">
 
         <androidx.cardview.widget.CardView
-            android:id = "@+id/item_avatar_img_box"
+            android:id = "@+id/comment_input__avatar_img_box"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             app:cardCornerRadius = "20dp"
             app:cardElevation = "0dp"
+            app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf = "parent">
 
                 <ImageView
-                    android:id = "@+id/item_avatar_img"
+                    android:id = "@+id/comment_input_avatar_img"
                     android:layout_width = "40dp"
                     android:layout_height = "40dp"
                     android:scaleType = "centerCrop"
-                    tools:src = "@drawable/avatar" />
+                    android:src = "@drawable/person" />
 
         </androidx.cardview.widget.CardView>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id = "@+id/input_layout"
-            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:hint = "发表评论..."
-            app:endIconMode = "clear_text"
+            android:layout_margin = "0dp"
+            android:enabled = "false"
+            android:textColorHint="@android:color/darker_gray"
+            app:hintTextColor="@color/colorPrimary"
+            android:hint = "需要登录后才能发表评论"
+            app:boxStrokeWidth = "0dp"
+            app:boxStrokeWidthFocused = "0dp"
+            app:endIconDrawable = "@drawable/send"
+            app:endIconMode = "custom"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintStart_toEndOf="@id/item_avatar_img_box"
+            app:layout_constraintStart_toEndOf = "@id/comment_input__avatar_img_box"
             app:layout_constraintTop_toTopOf = "parent">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -48,8 +55,13 @@
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
                     android:imeOptions = "actionSend"
+                    android:textCursorDrawable="@drawable/edi_text_cursor_color"
                     android:inputType = "text"
-                    android:maxLines = "3" />
+                    android:maxLines = "3"
+                    android:padding="0dp"
+                    android:paddingStart = "@dimen/normal"
+
+                    android:textSize = "@dimen/text_default" />
 
 
         </com.google.android.material.textfield.TextInputLayout>

@@ -40,6 +40,7 @@
             android:textSize = "@dimen/text_small"
             app:layout_constraintStart_toEndOf = "@id/item_avatar_img_box"
             app:layout_constraintTop_toTopOf = "parent"
+            tools:text = "神秘人"
 
             />
 
@@ -62,7 +63,7 @@
             app:layout_constraintBottom_toBottomOf = "@id/item_name"
             app:layout_constraintStart_toEndOf = "@id/item_date_icon"
             app:layout_constraintTop_toTopOf = "parent"
-
+            tools:text = "2019-10-15 01:05"
             />
 
         <TextView
@@ -70,14 +71,16 @@
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
 
-            android:layout_margin = "@dimen/normal"
+            android:layout_marginTop = "@dimen/normal"
+            android:layout_marginEnd = "@dimen/normal"
+            android:layout_marginBottom = "@dimen/normal"
+
             android:textIsSelectable = "true"
             android:textSize = "@dimen/text_default"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintStart_toEndOf = "@id/item_avatar_img_box"
+            app:layout_constraintStart_toStartOf = "@id/item_name"
             app:layout_constraintTop_toBottomOf = "@id/item_name"
-
-            />
+            tools:text = "我是评论" />
 
         <TextView
             android:id = "@+id/item_count_replies"

@@ -10,12 +10,18 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mikuclub.app.javaBeans.resources.WpError;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ToastUtils;
+
+import java.nio.channels.WritePendingException;
 
 /**
- *  utilsDelegate 专用
- *  去除了 body内容长度的检查
- * */
+ * utilsDelegate 专用
+ * 去除了 body内容长度的检查
+ */
 public class HttpCallBack
 {
 
@@ -33,6 +39,7 @@ public class HttpCallBack
         /**
          * 自定义内容错误处理函数 (请求成功,但是内容有问题)
          * 默认为空
+         *
          * @param response
          */
         public void onError(String response)
@@ -47,6 +54,13 @@ public class HttpCallBack
          */
         public void onCancel()
         {
+
+        }
+
+        /**
+         * 登陆令牌过期或错误
+         */
+        public void onTokenError(){
 
         }
 
@@ -90,7 +104,8 @@ public class HttpCallBack
                                 //获取body内容
                                 Object body = jsonObject.get("body");
                                 //如果是一个json数组 , 但是长度为0
-                                if(body instanceof JSONArray && ((JSONArray)body).length()==0){
+                                if (body instanceof JSONArray && ((JSONArray) body).length() == 0)
+                                {
                                         //报空内容错误
                                         onError(response);
                                 }
@@ -102,7 +117,23 @@ public class HttpCallBack
                         //状态码异常, 报错
                         else
                         {
-                                onError(response);
+
+                                WpError wpError = ParserUtils.wpError(response);
+                                //如果错误信息有code, 并且code包含 invalid token的关键词
+                                if (wpError.getBody().getCode().indexOf("invalid_token") != -1)
+                                {
+                                        //清空登陆状态
+                                        GeneralUtils.userLogout();
+                                        LogUtils.v("登陆信息已过期");
+                                        //提示用户
+                                        ToastUtils.shortToast("登陆信息已过期, 请重新登陆");
+                                        onTokenError();
+                                }
+                                else
+                                {
+                                        onError(response);
+                                }
+
                         }
                         onFinally();
                 }
@@ -121,8 +152,6 @@ public class HttpCallBack
          */
         public void onErrorHandler(VolleyError error)
         {
-
-                onHttpError();
 
                 //NetworkResponse networkResponse = error.networkResponse;
 
@@ -158,8 +187,10 @@ public class HttpCallBack
                 }
 
                 LogUtils.w(errorMessage + " : " + error.getMessage());
-                //ToastUtils.shortToast(errorMessage);
+                ToastUtils.shortToast(errorMessage);
                 error.printStackTrace();
+
+                onHttpError();
 
                 onFinally();
         }

@@ -3,59 +3,75 @@ package org.mikuclub.app.javaBeans;
 public class AppUpdate
 {
 
-        private int versionCode;
-        private String versionName;
-        private String description;
-        private boolean forceUpdate;
-        private String downUrl;
 
-        public String getDownUrl()
+        private Body body;
+
+        public Body getBody()
         {
-                return downUrl;
+                return body;
         }
 
-        public void setDownUrl(String downUrl)
+        public void setBody(Body body)
         {
-                this.downUrl = downUrl;
+                this.body = body;
         }
 
-        public int getVersionCode()
+        public class Body
         {
-                return versionCode;
-        }
+                private int versionCode;
+                private String versionName;
+                private String description;
+                private boolean forceUpdate;
+                private String downUrl;
 
-        public void setVersionCode(int versionCode)
-        {
-                this.versionCode = versionCode;
-        }
+                public String getDownUrl()
+                {
+                        return downUrl;
+                }
 
-        public String getVersionName()
-        {
-                return versionName;
-        }
+                public void setDownUrl(String downUrl)
+                {
+                        this.downUrl = downUrl;
+                }
 
-        public void setVersionName(String versionName)
-        {
-                this.versionName = versionName;
-        }
+                public int getVersionCode()
+                {
+                        return versionCode;
+                }
 
-        public String getDescription()
-        {
-                return description;
-        }
+                public void setVersionCode(int versionCode)
+                {
+                        this.versionCode = versionCode;
+                }
 
-        public void setDescription(String description)
-        {
-                this.description = description;
-        }
+                public String getVersionName()
+                {
+                        return versionName;
+                }
 
-        public boolean isForceUpdate()
-        {
-                return forceUpdate;
-        }
+                public void setVersionName(String versionName)
+                {
+                        this.versionName = versionName;
+                }
 
-        public void setForceUpdate(boolean forceUpdate)
-        {
-                this.forceUpdate = forceUpdate;
+                public String getDescription()
+                {
+                        return description;
+                }
+
+                public void setDescription(String description)
+                {
+                        this.description = description;
+                }
+
+                public boolean isForceUpdate()
+                {
+                        return forceUpdate;
+                }
+
+                public void setForceUpdate(boolean forceUpdate)
+                {
+                        this.forceUpdate = forceUpdate;
+                }
         }
 }
