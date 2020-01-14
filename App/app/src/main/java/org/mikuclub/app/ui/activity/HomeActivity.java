@@ -210,7 +210,6 @@ public class HomeActivity extends AppCompatActivity
                 leftNavigationView.getMenu().clear();
                 leftNavigationView.inflateMenu(R.menu.home_left_drawer_menu_logout);
 
-
         }
 
         /**
@@ -243,13 +242,9 @@ public class HomeActivity extends AppCompatActivity
 
         }
 
-
-
-
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
         {
-
                 super.onActivityResult(requestCode, resultCode, data);
                 //判断请求id
                 switch (requestCode)
@@ -268,7 +263,6 @@ public class HomeActivity extends AppCompatActivity
                                         setLogoutUserInfoAndMenu();
                                 }
                                 break;
-
                 }
         }
 
