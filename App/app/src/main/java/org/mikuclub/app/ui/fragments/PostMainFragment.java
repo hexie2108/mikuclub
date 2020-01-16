@@ -18,6 +18,7 @@ import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.ui.fragments.windows.SharingFragment;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
@@ -53,6 +54,7 @@ public class PostMainFragment extends Fragment
         private List<Integer> likedPostIds;
         private int countLike;
 
+
         /*组件*/
         private TextView postTitle;
         private TextView postDate;
@@ -71,6 +73,7 @@ public class PostMainFragment extends Fragment
         private TextView postBilibili;
         private MaterialButton postBilibiliButton;
 
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
@@ -82,6 +85,7 @@ public class PostMainFragment extends Fragment
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
         {
+
                 super.onViewCreated(view, savedInstanceState);
 
                 postTitle = view.findViewById(R.id.post_title);
@@ -117,6 +121,7 @@ public class PostMainFragment extends Fragment
 
                 initPost();
                 initLikeButton();
+                initShareButton();
         }
 
         /**
@@ -141,6 +146,11 @@ public class PostMainFragment extends Fragment
                 {
                         postCountComments.setText(metadata.getCount_comments().get(0).toString() + " 条评论");
                 }
+                if (metadata.getCount_sharing() != null)
+                {
+                        postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " 次分享");
+                }
+
 
                 //设置作者信息
                 postAuthorName.setText(metadata.getAuthor().get(0).getDisplay_name());
@@ -148,7 +158,6 @@ public class PostMainFragment extends Fragment
                 String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(metadata.getAuthor().get(0).getAvatar_src());
                 //获取头像
                 GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatarSrc);
-
 
 
                 //不是空的或默认0
@@ -270,33 +279,31 @@ public class PostMainFragment extends Fragment
 
 
                 //根据激活状态 设置 按钮样式和动作
-                setLikeButtonAction(buttonIsActivated);
+                executedLikeAction(buttonIsActivated);
         }
 
         /**
-         * 配置点赞按钮的样式和动作
+         * 根据点赞状态, 配置点赞按钮
          *
          * @param isActivated true=已激活过, false =未激活
          */
-        private void setLikeButtonAction(boolean isActivated)
+        private void executedLikeAction(boolean isActivated)
         {
                 int iconColorId = R.color.defaultTextColor;
-                int backgroundColorId = R.color.defaultBackground;
                 //如果是已激活, 设置不同颜色
                 if (isActivated)
                 {
-                        iconColorId = android.R.color.white;
-                        backgroundColorId = R.color.colorPrimary;
+                        iconColorId = R.color.colorPrimary;
                 }
+
                 //更改按钮样式
                 postCountLikeButton.setIconTint(ContextCompat.getColorStateList(getActivity(), iconColorId));
-                postCountLikeButton.setBackgroundTintList(ContextCompat.getColorStateList(getActivity(), backgroundColorId));
                 //绑定点击监听器
                 postCountLikeButton.setOnClickListener(v -> {
                         //屏蔽按钮
                         postCountLikeButton.setEnabled(false);
                         //设置按钮
-                        setLikeButtonAction(!isActivated);
+                        executedLikeAction(!isActivated);
 
                         delegate.likePost(new HttpCallBack()
                         {
@@ -307,9 +314,10 @@ public class PostMainFragment extends Fragment
                                         manageLikedPost(!isActivated);
 
                                         //提示信息
-                                        String toastMessage= "已点赞";
-                                        if(isActivated){
-                                                toastMessage= "已取消点赞";
+                                        String toastMessage = "已点赞";
+                                        if (isActivated)
+                                        {
+                                                toastMessage = "已取消点赞";
                                         }
                                         ToastUtils.shortToast(toastMessage);
                                 }
@@ -371,15 +379,48 @@ public class PostMainFragment extends Fragment
                         .apply();
 
                 //根据当前操作  增加或减少点赞数
-                if(isAdd){
+                if (isAdd)
+                {
                         countLike++;
                 }
-                else{
+                else
+                {
                         countLike--;
                 }
                 //更新UI
-                postCountLike.setText(countLike+" 次点赞");
+                postCountLike.setText(countLike + " 次点赞");
         }
 
+        /**
+         * 初始化分享按钮
+         */
+        private void initShareButton()
+        {
 
+                //绑定点击监听器
+                postCountShareButton.setOnClickListener(v -> {
+                        //启动分享窗口
+                        ((PostActivity)getActivity()).startSharingWindowsFragment();
+                });
+
+        }
+
+        /**
+         * 完成分享后的按钮变化
+         */
+        public void executedShareAction()
+        {
+                //更改按钮颜色
+                int iconColorId = R.color.colorPrimary;
+                postCountShareButton.setIconTint(ContextCompat.getColorStateList(getActivity(), iconColorId));
+                //设置默认分享次数为1
+                int countSharing = 1;
+                //如果文章不是第一次被分享
+                if(post.getMetadata().getCount_sharing()!=null){
+                        //就获取当前分享次数 然后 +1
+                        countSharing = post.getMetadata().getCount_sharing().get(0) + 1;
+                }
+                postCountShare.setText(countSharing+" 次分享");
+
+        }
 }

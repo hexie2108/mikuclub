@@ -26,7 +26,7 @@
                     android:layout_width = "40dp"
                     android:layout_height = "40dp"
                     android:scaleType = "centerCrop"
-                    tools:src = "@drawable/avatar" />
+                    tools:src = "@drawable/person" />
 
         </androidx.cardview.widget.CardView>
 

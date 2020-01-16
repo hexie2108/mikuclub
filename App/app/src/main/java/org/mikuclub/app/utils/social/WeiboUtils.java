@@ -7,6 +7,8 @@ import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.openapi.IWBAPI;
 import com.sina.weibo.sdk.openapi.WBAPIFactory;
 
+import org.mikuclub.app.contexts.MyApplication;
+
 /**
  * WEIBO接口类
  */
@@ -33,7 +35,7 @@ public class WeiboUtils
         /**
          * 释放微博API变量
          */
-        public static void removeINstance(){
+        public static void removeInstance(){
                 weiboAPI = null;
         }
 }

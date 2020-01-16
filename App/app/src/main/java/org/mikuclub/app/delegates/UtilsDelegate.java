@@ -89,7 +89,7 @@ public class UtilsDelegate extends BaseDelegate
                 {
                         putIfNotNull(bodyParameters, "cancel", 1);
                 }
-                Request.post(GlobalConfig.Server.LIKE_POST, baseParameters.toMap(), bodyParameters, null, getTag(), httpCallBack);
+                Request.post(GlobalConfig.Server.POST_LIKE_COUNT, baseParameters.toMap(), bodyParameters, null, getTag(), httpCallBack);
 
         }
 

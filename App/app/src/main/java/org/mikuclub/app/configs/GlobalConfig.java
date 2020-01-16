@@ -49,21 +49,29 @@ public class GlobalConfig
                 public static final String MEDIA = "media/";
                 public static final String USERS = "users/";
 
-
-                //GET 检查应用更新
-                public static final String APP_UPDATE = HOST+"wp-json/utils/v2/app_update/";
-                //GET 获取缓存评论
-                public static final String CATEGORIES = HOST+"wp-json/utils/v2/get_menu/";
-                //POST 登陆接口
-                public static final String LOGIN = HOST+"wp-json/jwt-auth/v1/token/";
-                //POST 令牌有效性检查
-                public static final String TOKEN_VALIDATE = HOST+"wp-json/jwt-auth/v1/token/validate/";
-
-                //POST  设置文章点赞
-                public static final String LIKE_POST = HOST+"wp-json/utils/v2/post_like_count/";
-
                 //忘记密码地址
                 public static final String FORGOTTEN_PASSWORD = HOST+"wp-login.php?action=lostpassword";
+
+                //JWT 接口
+                private static final String JWT = "wp-json/jwt-auth/v1/";
+
+                //POST 登陆接口
+                public static final String LOGIN = HOST+JWT+"token/";
+                //POST 令牌有效性检查
+                public static final String TOKEN_VALIDATE = HOST+JWT+"token/validate/";
+
+                //自定义UTLS接口
+                private static final String UTILS = "wp-json/utils/v2/";
+
+                //GET 检查应用更新
+                public static final String APP_UPDATE = HOST+UTILS+"app_update/";
+                //GET 获取分类信息
+                public static final String CATEGORIES = HOST+UTILS+"get_menu/";
+                //POST  设置文章点赞计数
+                public static final String POST_LIKE_COUNT = HOST+UTILS+"post_like_count/";
+                //POST  设置文章分享计数
+                public static final String POST_SHARING_COUNT= HOST+UTILS+"post_sharing_count/";
+
         }
 
         /**

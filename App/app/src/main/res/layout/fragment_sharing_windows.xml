@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id = "@+id/sharing_box"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/normal"
+            android:padding = "@dimen/normal"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent">
+
+
+                <TextView
+                    android:id = "@+id/sharing_title"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:text = "分享"
+                    android:textSize = "@dimen/text_default"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "parent" />
+
+                <View
+                    android:id = "@+id/title_split_line"
+                    android:layout_width = "0dp"
+                    android:layout_height = "0.5dp"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:background = "@color/defaultTextColor"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/sharing_title" />
+
+
+                <com.google.android.material.button.MaterialButton
+
+                    android:id = "@+id/share_qq_button"
+                    style = "@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:insetLeft = "0dp"
+                    android:insetTop = "0dp"
+                    android:insetRight = "0dp"
+                    android:insetBottom = "0dp"
+                    android:padding = "0dp"
+                    android:text = "分享到QQ"
+                    android:textColor = "@color/colorPrimary"
+                    app:icon = "@drawable/qq"
+                    app:iconGravity = "textStart"
+                    app:iconPadding = "@dimen/normal"
+                    app:iconTint = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/title_split_line"
+                    app:rippleColor = "@color/rippleColor"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp" />
+
+                <com.google.android.material.button.MaterialButton
+
+                    android:id = "@+id/share_qq_zone_button"
+                    style = "@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:insetLeft = "0dp"
+                    android:insetTop = "0dp"
+                    android:insetRight = "0dp"
+                    android:insetBottom = "0dp"
+                    android:padding = "0dp"
+                    android:text = "分享到QQ空间"
+                    android:textColor = "@color/colorPrimary"
+                    app:icon = "@drawable/qzone"
+                    app:iconGravity = "textStart"
+                    app:iconPadding = "@dimen/normal"
+                    app:iconTint = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/share_qq_button"
+                    app:rippleColor = "@color/rippleColor"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp" />
+
+
+                <com.google.android.material.button.MaterialButton
+
+                    android:id = "@+id/share_weibo_button"
+                    style = "@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:insetLeft = "0dp"
+                    android:insetTop = "0dp"
+                    android:insetRight = "0dp"
+                    android:insetBottom = "0dp"
+                    android:padding = "0dp"
+                    android:text = "分享到微博"
+                    android:textColor = "@color/colorPrimary"
+                    app:icon = "@drawable/weibo"
+                    app:iconGravity = "textStart"
+                    app:iconPadding = "@dimen/normal"
+                    app:iconTint = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/share_qq_zone_button"
+                    app:rippleColor = "@color/rippleColor"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp" />
+
+
+                <com.google.android.material.button.MaterialButton
+
+                    android:id = "@+id/share_link_button"
+                    style = "@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:insetLeft = "0dp"
+                    android:insetTop = "0dp"
+                    android:insetRight = "0dp"
+                    android:insetBottom = "0dp"
+                    android:padding = "0dp"
+                    android:text = "复制链接"
+                    android:textColor = "@color/colorPrimary"
+                    app:icon = "@drawable/link"
+                    app:iconGravity = "textStart"
+                    app:iconPadding = "@dimen/normal"
+                    app:iconTint = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/share_weibo_button"
+                    app:rippleColor = "@color/rippleColor"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <View
+            android:layout_width = "0dp"
+            android:layout_height = "0.5dp"
+            android:background = "@color/splitLineColor"
+            app:layout_constraintBottom_toTopOf = "@id/return_button"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id = "@+id/return_button"
+            style = "@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:text = "返回"
+            android:textColor = "@color/defaultTextColor"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:rippleColor = "@color/rippleColor" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

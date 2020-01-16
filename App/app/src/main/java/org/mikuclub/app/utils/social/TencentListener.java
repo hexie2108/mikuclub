@@ -69,8 +69,8 @@ public abstract class TencentListener implements IUiListener
                         expires = jb.getString(Constants.PARAM_EXPIRES_IN);
 
                         //保存信息到 腾讯API变量里
-                        TencentUtils.getInstance(MyApplication.getContext()).setOpenId(openID);
-                        TencentUtils.getInstance(MyApplication.getContext()).setAccessToken(accessToken, expires);
+                        TencentUtils.getInstance().setOpenId(openID);
+                        TencentUtils.getInstance().setAccessToken(accessToken, expires);
                 }
                 catch (JSONException e)
                 {
@@ -119,7 +119,7 @@ public abstract class TencentListener implements IUiListener
                                 ToastUtils.shortToast("QQ Union id 信息请求已取消");
                         }
                 };
-                UnionInfo unionInfo = new UnionInfo(context, TencentUtils.getInstance(MyApplication.getContext()).getQQToken());
+                UnionInfo unionInfo = new UnionInfo(context, TencentUtils.getInstance().getQQToken());
                 unionInfo.getUnionId(listener);
         }
 

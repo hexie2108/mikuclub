@@ -26,7 +26,9 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
 import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
+import org.mikuclub.app.ui.fragments.windows.SharingFragment;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -55,6 +58,11 @@ public class PostActivity extends AppCompatActivity
         /*变量*/
         private Post post;
         private List<String> imagesSrc;
+
+        //碎片适配器
+        private PostViewPagerAdapter postViewPagerAdapter;
+        private SharingFragment sharingWindowsFragment;
+
 
         /*组件*/
         private AppBarLayout appBarLayout;
@@ -195,7 +203,9 @@ public class PostActivity extends AppCompatActivity
          */
         private void initViewPager()
         {
-                viewPager.setAdapter(new PostViewPagerAdapter(this));
+                postViewPagerAdapter = new PostViewPagerAdapter(this);
+
+                viewPager.setAdapter(postViewPagerAdapter);
                 //设置分页菜单名称
                 new TabLayoutMediator(tabsMenu, viewPager,
                         (tab, position) -> {
@@ -220,15 +230,10 @@ public class PostActivity extends AppCompatActivity
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()) || !GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown2()))
                 {
                         //绑定点击监听器
-                        postDownloadButton.setOnClickListener(new View.OnClickListener()
-                        {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                        //启动下载
-                                        DownloadFragment fragment = DownloadFragment.startAction();
-                                        fragment.show(getSupportFragmentManager(), fragment.getClass().toString());
-                                }
+                        postDownloadButton.setOnClickListener(v -> {
+                                //启动下载
+                                DownloadFragment fragment = DownloadFragment.startAction();
+                                fragment.show(getSupportFragmentManager(), fragment.getClass().toString());
                         });
 
                 }
@@ -247,20 +252,15 @@ public class PostActivity extends AppCompatActivity
         public void changeHomeIconColorListener()
         {
                 //根据折叠状态更改标题栏图标颜色
-                appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
-                {
-                        @Override
-                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset)
-                        {
+                appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
-                                if ((postCollapsingToolbarLayout.getHeight() + verticalOffset) < (1.15 * ViewCompat.getMinimumHeight(postCollapsingToolbarLayout)))
-                                {
-                                        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.defaultTextColor), PorterDuff.Mode.SRC_ATOP);
-                                }
-                                else
-                                {
-                                        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
-                                }
+                        if ((postCollapsingToolbarLayout.getHeight() + verticalOffset) < (1.15 * ViewCompat.getMinimumHeight(postCollapsingToolbarLayout)))
+                        {
+                                toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.defaultTextColor), PorterDuff.Mode.SRC_ATOP);
+                        }
+                        else
+                        {
+                                toolbar.getNavigationIcon().setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
                         }
                 });
         }
@@ -293,6 +293,42 @@ public class PostActivity extends AppCompatActivity
         }
 
 
+
+        public Post getPost()
+        {
+                return post;
+        }
+
+        public PostViewPagerAdapter getPostViewPagerAdapter()
+        {
+                return postViewPagerAdapter;
+        }
+
+
+        /**
+         * 启动分享窗口
+         */
+        public void startSharingWindowsFragment(){
+                //启动分享窗口
+                sharingWindowsFragment = SharingFragment.startAction();
+                sharingWindowsFragment.show(getSupportFragmentManager(), sharingWindowsFragment.getClass().toString());
+        }
+
+        public PostMainFragment getPostMainFragment()
+        {
+                return postViewPagerAdapter.getPostMainFragment();
+        }
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+        {
+
+                super.onActivityResult(requestCode, resultCode, data);
+                //回调子碎片的相同方法
+                sharingWindowsFragment.onActivityResult(requestCode, resultCode, data);
+        }
+
+
         /**
          * 静态 启动本活动的方法
          *
@@ -306,9 +342,4 @@ public class PostActivity extends AppCompatActivity
                 context.startActivity(intent);
         }
 
-
-        public Post getPost()
-        {
-                return post;
-        }
 }

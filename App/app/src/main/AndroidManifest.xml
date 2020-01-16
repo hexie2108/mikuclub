@@ -56,7 +56,7 @@
                                 <action android:name="android.intent.action.VIEW" />
                                 <category android:name="android.intent.category.DEFAULT" />
                                 <category android:name="android.intent.category.BROWSABLE" />
-                                <data android:scheme="101842471" />
+                                <data android:scheme="tencent101842471" />
                         </intent-filter>
                 </activity>
                 <activity

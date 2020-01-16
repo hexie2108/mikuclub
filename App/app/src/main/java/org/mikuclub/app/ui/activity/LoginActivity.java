@@ -319,10 +319,10 @@ public class LoginActivity extends AppCompatActivity
                                 loginParameters.setUnion_id(getUnionId());
                                 sendLogin(loginParameters);
                                 //释放QQ api
-                                TencentUtils.getInstance(LoginActivity.this).logout(LoginActivity.this);
+                                TencentUtils.getInstance().logout(LoginActivity.this);
                         }
                 };
-                TencentUtils.getInstance(this).login(this, "all", tencentListener);
+                TencentUtils.getInstance().login(this, "all", tencentListener);
         }
 
         /**
@@ -342,7 +342,7 @@ public class LoginActivity extends AppCompatActivity
                                 loginParameters.setOpen_id(getOpenID());
                                 sendLogin(loginParameters);
                                 //释放微博api
-                                WeiboUtils.removeINstance();
+                                WeiboUtils.removeInstance();
                         }
                 };
                 WeiboUtils.getInstance(this).authorize(listener);

@@ -26,7 +26,7 @@ public class TencentUtils
 
 
 
-        public static Tencent getInstance(Context context)
+        public static Tencent getInstance()
         {
                 //如果为null
                 if(TencentAPI == null){

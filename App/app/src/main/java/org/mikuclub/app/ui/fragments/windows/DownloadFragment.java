@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
@@ -38,8 +39,6 @@ public class DownloadFragment extends BottomSheetDialogFragment
 {
 
         /*变量*/
-        //获取剪贴板管理器
-        private ClipboardManager clipboardManager;
         //获取文章数据
         private Post post;
 
@@ -99,8 +98,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
 
                 //获取文章的数据
                 post = ((PostActivity) getActivity()).getPost();
-                //获取剪切板
-                clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+
 
                 //初始化父评论
                 initDownloadView();
@@ -186,15 +184,14 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                 downButton.setText("复制磁链");
                                 onClickListener = v -> {
                                         //创建字符剪切内容, 因为是磁链, 不需要http头部,所以重新从原列表获取下载地址
-                                        ClipData clipData = ClipData.newPlainText("", downList.get(0));
-                                        //添加到剪切板
-                                        clipboardManager.setPrimaryClip(clipData);
+                                        ClipboardUtils.setText(downList.get(0));
                                         ToastUtils.shortToast("已复制磁链到剪切板");
                                 };
                         }
                         //如果普通下载地址
                         else
                         {
+
                                 //如果是百度盘标准地址
                                 if (downUrl.indexOf(GlobalConfig.BAIDU_PAN_URL_VALIDATE_PATH) != -1)
                                 {
@@ -207,10 +204,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                 //如果访问密码不是空
                                                 if (!downPassword.getText().toString().isEmpty())
                                                 {
-                                                        //创建字符剪切内容
-                                                        ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
-                                                        //添加到剪切板
-                                                        clipboardManager.setPrimaryClip(clipData);
+                                                        ClipboardUtils.setText(downPassword.getText().toString());
                                                         ToastUtils.shortToast("已复制访问密码到剪切板");
                                                 }
                                                 // 打开链接的方式
@@ -234,10 +228,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                 //如果访问密码不是空
                                                 if (!downPassword.getText().toString().isEmpty())
                                                 {
-                                                        //创建字符剪切内容
-                                                        ClipData clipData = ClipData.newPlainText("", downPassword.getText().toString());
-                                                        //添加到剪切板
-                                                        clipboardManager.setPrimaryClip(clipData);
+                                                        ClipboardUtils.setText(downPassword.getText().toString());
                                                         ToastUtils.shortToast("已复制访问密码到剪切板");
                                                 }
                                                 // 用游览器打开链接
@@ -255,7 +246,6 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 {
                         downBox.setVisibility(View.GONE);
                 }
-
 
         }
 

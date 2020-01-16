@@ -2,6 +2,7 @@ package org.mikuclub.app.adapters.viewPager;
 
 import org.mikuclub.app.ui.fragments.PostCommentsFragment;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
+import org.mikuclub.app.utils.LogUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class PostViewPagerAdapter extends FragmentStateAdapter
 {
         private static final int FRAGMENT_NUMBER = 2;
+        private PostMainFragment postMainFragment;
 
         public PostViewPagerAdapter(@NonNull FragmentActivity fragmentActivity)
         {
@@ -30,13 +32,16 @@ public class PostViewPagerAdapter extends FragmentStateAdapter
                 switch (position)
                 {
                         case 0:
-                                fragment = new PostMainFragment();
+                                //保存文章内容的碎片地址
+                                postMainFragment = new PostMainFragment();
+                                fragment=postMainFragment;
                                 break;
                         case 1:
                                 fragment = new PostCommentsFragment();
                                 break;
 
                 }
+
 
                 return fragment;
 
@@ -49,5 +54,8 @@ public class PostViewPagerAdapter extends FragmentStateAdapter
                 return FRAGMENT_NUMBER;
         }
 
-
+        public PostMainFragment getPostMainFragment()
+        {
+                return postMainFragment;
+        }
 }
