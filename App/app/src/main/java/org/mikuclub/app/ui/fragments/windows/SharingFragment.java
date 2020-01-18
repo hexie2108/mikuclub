@@ -2,13 +2,12 @@ package org.mikuclub.app.ui.fragments.windows;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
@@ -24,28 +23,25 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import mikuclub.app.R;
 
 /**
@@ -162,7 +158,7 @@ public class SharingFragment extends BottomSheetDialogFragment
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, post.getMetadata().getThumbnail_src().get(0));
 
 
-                //绑定返回按钮
+                //绑定分享按钮
                 shareQQButton.setOnClickListener(v -> {
                         TencentUtils.getInstance().shareToQQ(getActivity(), params, qqShareListener);
                 });
@@ -185,7 +181,7 @@ public class SharingFragment extends BottomSheetDialogFragment
                 ArrayList<String> images = new ArrayList<>(Arrays.asList(post.getMetadata().getImages_src().get(0)));
                 params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, images);
 
-                //绑定返回按钮
+                //绑定分享按钮
                 shareQQZoneButton.setOnClickListener(v -> {
                         TencentUtils.getInstance().shareToQzone(getActivity(), params, qqShareListener);
                 });
@@ -221,15 +217,39 @@ public class SharingFragment extends BottomSheetDialogFragment
                 };
 
                 WeiboMultiMessage message = new WeiboMultiMessage();
+
+                //设置分享文字
+                TextObject textObject = new TextObject();
+                textObject.text = "【"+getResources().getString(R.string.app_name)+"】" +post.getTitle().getRendered()+" ";
+                message.textObject = textObject;
+                //设置分享链接
                 WebpageObject webObject = new WebpageObject();
                 webObject.identify = UUID.randomUUID().toString();
                 webObject.title = post.getTitle().getRendered();
                 webObject.description = "";
                 webObject.actionUrl = sharingUrl;
-                webObject.defaultText = "分享链接";
+                //设置缩微图 图标
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
+                //把图片转换成 byte输出流
+                ByteArrayOutputStream os = null;
+                try {
+                        os = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 85, os);
+                        webObject.thumbData = os.toByteArray();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                } finally {
+                        try {
+                                if (os != null) {
+                                        os.close();
+                                }
+                        } catch (IOException e) {
+                                e.printStackTrace();
+                        }
+                }
                 message.mediaObject = webObject;
 
-                //绑定返回按钮
+                //绑定分享按钮
                 shareWeiboButton.setOnClickListener(v -> {
                         WeiboUtils.getInstance(getActivity()).shareMessage(message, false );
                 });
@@ -240,7 +260,7 @@ public class SharingFragment extends BottomSheetDialogFragment
          */
         private void initShareLinkButton()
         {
-                //绑定返回按钮
+                //绑定分享按钮
                 shareLinkButton.setOnClickListener(v -> {
                         //复制到剪切板
                         ClipboardUtils.setText(post.getTitle().getRendered() + " " + sharingUrl);

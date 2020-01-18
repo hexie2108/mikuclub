@@ -1,4 +1,4 @@
-package org.mikuclub.app.javaBeans.resources;
+package org.mikuclub.app.javaBeans.resources.base;
 
 import org.mikuclub.app.javaBeans.resources.modules.Avatar_urls;
 
@@ -27,6 +27,32 @@ public class User  implements Serializable
         private Object extra_capabilities;
         private Avatar_urls avatar_urls;
         private Object meta;
+        private Metadata metadata;
+
+        public class Metadata{
+
+                private String avatar_src;
+
+                public String getAvatar_src()
+                {
+                        return avatar_src;
+                }
+
+                public void setAvatar_src(String avatar_src)
+                {
+                        this.avatar_src = avatar_src;
+                }
+        }
+
+        public Metadata getMetadata()
+        {
+                return metadata;
+        }
+
+        public void setMetadata(Metadata metadata)
+        {
+                this.metadata = metadata;
+        }
 
         public int getId()
         {

@@ -7,6 +7,7 @@ import org.mikuclub.app.javaBeans.parameters.LoginParameters;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.Request;
 
+import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,7 +80,7 @@ public class UtilsDelegate extends BaseDelegate
          * @param postId
          * @param isAddLike true = 点赞, false = 取消点赞
          * */
-        public void likePost(HttpCallBack httpCallBack, int postId, boolean isAddLike)
+        public void postLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
         {
                 BaseParameters baseParameters = new BaseParameters();
                 Map<String, String> bodyParameters = new HashMap();
@@ -92,5 +93,31 @@ public class UtilsDelegate extends BaseDelegate
                 Request.post(GlobalConfig.Server.POST_LIKE_COUNT, baseParameters.toMap(), bodyParameters, null, getTag(), httpCallBack);
 
         }
+
+
+        /**
+         * 文章分享次数计算
+         * @param postId
+         * */
+        public void postShareCount(int postId)
+        {
+                Map<String, String> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "post_id", postId);
+                Request.get(GlobalConfig.Server.POST_SHARING_COUNT, queryParameters, null, getTag(), null);
+        }
+
+        /**
+         * 文章查看次数计算
+         * @param postId
+         * */
+        public void postViewCount(int postId)
+        {
+                Map<String, String> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "post_id", postId);
+                Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), null);
+        }
+
 
 }

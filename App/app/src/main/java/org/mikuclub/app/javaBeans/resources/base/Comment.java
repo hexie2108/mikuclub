@@ -1,4 +1,4 @@
-package org.mikuclub.app.javaBeans.resources;
+package org.mikuclub.app.javaBeans.resources.base;
 
 
 import org.mikuclub.app.javaBeans.resources.modules.Avatar_urls;

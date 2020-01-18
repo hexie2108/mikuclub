@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,12 +24,11 @@ import com.zhengsr.viewpagerlib.indicator.TextIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.ui.fragments.windows.SharingFragment;
 import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 

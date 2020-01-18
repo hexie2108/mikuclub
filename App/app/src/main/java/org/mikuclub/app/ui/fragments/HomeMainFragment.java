@@ -10,7 +10,7 @@ import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.controller.PostController;

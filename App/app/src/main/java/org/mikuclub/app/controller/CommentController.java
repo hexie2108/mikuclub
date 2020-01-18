@@ -14,7 +14,7 @@ import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
-import org.mikuclub.app.javaBeans.resources.Comment;
+import org.mikuclub.app.javaBeans.resources.base.Comment;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.WpError;

@@ -11,7 +11,7 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.Category;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.activity.CategoryActivity;
 import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.utils.RecyclerViewUtils;

@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.configs.GlobalConfig;
@@ -454,7 +456,7 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void openAlertDialog(final AppUpdate appUpdate)
         {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(WelcomeActivity.this);
+                AlertDialog.Builder dialog = new MaterialAlertDialogBuilder(WelcomeActivity.this);
                 dialog.setTitle("发现应用的新版本");
                 String message = "版本名: " + appUpdate.getBody().getVersionName() + "\n" + appUpdate.getBody().getDescription();
                 dialog.setMessage(message);

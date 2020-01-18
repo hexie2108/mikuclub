@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.callBack.HttpCallBack;
@@ -240,7 +241,7 @@ public class PostController extends BaseController
                 KeyboardUtils.showKeyboard(input);
 
                 //创建 弹出构造器
-                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                final AlertDialog.Builder builder = new MaterialAlertDialogBuilder(activity);
                 //设置标题
                 builder.setTitle("跳转");
                 //加载布局

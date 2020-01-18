@@ -4,16 +4,13 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
-import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
 import org.mikuclub.app.adapters.viewHolder.PostViewHolder;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 

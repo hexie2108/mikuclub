@@ -1,11 +1,9 @@
 package org.mikuclub.app.ui.fragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -17,16 +15,11 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
-import org.mikuclub.app.javaBeans.resources.Comment;
-import org.mikuclub.app.javaBeans.resources.Post;
-import org.mikuclub.app.javaBeans.resources.UserLogin;
+import org.mikuclub.app.javaBeans.resources.base.Comment;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

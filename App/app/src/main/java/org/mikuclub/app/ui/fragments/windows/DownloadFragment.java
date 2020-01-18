@@ -1,27 +1,21 @@
 package org.mikuclub.app.ui.fragments.windows;
 
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
 

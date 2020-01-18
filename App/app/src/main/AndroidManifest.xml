@@ -45,6 +45,7 @@
                 <activity android:name = "org.mikuclub.app.ui.activity.SearchActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
+                <activity android:name = "org.mikuclub.app.ui.activity.AuthorActivity" />
 
                 <!--腾讯QQ sdk专用-->
 

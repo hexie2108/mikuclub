@@ -1,27 +1,22 @@
 package org.mikuclub.app.javaBeans.resources;
 
-
-
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.resources.base.User;
 import org.mikuclub.app.javaBeans.resources.modules.Headers;
 
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
-
-public class Posts  implements Serializable
+public class UserAuthor implements Serializable
 {
-        private ArrayList<Post> body;
+        private User body;
         private Integer status;
         private Headers headers;
 
-        public ArrayList<Post> getBody()
+        public User getBody()
         {
                 return body;
         }
 
-        public void setBody(ArrayList<Post> body)
+        public void setBody(User body)
         {
                 this.body = body;
         }

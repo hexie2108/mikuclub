@@ -15,13 +15,12 @@ import com.google.android.material.button.MaterialButton;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
-import org.mikuclub.app.javaBeans.resources.Post;
+import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
-import org.mikuclub.app.ui.fragments.windows.SharingFragment;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -109,19 +108,12 @@ public class PostMainFragment extends Fragment
                 post = ((PostActivity) getActivity()).getPost();
                 delegate = new UtilsDelegate(TAG);
 
-                //获取点赞数据
-                String likedPostIdsString = PreferencesUtils.getPostPreference().getString(GlobalConfig.Preferences.POST_LIKED_ARRAY, null);
-
-                //如果相关点赞数据字符串存在
-                if (likedPostIdsString != null)
-                {
-                        //解析为数组
-                        likedPostIds = ParserUtils.integerArrayList(likedPostIdsString);
-                }
-
                 initPost();
                 initLikeButton();
                 initShareButton();
+
+                //通知服务器 增加查看次数计数
+                delegate.postViewCount(post.getId());
         }
 
         /**
@@ -151,13 +143,18 @@ public class PostMainFragment extends Fragment
                         postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " 次分享");
                 }
 
-
+                //创建作者页面点击监听器
+                View.OnClickListener authorActivityListener = v -> {
+                        AuthorActivity.startAction(getActivity(), metadata.getAuthor().get(0).getAuthor_id(), metadata.getAuthor().get(0).getName());
+                };
+                //加载头像
+                GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, metadata.getAuthor().get(0).getAvatar_src());
                 //设置作者信息
-                postAuthorName.setText(metadata.getAuthor().get(0).getDisplay_name());
-                //确保给地址添加上https协议
-                String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(metadata.getAuthor().get(0).getAvatar_src());
-                //获取头像
-                GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, avatarSrc);
+                postAuthorName.setText(metadata.getAuthor().get(0).getName());
+                //绑定点击事件
+                postAuthorImg.setOnClickListener(authorActivityListener);
+                postAuthorName.setOnClickListener(authorActivityListener);
+
 
 
                 //不是空的或默认0
@@ -261,6 +258,16 @@ public class PostMainFragment extends Fragment
          */
         private void initLikeButton()
         {
+
+                //获取点赞数据
+                String likedPostIdsString = PreferencesUtils.getPostPreference().getString(GlobalConfig.Preferences.POST_LIKED_ARRAY, null);
+                //如果相关点赞数据字符串存在
+                if (likedPostIdsString != null)
+                {
+                        //解析为数组
+                        likedPostIds = ParserUtils.integerArrayList(likedPostIdsString);
+                }
+
                 boolean buttonIsActivated = false;
                 //点赞数 不是空的也不是0
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_like()))
@@ -305,7 +312,7 @@ public class PostMainFragment extends Fragment
                         //设置按钮
                         executedLikeAction(!isActivated);
 
-                        delegate.likePost(new HttpCallBack()
+                        delegate.postLikeCount(new HttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
@@ -421,6 +428,8 @@ public class PostMainFragment extends Fragment
                         countSharing = post.getMetadata().getCount_sharing().get(0) + 1;
                 }
                 postCountShare.setText(countSharing+" 次分享");
+                //通知服务器 增加分享次数计数
+                delegate.postShareCount(post.getId());
 
         }
 }

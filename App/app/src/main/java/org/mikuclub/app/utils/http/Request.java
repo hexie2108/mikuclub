@@ -100,18 +100,14 @@ public class Request
 
 
                 StringRequest stringRequest  = new StringRequest(method, url,
-                        new Response.Listener<String>()
-                        {
-                                @Override
-                                public void onResponse(String response)
-                                {
+                        response -> {
+                        //只有在不是null的情况
+                                if(httpCallBack != null){
                                         httpCallBack.onSuccessHandler(response);
                                 }
-                        }, new Response.ErrorListener()
-                {
-                        @Override
-                        public void onErrorResponse(VolleyError error)
-                        {
+                        }, error -> {
+                        //只有在不是null的情况
+                        if(httpCallBack != null){
                                 httpCallBack.onErrorHandler(error);
                         }
                 })
@@ -157,7 +153,11 @@ public class Request
                         public void cancel()
                         {
                                 super.cancel();
-                                httpCallBack.onCancel();
+                                //只有在不是null的情况
+                                if(httpCallBack != null){
+                                        httpCallBack.onCancel();
+                                }
+
                         }
                 };
 

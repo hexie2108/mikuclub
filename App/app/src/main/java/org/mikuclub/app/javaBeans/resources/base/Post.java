@@ -1,4 +1,4 @@
-package org.mikuclub.app.javaBeans.resources;
+package org.mikuclub.app.javaBeans.resources.base;
 
 
 import com.google.gson.annotations.SerializedName;
@@ -293,8 +293,8 @@ public class Post implements Serializable
         {
 
                 private int author_id;
-                private String display_name;
-                private String user_description;
+                private String name;
+                private String description;
                 private String avatar_src;
 
                 public int getAuthor_id()
@@ -307,24 +307,24 @@ public class Post implements Serializable
                         this.author_id = author_id;
                 }
 
-                public String getDisplay_name()
+                public String getName()
                 {
-                        return display_name;
+                        return name;
                 }
 
-                public void setDisplay_name(String display_name)
+                public void setName(String name)
                 {
-                        this.display_name = display_name;
+                        this.name = name;
                 }
 
-                public String getUser_description()
+                public String getDescription()
                 {
-                        return user_description;
+                        return description;
                 }
 
-                public void setUser_description(String user_description)
+                public void setDescription(String description)
                 {
-                        this.user_description = user_description;
+                        this.description = description;
                 }
 
                 public String getAvatar_src()

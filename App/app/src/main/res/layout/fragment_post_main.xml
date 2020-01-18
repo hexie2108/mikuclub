@@ -37,7 +37,8 @@
                     android:layout_marginTop = "@dimen/normal"
                     android:selectAllOnFocus = "true"
                     android:textIsSelectable = "true"
-                    android:textSize = "@dimen/text_default"
+
+                    android:lineHeight="@dimen/very_large"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/post_functional_box" />
@@ -49,7 +50,8 @@
                     android:layout_marginTop = "@dimen/small"
                     app:layout_goneMarginTop="@dimen/normal"
                     android:textIsSelectable = "true"
-                    android:textSize = "@dimen/text_default"
+
+                    android:lineHeight="@dimen/very_large"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/post_source" />

@@ -11,6 +11,7 @@ import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.resources.Categories;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.CreateComment;
+import org.mikuclub.app.javaBeans.resources.UserAuthor;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.javaBeans.resources.WpError;
@@ -134,6 +135,19 @@ public class ParserUtils
                 WpError wpError = gson.fromJson(response, WpError.class);
                 return wpError;
         }
+
+        /**
+         * 解析作者信息
+         *
+         * @param response
+         * @return
+         */
+        public static UserAuthor userAuthor(String response)
+        {
+                UserAuthor userAuthor = gson.fromJson(response, UserAuthor.class);
+                return userAuthor;
+        }
+
 
 
         /**

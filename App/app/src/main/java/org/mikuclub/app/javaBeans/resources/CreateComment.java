@@ -1,10 +1,9 @@
 package org.mikuclub.app.javaBeans.resources;
 
 
-import org.mikuclub.app.javaBeans.resources.modules.Headers;
+import org.mikuclub.app.javaBeans.resources.base.Comment;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class CreateComment implements Serializable
 {

@@ -69,8 +69,10 @@ public class GlobalConfig
                 public static final String CATEGORIES = HOST+UTILS+"get_menu/";
                 //POST  设置文章点赞计数
                 public static final String POST_LIKE_COUNT = HOST+UTILS+"post_like_count/";
-                //POST  设置文章分享计数
+                //GET  设置文章分享计数
                 public static final String POST_SHARING_COUNT= HOST+UTILS+"post_sharing_count/";
+                //GET  设置文章分享计数
+                public static final String POST_VIEW_COUNT= HOST+UTILS+"post_view_count/";
 
         }
 

@@ -1,6 +1,7 @@
 package org.mikuclub.app.javaBeans.resources;
 
 
+import org.mikuclub.app.javaBeans.resources.base.User;
 import org.mikuclub.app.javaBeans.resources.modules.Headers;
 
 import java.io.Serializable;

@@ -8,11 +8,10 @@ import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.Comment;
+import org.mikuclub.app.javaBeans.resources.base.Comment;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.text.SimpleDateFormat;
