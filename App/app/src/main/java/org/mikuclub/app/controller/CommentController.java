@@ -1,7 +1,9 @@
 package org.mikuclub.app.controller;
 
 import android.content.Context;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -45,14 +47,15 @@ public class CommentController extends BaseController
         private ImageView avatarImage;
         private TextInputLayout inputLayout;
         private TextInputEditText input;
+        private CheckBox checkBoxNotifyAuthor;
         private AlertDialog progressDialog;
-
 
 
         public CommentController(Context context)
         {
                 super(context);
-                if(UserUtils.isLogin()){
+                if (UserUtils.isLogin())
+                {
                         userLogin = UserUtils.getUser();
                 }
                 //创建进度条弹窗
@@ -62,18 +65,32 @@ public class CommentController extends BaseController
         /**
          * 初始化评论输入框
          */
-        public void initCommentInput(ImageView avatarImage, TextInputLayout inputLayout, TextInputEditText input){
+        public void initCommentInput(ImageView avatarImage, TextInputLayout inputLayout, TextInputEditText input, CheckBox checkBoxNotifyAuthor)
+        {
                 //绑定评论框组件
                 this.avatarImage = avatarImage;
                 this.inputLayout = inputLayout;
                 this.input = input;
+                this.checkBoxNotifyAuthor = checkBoxNotifyAuthor;
 
                 //如果用户有登陆
-                if(userLogin!=null){
+                if (userLogin != null)
+                {
+                        //加载用户头像
                         GlideImageUtils.getSquareImg(getContext(), avatarImage, userLogin.getAvatar_urls());
+                        //激活评论框
                         inputLayout.setEnabled(true);
-                        inputLayout.setEndIconTintList(ContextCompat.getColorStateList(getContext(), R.color.colorPrimary));
+
+                        //改版图标颜色
+                        // inputLayout.setEndIconTintList(ContextCompat.getColorStateList(getContext(), R.color.colorPrimary));
+                        //改变提示
                         inputLayout.setHint("发表评论...");
+                        //如果通知作者的选择框不是null
+                        if (checkBoxNotifyAuthor != null)
+                        {
+                                //显示选择框
+                                checkBoxNotifyAuthor.setVisibility(View.VISIBLE);
+                        }
                         //绑定图标点击
                         inputLayout.setEndIconOnClickListener(v -> {
                                 //发送评论
@@ -90,7 +107,8 @@ public class CommentController extends BaseController
                                 return true;
                         });
                 }
-                else{
+                else
+                {
                         //去除发送图标
                         inputLayout.setEndIconDrawable(null);
                 }
@@ -98,18 +116,21 @@ public class CommentController extends BaseController
 
         /**
          * 设置回复对象id和修改 评论框input提示文字
+         *
          * @param parentComment
          * @param isFirstTime
          */
-        public void changeParentComment(Comment parentComment, boolean isFirstTime){
-               //如果用户有登陆
-                if(userLogin!=null)
+        public void changeParentComment(Comment parentComment, boolean isFirstTime)
+        {
+                //如果用户有登陆
+                if (userLogin != null)
                 {
                         //设置父评论id
                         setParentCommentId(parentComment.getId());
                         //修改显示名
-                        inputLayout.setHint("回复 "+parentComment.getAuthor_name()+":");
-                        if(!isFirstTime){
+                        inputLayout.setHint("回复 " + parentComment.getAuthor_name() + ":");
+                        if (!isFirstTime)
+                        {
                                 //获取焦点, 显示键盘
                                 KeyboardUtils.showKeyboard(input);
                         }
@@ -121,26 +142,35 @@ public class CommentController extends BaseController
         /**
          * 发送评论
          */
-        private void sendComment(){
+        private void sendComment()
+        {
                 String content = input.getText().toString().trim();
                 //评论内容不是空的
-                if(!content.isEmpty()){
+                if (!content.isEmpty())
+                {
                         //显示加载进度条
                         progressDialog.show();
                         //隐藏键盘
                         KeyboardUtils.hideKeyboard(input);
 
-                        HttpCallBack httpCallBack = new HttpCallBack(){
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        LogUtils.e(response);
+
                                         //清空内容
                                         input.setText("");
+                                        //如果通知作者的选择框不是null  而且 被勾选了
+                                        if (checkBoxNotifyAuthor != null && checkBoxNotifyAuthor.isChecked())
+                                        {
+                                                //重置选择框
+                                                checkBoxNotifyAuthor.setChecked(false);
+                                        }
                                         //获取新添加的评论
                                         Comment newComment = ParserUtils.createComment(response).getBody();
                                         //加进列表
-                                        getRecyclerDataList().add(0,newComment);
+                                        getRecyclerDataList().add(0, newComment);
                                         //通知更新
                                         getRecyclerViewAdapter().notifyItemInserted(0);
                                         //滚动到第一行
@@ -171,10 +201,20 @@ public class CommentController extends BaseController
                         createCommentParameters.setContent(content);
                         createCommentParameters.setPost(postId);
                         createCommentParameters.setParent(parentCommentId);
-                        ((CommentDelegate)getDelegate()).createComment(httpCallBack, createCommentParameters);
+
+                        //如果通知作者的选择框不是null  而且 被勾选了
+                        if (checkBoxNotifyAuthor != null && checkBoxNotifyAuthor.isChecked())
+                        {
+                                LogUtils.e("勾选作者通知");
+                                //设置通知作者的参数
+                                createCommentParameters.setNotify_author(true);
+                        }
+
+                        ((CommentDelegate) getDelegate()).createComment(httpCallBack, createCommentParameters);
 
                 }
-                else{
+                else
+                {
                         ToastUtils.shortToast("评论内容不能为空!");
                 }
 
@@ -205,11 +245,11 @@ public class CommentController extends BaseController
                                         //加载数据
                                         getRecyclerDataList().addAll(newComments.getBody());
                                         //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
-                                        int position = getRecyclerDataList().size()+getRecyclerViewAdapter().getHeaderRow();
+                                        int position = getRecyclerDataList().size() + getRecyclerViewAdapter().getHeaderRow();
                                         getRecyclerViewAdapter().notifyItemInserted(position);
 
                                         //当前页数+1
-                                        setCurrentPage(getCurrentPage()+1);
+                                        setCurrentPage(getCurrentPage() + 1);
                                         //如果是还未获取过总页数
                                         if (getTotalPage() == -1)
                                         {
@@ -265,11 +305,12 @@ public class CommentController extends BaseController
 
         /**
          * 启动代理人发送请求
+         *
          * @param httpCallBack
          */
         private void startDelegate(HttpCallBack httpCallBack)
         {
-                ( (CommentDelegate)getDelegate()).getCommentList(httpCallBack, getCurrentPage()+1, (CommentParameters) getParameters());
+                ((CommentDelegate) getDelegate()).getCommentList(httpCallBack, getCurrentPage() + 1, (CommentParameters) getParameters());
         }
 
 

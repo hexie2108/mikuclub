@@ -62,7 +62,7 @@ public abstract class TencentListener implements IUiListener
                 JSONObject jb = (JSONObject) object;
                 try
                 {
-                        LogUtils.e("令牌信息 " + jb.toString());
+
                         //openid用户唯一标识
                         openID = jb.getString(Constants.PARAM_OPEN_ID);
                         accessToken = jb.getString(Constants.PARAM_ACCESS_TOKEN);

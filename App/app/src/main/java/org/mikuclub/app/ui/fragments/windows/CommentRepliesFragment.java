@@ -153,7 +153,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
          */
         private void initCommentInput()
         {
-                controller.initCommentInput(avatarImage, inputLayout, input);
+                controller.initCommentInput(avatarImage, inputLayout, input, null);
                 //设置默认回复对象
                 controller.changeParentComment(comment, true);
         }

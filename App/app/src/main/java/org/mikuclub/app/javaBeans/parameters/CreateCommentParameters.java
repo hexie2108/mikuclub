@@ -13,6 +13,7 @@ public class CreateCommentParameters extends BaseParameters
         private Integer parent;
         private Integer post;
         private String status;
+        private boolean notify_author;
 
 
         public Map<String, String> toMap()
@@ -24,6 +25,7 @@ public class CreateCommentParameters extends BaseParameters
                 putIfNotNull(outputMap, "parent", parent);
                 putIfNotNull(outputMap, "post", post);
                 putIfNotNull(outputMap, "status", status);
+                putIfNotNull(outputMap, "notify_author", notify_author);
 
                 return outputMap;
 
@@ -77,5 +79,15 @@ public class CreateCommentParameters extends BaseParameters
         public void setStatus(String status)
         {
                 this.status = status;
+        }
+
+        public boolean isNotify_author()
+        {
+                return notify_author;
+        }
+
+        public void setNotify_author(boolean notify_author)
+        {
+                this.notify_author = notify_author;
         }
 }

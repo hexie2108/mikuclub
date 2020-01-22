@@ -18,9 +18,9 @@
             android:layout_height = "wrap_content"
             app:cardCornerRadius = "20dp"
             app:cardElevation = "0dp"
-            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintBottom_toBottomOf = "@id/input_layout"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toTopOf = "parent">
+            app:layout_constraintTop_toTopOf = "@id/input_layout">
 
                 <ImageView
                     android:id = "@+id/comment_input_avatar_img"
@@ -39,13 +39,13 @@
             android:layout_height = "wrap_content"
             android:layout_margin = "0dp"
             android:enabled = "false"
-            android:textColorHint="@android:color/darker_gray"
-            app:hintTextColor="@color/colorPrimary"
             android:hint = "需要登录后才能发表评论"
+            android:textColorHint = "@android:color/darker_gray"
             app:boxStrokeWidth = "0dp"
             app:boxStrokeWidthFocused = "0dp"
             app:endIconDrawable = "@drawable/send"
             app:endIconMode = "custom"
+            app:hintTextColor = "@color/colorPrimary"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/comment_input__avatar_img_box"
             app:layout_constraintTop_toTopOf = "parent">
@@ -55,16 +55,29 @@
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
                     android:imeOptions = "actionSend"
-                    android:textCursorDrawable="@drawable/edi_text_cursor_color"
                     android:inputType = "text"
                     android:maxLines = "3"
-                    android:padding="0dp"
+                    android:padding = "0dp"
                     android:paddingStart = "@dimen/normal"
+                    android:textCursorDrawable = "@drawable/edi_text_cursor_color"
 
                     android:textSize = "@dimen/text_default" />
 
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id = "@+id/check_box_notify_author"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/small"
+            android:buttonTint = "@color/defaultTextColor"
+            android:text = "本次评论要通知UP主"
+            android:textColor = "@color/defaultTextColor"
+                android:visibility="gone"
+            android:textSize = "@dimen/text_small"
+            app:layout_constraintStart_toStartOf = "@id/comment_input__avatar_img_box"
+            app:layout_constraintTop_toBottomOf = "@id/input_layout" />
 
 
         <View
@@ -72,13 +85,12 @@
             android:layout_width = "0dp"
             android:layout_height = "0.5dp"
             android:layout_marginTop = "@dimen/normal"
-
             android:background = "@color/defaultTextColor"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@id/input_layout"
-            app:layout_goneMarginTop = "@dimen/large" />
+            app:layout_constraintTop_toBottomOf = "@id/check_box_notify_author"
+            app:layout_goneMarginTop = "@dimen/normal" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

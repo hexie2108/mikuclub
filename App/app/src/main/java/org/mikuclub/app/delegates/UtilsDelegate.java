@@ -129,7 +129,7 @@ public class UtilsDelegate extends BaseDelegate
                 Map<String, String> queryParameters = new HashMap();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "post_id", postId);
-                Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), httpCallBack);
+                Request.get(GlobalConfig.Server.POST_FAIL_DOWN_COUNT, queryParameters, null, getTag(), httpCallBack);
         }
 
 

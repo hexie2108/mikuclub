@@ -22,7 +22,7 @@ public class EmptyFragment extends Fragment
         @Override
         public void onAttach(@NonNull Context context)
         {
-                LogUtils.e("onAttach");
+
                 super.onAttach(context);
         }
 
@@ -30,7 +30,7 @@ public class EmptyFragment extends Fragment
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
-                LogUtils.e("onCreateView");
+
 
                 // Inflate the layout for this fragment
                 return inflater.inflate(R.layout.test, container, false);

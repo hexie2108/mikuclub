@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -59,6 +60,7 @@ public class PostCommentsFragment extends Fragment
         private ImageView avatarImage;
         private TextInputLayout inputLayout;
         private TextInputEditText input;
+        private CheckBox checkBoxNotifyAuthor;
 
 
         @Override
@@ -79,6 +81,7 @@ public class PostCommentsFragment extends Fragment
                 avatarImage=view.findViewById(R.id.comment_input_avatar_img);
                 inputLayout = view.findViewById(R.id.input_layout);
                 input = view.findViewById(R.id.input);
+                checkBoxNotifyAuthor = view.findViewById(R.id.check_box_notify_author);
 
 
                 //从活动中获取文章数据
@@ -109,7 +112,7 @@ public class PostCommentsFragment extends Fragment
          * 初始化评论框
          */
         private void initCommentInput(){
-                controller.initCommentInput(avatarImage, inputLayout, input);
+                controller.initCommentInput(avatarImage, inputLayout, input, checkBoxNotifyAuthor);
         }
 
 

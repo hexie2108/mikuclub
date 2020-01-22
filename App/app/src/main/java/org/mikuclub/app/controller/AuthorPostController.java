@@ -46,7 +46,6 @@ public class AuthorPostController extends PostController
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        LogUtils.e(response);
                                         //获取用户信息
                                         User user = ParserUtils.userAuthor(response).getBody();
                                         //添加到适配器里

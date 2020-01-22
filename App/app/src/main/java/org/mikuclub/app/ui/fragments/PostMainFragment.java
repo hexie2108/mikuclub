@@ -21,6 +21,7 @@ import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -220,15 +221,7 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
-                                /*
-                                //新建列表
-                                ArrayList<String> newImagesSrc = new ArrayList<>();
-                                //截取当前位置和后续位置的地址
-                                newImagesSrc.addAll(imagesSrc.subList(position, imagesSrc.size()));
-                                //然后再添加 开头位置 到 当前位置-1 的地址
-                                newImagesSrc.addAll(imagesSrc.subList(0, position));
-                                //以此达到重建新列表的目标
-                                */
+
                                 //启动单独的图片查看页面
                                 ImageActivity.startAction(getActivity(), imagesSrc, position);
                         }
@@ -453,6 +446,7 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onSuccess(String response)
                         {
+                                LogUtils.e(response);
                                 ToastUtils.longToast("上报成功, 管理员将会根据上报次数对稿件进行退稿处理, 并通知UP主补档");
                         }
                 };

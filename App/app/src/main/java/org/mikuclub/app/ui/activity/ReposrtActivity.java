@@ -150,7 +150,7 @@ public class ReposrtActivity extends AppCompatActivity
                         @Override
                         public void onError(String response)
                         {
-                                LogUtils.e(response);
+
                                 ToastUtils.longToast("发送失败, 请重新尝试");
                         }
 
