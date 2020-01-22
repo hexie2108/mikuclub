@@ -1,11 +1,8 @@
 package org.mikuclub.app.adapters.viewHolder;
 
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.zhengsr.viewpagerlib.indicator.TransIndicator;
+import com.zhengsr.viewpagerlib.indicator.RectIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import androidx.annotation.NonNull;
@@ -19,7 +16,7 @@ public class SliderHeaderViewHolder extends RecyclerView.ViewHolder{
 
         //首页幻灯片
         private BannerViewPager sliderViewPager;
-        private TransIndicator transIndicator;
+        private RectIndicator indicator;
 
 
         public SliderHeaderViewHolder(@NonNull View itemView)
@@ -28,7 +25,7 @@ public class SliderHeaderViewHolder extends RecyclerView.ViewHolder{
                 //管理器绑定各项 视图
                 //获取组件
                 sliderViewPager = itemView.findViewById(R.id.home_slider_viewpager);
-                transIndicator = itemView.findViewById(R.id.home_slider_indicator);
+                indicator = itemView.findViewById(R.id.home_slider_indicator);
         }
 
         public BannerViewPager getSliderViewPager()
@@ -41,13 +38,13 @@ public class SliderHeaderViewHolder extends RecyclerView.ViewHolder{
                 this.sliderViewPager = sliderViewPager;
         }
 
-        public TransIndicator getTransIndicator()
+        public RectIndicator getIndicator()
         {
-                return transIndicator;
+                return indicator;
         }
 
-        public void setTransIndicator(TransIndicator transIndicator)
+        public void setIndicator(RectIndicator indicator)
         {
-                this.transIndicator = transIndicator;
+                this.indicator = indicator;
         }
 }

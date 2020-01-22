@@ -4,7 +4,7 @@ import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
-import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.UserUtils;
 
 import java.util.Map;
 
@@ -67,7 +67,7 @@ public class PostDelegate extends BaseDelegate
                 Map<String, String> headers = null;
                 if(parameters.getSearch()!=null)
                 {
-                        headers = GeneralUtils.createHeaderWithTokenForLoggedUser();
+                        headers = UserUtils.createLoggedUserHeader();
                 }
 
 

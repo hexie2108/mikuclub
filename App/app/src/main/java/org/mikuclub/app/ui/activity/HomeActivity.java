@@ -26,11 +26,11 @@ import android.widget.TextView;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.UserUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -138,7 +138,6 @@ public class HomeActivity extends AppCompatActivity
          */
         private void initLeftNavigationVIew()
         {
-
                 //绑定侧边栏菜单动作监听
                 leftNavigationView.setNavigationItemSelectedListener(item -> {
 
@@ -148,14 +147,16 @@ public class HomeActivity extends AppCompatActivity
                                         //启动登录页
                                         LoginActivity.startActionForResult(this);
                                         break;
-
                                 case R.id.item_logout:
                                         //删除用户登陆信息
-                                        GeneralUtils.userLogout();
+                                        UserUtils.logout();
                                         //更新侧边栏用户信息和菜单
                                         setLogoutUserInfoAndMenu();
                                         ToastUtils.shortToast("已登出");
                                         break;
+                                case R.id.item_report:
+                                        //启动问题反馈页
+                                        ReposrtActivity.startAction(this);
                         }
                         //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);
@@ -174,7 +175,7 @@ public class HomeActivity extends AppCompatActivity
         private void checkLoginStatus()
         {
                 //如果用户有登陆
-                if (GeneralUtils.userIsLogin())
+                if (UserUtils.isLogin())
                 {
 
                         LogUtils.v("已登陆用户");
@@ -217,25 +218,18 @@ public class HomeActivity extends AppCompatActivity
          */
         private void setLoggingUserInfoAndMenu()
         {
-                //获取数据字符串
-                String userLoginString = PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_LOGIN, null);
-                //避免null值
-                if (userLoginString != null)
-                {
-                        //解析用户数据
-                        userLogin = ParserUtils.userLogin(userLoginString);
 
-                        //设置头像
-                        GlideImageUtils.getSquareImg(this, userAvatar, userLogin.getAvatar_urls());
-                        //设置头像的动作监听器
-                        userAvatar.setOnClickListener(null);
-                        //设置名称
-                        userName.setText(userLogin.getUser_display_name());
-                        //设置+显示邮箱
-                        userEmail.setText(userLogin.getUser_email());
-                        userEmail.setVisibility(View.VISIBLE);
-                }
-
+                //获取用户数据
+                userLogin = UserUtils.getUser();
+                //设置头像
+                GlideImageUtils.getSquareImg(this, userAvatar, userLogin.getAvatar_urls());
+                //设置头像的动作监听器
+                userAvatar.setOnClickListener(null);
+                //设置名称
+                userName.setText(userLogin.getUser_display_name());
+                //设置+显示邮箱
+                userEmail.setText(userLogin.getUser_email());
+                userEmail.setVisibility(View.VISIBLE);
                 //替换菜单
                 leftNavigationView.getMenu().clear();
                 leftNavigationView.inflateMenu(R.menu.home_left_drawer_menu_logged);

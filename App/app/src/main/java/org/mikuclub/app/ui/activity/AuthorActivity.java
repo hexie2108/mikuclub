@@ -16,6 +16,7 @@ import org.mikuclub.app.delegates.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.UserUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.http.Request;
 
@@ -157,10 +158,22 @@ public class AuthorActivity extends AppCompatActivity
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
                 parameters.setAuthor(new ArrayList<>(Arrays.asList(authorId)));
+                //如果未登陆, 排除魔法区
+                if(!UserUtils.isLogin()){
+                        parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
+                }
 
                 //创建数据控制器
-                controller = new AuthorPostController(this, delegate, recyclerView, swipeRefresh, parameters);
+                controller = new AuthorPostController(this);
+                controller.setDelegate(delegate);
                 controller.setUserDelegate(userDelegate);
+
+                controller.setRecyclerView(recyclerView);
+                controller.setRecyclerViewAdapter(recyclerViewAdapter);
+                controller.setRecyclerDataList(recyclerDataList);
+                controller.setSwipeRefresh(swipeRefresh);
+                controller.setParameters(parameters);
+
 
         }
 

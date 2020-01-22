@@ -266,7 +266,13 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 }
 
                 //创建数据控制器
-                controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
+                controller = new CommentController(getActivity());
+                controller.setDelegate(delegate);
+                controller.setRecyclerView(recyclerView);
+                controller.setRecyclerViewAdapter(recyclerViewAdapter);
+                controller.setRecyclerDataList(recyclerDataList);
+                controller.setParameters(parameters);
+
                 //如果没有任何子回复
                 if (GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {

@@ -8,13 +8,11 @@ import android.view.ViewGroup;
 import org.mikuclub.app.adapters.CategoriesAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Category;
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.UserUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -99,7 +97,7 @@ public class HomeCategoriesFragment extends Fragment
         private void checkAndRemoveMofaCategory()
         {
                 //如果用户未登陆, 从数组中去除 魔法区
-                if (!GeneralUtils.userIsLogin())
+                if (!UserUtils.isLogin())
                 {
                         //从尾部开始遍历列表
                         for (int i = recyclerDataList.size() - 1; i >= 0; i--)

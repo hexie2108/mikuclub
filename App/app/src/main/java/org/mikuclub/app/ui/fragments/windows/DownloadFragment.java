@@ -18,11 +18,13 @@ import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.ViewUtils;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import mikuclub.app.R;
 
@@ -39,9 +41,9 @@ public class DownloadFragment extends BottomSheetDialogFragment
         /*组件*/
         private ConstraintLayout down1Box;
         private ConstraintLayout down2Box;
-        private TextView DownInfo;
         private TextView down1Title;
         private TextView down2Title;
+
         private TextView down1PasswordText;
         private TextView down2PasswordText;
         private TextView down1Password;
@@ -53,7 +55,10 @@ public class DownloadFragment extends BottomSheetDialogFragment
         private MaterialButton down1Button;
         private MaterialButton down2Button;
         private TextView downInfo;
+
         private MaterialButton returnButton;
+
+
 
 
 
@@ -74,7 +79,6 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 //绑定组件
                 down1Box = view.findViewById(R.id.down1_box);
                 down2Box = view.findViewById(R.id.down2_box);
-                DownInfo = view.findViewById(R.id.down_info);
                 down1Title = view.findViewById(R.id.down1_title);
                 down2Title = view.findViewById(R.id.down2_title);
                 down1PasswordText = view.findViewById(R.id.down1_password_text);
@@ -88,7 +92,9 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 down1Button = view.findViewById(R.id.down1_button);
                 down2Button = view.findViewById(R.id.down2_button);
                 downInfo = view.findViewById(R.id.down_info);
+
                 returnButton = view.findViewById(R.id.return_button);
+
 
                 //获取文章的数据
                 post = ((PostActivity) getActivity()).getPost();
@@ -115,7 +121,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 if (GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword()) && GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword2()))
                 {
                         //隐藏提示
-                        downInfo.setVisibility(View.GONE);
+                        downInfo.setVisibility(View.INVISIBLE);
                 }
 
                 //绑定返回按钮

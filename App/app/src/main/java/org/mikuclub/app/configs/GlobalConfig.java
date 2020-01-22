@@ -24,6 +24,10 @@ public class GlobalConfig
         //缩微图大小
         public static final String THUMBNAIL_SIZE = "-500x280";
 
+        //wordpress管理员ID
+        public static final int ADMIN_USER_ID = 1;
+
+
         //百度网盘地址判断
         public static final String BAIDU_PAN_URL_VALIDATE_PATH = "pan.baidu.com/s/";
         //百度网盘 传递URL的参数名称, 因为百度app策略, 分享id里的第一位数字1, 需要被手动去除, 否则无效
@@ -71,8 +75,12 @@ public class GlobalConfig
                 public static final String POST_LIKE_COUNT = HOST+UTILS+"post_like_count/";
                 //GET  设置文章分享计数
                 public static final String POST_SHARING_COUNT= HOST+UTILS+"post_sharing_count/";
-                //GET  设置文章分享计数
+                //GET  设置文章查看计数
                 public static final String POST_VIEW_COUNT= HOST+UTILS+"post_view_count/";
+                //GET  设置文章失效计数
+                public static final String POST_FAIL_DOWN_COUNT= HOST+UTILS+"fail_down/";
+                //POST 发送私信
+                public static final String SEND_PRIVATE_MESSAGE= HOST+UTILS+"message/";
 
         }
 

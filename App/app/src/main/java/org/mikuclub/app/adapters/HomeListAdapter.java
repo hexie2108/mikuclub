@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
+import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.viewHolder.SliderHeaderViewHolder;
 import org.mikuclub.app.javaBeans.resources.base.Post;
@@ -61,33 +61,31 @@ public class HomeListAdapter extends PostsAdapter
         private void initSlider(SliderHeaderViewHolder holder)
         {
 
-                //配置幻灯片
-                PageBean bean = new PageBean.Builder<Post>()
-                        .data(headerPostList)
-                        .indicator(holder.getTransIndicator())
-                        .builder();
+                BannerViewPager bannerViewPager = holder.getSliderViewPager();
+                bannerViewPager.addIndicator(holder.getIndicator());
+                bannerViewPager.setPageListener(R.layout.slider_view_item_home, headerPostList, new PageHelperListener<Post>()
+                {
+                        @Override
+                        public void bindView(View view, Post post, int position)
+                        {
+                                //获取原图地址
+                                String imageUrl = post.getMetadata().getImages_src().get(0);
+                                //获取缩微图地址
+                                String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+                                //获取图片组件
+                                ImageView imageView = view.findViewById(R.id.item_image);
+                                //加载图片
+                                GlideImageUtils.getWithThumbnail(getAdapterContext(), imageView, imageUrl, thumbnailSrc);
 
-                holder.getSliderViewPager().setPageListener(bean, R.layout.slider_view_item_home, (PageHelperListener<Post>) (view, post) -> {
+                                TextView textView = view.findViewById(R.id.item_text);
+                                textView.setText(post.getTitle().getRendered());
 
-                        //获取原图地址
-                        String imageUrl = post.getMetadata().getImages_src().get(0);
-                        //获取缩微图地址
-                        String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
-                        //获取图片组件
-                        ImageView imageView = view.findViewById(R.id.item_image);
-                        //加载图片
-                        GlideImageUtils.getWithThumbnail(getAdapterContext(), imageView, imageUrl, thumbnailSrc);
-
-                        TextView textView = view.findViewById(R.id.item_text);
-                        textView.setText(post.getTitle().getRendered());
-
-                        view.setOnClickListener(v -> {
-                                //启动 文章页
-                                PostActivity.startAction(getAdapterContext(), post);
-                        });
-
+                                view.setOnClickListener(v -> {
+                                        //启动 文章页
+                                        PostActivity.startAction(getAdapterContext(), post);
+                                });
+                        }
                 });
-
 
         }
 

@@ -43,10 +43,10 @@ public class PostController extends BaseController
         private SwipeRefreshLayout swipeRefresh;
 
 
-        public PostController(Context context, BaseDelegate delegate, RecyclerView recyclerView, SwipeRefreshLayout swipeRefresh, BaseParameters parameters)
+        public PostController(Context context)
         {
-                super(context, delegate, recyclerView, parameters);
-                this.swipeRefresh = swipeRefresh;
+                super(context);
+
 
         }
 
@@ -282,4 +282,8 @@ public class PostController extends BaseController
 
         }
 
+        public void setSwipeRefresh(SwipeRefreshLayout swipeRefresh)
+        {
+                this.swipeRefresh = swipeRefresh;
+        }
 }

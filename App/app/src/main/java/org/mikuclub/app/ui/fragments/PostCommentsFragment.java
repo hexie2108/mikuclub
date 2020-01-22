@@ -154,7 +154,12 @@ public class PostCommentsFragment extends Fragment
                 parameters.setParent(new ArrayList<>(Arrays.asList(0)));
 
                 //创建数据控制器
-                controller = new CommentController(getActivity(), delegate, recyclerView, parameters);
+                controller = new CommentController(getActivity());
+                controller.setDelegate(delegate);
+                controller.setRecyclerView(recyclerView);
+                controller.setRecyclerViewAdapter(recyclerViewAdapter);
+                controller.setRecyclerDataList(recyclerDataList);
+                controller.setParameters(parameters);
                 //设置数据
                 controller.setPostId(post.getId());
                 controller.setParentCommentId(0);

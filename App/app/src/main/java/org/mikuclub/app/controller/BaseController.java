@@ -37,15 +37,9 @@ public abstract class BaseController
         private RecyclerView recyclerView;
 
 
-        public BaseController(Context context , BaseDelegate delegate, RecyclerView recyclerView, BaseParameters parameters)
+        public BaseController(Context context)
         {
                 this.context = context;
-                this.delegate = delegate;
-                this.recyclerView = recyclerView;
-                this.recyclerViewAdapter = (BaseAdapter) recyclerView.getAdapter();
-                this.recyclerDataList = recyclerViewAdapter.getAdapterList();
-                this.parameters = parameters;
-
         }
 
         /**

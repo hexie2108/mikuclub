@@ -14,6 +14,7 @@ import com.ortiz.touchview.TouchImageView;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.indicator.TextIndicator;
+import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.configs.GlobalConfig;
@@ -30,15 +31,17 @@ public class ImageActivity extends AppCompatActivity
 {
         /*静态变量*/
         public static final String INTENT_IMAGES_SRC = "images_src";
+        public static final String INTENT_POSITION= "position";
 
         /*变量*/
         //当前页面需要的图片URL地址
         List<String> imagesSrc;
+        int position;
 
         /*组件*/
         //幻灯片组件
         private BannerViewPager sliderViewPager;
-        private TextIndicator textIndicator;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -55,7 +58,8 @@ public class ImageActivity extends AppCompatActivity
                 sliderViewPager = findViewById(R.id.image_slider_viewpager);
 
                 //获取图片地址的列表
-                imagesSrc = getIntent().getStringArrayListExtra("images_src");
+                imagesSrc = getIntent().getStringArrayListExtra(INTENT_IMAGES_SRC);
+                position = getIntent().getIntExtra(INTENT_POSITION, 0);
 
 
 
@@ -69,28 +73,31 @@ public class ImageActivity extends AppCompatActivity
          **/
         private void initSliders()
         {
-                //创建幻灯片构造器
-                PageBean.Builder builder = new PageBean.Builder<String>();
-                //如果只有1张图
-                if (imagesSrc.size() == 1)
-                {
-                        //关闭幻灯片循环功能
-                        builder = builder
-                                .useCode(true)
-                                .cycle(false);
-                }
-                PageBean bean = builder
-                        .data(imagesSrc)
-                        .indicator(textIndicator)
-                        .builder();
 
-                sliderViewPager.setPageListener(bean, R.layout.slider_view_item_image, (PageHelperListener<String>) (view, imageSrc) -> {
-                        //加载图片
-                        TouchImageView imageView = view.findViewById(R.id.item_image);
-                        //设置最大放大等级
-                        imageView.setMaxZoom(2);
-                        GlideImageUtils.getForZoomImageView(ImageActivity.this, imageView, imageSrc, GeneralUtils.getThumbnailSrcByImageSrc(imageSrc));
+                PageBean bean = new PageBean();
+                //如果只有一张图关闭循环
+                if(imagesSrc.size()==1){
+                        bean.isAutoCycle = false;
+                        bean.isAutoLoop = false;
+                        bean.loopMaxCount = 2;
+                }
+                bean.transFormer= BannerTransType.UNKNOWN;
+                sliderViewPager.addPageBean(bean);
+
+                sliderViewPager.setCurrentPosition(position);
+                sliderViewPager.setPageListener(R.layout.slider_view_item_image, imagesSrc, new PageHelperListener<String>(){
+                        @Override
+                        public void bindView(View view, String imageSrc, int position)
+                        {
+                                //加载图片
+                                TouchImageView imageView = view.findViewById(R.id.item_image);
+                                //设置最大放大等级
+                                imageView.setMaxZoom(2);
+                                GlideImageUtils.getForZoomImageView(ImageActivity.this, imageView, imageSrc, GeneralUtils.getThumbnailSrcByImageSrc(imageSrc));
+                        }
                 });
+
+
 
 
         }
@@ -102,11 +109,13 @@ public class ImageActivity extends AppCompatActivity
          * @param context
          * @param imagesSrc
          */
-        public static void startAction(Context context, ArrayList<String> imagesSrc)
+        public static void startAction(Context context, List<String> imagesSrc, int position)
         {
-                Intent intent = new Intent(context, ImageActivity.class);
-                intent.putStringArrayListExtra(INTENT_IMAGES_SRC, imagesSrc);
+                ArrayList<String> list = new ArrayList<>(imagesSrc);
 
+                Intent intent = new Intent(context, ImageActivity.class);
+                intent.putStringArrayListExtra(INTENT_IMAGES_SRC, list);
+                intent.putExtra(INTENT_POSITION, position);
                 context.startActivity(intent);
         }
 

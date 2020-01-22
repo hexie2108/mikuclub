@@ -7,17 +7,15 @@
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
     app:layout_collapseMode = "parallax"
-    tools:showIn = "@layout/activity_post"
-    >
-
+    tools:showIn = "@layout/activity_post">
 
 
         <com.zhengsr.viewpagerlib.view.BannerViewPager
             android:id = "@+id/post_slider_viewpager"
             android:layout_width = "0dp"
             android:layout_height = "0dp"
-
             app:banner_iscycle = "true"
+
             app:layout_constraintDimensionRatio = "H,16:10"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
@@ -26,28 +24,23 @@
             />
 
 
-
-
-
         <com.zhengsr.viewpagerlib.indicator.TextIndicator
             android:id = "@+id/post_slider_indicator"
             android:layout_width = "30dp"
             android:layout_height = "30dp"
+            android:layout_marginTop = "35dp"
 
             android:layout_marginEnd = "@dimen/large"
-            android:layout_marginTop = "35dp"
-            app:layout_constraintTop_toTopOf="@id/post_slider_viewpager"
-
+            android:background = "@drawable/custom_rounded_corner"
+            android:gravity = "center"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:word_circle_color = "@android:drawable/screen_background_dark_transparent"
-            app:word_show_circle = "true"
-            app:word_text_color="@android:color/white"
+            app:layout_constraintTop_toTopOf = "@id/post_slider_viewpager"
+
+            app:word_text_color = "@android:color/white"
             app:word_text_size = "@dimen/text_default"
 
 
             />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

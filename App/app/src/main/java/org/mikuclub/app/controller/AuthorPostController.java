@@ -27,9 +27,9 @@ public class AuthorPostController extends PostController
         private UserDelegate userDelegate;
 
 
-        public AuthorPostController(Context context, BaseDelegate delegate, RecyclerView recyclerView, SwipeRefreshLayout swipeRefresh,  BaseParameters parameters)
+        public AuthorPostController(Context context)
         {
-                super(context, delegate, recyclerView, swipeRefresh,parameters);
+                super(context);
         }
 
         /**

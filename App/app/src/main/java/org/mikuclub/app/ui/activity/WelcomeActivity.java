@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -36,6 +35,7 @@ import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.UserUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
@@ -126,7 +126,7 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkTokenValidity()
         {
                 //如果用户有登陆
-                if (GeneralUtils.userIsLogin())
+                if (UserUtils.isLogin())
                 {
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {

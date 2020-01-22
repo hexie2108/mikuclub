@@ -147,7 +147,12 @@ public class SearchFragment extends Fragment
                 PostParameters parameters = new PostParameters();
 
                 //创建数据控制器
-                controller = new SearchPostController(getActivity(), delegate, recyclerView, searchInput,parameters);
+                controller = new SearchPostController(getActivity());
+                controller.setDelegate(delegate);
+                controller.setRecyclerView(recyclerView);
+                controller.setRecyclerViewAdapter(recyclerViewAdapter);
+                controller.setRecyclerDataList(recyclerDataList);
+                controller.setParameters(parameters);
                 controller.setWantMore(false);
         }
 

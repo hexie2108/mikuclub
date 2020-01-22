@@ -263,7 +263,7 @@ public class SharingFragment extends BottomSheetDialogFragment
                 //绑定分享按钮
                 shareLinkButton.setOnClickListener(v -> {
                         //复制到剪切板
-                        ClipboardUtils.setText(post.getTitle().getRendered() + " " + sharingUrl);
+                        ClipboardUtils.setText("【初音社】"+post.getTitle().getRendered() + " " + sharingUrl);
                         //生成用户提示
                         ToastUtils.shortToast("已复分享制链接到剪切板");
                         //完成分享后的动作
@@ -281,7 +281,7 @@ public class SharingFragment extends BottomSheetDialogFragment
                 //通过父活动的viewpager适配器获取当前文章内容碎片
                 PostMainFragment fragment = ((PostActivity) getActivity()).getPostMainFragment();
                 //通知文章内容碎片更新
-                fragment.executedShareAction();
+                fragment.afterShareAction();
         }
 
 

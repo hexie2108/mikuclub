@@ -7,16 +7,11 @@ import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.mikuclub.app.configs.GlobalConfig;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 通用数据处理函数集
@@ -188,53 +183,6 @@ public class GeneralUtils
                 return newText;
 
 
-        }
-
-        /**
-         * 检查用户是否登陆了
-         *
-         * @return
-         */
-        public static boolean userIsLogin()
-        {
-                boolean isLogin = true;
-                if (PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_TOKEN, null) == null)
-                {
-                        isLogin = false;
-                }
-                return isLogin;
-        }
-
-        /**
-         * 注销登陆用户相关信息
-         *
-         * @return
-         */
-        public static void userLogout()
-        {
-                //删除用户信息
-                PreferencesUtils.getUserPreference()
-                        .edit()
-                        .remove(GlobalConfig.Preferences.USER_LOGIN)
-                        .remove(GlobalConfig.Preferences.USER_TOKEN)
-                        .apply();
-        }
-
-
-        /**
-         * 创建一个带token数据的 map用作网络请求的头部信息
-         * 用户必须登陆
-         * @return Map 如果用户有登陆, null 如果没登陆
-         */
-        public static Map<String, String> createHeaderWithTokenForLoggedUser(){
-                Map<String, String> headers = null;
-                //如果用户有登陆
-                if(GeneralUtils.userIsLogin())
-                {
-                        headers = new HashMap<>();
-                        headers.put("Authorization", "Bearer " + PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_TOKEN,null));
-                }
-                return headers;
         }
 
 

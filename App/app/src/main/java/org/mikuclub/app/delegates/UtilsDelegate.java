@@ -3,11 +3,11 @@ package org.mikuclub.app.delegates;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
+import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
-import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.UserUtils;
 import org.mikuclub.app.utils.http.Request;
 
-import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public class UtilsDelegate extends BaseDelegate
         public void tokenValidate(HttpCallBack httpCallBack)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                Map header = GeneralUtils.createHeaderWithTokenForLoggedUser();
+                Map header = UserUtils.createLoggedUserHeader();
 
                 Request.post(GlobalConfig.Server.TOKEN_VALIDATE, baseParameters.toMap(), null, header, getTag(), httpCallBack);
 
@@ -118,6 +118,36 @@ public class UtilsDelegate extends BaseDelegate
                 putIfNotNull(queryParameters, "post_id", postId);
                 Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), null);
         }
+
+        /**
+         * 文章失效次数计算
+         * @param httpCallBack
+         * @param postId
+         * */
+        public void postFailDownCount(HttpCallBack httpCallBack,  int postId)
+        {
+                Map<String, String> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "post_id", postId);
+                Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), httpCallBack);
+        }
+
+
+
+        /**
+         * 发送私信
+         * @param httpCallBack
+         * @param bodyParameters
+         * */
+        public void sendPrivateMessage(HttpCallBack httpCallBack, CreatePrivateMessageParameters bodyParameters)
+        {
+                BaseParameters baseParameters = new BaseParameters();
+                Request.post(GlobalConfig.Server.SEND_PRIVATE_MESSAGE, baseParameters.toMap(), bodyParameters.toMap(), UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+
+        }
+
+
+
 
 
 }

@@ -18,12 +18,13 @@ import org.mikuclub.app.javaBeans.resources.base.Comment;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.WpError;
-import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.javaBeans.resources.base.User;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.UserUtils;
 import org.mikuclub.app.utils.ViewUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -48,12 +49,11 @@ public class CommentController extends BaseController
 
 
 
-        public CommentController(Context context , BaseDelegate delegate, RecyclerView recyclerView, BaseParameters parameters)
+        public CommentController(Context context)
         {
-                super(context, delegate, recyclerView, parameters);
-                if(GeneralUtils.userIsLogin()){
-                        String userLoginString = PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_LOGIN, null);
-                        userLogin = ParserUtils.userLogin(userLoginString);
+                super(context);
+                if(UserUtils.isLogin()){
+                        userLogin = UserUtils.getUser();
                 }
                 //创建进度条弹窗
                 progressDialog = ViewUtils.initProgressDialog(getContext());

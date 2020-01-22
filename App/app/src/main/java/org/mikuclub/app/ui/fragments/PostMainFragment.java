@@ -111,6 +111,7 @@ public class PostMainFragment extends Fragment
                 initPost();
                 initLikeButton();
                 initShareButton();
+                initFailDownButton();
 
                 //通知服务器 增加查看次数计数
                 delegate.postViewCount(post.getId());
@@ -155,16 +156,6 @@ public class PostMainFragment extends Fragment
                 postAuthorImg.setOnClickListener(authorActivityListener);
                 postAuthorName.setOnClickListener(authorActivityListener);
 
-
-
-                //不是空的或默认0
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getFail_time()))
-                {
-                        if (metadata.getFail_time().get(0) > 0)
-                        {
-                                postCountFailDown.setText(metadata.getFail_time().get(0).toString() + " 次失效");
-                        }
-                }
                 //在线视频不是空的
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getVideo()))
                 {
@@ -229,6 +220,7 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
+                                /*
                                 //新建列表
                                 ArrayList<String> newImagesSrc = new ArrayList<>();
                                 //截取当前位置和后续位置的地址
@@ -236,9 +228,9 @@ public class PostMainFragment extends Fragment
                                 //然后再添加 开头位置 到 当前位置-1 的地址
                                 newImagesSrc.addAll(imagesSrc.subList(0, position));
                                 //以此达到重建新列表的目标
-
+                                */
                                 //启动单独的图片查看页面
-                                ImageActivity.startAction(getActivity(), newImagesSrc);
+                                ImageActivity.startAction(getActivity(), imagesSrc, position);
                         }
 
                         //设置点击链接tag的动作
@@ -286,15 +278,16 @@ public class PostMainFragment extends Fragment
 
 
                 //根据激活状态 设置 按钮样式和动作
-                executedLikeAction(buttonIsActivated);
+                likeAction(buttonIsActivated);
         }
 
         /**
-         * 根据点赞状态, 配置点赞按钮
+         * 点赞操作
+         * 根据点赞状态, 变化点赞按钮
          *
          * @param isActivated true=已激活过, false =未激活
          */
-        private void executedLikeAction(boolean isActivated)
+        private void likeAction(boolean isActivated)
         {
                 int iconColorId = R.color.defaultTextColor;
                 //如果是已激活, 设置不同颜色
@@ -310,7 +303,7 @@ public class PostMainFragment extends Fragment
                         //屏蔽按钮
                         postCountLikeButton.setEnabled(false);
                         //设置按钮
-                        executedLikeAction(!isActivated);
+                        likeAction(!isActivated);
 
                         delegate.postLikeCount(new HttpCallBack()
                         {
@@ -413,9 +406,9 @@ public class PostMainFragment extends Fragment
         }
 
         /**
-         * 完成分享后的按钮变化
+         * 分享完后的动作
          */
-        public void executedShareAction()
+        public void afterShareAction()
         {
                 //更改按钮颜色
                 int iconColorId = R.color.colorPrimary;
@@ -431,5 +424,39 @@ public class PostMainFragment extends Fragment
                 //通知服务器 增加分享次数计数
                 delegate.postShareCount(post.getId());
 
+        }
+
+
+        /**
+         * 初始化反馈下载失效按钮
+         */
+        private void initFailDownButton(){
+
+                postCountFailDownButton.setOnClickListener(v -> {
+                        failDownAction();
+                });
+
+        }
+
+        /**
+         * 下载失效动作
+         */
+        private void failDownAction(){
+                //更改按钮颜色
+                int iconColorId = R.color.colorPrimary;
+                postCountFailDownButton.setIconTint(ContextCompat.getColorStateList(getActivity(), iconColorId));
+                //注销按钮
+                postCountFailDownButton.setEnabled(false);
+
+                HttpCallBack httpCallBack = new HttpCallBack()
+                {
+                        @Override
+                        public void onSuccess(String response)
+                        {
+                                ToastUtils.longToast("上报成功, 管理员将会根据上报次数对稿件进行退稿处理, 并通知UP主补档");
+                        }
+                };
+
+                delegate.postFailDownCount(httpCallBack , post.getId());
         }
 }

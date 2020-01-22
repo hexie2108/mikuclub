@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+
+    tools:context = "org.mikuclub.app.ui.activity.ReposrtActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id = "@+id/app_bar"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id = "@+id/toolbar"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "?attr/actionBarSize"
+                    android:background = "?attr/colorPrimary" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            android:padding = "@dimen/normal"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior">
+
+                <TextView
+                    android:id = "@+id/input_info"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:text = "在这里可以报告在使用本应用中碰到的问题, 请指出是在哪个页面, 在什么情况下发生的BUG, 如果有可能请留下QQ号, 方便后续联系定位BUG的原因"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id = "@+id/input_contact_layout"
+                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:hint = "联系QQ号 (可填可不填)"
+
+                    app:boxStrokeWidth = "1dp"
+
+                    app:layout_constraintBottom_toTopOf = "@id/input_report_layout"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+
+                    app:layout_constraintTop_toBottomOf = "@id/input_info">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id = "@+id/input_contact"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:gravity = "top"
+                            android:imeOptions = "actionNext"
+                            android:inputType = "number"
+                            android:maxLines = "1"
+                            android:textCursorDrawable = "@drawable/edi_text_cursor_color"
+                          />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id = "@+id/input_report_layout"
+                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width = "0dp"
+                    android:layout_height = "0dp"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:layout_marginBottom = "@dimen/very_large"
+
+                    android:hint = "请在这里尽可能详细 描述问题"
+                    app:layout_constraintBottom_toTopOf = "@id/button_send"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/input_contact_layout"
+                    app:layout_constraintVertical_weight = "1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_gravity="top"
+                            android:id = "@+id/input_report"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "match_parent"
+                            android:gravity = "top"
+                            android:inputType = "text|textMultiLine"
+
+                            android:textCursorDrawable = "@drawable/edi_text_cursor_color"
+                             />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id = "@+id/button_send"
+                    style = "@style/Widget.MaterialComponents.Button"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:layout_marginBottom = "@dimen/super_large"
+                    android:enabled = "false"
+                    android:paddingLeft = "@dimen/super_large"
+                    android:paddingRight = "@dimen/super_large"
+                    android:text = "发送"
+                    app:icon = "@drawable/send"
+                    app:iconGravity = "textEnd"
+                    app:layout_constraintBottom_toBottomOf = "parent"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

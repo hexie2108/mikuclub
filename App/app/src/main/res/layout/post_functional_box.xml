@@ -116,7 +116,7 @@
             android:layout_height = "wrap_content"
             android:layout_marginTop = "@dimen/small"
             android:layout_marginBottom = "@dimen/small"
-            android:text = "0 次失效"
+            android:text = "反馈下载失效"
             android:textSize = "@dimen/text_small"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toEndOf = "@id/post_count_fail_down_button"

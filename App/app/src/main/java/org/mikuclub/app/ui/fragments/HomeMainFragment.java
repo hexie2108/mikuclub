@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.mikuclub.app.adapters.HomeListAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.configs.GlobalConfig;
@@ -14,6 +16,7 @@ import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.controller.PostController;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 
@@ -53,6 +56,7 @@ public class HomeMainFragment extends Fragment
         private RecyclerView recyclerView;
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
+        private FloatingActionButton floatingActionButton;
 
 
         @Override
@@ -73,6 +77,7 @@ public class HomeMainFragment extends Fragment
 
                 recyclerView = view.findViewById(R.id.recycler_view);
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
+                floatingActionButton = ((HomeActivity) getActivity()).getFloatingActionButton();
 
                 //创建数据请求 代理人
                 delegate = new PostDelegate(HomeActivity.TAG);
@@ -162,7 +167,14 @@ public class HomeMainFragment extends Fragment
                 parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
 
                 //创建数据控制器
-                controller = new PostController(getActivity(), delegate, recyclerView, swipeRefresh, parameters);
+                controller = new PostController(getActivity());
+                controller.setDelegate(delegate);
+                controller.setRecyclerView(recyclerView);
+                controller.setRecyclerViewAdapter(recyclerViewAdapter);
+                controller.setRecyclerDataList(recyclerDataList);
+                controller.setSwipeRefresh(swipeRefresh);
+                controller.setParameters(parameters);
+
                 //设置总页数
                 controller.setTotalPage(posts.getHeaders().getTotalPage());
                 //设置当前页数
@@ -174,9 +186,25 @@ public class HomeMainFragment extends Fragment
          */
         private void initFloatingActionButton()
         {
-                ((HomeActivity) getActivity()).getFloatingActionButton().setOnClickListener(v -> {
+                floatingActionButton.setOnClickListener(v -> {
                         controller.openJumPageAlertDialog();
                 });
         }
 
+        @Override
+        public void onPause()
+        {
+                super.onPause();
+                //隐藏浮动按钮
+                floatingActionButton.setVisibility(View.INVISIBLE);
+
+        }
+
+        @Override
+        public void onResume()
+        {
+                super.onResume();
+                //显示浮动按钮
+                floatingActionButton.setVisibility(View.VISIBLE);
+        }
 }

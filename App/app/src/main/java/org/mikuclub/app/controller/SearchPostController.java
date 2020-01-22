@@ -30,9 +30,9 @@ public class SearchPostController extends PostController
         private EditText searchInput;
 
 
-        public SearchPostController(Context context, BaseDelegate delegate, RecyclerView recyclerView, EditText searchInput, BaseParameters parameters)
+        public SearchPostController(Context context)
         {
-                super(context, delegate, recyclerView, null,parameters);
+                super(context);
 
         }
 

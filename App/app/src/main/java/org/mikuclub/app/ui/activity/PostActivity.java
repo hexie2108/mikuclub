@@ -21,9 +21,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.indicator.TextIndicator;
+import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
+import org.mikuclub.app.javaBeans.resources.Page;
 import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
@@ -80,8 +82,6 @@ public class PostActivity extends AppCompatActivity
         private FloatingActionButton postDownloadButton;
 
 
-
-
         @Override
         protected void onCreate(Bundle savedInstanceState)
         {
@@ -129,7 +129,7 @@ public class PostActivity extends AppCompatActivity
                 initDownButton();
 
                 //根据appBar高度更改标题栏图标颜色
-               changeHomeIconColorListener();
+                changeHomeIconColorListener();
                 //屏蔽点击事件, 防止在菜单栏容器上的点击 激活下层幻灯片图片的事件
                 tabsMenuBox.setOnClickListener(v -> {
                 });
@@ -141,57 +141,65 @@ public class PostActivity extends AppCompatActivity
          **/
         private void initSliders()
         {
-                //创建幻灯片构造器
-                PageBean.Builder builder = new PageBean.Builder<String>();
-                //如果只有1张图
-                if (imagesSrc.size() == 1)
-                {
-                        //关闭幻灯片循环
-                        builder = builder
-                                .useCode(true)
-                                .cycle(false);
+
+                PageBean bean = new PageBean();
+                //如果只有一张图关闭循环
+                if(imagesSrc.size()==1){
+                        bean.isAutoCycle = false;
+                        bean.isAutoLoop = false;
+                        bean.loopMaxCount = 2;
                 }
-                PageBean bean = builder
-                        .data(imagesSrc)
-                        .indicator(textIndicator)
-                        .builder();
+                bean.transFormer= BannerTransType.UNKNOWN;
+                sliderViewPager.addPageBean(bean);
 
-                sliderViewPager.setPageListener(bean, R.layout.slider_view_item_post, (PageHelperListener<String>) (view, itemSrc) -> {
-                        //加载图片
-                        ImageView imageView = view.findViewById(R.id.item_image);
+                sliderViewPager.addIndicator(textIndicator);
+                sliderViewPager.setPageListener(R.layout.slider_view_item_post, imagesSrc, new PageHelperListener<String>()
+                {
 
-                        String thumbnailSrc;
-                        //如果是第一张图
-                        if (itemSrc.equals(imagesSrc.get(0)))
+                        @Override
+                        public void bindView(View view, String itemSrc, int position)
                         {
-                                //直接使用预设的缩微图
-                                thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+
+                                //加载图片
+                                ImageView imageView = view.findViewById(R.id.item_image);
+
+                                String thumbnailSrc;
+                                //如果是第一张图
+                                if (itemSrc.equals(imagesSrc.get(0)))
+                                {
+                                        //直接使用预设的缩微图
+                                        thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+                                }
+                                //后续图片
+                                else
+                                {
+                                        //计算缩微图地址
+                                        thumbnailSrc = GeneralUtils.getThumbnailSrcByImageSrc(itemSrc);
+                                }
+                                //加载图片 (先加载缩微图 之后加载原图)
+                                GlideImageUtils.getWithThumbnail(PostActivity.this, imageView, itemSrc, thumbnailSrc);
+
+                                view.setOnClickListener(v -> {
+
+                                        /*
+                                        //找到当前图片地址的列表位置
+                                        int position = imagesSrc.indexOf(itemSrc);
+                                        //新建列表
+                                        ArrayList<String> newImagesSrc = new ArrayList<>();
+                                        //截取当前位置和后续位置的地址
+                                        newImagesSrc.addAll(imagesSrc.subList(position, imagesSrc.size()));
+                                        //然后再添加 开头位置 到 当前位置-1 的地址
+                                        newImagesSrc.addAll(imagesSrc.subList(0, position));
+                                        //以此达到重建新列表的目标
+                                        */
+
+                                        //启动单独的图片查看页面
+                                        ImageActivity.startAction(PostActivity.this, imagesSrc, position);
+                                });
+
                         }
-                        //后续图片
-                        else
-                        {
-                                //计算缩微图地址
-                                thumbnailSrc = GeneralUtils.getThumbnailSrcByImageSrc(itemSrc);
-                        }
-                        //加载图片 (先加载缩微图 之后加载原图)
-                        GlideImageUtils.getWithThumbnail(PostActivity.this, imageView, itemSrc, thumbnailSrc);
-
-                        view.setOnClickListener(v -> {
-
-                                //找到当前图片地址的列表位置
-                                int position = imagesSrc.indexOf(itemSrc);
-                                //新建列表
-                                ArrayList<String> newImagesSrc = new ArrayList<>();
-                                //截取当前位置和后续位置的地址
-                                newImagesSrc.addAll(imagesSrc.subList(position, imagesSrc.size()));
-                                //然后再添加 开头位置 到 当前位置-1 的地址
-                                newImagesSrc.addAll(imagesSrc.subList(0, position));
-                                //以此达到重建新列表的目标
-
-                                //启动单独的图片查看页面
-                                ImageActivity.startAction(PostActivity.this, newImagesSrc);
-                        });
                 });
+
 
         }
 
@@ -264,7 +272,6 @@ public class PostActivity extends AppCompatActivity
         }
 
 
-
         @Override
         protected void onStop()
         {
@@ -291,7 +298,6 @@ public class PostActivity extends AppCompatActivity
         }
 
 
-
         public Post getPost()
         {
                 return post;
@@ -306,7 +312,8 @@ public class PostActivity extends AppCompatActivity
         /**
          * 启动分享窗口
          */
-        public void startSharingWindowsFragment(){
+        public void startSharingWindowsFragment()
+        {
                 //启动分享窗口
                 sharingWindowsFragment = SharingFragment.startAction();
                 sharingWindowsFragment.show(getSupportFragmentManager(), sharingWindowsFragment.getClass().toString());
@@ -318,7 +325,8 @@ public class PostActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+        protected void onActivityResult(int requestCode, int resultCode,
+                                        @Nullable Intent data)
         {
 
                 super.onActivityResult(requestCode, resultCode, data);

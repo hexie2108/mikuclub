@@ -157,7 +157,13 @@ public class CategoryFragment extends Fragment
                 parameters.setCategories(new ArrayList<>(Arrays.asList(category.getId())));
 
                 //创建数据控制器
-                controller = new PostController(getActivity(), delegate, recyclerView, swipeRefresh, parameters);
+                controller = new PostController(getActivity());
+                controller.setDelegate(delegate);
+                controller.setRecyclerView(recyclerView);
+                controller.setRecyclerViewAdapter(recyclerViewAdapter);
+                controller.setRecyclerDataList(recyclerDataList);
+                controller.setSwipeRefresh(swipeRefresh);
+                controller.setParameters(parameters);
         }
 
 

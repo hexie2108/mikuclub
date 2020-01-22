@@ -5,14 +5,12 @@
     xmlns:app = "http://schemas.android.com/apk/res-auto"
     xmlns:tools = "http://schemas.android.com/tools"
     android:layout_width = "match_parent"
-    android:layout_height = "match_parent"
-    >
+    android:layout_height = "match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id = "@+id/down1_box"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:layout_marginTop = "@dimen/normal"
             android:padding = "@dimen/normal"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
@@ -32,7 +30,7 @@
                 <View
                     android:layout_width = "0dp"
                     android:layout_height = "0.5dp"
-                    android:layout_marginTop = "@dimen/normal"
+                    android:layout_marginTop = "@dimen/small"
                     android:background = "@color/defaultTextColor"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
@@ -42,8 +40,9 @@
                     android:id = "@+id/down1_password_text"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginTop = "@dimen/very_large"
+                    android:layout_marginTop = "@dimen/large"
                     android:text = "访问密码"
+                    android:textSize = "@dimen/text_default"
 
                     app:layout_constraintStart_toStartOf = "@id/down1_title"
                     app:layout_constraintTop_toBottomOf = "@id/down1_title" />
@@ -52,10 +51,11 @@
                     android:id = "@+id/down1_password"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/normal"
+                    android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
                     android:textColor = "@android:color/black"
                     android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_default"
 
                     app:layout_constraintStart_toEndOf = "@id/down1_password_text"
                     app:layout_constraintTop_toTopOf = "@id/down1_password_text"
@@ -65,9 +65,10 @@
                     android:id = "@+id/down1_unzip_password_text"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/normal"
-                    android:layout_marginTop = "@dimen/very_large"
+                    android:layout_marginStart = "@dimen/large"
+                    android:layout_marginTop = "@dimen/large"
                     android:text = "解压密码"
+                    android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toEndOf = "@id/down1_password"
                     app:layout_constraintTop_toBottomOf = "@id/down1_title"
                     app:layout_goneMarginStart = "0dp" />
@@ -76,10 +77,11 @@
                     android:id = "@+id/down1_unzip_password"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/normal"
+                    android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
                     android:textColor = "@android:color/black"
                     android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toEndOf = "@id/down1_unzip_password_text"
                     app:layout_constraintTop_toTopOf = "@id/down1_unzip_password_text"
                     tools:text = "abcd" />
@@ -104,10 +106,10 @@
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/down1_password_text"
-                    app:layout_goneMarginTop = "@dimen/super_large"
+                    app:layout_goneMarginTop = "@dimen/ultra_large"
+                    app:rippleColor = "@color/rippleColor"
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp"
-                    app:rippleColor = "@color/rippleColor"
                     tools:text = "下载" />
 
 
@@ -118,12 +120,10 @@
             android:id = "@+id/down2_box"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:layout_marginTop = "@dimen/normal"
             android:padding = "@dimen/normal"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@id/down1_box"
-            app:layout_goneMarginTop = "@dimen/normal">
+            app:layout_constraintTop_toBottomOf = "@id/down1_box">
 
                 <TextView
                     android:id = "@+id/down2_title"
@@ -138,7 +138,7 @@
                 <View
                     android:layout_width = "0dp"
                     android:layout_height = "0.5dp"
-                    android:layout_marginTop = "@dimen/normal"
+                    android:layout_marginTop = "@dimen/small"
                     android:background = "@color/defaultTextColor"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
@@ -148,8 +148,9 @@
                     android:id = "@+id/down2_password_text"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginTop = "@dimen/very_large"
+                    android:layout_marginTop = "@dimen/large"
                     android:text = "访问密码"
+                    android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toStartOf = "@id/down2_title"
                     app:layout_constraintTop_toBottomOf = "@id/down2_title" />
 
@@ -157,10 +158,11 @@
                     android:id = "@+id/down2_password"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/normal"
+                    android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
                     android:textColor = "@android:color/black"
                     android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toEndOf = "@id/down2_password_text"
                     app:layout_constraintTop_toTopOf = "@id/down2_password_text"
                     tools:text = "abcd" />
@@ -169,9 +171,10 @@
                     android:id = "@+id/down2_unzip_password_text"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/normal"
-                    android:layout_marginTop = "@dimen/very_large"
+                    android:layout_marginStart = "@dimen/large"
+                    android:layout_marginTop = "@dimen/large"
                     android:text = "解压密码"
+                    android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toEndOf = "@id/down2_password"
                     app:layout_constraintTop_toBottomOf = "@id/down2_title"
                     app:layout_goneMarginStart = "0dp" />
@@ -180,7 +183,8 @@
                     android:id = "@+id/down2_unzip_password"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/normal"
+                    android:layout_marginStart = "@dimen/large"
+                    android:textSize = "@dimen/text_default"
                     android:selectAllOnFocus = "true"
                     android:textColor = "@android:color/black"
                     android:textIsSelectable = "true"
@@ -209,10 +213,10 @@
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/down2_password_text"
-                    app:layout_goneMarginTop = "@dimen/super_large"
+                    app:layout_goneMarginTop = "@dimen/ultra_large"
+                    app:rippleColor = "@color/rippleColor"
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp"
-                    app:rippleColor = "@color/rippleColor"
                     tools:text = "下载" />
 
                 <!--上下边框线-->
@@ -227,12 +231,13 @@
             android:layout_height = "wrap_content"
             android:layout_marginTop = "@dimen/very_large"
             android:gravity = "center"
-            android:text = "点击下载后会自动复制提取码到剪切板"
+            android:text = "提示: 点击下载后会自动复制提取码到剪切板"
             android:textSize = "@dimen/text_default"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toBottomOf = "@id/down2_box"
             app:layout_goneMarginTop = "@dimen/normal" />
+
 
 
         <View

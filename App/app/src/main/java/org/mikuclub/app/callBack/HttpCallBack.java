@@ -11,12 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikuclub.app.javaBeans.resources.WpError;
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ToastUtils;
-
-import java.nio.channels.WritePendingException;
+import org.mikuclub.app.utils.UserUtils;
 
 /**
  * utilsDelegate 专用
@@ -123,7 +121,7 @@ public class HttpCallBack
                                 if (wpError.getBody().getCode().indexOf("invalid_token") != -1)
                                 {
                                         //清空登陆状态
-                                        GeneralUtils.userLogout();
+                                        UserUtils.logout();
                                         LogUtils.v("登陆信息已过期");
                                         //提示用户
                                         ToastUtils.shortToast("登陆信息已过期, 请重新登陆");

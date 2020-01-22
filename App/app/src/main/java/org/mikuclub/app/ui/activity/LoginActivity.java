@@ -29,12 +29,10 @@ import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
-import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.UserUtils;
 import org.mikuclub.app.utils.social.TencentListener;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;
@@ -83,6 +81,10 @@ public class LoginActivity extends AppCompatActivity
                 socialButtonWeibo = findViewById(R.id.social_button_weibo);
                 socialButtonQQ = findViewById(R.id.social_button_qq);
                 Toolbar toolbar = findViewById(R.id.toolbar);
+
+                //创建进度条弹窗
+                progressDialog = ViewUtils.initProgressDialog(this);
+
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
                 ActionBar actionBar = getSupportActionBar();
@@ -98,8 +100,7 @@ public class LoginActivity extends AppCompatActivity
                 initEditText();
                 //初始化社会登陆按钮
                 initSocialButton();
-                //创建进度条弹窗
-                progressDialog = ViewUtils.initProgressDialog(this);
+
 
         }
 
@@ -287,18 +288,13 @@ public class LoginActivity extends AppCompatActivity
          */
         private void setLoginResult(String response)
         {
-                UserLogin userLogin = ParserUtils.userLogin(response);
-                //储存登陆信息
-                PreferencesUtils.getUserPreference()
-                        .edit()
-                        .putString(GlobalConfig.Preferences.USER_TOKEN, userLogin.getToken())
-                        .putString(GlobalConfig.Preferences.USER_LOGIN, response)
-                        .apply();
+                //储存用户登陆信息
+                UserUtils.login(response);
                 //设置请求结果 为 成功
                 setResult(RESULT_OK);
                 finish();
 
-        }        //监听标题栏菜单动作
+        }
 
 
         /**
