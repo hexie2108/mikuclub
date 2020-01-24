@@ -1,13 +1,18 @@
-package org.mikuclub.app.utils;
+package org.mikuclub.app.utils.storage;
 
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
+import org.mikuclub.app.utils.ParserUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserUtils
 {
+        //用户登陆信息
+        private static final String USER_LOGIN = "user_login";
+        //用户令牌
+        private static final String USER_TOKEN = "user_token";
 
         private static UserLogin user;
 
@@ -19,7 +24,7 @@ public class UserUtils
         public static boolean isLogin()
         {
                 boolean isLogin = true;
-                if (PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_TOKEN, null) == null)
+                if (PreferencesUtils.getUserPreference().getString(USER_TOKEN, null) == null)
                 {
                         isLogin = false;
                 }
@@ -29,8 +34,9 @@ public class UserUtils
         /*获取当前用户信息*/
         public static UserLogin getUser()
         {
-                if(user == null){
-                        String userInfoString = PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_LOGIN, null);
+                if (user == null)
+                {
+                        String userInfoString = PreferencesUtils.getUserPreference().getString(USER_LOGIN, null);
                         user = ParserUtils.userLogin(userInfoString);
                 }
 
@@ -48,8 +54,8 @@ public class UserUtils
                 //储存登陆信息
                 PreferencesUtils.getUserPreference()
                         .edit()
-                        .putString(GlobalConfig.Preferences.USER_TOKEN, userLogin.getToken())
-                        .putString(GlobalConfig.Preferences.USER_LOGIN, userInfoString)
+                        .putString(USER_TOKEN, userLogin.getToken())
+                        .putString(USER_LOGIN, userInfoString)
                         .apply();
                 //更新用户信息
                 user = userLogin;
@@ -66,8 +72,8 @@ public class UserUtils
                 //删除用户信息
                 PreferencesUtils.getUserPreference()
                         .edit()
-                        .remove(GlobalConfig.Preferences.USER_LOGIN)
-                        .remove(GlobalConfig.Preferences.USER_TOKEN)
+                        .remove(USER_LOGIN)
+                        .remove(USER_TOKEN)
                         .apply();
                 //清空用户登陆信息
                 user = null;
@@ -86,7 +92,7 @@ public class UserUtils
                 if (isLogin())
                 {
                         headers = new HashMap<>();
-                        headers.put("Authorization", "Bearer " + PreferencesUtils.getUserPreference().getString(GlobalConfig.Preferences.USER_TOKEN, null));
+                        headers.put("Authorization", "Bearer " + PreferencesUtils.getUserPreference().getString(USER_TOKEN, null));
                 }
                 return headers;
         }

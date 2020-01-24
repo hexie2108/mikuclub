@@ -2,11 +2,16 @@ package org.mikuclub.app.delegates;
 
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.utils.http.Request;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 /**
  * 根据需要生成对应资源的请求
@@ -73,6 +78,67 @@ public class PostDelegate extends BaseDelegate
 
                 getModel().selectForList(parameters.toMap(), headers, getTag(), httpCallBack);
 
+        }
+
+
+
+
+        /**
+         * 文章点赞和取消点赞功能
+         * @param httpCallBack
+         * @param postId
+         * @param isAddLike true = 点赞, false = 取消点赞
+         * */
+        public void postLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
+        {
+                BaseParameters baseParameters = new BaseParameters();
+                Map<String, Object> bodyParameters = new HashMap();
+                putIfNotNull(bodyParameters, "post_id", postId);
+                //如果是要取消点赞
+                if(!isAddLike)
+                {
+                        putIfNotNull(bodyParameters, "cancel", 1);
+                }
+                Request.post(GlobalConfig.Server.POST_LIKE_COUNT, baseParameters.toMap(), bodyParameters, null, getTag(), httpCallBack);
+
+        }
+
+
+        /**
+         * 文章分享次数计算
+         * @param postId
+         * */
+        public void postShareCount(int postId)
+        {
+                Map<String, Object> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "post_id", postId);
+                Request.get(GlobalConfig.Server.POST_SHARING_COUNT, queryParameters, null, getTag(), null);
+        }
+
+        /**
+         * 文章查看次数计算
+         * @param postId
+         * */
+        public void postViewCount(int postId)
+        {
+                Map<String, Object> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "post_id", postId);
+                Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), null);
+        }
+
+        /**
+         * 文章失效次数计算
+         * @param httpCallBack
+         * @param postId
+         * */
+        public void postFailDownCount(HttpCallBack httpCallBack,  int postId)
+        {
+                Map<String, Object> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "post_id", postId);
+                Request.get(GlobalConfig.Server.POST_FAIL_DOWN_COUNT, queryParameters, null, getTag(), httpCallBack);
         }
 
 

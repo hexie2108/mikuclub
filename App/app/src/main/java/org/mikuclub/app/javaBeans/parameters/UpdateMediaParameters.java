@@ -14,9 +14,9 @@ public class UpdateMediaParameters extends BaseParameters
         private Integer post;
 
 
-        public Map<String, String> toMap()
+        public Map<String, Object> toMap()
         {
-                Map<String, String> outputMap = new HashMap<String, String>();
+                Map<String, Object> outputMap = new HashMap();
                 putIfNotNull(outputMap, "id", id);
                 putIfNotNull(outputMap, "title", title);
                 putIfNotNull(outputMap, "post", post);

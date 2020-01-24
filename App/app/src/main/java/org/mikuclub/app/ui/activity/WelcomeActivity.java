@@ -29,13 +29,15 @@ import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
+import org.mikuclub.app.javaBeans.resources.BaseRespond;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.storage.MessageUtils;
+import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class WelcomeActivity extends AppCompatActivity
         /*静态变量*/
         public static final int TAG = 1;
         //需要等待的请求数量
-        private static final int REQUEST_TOTAL_NUMBER = 5;
+        private static final int REQUEST_TOTAL_NUMBER = 7;
 
         /*变量*/
         private PostDelegate postDelegate;
@@ -108,6 +110,8 @@ public class WelcomeActivity extends AppCompatActivity
                         checkUpdate();
                         //获取分类信息
                         checkCategories();
+                        //获取未读消息数量
+                        getUnreadMessageCount();
                         //获取主页文章数据
                         getDataForHome();
 
@@ -128,6 +132,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //如果用户有登陆
                 if (UserUtils.isLogin())
                 {
+                        LogUtils.v("开始验证登陆信息有效性");
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 //token正常
@@ -142,6 +147,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 @Override
                                 public void onTokenError()
                                 {
+                                        LogUtils.v("登陆信息已失效");
                                         //增加计数器
                                         startHomeSafety();
                                 }
@@ -187,12 +193,13 @@ public class WelcomeActivity extends AppCompatActivity
                 //如果检查更新已过期
                 if (System.currentTimeMillis() > appUpdateExpire)
                 {
-                        LogUtils.v("检测时间已过期, 重新检测更新");
+                        LogUtils.v("检测时间已过期, 开始重新检测更新");
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
                                 {
+                                        LogUtils.v("检测更新成功");
                                         //获取更新信息
                                         AppUpdate appUpdate = ParserUtils.appUpdate(response);
                                         //如果当前版本号低于新版本
@@ -254,7 +261,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
 
-
         /**
          * 检查分类的缓存
          * 过期或者没有缓存的话 就获取新的
@@ -268,6 +274,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //如果分类缓存 已过期 或者 缓存为null
                 if (System.currentTimeMillis() > categoriesCacheExpire || categoriesCache == null)
                 {
+                        LogUtils.v("开始重新请求分类信息");
                         HttpCallBack httpCallBack = new HttpCallBack()
                         {
 
@@ -284,7 +291,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 .putString(GlobalConfig.Preferences.CATEGORIES_CACHE, categoriesCache)
                                                 .putLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, expire)
                                                 .apply();
-                                        LogUtils.v("已重新请求分类信息");
+                                        LogUtils.v("重新请求分类信息 成功");
                                         startHomeSafety();
                                 }
                                 @Override
@@ -325,6 +332,122 @@ public class WelcomeActivity extends AppCompatActivity
                         startHomeSafety();
                 }
         }
+
+        /**
+         * 获取用户未读消息数量
+         */
+        private void getUnreadMessageCount()
+        {
+
+                //如果用户有登陆
+                if (UserUtils.isLogin())
+                {
+                        LogUtils.v("开始获取未读消息数量");
+                        //获取未读私信计数的回调
+                        HttpCallBack countPrivateMessageCallBack = new HttpCallBack()
+                        {
+
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        LogUtils.v("获取未读私信数量成功");
+
+                                        //解析回复
+                                        BaseRespond baseRespond = ParserUtils.baseRespond(response);
+                                        //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
+                                        MessageUtils.setPrivateMessageCount(Integer.valueOf(baseRespond.getBody()));
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                //令牌错误
+                                @Override
+                                public void onTokenError()
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+
+                                //内容错误
+                                @Override
+                                public void onError(String response)
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                //网络错误
+                                @Override
+                                public void onHttpError()
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
+                                }
+                        };
+                        //获取未读评论计数的回调
+                        HttpCallBack countReplyCommentCallBack = new HttpCallBack()
+                        {
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        LogUtils.v("获取未读评论数量成功");
+
+                                        //解析回复
+                                        BaseRespond baseRespond = ParserUtils.baseRespond(response);
+                                        //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
+                                        MessageUtils.setReplyCommentCount(Integer.valueOf(baseRespond.getBody()));
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                //令牌错误
+                                @Override
+                                public void onTokenError()
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+
+                                //内容错误
+                                @Override
+                                public void onError(String response)
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                //网络错误
+                                @Override
+                                public void onHttpError()
+                                {
+                                        //增加计数器
+                                        startHomeSafety();
+                                }
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
+                                }
+                        };
+
+                        //发送请求
+                        utilsDelegate.countPrivateMessage(countPrivateMessageCallBack, true, false);
+                        utilsDelegate.countReplyComment(countReplyCommentCallBack, true);
+
+
+                }
+                //如果未登陆
+                else{
+                        //增加2次计数器
+                        startHomeSafety();
+                        startHomeSafety();
+                }
+
+        }
+
 
         /**
          * 获取主页数据

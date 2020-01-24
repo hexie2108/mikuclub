@@ -166,6 +166,7 @@ public class PostCommentsFragment extends Fragment
                 //设置数据
                 controller.setPostId(post.getId());
                 controller.setParentCommentId(0);
+                controller.setAuthorId(post.getAuthor());
         }
 
 

@@ -32,10 +32,10 @@ public class ListMediaParameters extends BaseParameters
 
 
 
-        public Map<String, String> toMap()
+        public Map<String, Object> toMap()
         {
 
-                Map<String, String> outputMap = new HashMap<String, String>();
+                Map<String, Object> outputMap = new HashMap();
 
 
                 putIfNotNull(outputMap, "before", DataUtils.dateToString(before));

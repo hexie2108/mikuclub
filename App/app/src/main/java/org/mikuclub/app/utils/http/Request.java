@@ -6,12 +6,15 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 
+import org.json.JSONObject;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.DataUtils;
 import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.ParserUtils;
 
 import java.io.File;
 import java.util.Collections;
@@ -22,6 +25,9 @@ import java.util.Map;
  */
 public class Request
 {
+
+        private static final String CONTENT_TYPE_JSON ="application/json";
+
         /**
          * 自定义网络超时重试策略
          */
@@ -41,7 +47,7 @@ public class Request
          * @param tag
          * @param httpCallBack
          */
-        public static void get(String url, Map params, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
+        public static void get(String url, Map<String, Object> params, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
         {
                 //如果有URL参数要传递
                 if (params != null && params.size() > 0)
@@ -60,7 +66,7 @@ public class Request
          * @param tag
          * @param httpCallBack
          */
-        public static void post(String url, Map<String, String> params, Map<String, String> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
+        public static void post(String url, Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
                 //如果有URL参数要传递
                 if (params != null && params.size() > 0)
@@ -93,7 +99,7 @@ public class Request
          * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
          * @param httpCallBack
          */
-        private static void request(int method, String url, final Map<String, String> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
+        private static void request(int method, String url, final Map<String, Object> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
 
                 LogUtils.v("请求地址 "+url);
@@ -116,18 +122,39 @@ public class Request
                          * 如果是POST类型的请求, 则从params 中读取参数
                          * @return
                          * @throws AuthFailureError
-                         */
+                         *
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError
                         {
+                           if (params != null && !params.isEmpty())
+                               {
+                                     return params;
+                            }
+                              else
+                          {
+                                        return null;
+                           }
+                        }
+                         */
+
+
+                        @Override
+                        public byte[] getBody() throws AuthFailureError
+                        {
                                 if (params != null && !params.isEmpty())
                                 {
-                                        return params;
+                                        return ParserUtils.toJson(params).getBytes();
                                 }
                                 else
                                 {
                                         return null;
                                 }
+                        }
+
+                        @Override
+                        public String getBodyContentType()
+                        {
+                                return CONTENT_TYPE_JSON;
                         }
 
                         /**
@@ -180,7 +207,7 @@ public class Request
          */
         public static void filePost(String url, Map<String,String> params, Map<String,String> headers, File file, int tag, final HttpCallBack httpCallBack){
 
-
+/*
                 FileRequest fileRequest = new FileRequest(com.android.volley.Request.Method.POST, url, params, file ,headers, new Response.Listener<NetworkResponse>()
                 {
                         @Override
@@ -203,7 +230,7 @@ public class Request
                 fileRequest.setRetryPolicy(retryPolicyForFile);
                 RequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(fileRequest);
 
-
+*/
         }
 
 

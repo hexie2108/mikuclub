@@ -51,20 +51,19 @@ public class DataUtils
          * @param separatorEntry    separator between entry
          * @return String
          */
-        public static String mapToString(Map<String, String> mapSource, String separatorKeyValue, String separatorEntry)
+        public static String mapToString(Map<String, Object> mapSource, String separatorKeyValue, String separatorEntry)
         {
 
                 String output = "";
-                Iterator<Map.Entry<String, String>> iterator = mapSource.entrySet().iterator();
+                Iterator<Map.Entry<String, Object>> iterator = mapSource.entrySet().iterator();
                 try
                 {
 
-
                         while (iterator.hasNext())
                         {
-                                Map.Entry<String, String> entry = iterator.next();
+                                Map.Entry<String, Object> entry = iterator.next();
                                 //System.out.println(entry.getKey() + "　：" + entry.getValue());
-                                output += entry.getKey() + separatorKeyValue + URLEncoder.encode(entry.getValue(), "UTF-8") + separatorEntry;
+                                output += entry.getKey() + separatorKeyValue + URLEncoder.encode(entry.getValue().toString(), "UTF-8") + separatorEntry;
                         }
                 }
                 catch (UnsupportedEncodingException e)
@@ -86,9 +85,9 @@ public class DataUtils
          * @param key
          * @param inputValue
          */
-        public static void putIfNotNull(Map<String, String> map, String key, Object inputValue)
+        public static void putIfNotNull(Map map, String key, Object inputValue)
         {
-                //必须不是null
+                //首先必须不是null
                 if (inputValue != null)
                 {
                         String value;
@@ -96,19 +95,31 @@ public class DataUtils
                         //如果是布尔类型
                         if (inputValue instanceof Boolean)
                         {
-                                //转换成int
-                                int BooleanValue = (Boolean) inputValue ? 1 : 0;
+                                //转换成boolean
+                                int BooleanValue = (Boolean) inputValue ? 1 : 0; //需要把boolean转换成 1和 0, 不然api后台会把 true和false认为是字符串
                                 //转化成字符串
                                 value = String.valueOf(BooleanValue);
+                                map.put(key, value);
                         }
-                        else
+                        //如果是整数
+                        else if (inputValue instanceof Integer)
                         {
                                 value = String.valueOf(inputValue);
-                        }
-                        //字符串长度必须大于0
-                        if (value.length() > 0)
-                        {
                                 map.put(key, value);
+                        }
+                        //如果是字符串
+                        else if (inputValue instanceof String)
+                        {
+                                value = (String) inputValue;
+                                //字符串长度必须大于0
+                                if (value.length() > 0)
+                                {
+                                        map.put(key, value);
+                                }
+                        }
+                        //如果是其他类型
+                        else{
+                                map.put(key, inputValue);
                         }
 
                 }
@@ -117,6 +128,7 @@ public class DataUtils
 
         /**
          * 把日期变量转换成预设的字符串格式
+         *
          * @param date
          * @return
          */
@@ -124,10 +136,10 @@ public class DataUtils
         {
                 String output = null;
                 //se l'oggetto data non è nullo
-                if(date != null)
+                if (date != null)
                 {
                         SimpleDateFormat formatter = new SimpleDateFormat(GlobalConfig.DATE_FORMAT_JSON);
-                        output =  formatter.format(date);
+                        output = formatter.format(date);
                 }
                 return output;
         }

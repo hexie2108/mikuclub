@@ -6,7 +6,7 @@ import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.delegates.models.ResourceModel;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 
 import java.util.Map;
 

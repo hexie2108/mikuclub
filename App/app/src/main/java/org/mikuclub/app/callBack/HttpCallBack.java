@@ -14,7 +14,7 @@ import org.mikuclub.app.javaBeans.resources.WpError;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 
 /**
  * utilsDelegate 专用
@@ -129,6 +129,7 @@ public class HttpCallBack
                                 }
                                 else
                                 {
+                                        LogUtils.v("内容错误:"+response);
                                         onError(response);
                                 }
 

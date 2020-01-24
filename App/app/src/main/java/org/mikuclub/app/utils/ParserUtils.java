@@ -8,6 +8,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.AppUpdate;
+import org.mikuclub.app.javaBeans.resources.BaseRespond;
 import org.mikuclub.app.javaBeans.resources.Categories;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.CreateComment;
@@ -92,7 +93,7 @@ public class ParserUtils
         public static AppUpdate appUpdate(String response)
         {
 
-                AppUpdate  appUpdate = gson.fromJson(response, AppUpdate.class);
+                AppUpdate appUpdate = gson.fromJson(response, AppUpdate.class);
                 return appUpdate;
         }
 
@@ -148,6 +149,17 @@ public class ParserUtils
                 return userAuthor;
         }
 
+        /**
+         * 解析基础回复
+         *
+         * @param response
+         * @return
+         */
+        public static BaseRespond baseRespond(String response)
+        {
+                BaseRespond baseRespond = gson.fromJson(response, BaseRespond.class);
+                return baseRespond;
+        }
 
 
         /**
@@ -175,4 +187,18 @@ public class ParserUtils
                 {
                 }.getType());
         }
+
+        /**
+         * 序列化对象为json字符串
+         * @param object
+         * @return
+         */
+        public static String toJson(Object object){
+
+                return gson.toJson(object);
+        }
+
+
+
+
 }

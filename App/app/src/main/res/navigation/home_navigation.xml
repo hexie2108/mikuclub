@@ -18,8 +18,8 @@
             tools:layout = "@layout/fragment_home_categories" />
 
         <fragment
-            android:id = "@+id/navigation_create"
+            android:id = "@+id/navigation_message"
             android:name = "org.mikuclub.app.ui.fragments.EmptyFragment"
-            android:label = "投稿"
+            android:label = "消息"
             tools:layout = "" />
 </navigation>

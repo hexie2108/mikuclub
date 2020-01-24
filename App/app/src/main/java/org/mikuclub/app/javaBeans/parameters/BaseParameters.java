@@ -12,13 +12,14 @@ import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 public class BaseParameters
 {
 
-        public Map<String, String> toMap()
+        public Map<String, Object> toMap()
         {
 
-                Map<String, String> outputMap = new HashMap<String, String>();
+                Map<String, Object> outputMap = new HashMap();
                 //追加参数, 让wordpress 在 回复body中增加页数信息, 不然会被加到 回复header头部里
                 putIfNotNull(outputMap, "_envelope", "1");
                 return outputMap;
 
         }
+
 }

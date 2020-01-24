@@ -32,7 +32,7 @@ import org.mikuclub.app.javaBeans.parameters.LoginParameters;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.social.TencentListener;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;

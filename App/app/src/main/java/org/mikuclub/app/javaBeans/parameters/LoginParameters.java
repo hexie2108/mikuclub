@@ -19,10 +19,10 @@ public class LoginParameters extends BaseParameters
         private String open_id;
 
         @Override
-        public Map<String, String> toMap()
+        public Map<String, Object> toMap()
         {
 
-                Map<String, String> outputMap = new HashMap<String, String>();
+                Map<String, Object> outputMap = new HashMap();
 
                 putIfNotNull(outputMap, "username", username);
                 putIfNotNull(outputMap, "password", password);

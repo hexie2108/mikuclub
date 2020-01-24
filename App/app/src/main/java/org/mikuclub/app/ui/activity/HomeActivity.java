@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -23,14 +24,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.MessageUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -125,12 +124,28 @@ public class HomeActivity extends AppCompatActivity
         {
                 //在其他分页 点击返回后 会回到主页
                 mAppBarConfiguration = new AppBarConfiguration.Builder(
-                        R.id.navigation_home, R.id.navigation_category, R.id.navigation_create)
+                        R.id.navigation_home, R.id.navigation_category, R.id.navigation_message)
                         .setDrawerLayout(drawer)
                         .build();
                 NavController navController = Navigation.findNavController(this, R.id.home_navigation);
                 NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
                 NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+
+                //获取未读消息数量
+                LogUtils.e("私信"+MessageUtils.getPrivateMessageCount());
+                LogUtils.e("评论"+MessageUtils.getReplyCommentCount());
+                int unreadMessageCount = MessageUtils.getPrivateMessageCount()+MessageUtils.getReplyCommentCount();
+                //如果未读消息大于0
+                if(unreadMessageCount>0){
+                        //在消息图标右上角显示未读消息提醒
+                        BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.navigation_message);
+                        badge.setNumber(unreadMessageCount);
+                        badge.setVerticalOffset(5);
+                        badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                }
+
+
         }
 
         /**
@@ -138,6 +153,7 @@ public class HomeActivity extends AppCompatActivity
          */
         private void initLeftNavigationVIew()
         {
+
                 //绑定侧边栏菜单动作监听
                 leftNavigationView.setNavigationItemSelectedListener(item -> {
 

@@ -5,7 +5,7 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.HashMap;
@@ -14,18 +14,19 @@ import java.util.Map;
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 /**
- *  根据需要生成对应资源的请求
+ * 根据需要生成对应资源的请求
  */
 public class UtilsDelegate extends BaseDelegate
 {
 
         public UtilsDelegate(int tag)
         {
-               super(tag);
+                super(tag);
         }
 
         /**
          * 检查更新
+         *
          * @param httpCallBack
          */
         public void checkUpdate(HttpCallBack httpCallBack)
@@ -37,6 +38,7 @@ public class UtilsDelegate extends BaseDelegate
 
         /**
          * 获取分类信息缓存
+         *
          * @param httpCallBack
          */
         public void getCategory(HttpCallBack httpCallBack)
@@ -48,6 +50,7 @@ public class UtilsDelegate extends BaseDelegate
 
         /**
          * 登陆
+         *
          * @param httpCallBack
          */
         public void login(HttpCallBack httpCallBack, LoginParameters loginParameters)
@@ -60,6 +63,7 @@ public class UtilsDelegate extends BaseDelegate
 
         /**
          * token有效性检查
+         *
          * @param httpCallBack
          */
         public void tokenValidate(HttpCallBack httpCallBack)
@@ -72,82 +76,52 @@ public class UtilsDelegate extends BaseDelegate
         }
 
 
-
-
-        /**
-         * 文章点赞和取消点赞功能
-         * @param httpCallBack
-         * @param postId
-         * @param isAddLike true = 点赞, false = 取消点赞
-         * */
-        public void postLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
-        {
-                BaseParameters baseParameters = new BaseParameters();
-                Map<String, String> bodyParameters = new HashMap();
-                putIfNotNull(bodyParameters, "post_id", postId);
-                //如果是要取消点赞
-                if(!isAddLike)
-                {
-                        putIfNotNull(bodyParameters, "cancel", 1);
-                }
-                Request.post(GlobalConfig.Server.POST_LIKE_COUNT, baseParameters.toMap(), bodyParameters, null, getTag(), httpCallBack);
-
-        }
-
-
-        /**
-         * 文章分享次数计算
-         * @param postId
-         * */
-        public void postShareCount(int postId)
-        {
-                Map<String, String> queryParameters = new HashMap();
-                putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "post_id", postId);
-                Request.get(GlobalConfig.Server.POST_SHARING_COUNT, queryParameters, null, getTag(), null);
-        }
-
-        /**
-         * 文章查看次数计算
-         * @param postId
-         * */
-        public void postViewCount(int postId)
-        {
-                Map<String, String> queryParameters = new HashMap();
-                putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "post_id", postId);
-                Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), null);
-        }
-
-        /**
-         * 文章失效次数计算
-         * @param httpCallBack
-         * @param postId
-         * */
-        public void postFailDownCount(HttpCallBack httpCallBack,  int postId)
-        {
-                Map<String, String> queryParameters = new HashMap();
-                putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "post_id", postId);
-                Request.get(GlobalConfig.Server.POST_FAIL_DOWN_COUNT, queryParameters, null, getTag(), httpCallBack);
-        }
-
-
-
         /**
          * 发送私信
+         *
          * @param httpCallBack
          * @param bodyParameters
-         * */
+         */
         public void sendPrivateMessage(HttpCallBack httpCallBack, CreatePrivateMessageParameters bodyParameters)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                Request.post(GlobalConfig.Server.SEND_PRIVATE_MESSAGE, baseParameters.toMap(), bodyParameters.toMap(), UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.post(GlobalConfig.Server.PRIVATE_MESSAGE, baseParameters.toMap(), bodyParameters.toMap(), UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+
+        }
+
+        /**
+         * 获取私信计数
+         *
+         * @param httpCallBack
+         * @param unread       是否是要计算未读私信信息
+         * @param selfMessage  计算自己回复的数量
+         */
+        public void countPrivateMessage(HttpCallBack httpCallBack, boolean unread, boolean selfMessage)
+        {
+                Map<String, Object> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "unread", unread);
+                putIfNotNull(queryParameters, "self", selfMessage);
+
+                Request.get(GlobalConfig.Server.PRIVATE_MESSAGE_COUNT, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 
 
+        /**
+         * 获取私信计数
+         *
+         * @param httpCallBack
+         * @param unread       是否是要计算未读评论
+         */
+        public void countReplyComment(HttpCallBack httpCallBack, boolean unread)
+        {
+                Map<String, Object> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "unread", unread);
+                Request.get(GlobalConfig.Server.REPLY_COMMENTS_COUNT, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
+        }
 
 
 }

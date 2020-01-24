@@ -27,7 +27,7 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void selectById(int id, Map<String, String> params,Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
+        public void selectById(int id, Map<String, Object> params,Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
         {
                 String url = resource_url + id;
                 Request.get(url, params, headers, tag, httpCallBack);
@@ -41,7 +41,7 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void selectForList(Map<String, String> params, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
+        public void selectForList(Map<String, Object> params, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url;
@@ -55,7 +55,7 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void insert(Map<String, String> params, Map<String, String> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
+        public void insert(Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url;
@@ -70,7 +70,7 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void updateById(int id, Map<String, String> params, Map<String, String> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
+        public void updateById(int id, Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
 
                 String url = resource_url + id;

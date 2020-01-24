@@ -9,9 +9,9 @@ import org.mikuclub.app.adapters.CategoriesAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.resources.Category;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 
 import java.util.List;
 

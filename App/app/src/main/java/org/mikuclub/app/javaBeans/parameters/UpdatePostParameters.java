@@ -25,9 +25,9 @@ public class UpdatePostParameters extends BaseParameters
 
 
 
-        public Map<String, String> toMap()
+        public Map<String, Object> toMap()
         {
-                Map<String, String> outputMap = new HashMap<String, String>();
+                Map<String, Object> outputMap = new HashMap();
 
                 putIfNotNull(outputMap, "id", id);
                 putIfNotNull(outputMap, "date", DataUtils.dateToString(date));

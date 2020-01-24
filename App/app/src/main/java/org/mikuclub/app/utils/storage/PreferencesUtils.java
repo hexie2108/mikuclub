@@ -1,4 +1,4 @@
-package org.mikuclub.app.utils;
+package org.mikuclub.app.utils.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +15,7 @@ public class PreferencesUtils
         private static final String NAME_CATEGORY = "category_preference";
         private static final String NAME_USER = "user_preference";
         private static final String NAME_POST = "post_preference";
+        private static final String NAME_MESSAGE = "message_preference";
 
         //应用参数
         private static SharedPreferences applicationPreference;
@@ -22,9 +23,10 @@ public class PreferencesUtils
         private static SharedPreferences categoryPreference;
         //用户信息参数
         private static SharedPreferences userPreference;
-
         //文章信息参数
         private static SharedPreferences postPreference;
+        //私信和回复参数
+        private static SharedPreferences messagePreference;
 
         public static SharedPreferences getApplicationPreference()
         {
@@ -53,6 +55,7 @@ public class PreferencesUtils
                 }
                 return userPreference;
         }
+
         public static SharedPreferences getPostPreference()
         {
                 if (postPreference == null)
@@ -60,6 +63,15 @@ public class PreferencesUtils
                         postPreference = MyApplication.getContext().getSharedPreferences(NAME_POST, Context.MODE_PRIVATE);
                 }
                 return postPreference;
+        }
+
+        public static SharedPreferences getMessagePreference()
+        {
+                if (messagePreference == null)
+                {
+                        messagePreference = MyApplication.getContext().getSharedPreferences(NAME_MESSAGE, Context.MODE_PRIVATE);
+                }
+                return messagePreference;
         }
 
 

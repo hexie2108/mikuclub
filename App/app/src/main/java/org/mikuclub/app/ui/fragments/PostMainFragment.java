@@ -14,7 +14,7 @@ import com.google.android.material.button.MaterialButton;
 
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.UtilsDelegate;
+import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
@@ -23,7 +23,7 @@ import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
+import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -49,7 +49,7 @@ public class PostMainFragment extends Fragment
         /*变量*/
         //当前页面需要的文章数据
         private Post post;
-        private UtilsDelegate delegate;
+        private PostDelegate delegate;
         //点赞过的文章id数组
         private List<Integer> likedPostIds;
         private int countLike;
@@ -107,7 +107,7 @@ public class PostMainFragment extends Fragment
 
                 //从活动中获取文章数据
                 post = ((PostActivity) getActivity()).getPost();
-                delegate = new UtilsDelegate(TAG);
+                delegate = new PostDelegate(TAG);
 
                 initPost();
                 initLikeButton();

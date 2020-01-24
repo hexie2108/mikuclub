@@ -141,10 +141,15 @@ public class CommentsAdapter extends BaseAdapterWithFooter
                         Comment comment = (Comment) getAdapterList().get(position);
                         //获取评论内容
                         String commentContent = comment.getContent().getRendered();
+                        //移除内容外层P标签
+                        commentContent = HttpUtils.removeHtmlMainTag(commentContent, "<p>", "</p>");
+
                         //如果固定回复头部存在
                         String startText  = "回复";
                         String endText  = " : ";
-                        if(commentContent.indexOf(startText) < 5){
+                        int index = commentContent.indexOf(startText);
+                        //如果回复头部在前5位之间
+                        if(index > -1 && index < 5){
                                 commentContent = commentContent.substring(commentContent.indexOf(endText)+endText.length());
                         }
                         /*

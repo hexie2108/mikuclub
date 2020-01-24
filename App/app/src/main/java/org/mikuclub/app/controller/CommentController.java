@@ -10,30 +10,22 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.CommentDelegate;
-import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
 import org.mikuclub.app.javaBeans.resources.base.Comment;
 import org.mikuclub.app.javaBeans.resources.Comments;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.WpError;
-import org.mikuclub.app.javaBeans.resources.base.User;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.ViewUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import mikuclub.app.R;
 
 public class CommentController extends BaseController
 {
@@ -42,6 +34,7 @@ public class CommentController extends BaseController
         private UserLogin userLogin;
         private int postId;
         private int parentCommentId;
+        private int authorId;
 
         /*组件*/
         private ImageView avatarImage;
@@ -127,6 +120,8 @@ public class CommentController extends BaseController
                 {
                         //设置父评论id
                         setParentCommentId(parentComment.getId());
+                        //设置父评论作者id
+                        setAuthorId(parentComment.getAuthor());
                         //修改显示名
                         inputLayout.setHint("回复 " + parentComment.getAuthor_name() + ":");
                         if (!isFirstTime)
@@ -202,12 +197,30 @@ public class CommentController extends BaseController
                         createCommentParameters.setPost(postId);
                         createCommentParameters.setParent(parentCommentId);
 
-                        //如果通知作者的选择框不是null  而且 被勾选了
+                        //新建评论的元数据容器
+                        CreateCommentParameters.Meta meta;
+                        //在一级评论的情况 如果通知作者的选择框不是null  而且 被勾选了
                         if (checkBoxNotifyAuthor != null && checkBoxNotifyAuthor.isChecked())
                         {
                                 LogUtils.e("勾选作者通知");
-                                //设置通知作者的参数
-                                createCommentParameters.setNotify_author(true);
+                                //创建元数据容器
+                                meta = new CreateCommentParameters.Meta();
+                                //设置被回复用户的id
+                                meta.setParent_user_id(authorId);
+                                //设置为未读
+                                meta.setParent_user_read(0);
+                                //添加元数据到请求
+                                createCommentParameters.setMeta(meta);
+                        }
+                        //在二级评论的情况 (回复其他人的评论)
+                        else if(checkBoxNotifyAuthor==null){
+                                meta = new CreateCommentParameters.Meta();
+                                //设置被回复用户的id
+                                meta.setParent_user_id(authorId);
+                                //设置为未读
+                                meta.setParent_user_read(0);
+                                //添加元数据到请求
+                                createCommentParameters.setMeta(meta);
                         }
 
                         ((CommentDelegate) getDelegate()).createComment(httpCallBack, createCommentParameters);
@@ -314,23 +327,18 @@ public class CommentController extends BaseController
         }
 
 
-        public int getPostId()
-        {
-                return postId;
-        }
-
         public void setPostId(int postId)
         {
                 this.postId = postId;
         }
 
-        public int getParentCommentId()
-        {
-                return parentCommentId;
-        }
-
         public void setParentCommentId(int parentCommentId)
         {
                 this.parentCommentId = parentCommentId;
+        }
+
+        public void setAuthorId(int authorId)
+        {
+                this.authorId = authorId;
         }
 }

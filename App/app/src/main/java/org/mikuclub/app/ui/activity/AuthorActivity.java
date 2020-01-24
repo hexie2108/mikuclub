@@ -16,7 +16,7 @@ import org.mikuclub.app.delegates.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.UserUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.http.Request;
 

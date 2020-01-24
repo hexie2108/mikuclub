@@ -35,24 +35,25 @@
                             app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
 
 
-                                <androidx.cardview.widget.CardView
-                                    android:layout_width = "match_parent"
-                                    android:layout_height = "wrap_content"
-                                    android:layout_marginEnd = "@dimen/normal"
-                                    app:cardCornerRadius = "@dimen/small">
-
-
-                                        <TextView
-                                            android:id = "@+id/search_input"
+                                        <androidx.cardview.widget.CardView
                                             android:layout_width = "match_parent"
                                             android:layout_height = "wrap_content"
-                                            android:background = "@android:color/white"
-                                            android:padding = "@dimen/small"
-                                            android:text = "要搜索点什么吗..."
-                                            android:textColor = "@android:color/darker_gray" />
+                                            android:layout_marginEnd = "@dimen/normal"
+                                            app:cardCornerRadius = "@dimen/small">
 
 
-                                </androidx.cardview.widget.CardView>
+                                                <TextView
+                                                    android:id = "@+id/search_input"
+                                                    android:layout_width = "match_parent"
+                                                    android:layout_height = "wrap_content"
+                                                    android:background = "@android:color/white"
+                                                    android:padding = "@dimen/small"
+                                                    android:text = "要搜索点什么吗..."
+                                                    android:textColor = "@android:color/darker_gray" />
+
+
+                                        </androidx.cardview.widget.CardView>
+
 
 
                         </androidx.appcompat.widget.Toolbar>
@@ -71,7 +72,7 @@
                     tools:layout = "@layout/fragment_home_main" />
 
 
-                <include layout="@layout/list_floating_action_button" />
+                <include layout = "@layout/list_floating_action_button" />
 
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

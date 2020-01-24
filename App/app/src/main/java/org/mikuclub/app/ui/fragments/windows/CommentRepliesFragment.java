@@ -127,7 +127,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 initCommentInput();
 
 
-
                 //绑定返回按钮
                 returnButton.setOnClickListener(v -> {
                         //关闭窗口
@@ -252,18 +251,19 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         {
                 //设置查询参数
                 CommentParameters parameters = new CommentParameters();
-                //如果有子回复
+
+                //生成子回复id列表
+                ArrayList<Integer> parentList = new ArrayList();
+                parentList.add(comment.getId());
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
-                        //生成子回复id列表
-                        ArrayList<Integer> parentList = new ArrayList();
-                        parentList.add(comment.getId());
                         parentList.addAll(comment.getMetadata().getComment_reply_ids());
-                        //设置参数
-                        parameters.setPost(new ArrayList<>(Arrays.asList(comment.getPost())));
-                        parameters.setParent(parentList);
-                        parameters.setOrder(GlobalConfig.Order.ASC);
                 }
+                //设置参数
+                parameters.setPost(new ArrayList<>(Arrays.asList(comment.getPost())));
+                parameters.setParent(parentList);
+                parameters.setOrder(GlobalConfig.Order.ASC);
+
 
                 //创建数据控制器
                 controller = new CommentController(getActivity());
@@ -273,15 +273,10 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 controller.setRecyclerDataList(recyclerDataList);
                 controller.setParameters(parameters);
 
-                //如果没有任何子回复
-                if (GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
-                {
-                        //关闭自动加载
-                        controller.setWantMore(false);
 
-                }
                 //设置数据
                 controller.setPostId(comment.getPost());
+
 
         }
 

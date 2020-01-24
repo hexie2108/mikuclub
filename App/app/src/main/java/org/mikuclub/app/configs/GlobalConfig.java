@@ -79,8 +79,16 @@ public class GlobalConfig
                 public static final String POST_VIEW_COUNT= HOST+UTILS+"post_view_count/";
                 //GET  设置文章失效计数
                 public static final String POST_FAIL_DOWN_COUNT= HOST+UTILS+"fail_down/";
-                //POST 发送私信
-                public static final String SEND_PRIVATE_MESSAGE= HOST+UTILS+"message/";
+
+                //POST 发送私信, GET 获取私信, DELETE 删除私信
+                public static final String PRIVATE_MESSAGE = HOST+UTILS+"message/";
+                //GET 获取私信数量
+                public static final String PRIVATE_MESSAGE_COUNT = HOST+UTILS+"message_count/";
+
+                //GET 获取回复评论, DELETE 删除评论
+                public static final String REPLY_COMMENTS = HOST+UTILS+"comments/";
+                //GET 获取回复评论数量
+                public static final String REPLY_COMMENTS_COUNT = HOST+UTILS+"comments_count/";
 
         }
 
@@ -106,10 +114,7 @@ public class GlobalConfig
                 public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 15; //每15天检查一次
 
 
-                //用户登陆信息
-                public static final String USER_LOGIN ="user_login";
-                //用户令牌
-                public static final String USER_TOKEN="user_token";
+
 
 
                 //点赞过的文章ID数组
