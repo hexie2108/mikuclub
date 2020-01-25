@@ -182,11 +182,6 @@ public class PostController extends BaseController
                                 ToastUtils.shortToast("请求错误");
                         }
 
-                        @Override
-                        public void onHttpError()
-                        {
-                                onError(null);
-                        }
 
                         //请求结束后
                         @Override
@@ -194,6 +189,7 @@ public class PostController extends BaseController
                         {
                                 //关闭进度条
                                 swipeRefresh.setRefreshing(false);
+                                //重置信号标
                                 setWantMore(true);
                         }
 
@@ -201,10 +197,7 @@ public class PostController extends BaseController
                         @Override
                         public void onCancel()
                         {
-                                //关闭加载进度条
-                                swipeRefresh.setRefreshing(false);
-                                //重置信号标
-                                setWantMore(true);
+                                onFinally();
                         }
                 };
 

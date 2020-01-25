@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 /**
+ * 分类页面活动
  * viewpager 碎片适配器
  */
 public class CategoryViewPagerAdapter extends FragmentStateAdapter

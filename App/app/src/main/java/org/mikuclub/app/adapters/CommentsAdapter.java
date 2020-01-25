@@ -79,26 +79,7 @@ public class CommentsAdapter extends BaseAdapterWithFooter
                 //移除内容外层P标签
                 htmlContent = HttpUtils.removeHtmlMainTag(htmlContent, "<p>", "</p>");
                 //解析 内容html
-                HttpUtils.parseHtml(getAdapterContext(), htmlContent, viewHolder.getItemContent(), new OnTagClickListener()
-                {
-                        //设置 点击图片tag的动作
-                        @Override
-                        public void onImageClick(Context context, List<String> imagesSrc, int position)
-                        {
-                        }
-
-                        //设置点击链接tag的动作
-                        @Override
-                        public void onLinkClick(Context context, String url)
-                        {
-                                // link click
-                                Uri uri = Uri.parse(HttpUtils.checkAndAddHttpsProtocol(url));
-                                Intent intent = new Intent();
-                                intent.setAction("android.intent.action.VIEW");
-                                intent.setData(uri);
-                                getAdapterContext().startActivity(intent);
-                        }
-                });
+                HttpUtils.parseHtmlDefault(getAdapterContext(), htmlContent, viewHolder.getItemContent());
         }
 
 

@@ -29,7 +29,7 @@ import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
-import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity
                 Toolbar toolbar = findViewById(R.id.toolbar);
 
                 //创建进度条弹窗
-                progressDialog = ViewUtils.initProgressDialog(this);
+                progressDialog = ViewUtils.createProgressDialog(this, false, false);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -383,7 +383,7 @@ public class LoginActivity extends AppCompatActivity
                                 return true;
                         case R.id.forgotten_password:
                                 //启动游览器 访问重置密码网页
-                                GeneralUtils.startWebViewIntent(this, GlobalConfig.Server.FORGOTTEN_PASSWORD, null);
+                                HttpUtils.startWebViewIntent(this, GlobalConfig.Server.FORGOTTEN_PASSWORD, null);
                                 return true;
                 }
                 return super.onOptionsItemSelected(item);

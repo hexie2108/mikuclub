@@ -16,6 +16,7 @@ public class GlobalConfig
 
         //JSON用的日期格式
         public static final String DATE_FORMAT_JSON = "yyyy-MM-dd'T'HH:mm:ss";
+        public static final String DATE_FORMAT_JSON_CUSTOM_ENDPOINTS = "yyyy-MM-dd HH:mm:ss";
         public static final String DATE_FORMAT = "yy-MM-dd HH:mm";
 
         //浮动弹窗的高度屏幕占比%
@@ -130,8 +131,10 @@ public class GlobalConfig
 
         //每页显示的文章数量
         public static final int NUMBER_PER_PAGE = 12;
-        //每页显示的p评论数量
+        //每页显示的评论数量
         public static final int NUMBER_PER_PAGE_OF_COMMENTS = 10;
+        //每页显示的消息数量
+        public static final int NUMBER_PER_PAGE_OF_MESSAGE = 12;
         //首页幻灯片的文章数量
         public static final int NUMBER_PER_PAGE_OF_SLIDERSHOW = 5;
         //提前多少item触发自动加载

@@ -9,6 +9,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -19,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -132,16 +134,19 @@ public class HomeActivity extends AppCompatActivity
                 NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
 
+
                 //获取未读消息数量
-                LogUtils.e("私信"+MessageUtils.getPrivateMessageCount());
-                LogUtils.e("评论"+MessageUtils.getReplyCommentCount());
-                int unreadMessageCount = MessageUtils.getPrivateMessageCount()+MessageUtils.getReplyCommentCount();
+                int unreadMessageCount = MessageUtils.getPrivateMessageCount() + MessageUtils.getReplyCommentCount();
                 //如果未读消息大于0
-                if(unreadMessageCount>0){
-                        //在消息图标右上角显示未读消息提醒
+                if (unreadMessageCount > 0)
+                {
+                        //在消息图标右上角显示提醒气泡
                         BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.navigation_message);
+                        //设置气泡数字
                         badge.setNumber(unreadMessageCount);
+                        //设置气泡位置偏移
                         badge.setVerticalOffset(5);
+                        //设置气泡背景颜色
                         badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
 

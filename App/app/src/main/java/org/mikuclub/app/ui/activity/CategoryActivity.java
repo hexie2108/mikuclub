@@ -52,8 +52,8 @@ public class CategoryActivity extends AppCompatActivity
 
                 toolbar = findViewById(R.id.toolbar);
                 searchInputIcon = findViewById(R.id.search_input_icon);
-                viewPager = findViewById(R.id.category_view_pager);
-                tabsMenuLayout = findViewById(R.id.category_tabs_menu);
+                viewPager = findViewById(R.id.view_pager);
+                tabsMenuLayout = findViewById(R.id.tabs_menu);
                 floatingActionButton = findViewById(R.id.list_floating_action_button);
 
                 //获取文章数据
@@ -70,9 +70,9 @@ public class CategoryActivity extends AppCompatActivity
                         actionBar.setTitle(category.getTitle());
                 }
 
-
+                //初始化 分页显示器
                 initViewPager();
-
+                //初始化搜索图标
                 initSearchIcon();
 
         }

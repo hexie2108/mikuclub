@@ -171,7 +171,7 @@ public class PostMainFragment extends Fragment
                                 //监听按钮点击
                                 postBilibiliButton.setOnClickListener(v -> {
                                         //启动第三方应用
-                                        GeneralUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
+                                        HttpUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
                                 });
 
                                 //显示b站视频按钮
@@ -233,7 +233,7 @@ public class PostMainFragment extends Fragment
                                 //检测链接格式时候正确
                                 url = HttpUtils.checkAndAddHttpsProtocol(url);
                                 //启动第三方应用
-                                GeneralUtils.startWebViewIntent(context, url, "");
+                                HttpUtils.startWebViewIntent(context, url, null);
                         }
                 });
         }

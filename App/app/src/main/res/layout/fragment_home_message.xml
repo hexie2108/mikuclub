@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/swipe_refresh"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    android:orientation="vertical"
+    tools:showIn = "@layout/activity_home_main"
+    >
+        <com.google.android.material.tabs.TabLayout
+            android:id = "@+id/tabs_menu"
+            android:layout_width = "match_parent"
+            android:layout_height = "@dimen/ultra_large"
+            app:tabTextAppearance = "@style/TabLayoutTextStyle"
+            android:background="@color/defaultBackground"
+            app:tabMode="auto"
+            style="@style/Widget.MaterialComponents.TabLayout"
+            />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id = "@+id/view_pager"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            />
+
+        <TextView
+            android:id="@+id/info_text"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop="@dimen/very_large"
+            android:text="请登陆后再访问本页面"
+            android:gravity="center"
+            android:visibility="gone"
+            />
+
+
+
+</LinearLayout>

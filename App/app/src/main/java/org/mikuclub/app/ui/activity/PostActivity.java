@@ -1,6 +1,7 @@
 package org.mikuclub.app.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -25,21 +26,25 @@ import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
-import org.mikuclub.app.javaBeans.resources.Page;
+import org.mikuclub.app.callBack.HttpCallBack;
+import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.javaBeans.resources.SinglePost;
 import org.mikuclub.app.javaBeans.resources.base.Post;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.ui.fragments.windows.SharingFragment;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ViewUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
@@ -54,15 +59,16 @@ public class PostActivity extends AppCompatActivity
         /*静态变量*/
         public static final int TAG = 4;
         public static final String INTENT_POST = "post";
+        public static final String INTENT_POST_ID = "pos_id";
 
         /*变量*/
         private Post post;
-        private List<String> imagesSrc;
-
+        private int postId;
         //碎片适配器
         private PostViewPagerAdapter postViewPagerAdapter;
         private SharingFragment sharingWindowsFragment;
 
+        private PostDelegate delegate;
 
         /*组件*/
         private AppBarLayout appBarLayout;
@@ -80,6 +86,9 @@ public class PostActivity extends AppCompatActivity
         //分页显示器
         private ViewPager2 viewPager;
         private FloatingActionButton postDownloadButton;
+        //创建进度条弹窗
+        AlertDialog progressDialog;
+        AlertDialog confirmDialog;
 
 
         @Override
@@ -117,11 +126,99 @@ public class PostActivity extends AppCompatActivity
                         actionBar.setDisplayShowTitleEnabled(false);
                 }
 
+
+                postId = getIntent().getIntExtra(INTENT_POST_ID, 0);
                 //获取文章数据
                 post = (Post) getIntent().getSerializableExtra(INTENT_POST);
-                //获取图片地址列表
-                imagesSrc = post.getMetadata().getImages_src();
+                //如果是通过完整post数据方式启动本活动
+                if (postId == 0)
+                {
+                        //直接初始化
+                        setup();
+                }
+                //如果是通过 只有post_id的方式启动本活动
+                else
+                {
+                        //准备通过id请求文章
+                        prepareGetPost();
+                }
 
+        }
+
+        /**
+         * 准备请求文章
+         */
+        private void prepareGetPost()
+        {
+                //创建请求代理扔
+                delegate = new PostDelegate(TAG);
+                //创建进度条弹窗
+                progressDialog = ViewUtils.createProgressDialog(this, true, true);
+                //创建重试弹窗
+                confirmDialog = ViewUtils.createConfirmDialog(this, "请求失败", null, true, true,"重试", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        //重试请求
+                        getPostData();
+                });
+                //发送请求
+                getPostData();
+        }
+
+
+        /**
+         * 发送请求
+         */
+        private void getPostData()
+        {
+
+                //显示进度条
+                progressDialog.show();
+
+                HttpCallBack httpCallBack = new HttpCallBack()
+                {
+                        @Override
+                        public void onSuccess(String response)
+                        {
+                                //获取文章数据
+                                post = ParserUtils.fromJson(response, SinglePost.class).getBody();
+                                //初始化页面
+                                setup();
+                        }
+                        @Override
+                        public void onError(String response)
+                        {
+                                //弹出确认窗口 允许用户重试
+                                confirmDialog.show();
+                        }
+
+                        @Override
+                        public void onHttpError()
+                        {
+                                onError(null);
+                        }
+
+                        @Override
+                        public void onFinally()
+                        {
+                                //隐藏进度条弹窗
+                                progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                                //如果被中断的话, 就结束当前应用
+                                finish();
+                        }
+                };
+                delegate.getPost(httpCallBack, postId);
+
+        }
+
+        /**
+         * 初始化本活动
+         */
+        private void setup()
+        {
                 initSliders();
 
                 initViewPager();
@@ -130,26 +227,28 @@ public class PostActivity extends AppCompatActivity
 
                 //根据appBar高度更改标题栏图标颜色
                 changeHomeIconColorListener();
-                //屏蔽点击事件, 防止在菜单栏容器上的点击 激活下层幻灯片图片的事件
-                tabsMenuBox.setOnClickListener(v -> {
-                });
-
         }
+
 
         /**
          * 初始化图片幻灯片
          **/
         private void initSliders()
         {
+                //获取图片地址列表
+                List<String> imagesSrc = post.getMetadata().getImages_src();
+                //重新显示指示器
+                textIndicator.setVisibility(View.VISIBLE);
 
                 PageBean bean = new PageBean();
                 //如果只有一张图关闭循环
-                if(imagesSrc.size()==1){
+                if (imagesSrc.size() == 1)
+                {
                         bean.isAutoCycle = false;
                         bean.isAutoLoop = false;
                         bean.loopMaxCount = 2;
                 }
-                bean.transFormer= BannerTransType.UNKNOWN;
+                bean.transFormer = BannerTransType.UNKNOWN;
                 sliderViewPager.addPageBean(bean);
 
                 sliderViewPager.addIndicator(textIndicator);
@@ -225,6 +324,10 @@ public class PostActivity extends AppCompatActivity
                                 }
                         }).attach();
 
+                //屏蔽点击事件, 防止在菜单栏容器上的点击 激活下层幻灯片图片的事件
+                tabsMenuBox.setOnClickListener(v -> {
+                });
+
         }
 
         /**
@@ -235,6 +338,8 @@ public class PostActivity extends AppCompatActivity
                 //检测 是否没有下载链接
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()) || !GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown2()))
                 {
+                        //显示下载按钮
+                        postDownloadButton.setVisibility(View.VISIBLE);
                         //绑定点击监听器
                         postDownloadButton.setOnClickListener(v -> {
                                 //启动下载
@@ -303,10 +408,7 @@ public class PostActivity extends AppCompatActivity
                 return post;
         }
 
-        public PostViewPagerAdapter getPostViewPagerAdapter()
-        {
-                return postViewPagerAdapter;
-        }
+
 
 
         /**
@@ -337,6 +439,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 静态 启动本活动的方法
+         * 提供完整post数据
          *
          * @param context
          * @param post
@@ -345,6 +448,20 @@ public class PostActivity extends AppCompatActivity
         {
                 Intent intent = new Intent(context, PostActivity.class);
                 intent.putExtra(INTENT_POST, post);
+                context.startActivity(intent);
+        }
+
+        /**
+         * 静态 启动本活动的方法2
+         * 只提供post id
+         *
+         * @param context
+         * @param postId
+         */
+        public static void startAction(Context context, int postId)
+        {
+                Intent intent = new Intent(context, PostActivity.class);
+                intent.putExtra(INTENT_POST_ID, postId);
                 context.startActivity(intent);
         }
 

@@ -29,7 +29,7 @@
             android:layout_width = "30dp"
             android:layout_height = "30dp"
             android:layout_marginTop = "35dp"
-
+        android:visibility="invisible"
             android:layout_marginEnd = "@dimen/large"
             android:background = "@drawable/custom_rounded_corner"
             android:gravity = "center"

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 
@@ -14,9 +13,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.UtilsDelegate;
+import org.mikuclub.app.delegates.MessageDelegate;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.ViewUtils;
 import org.mikuclub.app.utils.http.Request;
@@ -39,7 +37,7 @@ public class ReposrtActivity extends AppCompatActivity
         /*变量*/
 
         //数据请求代理人
-        private UtilsDelegate delegate;
+        private MessageDelegate delegate;
 
 
         /*组件*/
@@ -65,10 +63,10 @@ public class ReposrtActivity extends AppCompatActivity
                 inputReport = findViewById(R.id.input_report);
                 buttonSend = findViewById(R.id.button_send);
                 //创建进度条弹窗
-                progressDialog = ViewUtils.initProgressDialog(this);
+                progressDialog = ViewUtils.createProgressDialog(this, false, false);
 
                 //创建数据请求 代理人
-                delegate = new UtilsDelegate(TAG);
+                delegate = new MessageDelegate(TAG);
 
 
                 //替换原版标题栏

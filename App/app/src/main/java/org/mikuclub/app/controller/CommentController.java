@@ -52,7 +52,7 @@ public class CommentController extends BaseController
                         userLogin = UserUtils.getUser();
                 }
                 //创建进度条弹窗
-                progressDialog = ViewUtils.initProgressDialog(getContext());
+                progressDialog = ViewUtils.createProgressDialog(getContext(), false, false);
         }
 
         /**

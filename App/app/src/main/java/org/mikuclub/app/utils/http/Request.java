@@ -102,7 +102,7 @@ public class Request
         private static void request(int method, String url, final Map<String, Object> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
 
-                LogUtils.v("请求地址 "+url);
+                LogUtils.v("请求地址 "+(method == 1? "post":"get")+" "+url );
 
 
                 StringRequest stringRequest  = new StringRequest(method, url,

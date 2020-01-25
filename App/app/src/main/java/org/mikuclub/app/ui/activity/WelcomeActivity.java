@@ -23,15 +23,15 @@ import android.widget.TextView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.callBack.MyRunnable;
 import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.delegates.MessageDelegate;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.resources.BaseRespond;
 import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.storage.MessageUtils;
@@ -59,6 +59,7 @@ public class WelcomeActivity extends AppCompatActivity
         /*变量*/
         private PostDelegate postDelegate;
         private UtilsDelegate utilsDelegate;
+        private MessageDelegate messageDelegate;
 
         private Posts stickyPostList = null;
         private Posts postList = null;
@@ -82,6 +83,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //创建代理人
                 postDelegate = new PostDelegate(TAG);
                 utilsDelegate = new UtilsDelegate(TAG);
+                messageDelegate = new MessageDelegate(TAG);
 
                 //检测权限
                 permissionCheck();
@@ -119,7 +121,7 @@ public class WelcomeActivity extends AppCompatActivity
                 else
                 {
                         //提示+延时结束应用
-                        finishActivityDueNoInternet();
+                        setNotInternetError();
                 }
         }
 
@@ -143,6 +145,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 //令牌错误
                                 @Override
                                 public void onTokenError()
@@ -159,12 +162,14 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 //网络错误
                                 @Override
                                 public void onHttpError()
                                 {
                                         displayErrorInfo();
                                 }
+
                                 @Override
                                 public void onCancel()
                                 {
@@ -177,7 +182,8 @@ public class WelcomeActivity extends AppCompatActivity
 
                 }
                 //如果未登陆
-                else{
+                else
+                {
                         //增加计数器
                         startHomeSafety();
                 }
@@ -224,6 +230,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 startHomeSafety();
                                         }
                                 }
+
                                 //内容错误的情况, 忽视, 下次再检查更新
                                 @Override
                                 public void onError(String response)
@@ -241,6 +248,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 @Override
                                 public void onCancel()
                                 {
@@ -294,6 +302,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         LogUtils.v("重新请求分类信息 成功");
                                         startHomeSafety();
                                 }
+
                                 @Override
                                 public void onError(String response)
                                 {
@@ -359,6 +368,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 //令牌错误
                                 @Override
                                 public void onTokenError()
@@ -374,6 +384,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 //网络错误
                                 @Override
                                 public void onHttpError()
@@ -381,6 +392,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 @Override
                                 public void onCancel()
                                 {
@@ -403,6 +415,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 //令牌错误
                                 @Override
                                 public void onTokenError()
@@ -418,6 +431,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 //网络错误
                                 @Override
                                 public void onHttpError()
@@ -425,6 +439,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //增加计数器
                                         startHomeSafety();
                                 }
+
                                 @Override
                                 public void onCancel()
                                 {
@@ -434,13 +449,14 @@ public class WelcomeActivity extends AppCompatActivity
                         };
 
                         //发送请求
-                        utilsDelegate.countPrivateMessage(countPrivateMessageCallBack, true, false);
-                        utilsDelegate.countReplyComment(countReplyCommentCallBack, true);
+                        messageDelegate.countPrivateMessage(countPrivateMessageCallBack, true, false);
+                        messageDelegate.countReplyComment(countReplyCommentCallBack, true);
 
 
                 }
                 //如果未登陆
-                else{
+                else
+                {
                         //增加2次计数器
                         startHomeSafety();
                         startHomeSafety();
@@ -474,12 +490,14 @@ public class WelcomeActivity extends AppCompatActivity
                         {
                                 displayErrorInfo();
                         }
+
                         //请求失败
                         @Override
                         public void onHttpError()
                         {
                                 onError(null);
                         }
+
                         @Override
                         public void onCancel()
                         {
@@ -502,11 +520,13 @@ public class WelcomeActivity extends AppCompatActivity
                         {
                                 displayErrorInfo();
                         }
+
                         @Override
                         public void onHttpError()
                         {
                                 onError(null);
                         }
+
                         @Override
                         public void onCancel()
                         {
@@ -586,7 +606,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //如果是强制更新, 就无法取消
                 dialog.setCancelable(!appUpdate.getBody().isForceUpdate());
                 //设置确认按钮名和动作
-                dialog.setPositiveButton("前往下载", (dialog1, which) -> GeneralUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getBody().getDownUrl(), ""));
+                dialog.setPositiveButton("前往下载", (dialog1, which) -> HttpUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getBody().getDownUrl(), null));
                 //设置取消按钮名和动作
                 dialog.setNegativeButton("取消", (dialog12, which) -> {
                         //如果是强制更新, 取消等于关闭应用
@@ -676,54 +696,23 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
         /**
-         * 定时退出活动 (无网络连接的情况)
+         * 无网络连接的情况
          */
-        private void finishActivityDueNoInternet()
+        private void setNotInternetError()
         {
-                //创建子线程
-                new Thread(new Runnable()
-                {
-                        @Override
-                        public void run()
-                        {
-                                try
-                                {
-                                        //循环5次, 每次暂停1秒钟
-                                        int cycle = 5;
-                                        for (int i = 0; i < cycle; i++)
-                                        {
-                                                //切换到主线程
-                                                //更新UI显示
-                                                runOnUiThread(new MyRunnable(cycle - i)
-                                                {
-                                                        //通过get方法获取到外部传递的第一个变量
-                                                        int seconds = (int) this.getArgument1();
 
-                                                        @Override
-                                                        public void run()
-                                                        {
+                //更新活动页 UI
+                welecomeInfoText.setText("未发现可用的网络连接, 请接入网络后 再点我重试");
+                welecomeInfoText.setVisibility(View.VISIBLE);
+                welecomeProgressBar.setVisibility(View.INVISIBLE);
+                //绑定点击事件 允许用户手动重试
+                welecomeInfoText.setOnClickListener(v -> {
+                        welecomeInfoText.setVisibility(View.INVISIBLE);
+                        welecomeProgressBar.setVisibility(View.VISIBLE);
+                        //重试
+                        initApplication();
+                });
 
-                                                                //更新活动页 UI
-                                                                welecomeInfoText.setText("未发现可用的网络连接, 本应用将在" + seconds + "秒后自动退出");
-                                                                welecomeInfoText.setVisibility(View.VISIBLE);
-                                                                welecomeProgressBar.setVisibility(View.INVISIBLE);
-                                                        }
-                                                });
-
-                                                //暂停子线程1秒种
-                                                Thread.sleep(1000);
-                                        }
-                                        //退出程序
-                                        WelcomeActivity.this.finish();
-                                }
-                                catch (InterruptedException e)
-                                {
-                                        LogUtils.w(WelcomeActivity.class.getName() + "子进程延时错误");
-                                        e.printStackTrace();
-                                }
-
-                        }
-                }).start();
         }
 
         /**

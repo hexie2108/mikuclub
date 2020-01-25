@@ -5,7 +5,7 @@ import org.mikuclub.app.javaBeans.resources.base.Comment;
 
 import java.io.Serializable;
 
-public class CreateComment implements Serializable
+public class SingleComment implements Serializable
 {
 
         private Comment body;

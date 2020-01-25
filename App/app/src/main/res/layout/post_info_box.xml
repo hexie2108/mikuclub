@@ -25,8 +25,9 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/small"
-            android:text = "-"
+            android:text = "20-01-01 00:00"
             android:textSize = "@dimen/text_small"
+
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_date_icon"
             app:layout_constraintTop_toTopOf = "parent" />
@@ -46,7 +47,7 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/small"
-            android:text = "0 查看"
+            android:text = "0 次查看"
             android:textSize = "@dimen/text_small"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_views_icon"

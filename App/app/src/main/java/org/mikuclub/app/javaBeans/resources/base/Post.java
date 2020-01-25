@@ -65,6 +65,9 @@ public class Post implements Serializable
                 private List<Integer> count_like;
                 // private List<PostTag> tags;
 
+                private List<Author> author;
+
+
                 private List<Integer> count_sharing;
 
                 public List<Integer> getCount_sharing()
@@ -167,7 +170,6 @@ public class Post implements Serializable
                         this.down2 = down2;
                 }
 
-                private List<PostAuthor> author;
 
                 public List<String> getDown()
                 {
@@ -240,12 +242,12 @@ public class Post implements Serializable
                 }
 
 
-                public List<PostAuthor> getAuthor()
+                public List<Author> getAuthor()
                 {
                         return author;
                 }
 
-                public void setAuthor(List<PostAuthor> author)
+                public void setAuthor(List<Author> author)
                 {
                         this.author = author;
                 }
@@ -288,55 +290,6 @@ public class Post implements Serializable
                 }
         }
 
-
-        public class PostAuthor implements Serializable
-        {
-
-                private int author_id;
-                private String name;
-                private String description;
-                private String avatar_src;
-
-                public int getAuthor_id()
-                {
-                        return author_id;
-                }
-
-                public void setAuthor_id(int author_id)
-                {
-                        this.author_id = author_id;
-                }
-
-                public String getName()
-                {
-                        return name;
-                }
-
-                public void setName(String name)
-                {
-                        this.name = name;
-                }
-
-                public String getDescription()
-                {
-                        return description;
-                }
-
-                public void setDescription(String description)
-                {
-                        this.description = description;
-                }
-
-                public String getAvatar_src()
-                {
-                        return avatar_src;
-                }
-
-                public void setAvatar_src(String avatar_src)
-                {
-                        this.avatar_src = avatar_src;
-                }
-        }
 
         public Date getDate()
         {

@@ -216,7 +216,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                 identifyUrl = identifyUrl.substring(1);
                                                 String baiduUrl = GlobalConfig.BAIDU_PAN_APP_WAKE_URL + "?" + GlobalConfig.BAIDU_PAN_PARAMETER_NAME + "=" + identifyUrl;
                                                 //启动第三方应用
-                                                GeneralUtils.startWebViewIntent(getActivity(), baiduUrl, downUrl);
+                                                HttpUtils.startWebViewIntent(getActivity(), baiduUrl, downUrl);
                                         };
 
                                 }
@@ -232,7 +232,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                         ToastUtils.shortToast("已复制访问密码到剪切板");
                                                 }
                                                 // 用游览器打开链接
-                                                GeneralUtils.startWebViewIntent(getActivity(), downUrl, downUrl);
+                                                HttpUtils.startWebViewIntent(getActivity(), downUrl, null);
                                         };
                                 }
                         }

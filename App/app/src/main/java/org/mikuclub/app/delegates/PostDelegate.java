@@ -39,6 +39,17 @@ public class PostDelegate extends BaseDelegate
                 getPostList(httpCallBack, page, parametersPosts);
         }
 
+        /**
+         * 获取单独一个文章
+         *
+         * @param httpCallBack
+         * @param postId
+         */
+        public void getPost(HttpCallBack httpCallBack, int postId)
+        {
+                BaseParameters baseParameters = new BaseParameters();
+                getModel().selectById(postId, baseParameters.toMap(), null, getTag(), httpCallBack);
+        }
 
 
         /**

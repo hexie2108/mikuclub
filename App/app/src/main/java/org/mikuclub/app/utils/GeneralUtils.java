@@ -123,43 +123,7 @@ public class GeneralUtils
         }
 
 
-        /**
-         * 创建隐式intent 启动第三方应用
-         *
-         * @param context
-         * @param url          主要地址
-         * @param SecondaryUrl 备用地址
-         */
-        public static void startWebViewIntent(Context context, String url, String SecondaryUrl)
-        {
 
-                //创建intent
-                Intent intent = new Intent();
-                intent.setAction("android.intent.action.VIEW");
-                //设置主要地址
-                intent.setData(Uri.parse(url));
-
-                //如果主要地址 不能被正常解析 (没有安装第三方应用)
-                if (intent.resolveActivity(context.getPackageManager()) == null)
-                {
-                        //使用备用地址
-                        intent.setData(Uri.parse(SecondaryUrl));
-                }
-
-                //第二次检查, 确保只有在能被解析的情况下 才尝试启动
-                if (intent.resolveActivity(context.getPackageManager()) != null)
-                {
-                        //启动
-                        context.startActivity(intent);
-                }
-                //否则 消息框提示
-                else
-                {
-                        ToastUtils.shortToast("无法找到相关联的应用");
-                }
-
-
-        }
 
 
         /**

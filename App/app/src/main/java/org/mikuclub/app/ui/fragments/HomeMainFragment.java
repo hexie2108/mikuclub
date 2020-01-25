@@ -196,7 +196,7 @@ public class HomeMainFragment extends Fragment
         {
                 super.onPause();
                 //隐藏浮动按钮
-                floatingActionButton.setVisibility(View.INVISIBLE);
+                floatingActionButton.setVisibility(View.GONE);
 
         }
 

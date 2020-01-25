@@ -1,13 +1,17 @@
 package org.mikuclub.app.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -37,11 +41,11 @@ public class HttpUtils
                 {
                         new_url = "https:" + url;
                 }
-                //如果是连 斜杠//都没有
+                /*如果是连 斜杠//都没有 , 有bug 会导致b站链接无法正常解析
                 else if (Character.isLetter(firstElement) && Character.toLowerCase(firstElement) != 'h')
                 {
                         new_url = "https://" + url;
-                }
+                }*/
                 return new_url;
         }
 
@@ -75,8 +79,50 @@ public class HttpUtils
                 return text;
         }
 
+        /**
+         * 创建隐式intent 启动第三方应用
+         *
+         * @param context
+         * @param url          主要地址
+         * @param SecondaryUrl 备用地址
+         */
+        public static void startWebViewIntent(Context context, String url, String SecondaryUrl)
+        {
+                //检测url头部是否正常
+                url = HttpUtils.checkAndAddHttpsProtocol(url);
+
+                //创建intent
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                //设置主要地址
+                intent.setData(Uri.parse(url));
+
+                //如果主要地址 不能被正常解析 (没有安装第三方应用), 而第二个地址不是null 而且不是空
+                if (intent.resolveActivity(context.getPackageManager()) == null && SecondaryUrl != null && !SecondaryUrl.isEmpty())
+                {
+                        //使用备用地址
+                        intent.setData(Uri.parse(SecondaryUrl));
+                }
+
+                //第二次检查, 确保只有在能被解析的情况下 才尝试启动
+                if (intent.resolveActivity(context.getPackageManager()) != null)
+                {
+                        //启动
+                        context.startActivity(intent);
+                }
+                //否则 消息框提示
+                else
+                {
+                        ToastUtils.shortToast("无法找到相关联的应用");
+                }
+
+
+        }
+
+
 
         /**
+         * 第三方解析html方法, 支持给链接和图片 设置动作监听
          * @param context
          * @param htmlString
          * @param textView
@@ -154,6 +200,30 @@ public class HttpUtils
 
         }
 
+
+        /**
+         * 默认解析html方法, 给链接添加点击事件监听, 图片没有监听
+         * @param context
+         * @param htmlString
+         * @param textView
+         */
+        public static void parseHtmlDefault(final Context context, String htmlString, TextView textView){
+                HttpUtils.parseHtml(context, htmlString, textView, new OnTagClickListener()
+                {
+                        //设置 点击图片tag的动作
+                        @Override
+                        public void onImageClick(Context context, List<String> imagesSrc, int position)
+                        {
+                        }
+
+                        //设置点击链接tag的动作
+                        @Override
+                        public void onLinkClick(Context context, String url)
+                        {
+                                startWebViewIntent(context, url, null);
+                        }
+                });
+        }
 
 
 }

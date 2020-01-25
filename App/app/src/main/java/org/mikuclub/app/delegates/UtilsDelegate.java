@@ -76,52 +76,5 @@ public class UtilsDelegate extends BaseDelegate
         }
 
 
-        /**
-         * 发送私信
-         *
-         * @param httpCallBack
-         * @param bodyParameters
-         */
-        public void sendPrivateMessage(HttpCallBack httpCallBack, CreatePrivateMessageParameters bodyParameters)
-        {
-                BaseParameters baseParameters = new BaseParameters();
-                Request.post(GlobalConfig.Server.PRIVATE_MESSAGE, baseParameters.toMap(), bodyParameters.toMap(), UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
-
-        }
-
-        /**
-         * 获取私信计数
-         *
-         * @param httpCallBack
-         * @param unread       是否是要计算未读私信信息
-         * @param selfMessage  计算自己回复的数量
-         */
-        public void countPrivateMessage(HttpCallBack httpCallBack, boolean unread, boolean selfMessage)
-        {
-                Map<String, Object> queryParameters = new HashMap();
-                putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "unread", unread);
-                putIfNotNull(queryParameters, "self", selfMessage);
-
-                Request.get(GlobalConfig.Server.PRIVATE_MESSAGE_COUNT, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
-
-        }
-
-
-        /**
-         * 获取私信计数
-         *
-         * @param httpCallBack
-         * @param unread       是否是要计算未读评论
-         */
-        public void countReplyComment(HttpCallBack httpCallBack, boolean unread)
-        {
-                Map<String, Object> queryParameters = new HashMap();
-                putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "unread", unread);
-                Request.get(GlobalConfig.Server.REPLY_COMMENTS_COUNT, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
-
-        }
-
 
 }

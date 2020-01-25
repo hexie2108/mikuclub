@@ -5,22 +5,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.json.JSONObject;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.javaBeans.AppUpdate;
 import org.mikuclub.app.javaBeans.resources.BaseRespond;
 import org.mikuclub.app.javaBeans.resources.Categories;
 import org.mikuclub.app.javaBeans.resources.Comments;
-import org.mikuclub.app.javaBeans.resources.CreateComment;
+import org.mikuclub.app.javaBeans.resources.SingleComment;
+import org.mikuclub.app.javaBeans.resources.PrivateMessages;
 import org.mikuclub.app.javaBeans.resources.UserAuthor;
 import org.mikuclub.app.javaBeans.resources.UserLogin;
 import org.mikuclub.app.javaBeans.resources.Posts;
 import org.mikuclub.app.javaBeans.resources.WpError;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import mikuclub.app.BuildConfig;
 
 /**
  * 负责反序列化 和 序列化 数据
@@ -28,8 +25,9 @@ import mikuclub.app.BuildConfig;
 public class ParserUtils
 {
 
+        //2个gson 解析器配置的日期格式不一样
         private static Gson gson = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON).create();
-
+        private static Gson gson2 = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON_CUSTOM_ENDPOINTS).create();
         /**
          * 解析文章列表
          *
@@ -76,11 +74,11 @@ public class ParserUtils
          * @param response
          * @return
          */
-        public static CreateComment createComment(String response)
+        public static SingleComment createComment(String response)
         {
 
-                CreateComment createComment = gson.fromJson(response, CreateComment.class);
-                return createComment;
+                SingleComment singleComment = gson.fromJson(response, SingleComment.class);
+                return singleComment;
 
         }
 
@@ -163,6 +161,19 @@ public class ParserUtils
 
 
         /**
+         * 解析私信类
+         *
+         * @param response
+         * @return
+         */
+        public static PrivateMessages privateMessages(String response)
+        {
+                PrivateMessages privateMessages = gson2.fromJson(response, PrivateMessages.class);
+                return privateMessages;
+        }
+
+
+        /**
          * 解析数据为 整数列表
          *
          * @param response
@@ -187,6 +198,20 @@ public class ParserUtils
                 {
                 }.getType());
         }
+
+
+        /**
+         *  反序列化字符串为对象
+         * @param jsonText
+         * @param type
+         * @param <T>
+         * @return
+         */
+        public  static <T> T fromJson(String jsonText, Class<T> type){
+
+                return gson.fromJson(jsonText, type);
+        }
+
 
         /**
          * 序列化对象为json字符串
