@@ -9,8 +9,7 @@
     android:layout_height = "wrap_content"
     android:layout_marginTop = "@dimen/normal"
     android:layout_marginBottom = "@dimen/normal"
-    android:clickable = "true"
-    android:focusable = "true">
+>
 
         <androidx.cardview.widget.CardView
             android:id = "@+id/comment_input__avatar_img_box"

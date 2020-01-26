@@ -5,31 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-
-import org.mikuclub.app.adapters.CommentsAdapter;
-import org.mikuclub.app.adapters.PostsAdapter;
-import org.mikuclub.app.adapters.PrivateMessagesAdapter;
+import org.mikuclub.app.adapters.HomePrivateMessagesAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.adapters.viewPager.MessageViewPagerAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.controller.PostController;
-import org.mikuclub.app.controller.PrivateMessageController;
+import org.mikuclub.app.controller.HomePrivateMessageController;
 import org.mikuclub.app.delegates.MessageDelegate;
-import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.base.Post;
-import org.mikuclub.app.javaBeans.resources.base.PrivateMessage;
-import org.mikuclub.app.ui.activity.CategoryActivity;
+import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.ui.activity.HomeActivity;
-import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.storage.MessageUtils;
+import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -38,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
 /**
@@ -47,13 +32,15 @@ import mikuclub.app.R;
 public class HomeMessagePrivateFragment extends Fragment
 {
 
+        public static final int TAG = 12;
+
         /*变量*/
         //数据请求代理人
         private MessageDelegate delegate;
         //数据控制器
-        private PrivateMessageController controller;
+        private HomePrivateMessageController controller;
         //列表适配器
-        private PrivateMessagesAdapter recyclerViewAdapter;
+        private HomePrivateMessagesAdapter recyclerViewAdapter;
         //列表数据
         private List<PrivateMessage> recyclerDataList;
 
@@ -68,7 +55,7 @@ public class HomeMessagePrivateFragment extends Fragment
                                  Bundle savedInstanceState)
         {
                 // 为fragment加载主布局
-                return inflater.inflate(R.layout.fragment_home_message_private, container, false);
+                return inflater.inflate(R.layout.fragment_home_private_message, container, false);
         }
 
 
@@ -82,7 +69,7 @@ public class HomeMessagePrivateFragment extends Fragment
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
 
                 //创建数据请求 代理人
-                delegate = new MessageDelegate(((HomeActivity) getActivity()).TAG);
+                delegate = new MessageDelegate(TAG);
                 //初始化变量
                 recyclerDataList = new ArrayList<>();
 
@@ -100,15 +87,6 @@ public class HomeMessagePrivateFragment extends Fragment
 
 
 
-        @Override
-        public void onStart()
-        {
-
-                super.onStart();
-
-                //每次开始的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                controller.getMore();
-        }
 
         /**
          * 初始化列表
@@ -116,7 +94,7 @@ public class HomeMessagePrivateFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new PrivateMessagesAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new HomePrivateMessagesAdapter(recyclerDataList, getActivity());
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -132,7 +110,7 @@ public class HomeMessagePrivateFragment extends Fragment
                         }
                 };
                 //配置列表
-                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, true, listener);
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE * 2, true, true, listener);
         }
 
         /**
@@ -156,11 +134,26 @@ public class HomeMessagePrivateFragment extends Fragment
         {
 
                 //创建数据控制器
-                controller = new PrivateMessageController(getActivity());
+                controller = new HomePrivateMessageController(getActivity());
                 controller.setDelegate(delegate);
                 controller.setRecyclerView(recyclerView);
                 controller.setRecyclerViewAdapter(recyclerViewAdapter);
                 controller.setRecyclerDataList(recyclerDataList);
                 controller.setSwipeRefresh(swipeRefresh);
+
+                //第一次请求数据
+                controller.getMore();
         }
+
+
+        @Override
+        public void onStop()
+        {
+                //取消本碎片相关的所有网络请求
+                Request.cancelRequest(TAG);
+
+                super.onStop();
+        }
+
+
 }

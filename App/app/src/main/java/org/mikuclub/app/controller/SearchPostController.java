@@ -4,14 +4,10 @@ import android.content.Context;
 import android.widget.EditText;
 
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.utils.ParserUtils;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 文章列表控制器
@@ -64,7 +60,7 @@ public class SearchPostController extends PostController
                         public void onSuccess(String response)
                         {
                                 //解析新数据
-                                Posts newPosts = ParserUtils.posts(response);
+                                Posts newPosts = ParserUtils.fromJson(response, Posts.class);
                                 //添加数据到列表
                                 getRecyclerDataList().addAll(newPosts.getBody());
                                 //重置列表尾部状态

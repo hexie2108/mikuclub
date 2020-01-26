@@ -179,6 +179,7 @@ public class Request
                         @Override
                         public void cancel()
                         {
+                                LogUtils.e("被取消 "+getTag());
                                 super.cancel();
                                 //只有在不是null的情况
                                 if(httpCallBack != null){

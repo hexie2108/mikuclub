@@ -1,15 +1,12 @@
 package org.mikuclub.app.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
-import org.mikuclub.app.adapters.viewHolder.FooterViewHolder;
-import org.mikuclub.app.javaBeans.resources.Category;
+import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.ui.activity.CategoryActivity;
 
 import java.util.List;
@@ -60,7 +57,8 @@ public class CategoriesAdapter extends BaseAdapterWithFooter
         {
                 //绑定评论框点击动作
                 holder.getItemButton().setOnClickListener(v -> {
-                        Category category = (Category) getAdapterList().get(holder.getAdapterPosition());
+                       //获取对应位置的数据 , 修复可能的position偏移
+                        Category category = (Category) getAdapterList().get(holder.getAdapterPosition()-getHeaderRow());
                         CategoryActivity.startAction(getAdapterContext(), category);
                 });
         }

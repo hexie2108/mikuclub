@@ -4,15 +4,10 @@ import android.content.Context;
 
 import org.mikuclub.app.adapters.AuthorAdapter;
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.UserDelegate;
-import org.mikuclub.app.javaBeans.parameters.BaseParameters;
-import org.mikuclub.app.javaBeans.resources.base.User;
-import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.javaBeans.response.SingleUser;
+import org.mikuclub.app.javaBeans.response.baseResource.User;
 import org.mikuclub.app.utils.ParserUtils;
-
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * 文章列表控制器
@@ -47,7 +42,7 @@ public class AuthorPostController extends PostController
                                 public void onSuccess(String response)
                                 {
                                         //获取用户信息
-                                        User user = ParserUtils.userAuthor(response).getBody();
+                                        User user = ParserUtils.fromJson(response, SingleUser.class).getBody();
                                         //添加到适配器里
                                         ((AuthorAdapter)getRecyclerViewAdapter()).setUser(user);
                                         //显示头部布局

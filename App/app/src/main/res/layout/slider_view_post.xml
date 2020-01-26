@@ -31,7 +31,7 @@
             android:layout_marginTop = "35dp"
         android:visibility="invisible"
             android:layout_marginEnd = "@dimen/large"
-            android:background = "@drawable/custom_rounded_corner"
+            android:background = "@drawable/custom_rounded_corner_dark"
             android:gravity = "center"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintTop_toTopOf = "@id/post_slider_viewpager"

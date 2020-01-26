@@ -12,12 +12,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.BaseDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -25,7 +22,6 @@ import org.mikuclub.app.utils.custom.MyEditTextNumberFilterMinMax;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
@@ -71,7 +67,7 @@ public class PostController extends BaseController
                                 public void onSuccess(String response)
                                 {
                                         //解析数据
-                                        Posts newPosts = ParserUtils.posts(response);
+                                        Posts newPosts = ParserUtils.fromJson(response, Posts.class);
                                         //加载数据
                                         getRecyclerDataList().addAll(newPosts.getBody());
                                         //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
@@ -91,6 +87,8 @@ public class PostController extends BaseController
                                         {
                                                 //重新开启信号标
                                                 setWantMore(true);
+                                                //隐藏尾部加载进度条
+                                                getRecyclerViewAdapter().updateFooterStatus(false, false, false);
                                         }
                                         //如果已经到最后一页了
                                         else
@@ -127,6 +125,8 @@ public class PostController extends BaseController
                                 public void onCancel()
                                 {
                                         setWantMore(true);
+                                        //隐藏尾部加载进度条
+                                        getRecyclerViewAdapter().updateFooterStatus(false, false, false);
                                 }
                         };
 
@@ -159,7 +159,7 @@ public class PostController extends BaseController
                         public void onSuccess(String response)
                         {
                                 //解析新数据
-                                Posts newPosts = ParserUtils.posts(response);
+                                Posts newPosts = ParserUtils.fromJson(response, Posts.class);
                                 //清空旧数据
                                 getRecyclerDataList().clear();
                                 //添加数据到列表

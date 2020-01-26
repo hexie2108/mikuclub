@@ -1,9 +1,6 @@
 package org.mikuclub.app.adapters.viewPager;
 
-import org.mikuclub.app.javaBeans.resources.Category;
-import org.mikuclub.app.ui.fragments.CategoryFragment;
 import org.mikuclub.app.ui.fragments.EmptyFragment;
-import org.mikuclub.app.ui.fragments.HomeMessageFragment;
 import org.mikuclub.app.ui.fragments.HomeMessagePrivateFragment;
 
 import androidx.annotation.NonNull;
@@ -34,6 +31,9 @@ public class MessageViewPagerAdapter extends FragmentStateAdapter
         {
                 super(fragment);
         }
+
+
+
 
         @NonNull
         @Override

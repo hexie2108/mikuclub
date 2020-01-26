@@ -66,14 +66,24 @@ public class MessageDelegate extends BaseDelegate
          * @param distinct  是否要去除同个发信人的重复私信
          * @param sender_id  是否只要当前用户和sender之间互相写的私信, 0为不要
          */
-        public void getPrivateMessage(HttpCallBack httpCallBack,  int page, boolean distinct, int sender_id)
+        public void getPrivateMessage(HttpCallBack httpCallBack,  int page, boolean distinct, Integer sender_id)
         {
                 Map<String, Object> queryParameters = new HashMap();
                 putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "paged", page);
-                putIfNotNull(queryParameters, "number", GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE);
                 putIfNotNull(queryParameters, "distinct", distinct);
                 putIfNotNull(queryParameters, "sender_id", sender_id);
+                putIfNotNull(queryParameters, "paged", page);
+                //如果是正常私信请求
+                if(sender_id == null)
+                {
+                        //使用正常私信数量
+                        putIfNotNull(queryParameters, "number", GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE);
+                }
+                //如果是请求 互相私信
+                else{
+                        //因为只请求一次, 所以要用双倍数量
+                        putIfNotNull(queryParameters, "number", GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE*2);
+                }
 
                 Request.get(GlobalConfig.Server.PRIVATE_MESSAGE, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 

@@ -2,20 +2,21 @@ package org.mikuclub.app.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.AppUpdate;
-import org.mikuclub.app.javaBeans.resources.BaseRespond;
-import org.mikuclub.app.javaBeans.resources.Categories;
-import org.mikuclub.app.javaBeans.resources.Comments;
-import org.mikuclub.app.javaBeans.resources.SingleComment;
-import org.mikuclub.app.javaBeans.resources.PrivateMessages;
-import org.mikuclub.app.javaBeans.resources.UserAuthor;
-import org.mikuclub.app.javaBeans.resources.UserLogin;
-import org.mikuclub.app.javaBeans.resources.Posts;
-import org.mikuclub.app.javaBeans.resources.WpError;
+import org.mikuclub.app.javaBeans.response.AppUpdate;
+import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.Categories;
+import org.mikuclub.app.javaBeans.response.Comments;
+import org.mikuclub.app.javaBeans.response.SingleComment;
+import org.mikuclub.app.javaBeans.response.PrivateMessages;
+import org.mikuclub.app.javaBeans.response.SingleUser;
+import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.javaBeans.response.WpError;
 
 import java.util.List;
 
@@ -25,9 +26,13 @@ import java.util.List;
 public class ParserUtils
 {
 
-        //2个gson 解析器配置的日期格式不一样
-        private static Gson gson = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON).create();
-        private static Gson gson2 = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON_CUSTOM_ENDPOINTS).create();
+        //2个gson 解析器支持的日期格式不一样
+        //第一次支持 wordpress默认接口的日期格式
+        private static Gson gsonWithWordpressApiDataFormat = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON).create();
+        // 第二个用来支持 wordpress自定义接口的日期格式
+        private static Gson gsonWithDataBaseDataFormat = new GsonBuilder().setDateFormat(GlobalConfig.DATE_FORMAT_JSON_CUSTOM_ENDPOINTS).create();
+
+
         /**
          * 解析文章列表
          *
@@ -37,7 +42,7 @@ public class ParserUtils
         public static Posts posts(String response)
         {
 
-                Posts posts = gson.fromJson(response, Posts.class);
+                Posts posts = gsonWithWordpressApiDataFormat.fromJson(response, Posts.class);
 
                 //遍历文章
                 for (int i = 0; i < posts.getBody().size(); i++)
@@ -62,7 +67,7 @@ public class ParserUtils
         public static Comments comments(String response)
         {
 
-                Comments comments = gson.fromJson(response, Comments.class);
+                Comments comments = gsonWithWordpressApiDataFormat.fromJson(response, Comments.class);
                 return comments;
 
         }
@@ -77,7 +82,7 @@ public class ParserUtils
         public static SingleComment createComment(String response)
         {
 
-                SingleComment singleComment = gson.fromJson(response, SingleComment.class);
+                SingleComment singleComment = gsonWithWordpressApiDataFormat.fromJson(response, SingleComment.class);
                 return singleComment;
 
         }
@@ -91,7 +96,7 @@ public class ParserUtils
         public static AppUpdate appUpdate(String response)
         {
 
-                AppUpdate appUpdate = gson.fromJson(response, AppUpdate.class);
+                AppUpdate appUpdate = gsonWithWordpressApiDataFormat.fromJson(response, AppUpdate.class);
                 return appUpdate;
         }
 
@@ -104,7 +109,7 @@ public class ParserUtils
          */
         public static Categories categories(String response)
         {
-                Categories categories = gson.fromJson(response, Categories.class);
+                Categories categories = gsonWithWordpressApiDataFormat.fromJson(response, Categories.class);
                 return categories;
         }
 
@@ -118,7 +123,7 @@ public class ParserUtils
         public static UserLogin userLogin(String response)
         {
 
-                UserLogin userLogin = gson.fromJson(response, UserLogin.class);
+                UserLogin userLogin = gsonWithWordpressApiDataFormat.fromJson(response, UserLogin.class);
                 return userLogin;
         }
 
@@ -131,7 +136,7 @@ public class ParserUtils
          */
         public static WpError wpError(String response)
         {
-                WpError wpError = gson.fromJson(response, WpError.class);
+                WpError wpError = gsonWithWordpressApiDataFormat.fromJson(response, WpError.class);
                 return wpError;
         }
 
@@ -141,10 +146,10 @@ public class ParserUtils
          * @param response
          * @return
          */
-        public static UserAuthor userAuthor(String response)
+        public static SingleUser userAuthor(String response)
         {
-                UserAuthor userAuthor = gson.fromJson(response, UserAuthor.class);
-                return userAuthor;
+                SingleUser singleUser = gsonWithWordpressApiDataFormat.fromJson(response, SingleUser.class);
+                return singleUser;
         }
 
         /**
@@ -153,10 +158,10 @@ public class ParserUtils
          * @param response
          * @return
          */
-        public static BaseRespond baseRespond(String response)
+        public static SingleResponse baseRespond(String response)
         {
-                BaseRespond baseRespond = gson.fromJson(response, BaseRespond.class);
-                return baseRespond;
+                SingleResponse singleResponse = gsonWithWordpressApiDataFormat.fromJson(response, SingleResponse.class);
+                return singleResponse;
         }
 
 
@@ -168,7 +173,7 @@ public class ParserUtils
          */
         public static PrivateMessages privateMessages(String response)
         {
-                PrivateMessages privateMessages = gson2.fromJson(response, PrivateMessages.class);
+                PrivateMessages privateMessages = gsonWithDataBaseDataFormat.fromJson(response, PrivateMessages.class);
                 return privateMessages;
         }
 
@@ -181,7 +186,7 @@ public class ParserUtils
          */
         public static List<Integer> integerArrayList(String response)
         {
-                return gson.fromJson(response, new TypeToken<List<Integer>>()
+                return gsonWithWordpressApiDataFormat.fromJson(response, new TypeToken<List<Integer>>()
                 {
                 }.getType());
         }
@@ -194,7 +199,7 @@ public class ParserUtils
          */
         public static String integerArrayListToJson(List<Integer> integerList)
         {
-                return gson.toJson(integerList, new TypeToken<List<Integer>>()
+                return gsonWithWordpressApiDataFormat.toJson(integerList, new TypeToken<List<Integer>>()
                 {
                 }.getType());
         }
@@ -209,8 +214,21 @@ public class ParserUtils
          */
         public  static <T> T fromJson(String jsonText, Class<T> type){
 
-                return gson.fromJson(jsonText, type);
+                T output;
+                try
+                {
+                        //如果用默认的wordpress api日期格式解析错误
+                        output = gsonWithWordpressApiDataFormat.fromJson(jsonText, type);
+                }
+                catch (JsonSyntaxException exception){
+                        //改用 数据库日期格式来尝试解析
+                        output = gsonWithDataBaseDataFormat.fromJson(jsonText, type);
+                }
+                return output;
         }
+
+
+
 
 
         /**
@@ -220,7 +238,7 @@ public class ParserUtils
          */
         public static String toJson(Object object){
 
-                return gson.toJson(object);
+                return gsonWithWordpressApiDataFormat.toJson(object);
         }
 
 

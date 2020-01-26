@@ -1,14 +1,12 @@
 package org.mikuclub.app.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.base.Comment;
+import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
@@ -19,7 +17,6 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
 public class CommentsAdapter extends BaseAdapterWithFooter
@@ -90,7 +87,8 @@ public class CommentsAdapter extends BaseAdapterWithFooter
         {
                 //绑定评论框点击动作
                 holder.getItem().setOnClickListener(v ->{
-                        Comment comment= (Comment) getAdapterList().get(holder.getAdapterPosition());
+                        //获取对应位置的数据 , 修复可能的position偏移
+                        Comment comment= (Comment) getAdapterList().get(holder.getAdapterPosition()-getHeaderRow());
                         CommentRepliesFragment fragment = CommentRepliesFragment.startAction(comment);
                         fragment.show(((AppCompatActivity) getAdapterContext()).getSupportFragmentManager(), fragment.getClass().toString());
                 });

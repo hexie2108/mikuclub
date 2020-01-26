@@ -10,7 +10,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mikuclub.app.javaBeans.resources.WpError;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -116,7 +116,7 @@ public class HttpCallBack
                         else
                         {
 
-                                WpError wpError = ParserUtils.wpError(response);
+                                WpError wpError = ParserUtils.fromJson(response, WpError.class);
                                 //如果错误信息有code, 并且code包含 invalid token的关键词
                                 if (wpError.getBody().getCode().indexOf("invalid_token") != -1)
                                 {

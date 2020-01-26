@@ -12,7 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.mikuclub.app.adapters.viewPager.CategoryViewPagerAdapter;
-import org.mikuclub.app.javaBeans.resources.Category;
+import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.NonNull;

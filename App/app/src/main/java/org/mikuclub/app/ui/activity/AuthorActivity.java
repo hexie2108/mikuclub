@@ -14,7 +14,7 @@ import org.mikuclub.app.controller.AuthorPostController;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.delegates.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
@@ -131,7 +131,7 @@ public class AuthorActivity extends AppCompatActivity
                 };
 
                 //配置列表
-                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE * 2, true, true, listener);
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE * 2, false, true, listener);
 
         }
 
@@ -174,6 +174,10 @@ public class AuthorActivity extends AppCompatActivity
                 controller.setSwipeRefresh(swipeRefresh);
                 controller.setParameters(parameters);
 
+                //第一次请求数据
+                controller.getMore();
+                //第一次获取作者信息
+                controller.getAuthor(authorId);
 
         }
 
@@ -203,16 +207,6 @@ public class AuthorActivity extends AppCompatActivity
                 }
                 return super.onOptionsItemSelected(item);
         }
-
-        @Override
-        public void onStart()
-        {
-                super.onStart();
-
-                controller.getMore();
-                controller.getAuthor(authorId);
-        }
-
 
 
         @Override

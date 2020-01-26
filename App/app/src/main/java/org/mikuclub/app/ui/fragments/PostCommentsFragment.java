@@ -16,8 +16,8 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
-import org.mikuclub.app.javaBeans.resources.base.Comment;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Comment;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
@@ -98,15 +98,12 @@ public class PostCommentsFragment extends Fragment
                 initController();
                 //初始化评论输入框
                 initCommentInput();
-        }
 
-        @Override
-        public void onStart()
-        {
-                super.onStart();
-                //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
+                //第一次请求数据
                 controller.getMore();
         }
+
+
 
         /**
          * 初始化评论框
@@ -142,7 +139,7 @@ public class PostCommentsFragment extends Fragment
                         }
                 };
                 //配置列表
-                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, true, listener);
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, false, true, listener);
         }
 
         /**

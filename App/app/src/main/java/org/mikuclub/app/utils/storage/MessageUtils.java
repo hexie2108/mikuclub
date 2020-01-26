@@ -1,12 +1,5 @@
 package org.mikuclub.app.utils.storage;
 
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.UserLogin;
-import org.mikuclub.app.utils.ParserUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 操作消息相关的储存参数
  */

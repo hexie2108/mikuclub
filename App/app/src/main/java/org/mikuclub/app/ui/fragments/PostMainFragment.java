@@ -1,6 +1,7 @@
 package org.mikuclub.app.ui.fragments;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import android.text.method.LinkMovementMethod;
@@ -15,7 +16,7 @@ import com.google.android.material.button.MaterialButton;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
@@ -282,15 +283,15 @@ public class PostMainFragment extends Fragment
          */
         private void likeAction(boolean isActivated)
         {
-                int iconColorId = R.color.defaultTextColor;
+                int iconColorId = getResources().getColor(R.color.defaultTextColor);
                 //如果是已激活, 设置不同颜色
                 if (isActivated)
                 {
-                        iconColorId = R.color.colorPrimary;
+                        iconColorId = getResources().getColor(R.color.colorPrimary);
                 }
 
                 //更改按钮样式
-                postCountLikeButton.setIconTint(ContextCompat.getColorStateList(getActivity(), iconColorId));
+                postCountLikeButton.setIconTint(ColorStateList.valueOf(iconColorId));
                 //绑定点击监听器
                 postCountLikeButton.setOnClickListener(v -> {
                         //屏蔽按钮
@@ -404,8 +405,8 @@ public class PostMainFragment extends Fragment
         public void afterShareAction()
         {
                 //更改按钮颜色
-                int iconColorId = R.color.colorPrimary;
-                postCountShareButton.setIconTint(ContextCompat.getColorStateList(getActivity(), iconColorId));
+                int iconColorId = getResources().getColor(R.color.colorPrimary);
+                postCountShareButton.setIconTint(ColorStateList.valueOf(iconColorId));
                 //设置默认分享次数为1
                 int countSharing = 1;
                 //如果文章不是第一次被分享

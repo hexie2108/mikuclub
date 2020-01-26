@@ -5,11 +5,9 @@
         <uses-permission android:name = "android.permission.INTERNET" />
         <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
         <uses-permission android:name = "android.permission.READ_EXTERNAL_STORAGE" />
-        <uses-permission android:name = "android.permission.WRITE_EXTERNAL_STORAGE" />
-        <!-- 微博SDK需要-->
+        <uses-permission android:name = "android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 微博SDK需要 -->
         <uses-permission android:name = "android.permission.READ_PHONE_STATE" />
         <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
-
 
         <application
             android:name = "org.mikuclub.app.contexts.MyApplication"
@@ -20,19 +18,15 @@
             android:roundIcon = "@mipmap/ic_launcher_round"
             android:supportsRtl = "true"
             android:theme = "@style/AppTheme">
-
+                <activity android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity"></activity>
                 <!-- 解决腾讯sdk 网络连接报错 -->
                 <uses-library
-                    android:name="org.apache.http.legacy"
-                    android:required="false" />
-
-
-
-
-
+                    android:name = "org.apache.http.legacy"
+                    android:required = "false" />
 
                 <activity
-                    android:name = "org.mikuclub.app.ui.activity.LoginActivity" android:label="登陆"></activity>
+                    android:name = "org.mikuclub.app.ui.activity.LoginActivity"
+                    android:label = "登陆" />
                 <activity android:name = "org.mikuclub.app.ui.activity.ImageActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.WelcomeActivity">
                         <intent-filter>
@@ -46,29 +40,25 @@
                 <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.AuthorActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.ReposrtActivity" />
-
-
-                <!--腾讯QQ sdk专用-->
-
+                <activity android:name = "org.mikuclub.app.ui.activity.ReposrtActivity" /> <!-- 腾讯QQ sdk专用 -->
                 <activity
-                    android:name="com.tencent.tauth.AuthActivity"
-                    android:noHistory="true"
-                    android:launchMode="singleTask" >
+                    android:name = "com.tencent.tauth.AuthActivity"
+                    android:launchMode = "singleTask"
+                    android:noHistory = "true">
                         <intent-filter>
-                                <action android:name="android.intent.action.VIEW" />
-                                <category android:name="android.intent.category.DEFAULT" />
-                                <category android:name="android.intent.category.BROWSABLE" />
-                                <data android:scheme="tencent101842471" />
+                                <action android:name = "android.intent.action.VIEW" />
+
+                                <category android:name = "android.intent.category.DEFAULT" />
+                                <category android:name = "android.intent.category.BROWSABLE" />
+
+                                <data android:scheme = "tencent101842471" />
                         </intent-filter>
                 </activity>
                 <activity
-                    android:name="com.tencent.connect.common.AssistActivity"
-                    android:configChanges="orientation|keyboardHidden"
-                    android:screenOrientation="behind"
-                    android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-
+                    android:name = "com.tencent.connect.common.AssistActivity"
+                    android:configChanges = "orientation|keyboardHidden"
+                    android:screenOrientation = "behind"
+                    android:theme = "@android:style/Theme.Translucent.NoTitleBar" />
         </application>
 
 </manifest>

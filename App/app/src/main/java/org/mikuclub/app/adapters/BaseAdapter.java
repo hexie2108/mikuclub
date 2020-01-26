@@ -17,11 +17,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<RecyclerView.View
 {
         /*静态变量*/
         //正常内容
-        private final static int TYPE_ITEM = 0;
+        protected final static int TYPE_ITEM = 0;
         //头部类型
-        private final static int TYPE_HEADER = 1;
+        protected final static int TYPE_HEADER = 1;
         //尾部类型
-        private final static int TYPE_FOOTER = 2;
+        protected final static int TYPE_FOOTER = 2;
 
 
         /*变量*/
@@ -343,4 +343,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<RecyclerView.View
         {
                 this.internetErrorListener = internetErrorListener;
         }
+
+
 }

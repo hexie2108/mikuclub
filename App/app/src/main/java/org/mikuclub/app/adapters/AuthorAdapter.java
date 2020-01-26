@@ -5,8 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.viewHolder.AuthorHeaderViewHolder;
-import org.mikuclub.app.javaBeans.resources.base.Post;
-import org.mikuclub.app.javaBeans.resources.base.User;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.User;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;

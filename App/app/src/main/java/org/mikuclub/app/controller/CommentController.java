@@ -1,6 +1,9 @@
 package org.mikuclub.app.controller;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -13,10 +16,11 @@ import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
-import org.mikuclub.app.javaBeans.resources.base.Comment;
-import org.mikuclub.app.javaBeans.resources.Comments;
-import org.mikuclub.app.javaBeans.resources.UserLogin;
-import org.mikuclub.app.javaBeans.resources.WpError;
+import org.mikuclub.app.javaBeans.response.SingleComment;
+import org.mikuclub.app.javaBeans.response.baseResource.Comment;
+import org.mikuclub.app.javaBeans.response.Comments;
+import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
@@ -26,6 +30,7 @@ import org.mikuclub.app.utils.ViewUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import androidx.appcompat.app.AlertDialog;
+import mikuclub.app.R;
 
 public class CommentController extends BaseController
 {
@@ -74,8 +79,6 @@ public class CommentController extends BaseController
                         //激活评论框
                         inputLayout.setEnabled(true);
 
-                        //改版图标颜色
-                        // inputLayout.setEndIconTintList(ContextCompat.getColorStateList(getContext(), R.color.colorPrimary));
                         //改变提示
                         inputLayout.setHint("发表评论...");
                         //如果通知作者的选择框不是null
@@ -84,11 +87,51 @@ public class CommentController extends BaseController
                                 //显示选择框
                                 checkBoxNotifyAuthor.setVisibility(View.VISIBLE);
                         }
-                        //绑定图标点击
-                        inputLayout.setEndIconOnClickListener(v -> {
+
+
+                        //创建点击事件监听器
+                        View.OnClickListener onClickListener = v -> {
                                 //发送评论
                                 sendComment();
-                        });
+                        };
+
+                        //input内容监听器, 在内容不为空的情况激活发送按钮 更改图标颜色
+                        TextWatcher textWatcher = new TextWatcher()
+                        {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after)
+                                {
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count)
+                                {
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable s)
+                                {
+                                        String content = input.getText().toString().trim();
+                                        //如果内容不是空
+                                        if (!content.isEmpty())
+                                        {
+                                                //激活按钮点击事件, 更换按钮颜色
+                                                //绑定图标点击
+                                                inputLayout.setEndIconOnClickListener(onClickListener);
+                                                inputLayout.setEndIconTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorPrimary)));
+                                        }
+                                        else
+                                        {
+                                                //注销按钮, 更换按钮颜色
+                                                inputLayout.setEndIconOnClickListener(null);
+                                                inputLayout.setEndIconTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.defaultTextColor)));
+                                        }
+                                }
+                        };
+                        //添加内容变化监听器
+                        input.addTextChangedListener(textWatcher);
+
+
                         //监听键盘动作
                         input.setOnEditorActionListener((v, actionId, event) -> {
                                 //如果从键盘点了确认键
@@ -163,7 +206,7 @@ public class CommentController extends BaseController
                                                 checkBoxNotifyAuthor.setChecked(false);
                                         }
                                         //获取新添加的评论
-                                        Comment newComment = ParserUtils.createComment(response).getBody();
+                                        Comment newComment = ParserUtils.fromJson(response, SingleComment.class).getBody();
                                         //加进列表
                                         getRecyclerDataList().add(0, newComment);
                                         //通知更新
@@ -175,7 +218,7 @@ public class CommentController extends BaseController
                                 @Override
                                 public void onError(String response)
                                 {
-                                        WpError wpError = ParserUtils.wpError(response);
+                                        WpError wpError = ParserUtils.fromJson(response, WpError.class);
                                         ToastUtils.shortToast(wpError.getBody().getMessage());
                                 }
 
@@ -213,7 +256,8 @@ public class CommentController extends BaseController
                                 createCommentParameters.setMeta(meta);
                         }
                         //在二级评论的情况 (回复其他人的评论)
-                        else if(checkBoxNotifyAuthor==null){
+                        else if (checkBoxNotifyAuthor == null)
+                        {
                                 meta = new CreateCommentParameters.Meta();
                                 //设置被回复用户的id
                                 meta.setParent_user_id(authorId);
@@ -254,7 +298,7 @@ public class CommentController extends BaseController
                                 public void onSuccess(String response)
                                 {
                                         //解析数据
-                                        Comments newComments = ParserUtils.comments(response);
+                                        Comments newComments = ParserUtils.fromJson(response, Comments.class);
                                         //加载数据
                                         getRecyclerDataList().addAll(newComments.getBody());
                                         //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
@@ -274,6 +318,8 @@ public class CommentController extends BaseController
                                         {
                                                 //重新开启信号标
                                                 setWantMore(true);
+                                                //隐藏尾部加载进度条
+                                                getRecyclerViewAdapter().updateFooterStatus(false, false, false);
                                         }
                                         //如果已经到最后一页了
                                         else
@@ -309,6 +355,8 @@ public class CommentController extends BaseController
                                 public void onCancel()
                                 {
                                         setWantMore(true);
+                                        //隐藏尾部加载进度条
+                                        getRecyclerViewAdapter().updateFooterStatus(false, false, false);
                                 }
                         };
 

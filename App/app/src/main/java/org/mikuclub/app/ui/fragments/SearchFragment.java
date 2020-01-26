@@ -22,7 +22,7 @@ import org.mikuclub.app.controller.SearchPostController;
 import org.mikuclub.app.delegates.PostDelegate;
 
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.SearchActivity;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
@@ -95,18 +95,7 @@ public class SearchFragment extends Fragment
                 initController();
         }
 
-        @Override
-        public void onStart()
-        {
-                super.onStart();
 
-                //如果数据列表不是空的
-                if (!recyclerDataList.isEmpty())
-                {
-                        //每次恢复页面的时候追加请求一次数据 (解决中途切换活动导致的不加载问题)
-                        controller.getMore();
-                }
-        }
 
         /**
          * 初始化 空的文章列表

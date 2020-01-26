@@ -10,8 +10,8 @@ import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.Category;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Category;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.CategoryActivity;
 import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.utils.RecyclerViewUtils;
@@ -86,6 +86,8 @@ public class CategoryFragment extends Fragment
                 //初始化控制器
                 initController();
 
+
+
         }
 
         @Override
@@ -96,13 +98,6 @@ public class CategoryFragment extends Fragment
                 initFloatingActionButton();
         }
 
-        @Override
-        public void onStart()
-        {
-                super.onStart();
-                //每次开始的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                controller.getMore();
-        }
 
         /**
          * 初始化 空的文章列表
@@ -164,6 +159,9 @@ public class CategoryFragment extends Fragment
                 controller.setRecyclerDataList(recyclerDataList);
                 controller.setSwipeRefresh(swipeRefresh);
                 controller.setParameters(parameters);
+
+                //第一次请求数据
+                controller.getMore();
         }
 
 

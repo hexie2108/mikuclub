@@ -23,7 +23,7 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.utils.ClipboardUtils;

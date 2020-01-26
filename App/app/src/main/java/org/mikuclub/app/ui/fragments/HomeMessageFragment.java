@@ -10,27 +10,14 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.mikuclub.app.adapters.CategoriesAdapter;
-import org.mikuclub.app.adapters.viewPager.CategoryViewPagerAdapter;
 import org.mikuclub.app.adapters.viewPager.MessageViewPagerAdapter;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.Category;
 import org.mikuclub.app.ui.activity.LoginActivity;
-import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.storage.MessageUtils;
-import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
@@ -39,6 +26,8 @@ import mikuclub.app.R;
  */
 public class HomeMessageFragment extends Fragment
 {
+
+
 
         /*变量*/
         //第一次查看

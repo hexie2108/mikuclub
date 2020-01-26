@@ -28,8 +28,8 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.resources.SinglePost;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.SinglePost;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.ui.fragments.windows.SharingFragment;
@@ -131,18 +131,28 @@ public class PostActivity extends AppCompatActivity
                 //获取文章数据
                 post = (Post) getIntent().getSerializableExtra(INTENT_POST);
                 //如果是通过完整post数据方式启动本活动
-                if (postId == 0)
+                if (post != null)
                 {
                         //直接初始化
                         setup();
                 }
-                //如果是通过 只有post_id的方式启动本活动
-                else
-                {
+                //准备通过post id 获取 文章
+                else{
                         //准备通过id请求文章
                         prepareGetPost();
                 }
 
+        }
+
+        @Override
+        protected void onStart()
+        {
+                super.onStart();
+                //如果没有文章数据 , 但是有文章id
+                if(post==null && postId != 0){
+                        //发送请求
+                        getPostData();
+                }
         }
 
         /**
@@ -155,12 +165,11 @@ public class PostActivity extends AppCompatActivity
                 //创建进度条弹窗
                 progressDialog = ViewUtils.createProgressDialog(this, true, true);
                 //创建重试弹窗
-                confirmDialog = ViewUtils.createConfirmDialog(this, "请求失败", null, true, true,"重试", (DialogInterface.OnClickListener) (dialog, which) -> {
+                confirmDialog = ViewUtils.createConfirmDialog(this, "请求失败", null, true, true,"重试", (dialog, which) -> {
                         //重试请求
                         getPostData();
                 });
-                //发送请求
-                getPostData();
+
         }
 
 
@@ -206,8 +215,8 @@ public class PostActivity extends AppCompatActivity
                         @Override
                         public void onCancel()
                         {
-                                //如果被中断的话, 就结束当前应用
-                                finish();
+                                //隐藏进度条弹窗
+                                progressDialog.dismiss();
                         }
                 };
                 delegate.getPost(httpCallBack, postId);
@@ -280,17 +289,6 @@ public class PostActivity extends AppCompatActivity
 
                                 view.setOnClickListener(v -> {
 
-                                        /*
-                                        //找到当前图片地址的列表位置
-                                        int position = imagesSrc.indexOf(itemSrc);
-                                        //新建列表
-                                        ArrayList<String> newImagesSrc = new ArrayList<>();
-                                        //截取当前位置和后续位置的地址
-                                        newImagesSrc.addAll(imagesSrc.subList(position, imagesSrc.size()));
-                                        //然后再添加 开头位置 到 当前位置-1 的地址
-                                        newImagesSrc.addAll(imagesSrc.subList(0, position));
-                                        //以此达到重建新列表的目标
-                                        */
 
                                         //启动单独的图片查看页面
                                         ImageActivity.startAction(PostActivity.this, imagesSrc, position);

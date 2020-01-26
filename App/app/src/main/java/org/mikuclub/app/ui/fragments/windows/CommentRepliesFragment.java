@@ -1,9 +1,6 @@
 package org.mikuclub.app.ui.fragments.windows;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +20,7 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegates.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
-import org.mikuclub.app.javaBeans.resources.base.Comment;
+import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
@@ -42,7 +39,6 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
 /**
@@ -139,14 +135,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         }
 
 
-        @Override
-        public void onStart()
-        {
-                super.onStart();
-                //每次访问该页面的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                controller.getMore();
-        }
-
         /**
          * 初始化评论框
          */
@@ -198,8 +186,8 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         {
                                 //绑定评论框点击动作
                                 holder.getItem().setOnClickListener(v -> {
-                                        //某个评论点击的话 就变更为被回复对象
-                                        Comment parentComment = (Comment) getAdapterList().get(holder.getAdapterPosition());
+                                        //某个评论点击的话 就变更为被回复对象,  , 修复可能的position偏移
+                                        Comment parentComment = (Comment) getAdapterList().get(holder.getAdapterPosition()-getHeaderRow());
                                         controller.changeParentComment(parentComment, false);
                                 });
                         }
@@ -221,7 +209,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 };
 
                 //配置列表, (hasNestedScrollingEnabled 为否, 是因为要禁用窗口滑动)
-                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, true, false, listener);
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE_OF_COMMENTS * 2, false, false, listener);
         }
 
 
@@ -254,10 +242,11 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 controller.setRecyclerDataList(recyclerDataList);
                 controller.setParameters(parameters);
 
-
                 //设置数据
                 controller.setPostId(comment.getPost());
 
+                //第一次请求数据
+                controller.getMore();
 
         }
 
@@ -297,6 +286,8 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 fragment.setArguments(bundle);
                 return fragment;
         }
+
+
 
 
 }

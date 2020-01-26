@@ -1,10 +1,7 @@
 package org.mikuclub.app.adapters.viewPager;
 
-import org.mikuclub.app.javaBeans.resources.Category;
+import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.ui.fragments.CategoryFragment;
-import org.mikuclub.app.ui.fragments.PostCommentsFragment;
-import org.mikuclub.app.ui.fragments.PostMainFragment;
-import org.mikuclub.app.utils.LogUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

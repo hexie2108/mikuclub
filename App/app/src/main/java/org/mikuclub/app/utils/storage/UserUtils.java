@@ -1,7 +1,6 @@
 package org.mikuclub.app.utils.storage;
 
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.UserLogin;
+import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
 import org.mikuclub.app.utils.ParserUtils;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class UserUtils
                 if (user == null)
                 {
                         String userInfoString = PreferencesUtils.getUserPreference().getString(USER_LOGIN, null);
-                        user = ParserUtils.userLogin(userInfoString);
+                        user = ParserUtils.fromJson(userInfoString, UserLogin.class);
                 }
 
                 return user;
@@ -50,7 +49,7 @@ public class UserUtils
         public static void login(String userInfoString)
         {
 
-                UserLogin userLogin = ParserUtils.userLogin(userInfoString);
+                UserLogin userLogin = ParserUtils.fromJson(userInfoString, UserLogin.class);
                 //储存登陆信息
                 PreferencesUtils.getUserPreference()
                         .edit()

@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.viewHolder.PostViewHolder;
-import org.mikuclub.app.javaBeans.resources.base.Post;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -44,10 +44,8 @@ public class PostsAdapter extends BaseAdapterWithFooter
         protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position)
         {
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
-                //检查和修复position偏移
-                position = getListPosition(holder.getAdapterPosition());
                 //先从列表获取对应位置的数据
-                Post post = (Post)getAdapterList().get(position);
+                Post post = (Post)getAdapterList().get(holder.getAdapterPosition()-getHeaderRow());
                 //为视图设置各项数据
                 postViewHolder.getItemText().setText(post.getTitle().getRendered());
                 String imgUrl = post.getMetadata().getThumbnail_src().get(0);
@@ -59,10 +57,9 @@ public class PostsAdapter extends BaseAdapterWithFooter
         private void setItemOnClickListener(final PostViewHolder holder)
         {
                 holder.getItem().setOnClickListener(v -> {
-                        //检查和修复position偏移
-                        int position = getListPosition(holder.getAdapterPosition());
-                        //获取数据
-                        Post post = (Post) getAdapterList().get(position);
+
+                        //获取数据, 修复可能的position偏移
+                        Post post = (Post) getAdapterList().get(holder.getAdapterPosition()-getHeaderRow());
                         //启动 文章页
                         PostActivity.startAction(getAdapterContext(), post);
                 });

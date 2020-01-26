@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 
 import org.mikuclub.app.adapters.CategoriesAdapter;
 import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.javaBeans.resources.Category;
+import org.mikuclub.app.javaBeans.response.Categories;
+import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
@@ -62,7 +63,7 @@ public class HomeCategoriesFragment extends Fragment
                 String categoriesCache = PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
 
                 //反序列化
-                recyclerDataList = ParserUtils.categories(categoriesCache).getBody();
+                recyclerDataList = ParserUtils.fromJson(categoriesCache, Categories.class).getBody();
                 //检查用户是否登陆 , 没登陆的情况去除魔法区
                 checkAndRemoveMofaCategory();
 

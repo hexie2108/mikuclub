@@ -12,8 +12,8 @@ import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.base.Post;
-import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.utils.LogUtils;
@@ -63,17 +63,32 @@ public class HomeMainFragment extends Fragment
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState)
         {
+
+                LogUtils.e("onCreateView");
                 // 为fragment加载主布局
                 return inflater.inflate(R.layout.fragment_home_main, container, false);
 
-
         }
 
+        @Override
+        public void onStart()
+        {
+                LogUtils.e("onStart");
+                super.onStart();
+        }
+
+        @Override
+        public void onDestroy()
+        {
+                LogUtils.e("onDestroy");
+                super.onDestroy();
+        }
 
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
         {
                 super.onViewCreated(view, savedInstanceState);
+                LogUtils.e("onViewCreated");
 
                 recyclerView = view.findViewById(R.id.recycler_view);
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
@@ -96,17 +111,11 @@ public class HomeMainFragment extends Fragment
                 initController();
         }
 
-        @Override
-        public void onStart()
-        {
-                super.onStart();
-                //每次开始的时候请求一次数据 (解决中途切换活动导致的不加载问题)
-                controller.getMore();
-        }
 
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState)
         {
+                LogUtils.e("onActivityCreated");
                 super.onActivityCreated(savedInstanceState);
                 initFloatingActionButton();
         }
@@ -179,6 +188,11 @@ public class HomeMainFragment extends Fragment
                 controller.setTotalPage(posts.getHeaders().getTotalPage());
                 //设置当前页数
                 controller.setCurrentPage(1);
+
+                //第一次请求数据
+
+                        controller.getMore();
+
         }
 
         /**
@@ -194,6 +208,7 @@ public class HomeMainFragment extends Fragment
         @Override
         public void onPause()
         {
+                LogUtils.e("onPause");
                 super.onPause();
                 //隐藏浮动按钮
                 floatingActionButton.setVisibility(View.GONE);
@@ -203,6 +218,7 @@ public class HomeMainFragment extends Fragment
         @Override
         public void onResume()
         {
+                LogUtils.e("onResume");
                 super.onResume();
                 //显示浮动按钮
                 floatingActionButton.setVisibility(View.VISIBLE);

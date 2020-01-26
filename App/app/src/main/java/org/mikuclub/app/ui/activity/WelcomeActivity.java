@@ -3,6 +3,7 @@ package org.mikuclub.app.ui.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import mikuclub.app.BuildConfig;
@@ -27,10 +28,10 @@ import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.delegates.MessageDelegate;
 import org.mikuclub.app.delegates.UtilsDelegate;
 import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.AppUpdate;
+import org.mikuclub.app.javaBeans.response.AppUpdate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.resources.BaseRespond;
-import org.mikuclub.app.javaBeans.resources.Posts;
+import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
@@ -70,6 +71,7 @@ public class WelcomeActivity extends AppCompatActivity
         /*组件*/
         private TextView welecomeInfoText;
         private ProgressBar welecomeProgressBar;
+        private ConstraintLayout layout;
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -79,6 +81,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                 welecomeInfoText = findViewById(R.id.welcome_info_text);
                 welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
+                layout = findViewById(R.id.layout);
 
                 //创建代理人
                 postDelegate = new PostDelegate(TAG);
@@ -120,8 +123,9 @@ public class WelcomeActivity extends AppCompatActivity
                 }
                 else
                 {
-                        //提示+延时结束应用
-                        setNotInternetError();
+                        //没网络的话 就报错
+                        String errorMessage = "未发现可用的网络连接, 请接入网络后 再点击重试";
+                        setErrorInfo(errorMessage);
                 }
         }
 
@@ -167,7 +171,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 @Override
                                 public void onHttpError()
                                 {
-                                        displayErrorInfo();
+                                        setErrorInfo(null);
                                 }
 
                                 @Override
@@ -207,7 +211,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 {
                                         LogUtils.v("检测更新成功");
                                         //获取更新信息
-                                        AppUpdate appUpdate = ParserUtils.appUpdate(response);
+                                        AppUpdate appUpdate = ParserUtils.fromJson(response, AppUpdate.class);
                                         //如果当前版本号低于新版本
                                         if (BuildConfig.VERSION_CODE < appUpdate.getBody().getVersionCode())
                                         {
@@ -309,7 +313,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //只有在无缓存的情况, 才会报错
                                         if (categoriesCache.isEmpty())
                                         {
-                                                displayErrorInfo();
+                                                setErrorInfo(null);
                                         }
                                         //有缓存的话 无视
                                         else
@@ -362,9 +366,9 @@ public class WelcomeActivity extends AppCompatActivity
                                         LogUtils.v("获取未读私信数量成功");
 
                                         //解析回复
-                                        BaseRespond baseRespond = ParserUtils.baseRespond(response);
+                                        SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
-                                        MessageUtils.setPrivateMessageCount(Integer.valueOf(baseRespond.getBody()));
+                                        MessageUtils.setPrivateMessageCount(Integer.valueOf(singleResponse.getBody()));
                                         //增加计数器
                                         startHomeSafety();
                                 }
@@ -409,9 +413,9 @@ public class WelcomeActivity extends AppCompatActivity
                                         LogUtils.v("获取未读评论数量成功");
 
                                         //解析回复
-                                        BaseRespond baseRespond = ParserUtils.baseRespond(response);
+                                        SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
-                                        MessageUtils.setReplyCommentCount(Integer.valueOf(baseRespond.getBody()));
+                                        MessageUtils.setReplyCommentCount(Integer.valueOf(singleResponse.getBody()));
                                         //增加计数器
                                         startHomeSafety();
                                 }
@@ -480,7 +484,7 @@ public class WelcomeActivity extends AppCompatActivity
                         public void onSuccess(String response)
                         {
                                 //解析数据 +保存数据
-                                stickyPostList = ParserUtils.posts(response);
+                                stickyPostList = ParserUtils.fromJson(response, Posts.class);
                                 //尝试启动主页
                                 startHomeSafety();
                         }
@@ -488,7 +492,7 @@ public class WelcomeActivity extends AppCompatActivity
                         @Override
                         public void onError(String response)
                         {
-                                displayErrorInfo();
+                                setErrorInfo(null);
                         }
 
                         //请求失败
@@ -511,14 +515,14 @@ public class WelcomeActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(String response)
                         {
-                                postList = ParserUtils.posts(response);
+                                postList = ParserUtils.fromJson(response, Posts.class);
                                 startHomeSafety();
                         }
 
                         @Override
                         public void onError(String response)
                         {
-                                displayErrorInfo();
+                                setErrorInfo(null);
                         }
 
                         @Override
@@ -567,10 +571,18 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
         /**
-         * 错误的情况 , 给用户显示信息, 并允许用户手动重试
+         * 错误的情况
+         * 显示错误信息
+         * 并允许用户手动重试
+         * @param message 自定义错误信息
          */
-        private void displayErrorInfo()
+        private void setErrorInfo(String message)
         {
+                String errorMessage = "当前无法连接上服务器, 请点击尝试";
+                if(message!=null){
+                        errorMessage = message;
+                }
+
                 //取消所有连接
                 Request.cancelRequest(TAG);
                 //清零计数器
@@ -578,11 +590,14 @@ public class WelcomeActivity extends AppCompatActivity
 
                 //切换组件显示
                 welecomeProgressBar.setVisibility(View.INVISIBLE);
-                welecomeInfoText.setText("当前无法连接上服务器, 请点我尝试");
+                welecomeInfoText.setText(errorMessage);
                 welecomeInfoText.setVisibility(View.VISIBLE);
 
                 //绑定点击事件 允许用户手动重试
-                welecomeInfoText.setOnClickListener(v -> {
+                layout.setOnClickListener(v -> {
+                        // 卸载点击监听
+                        layout.setOnClickListener(null);
+                        //切换组件显示
                         welecomeInfoText.setVisibility(View.INVISIBLE);
                         welecomeProgressBar.setVisibility(View.VISIBLE);
                         //清零计数器
@@ -591,6 +606,7 @@ public class WelcomeActivity extends AppCompatActivity
                         initApplication();
                 });
         }
+
 
         /**
          * 创建显示更新提示的弹窗
@@ -695,25 +711,7 @@ public class WelcomeActivity extends AppCompatActivity
                 return isInternetAvailable;
         }
 
-        /**
-         * 无网络连接的情况
-         */
-        private void setNotInternetError()
-        {
 
-                //更新活动页 UI
-                welecomeInfoText.setText("未发现可用的网络连接, 请接入网络后 再点我重试");
-                welecomeInfoText.setVisibility(View.VISIBLE);
-                welecomeProgressBar.setVisibility(View.INVISIBLE);
-                //绑定点击事件 允许用户手动重试
-                welecomeInfoText.setOnClickListener(v -> {
-                        welecomeInfoText.setVisibility(View.INVISIBLE);
-                        welecomeProgressBar.setVisibility(View.VISIBLE);
-                        //重试
-                        initApplication();
-                });
-
-        }
 
         /**
          * 处理请求权限后的结果
