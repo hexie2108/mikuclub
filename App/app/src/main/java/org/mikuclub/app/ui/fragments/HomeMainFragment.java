@@ -16,7 +16,7 @@ import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.controller.PostController;
-import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.ui.activity.base.MyFragment;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 
@@ -26,7 +26,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -35,7 +34,7 @@ import mikuclub.app.R;
 /**
  * 主页活动-首页碎片
  */
-public class HomeMainFragment extends Fragment
+public class HomeMainFragment extends MyFragment
 {
         /*变量*/
         //数据请求代理人
@@ -64,31 +63,18 @@ public class HomeMainFragment extends Fragment
                                  Bundle savedInstanceState)
         {
 
-                LogUtils.e("onCreateView");
                 // 为fragment加载主布局
                 return inflater.inflate(R.layout.fragment_home_main, container, false);
 
         }
 
-        @Override
-        public void onStart()
-        {
-                LogUtils.e("onStart");
-                super.onStart();
-        }
 
-        @Override
-        public void onDestroy()
-        {
-                LogUtils.e("onDestroy");
-                super.onDestroy();
-        }
 
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
         {
                 super.onViewCreated(view, savedInstanceState);
-                LogUtils.e("onViewCreated");
+
 
                 recyclerView = view.findViewById(R.id.recycler_view);
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
@@ -115,7 +101,7 @@ public class HomeMainFragment extends Fragment
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState)
         {
-                LogUtils.e("onActivityCreated");
+
                 super.onActivityCreated(savedInstanceState);
                 initFloatingActionButton();
         }
@@ -208,7 +194,6 @@ public class HomeMainFragment extends Fragment
         @Override
         public void onPause()
         {
-                LogUtils.e("onPause");
                 super.onPause();
                 //隐藏浮动按钮
                 floatingActionButton.setVisibility(View.GONE);
@@ -218,7 +203,7 @@ public class HomeMainFragment extends Fragment
         @Override
         public void onResume()
         {
-                LogUtils.e("onResume");
+
                 super.onResume();
                 //显示浮动按钮
                 floatingActionButton.setVisibility(View.VISIBLE);

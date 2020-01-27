@@ -1,6 +1,7 @@
 package org.mikuclub.app.adapters.viewHolder;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class AuthorHeaderViewHolder extends RecyclerView.ViewHolder{
         private ImageView authorImg;
         private TextView authorName;
         private TextView authorDescription;
+        private Button buttonSendMessage;
 
         public AuthorHeaderViewHolder(@NonNull View itemView)
         {
@@ -30,6 +32,17 @@ public class AuthorHeaderViewHolder extends RecyclerView.ViewHolder{
                 authorImg = itemView.findViewById(R.id.author_img);
                 authorName = itemView.findViewById(R.id.author_name);
                 authorDescription = itemView.findViewById(R.id.author_description);
+                buttonSendMessage = itemView.findViewById(R.id.button_send_message);
+        }
+
+        public Button getButtonSendMessage()
+        {
+                return buttonSendMessage;
+        }
+
+        public void setButtonSendMessage(Button buttonSendMessage)
+        {
+                this.buttonSendMessage = buttonSendMessage;
         }
 
         public View getContainer()

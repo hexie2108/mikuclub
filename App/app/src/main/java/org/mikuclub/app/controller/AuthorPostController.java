@@ -5,8 +5,8 @@ import android.content.Context;
 import org.mikuclub.app.adapters.AuthorAdapter;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.UserDelegate;
-import org.mikuclub.app.javaBeans.response.SingleUser;
-import org.mikuclub.app.javaBeans.response.baseResource.User;
+import org.mikuclub.app.javaBeans.response.SingleAuthor;
+import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.utils.ParserUtils;
 
 /**
@@ -25,6 +25,7 @@ public class AuthorPostController extends PostController
         public AuthorPostController(Context context)
         {
                 super(context);
+
         }
 
         /**
@@ -42,11 +43,11 @@ public class AuthorPostController extends PostController
                                 public void onSuccess(String response)
                                 {
                                         //获取用户信息
-                                        User user = ParserUtils.fromJson(response, SingleUser.class).getBody();
+                                        Author author = ParserUtils.fromJson(response, SingleAuthor.class).getBody();
                                         //添加到适配器里
-                                        ((AuthorAdapter)getRecyclerViewAdapter()).setUser(user);
+                                        ((AuthorAdapter)getRecyclerViewAdapter()).setAuthor(author);
                                         //显示头部布局
-                                        ((AuthorAdapter) getRecyclerViewAdapter()).setHeaderVisible(true);
+                                        ((AuthorAdapter) getRecyclerViewAdapter()).setMoreAuthorInfo(true);
                                         //通知头部更新
                                         getRecyclerViewAdapter().notifyItemChanged(0);
 
@@ -61,7 +62,7 @@ public class AuthorPostController extends PostController
                         };
 
                         //发送请求
-                        userDelegate.getUser(httpCallBack, authorId);
+                        userDelegate.getAuthor(httpCallBack, authorId);
                 }
         }
 

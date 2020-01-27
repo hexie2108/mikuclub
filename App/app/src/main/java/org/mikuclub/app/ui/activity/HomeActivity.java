@@ -9,16 +9,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +29,10 @@ import android.widget.TextView;
 
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
 import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.ui.activity.base.MyActivity;
+import org.mikuclub.app.ui.fragments.HomeCategoriesFragment;
+import org.mikuclub.app.ui.fragments.HomeMainFragment;
+import org.mikuclub.app.ui.fragments.HomeMessageFragment;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.storage.MessageUtils;
@@ -38,7 +45,7 @@ import mikuclub.app.R;
 /**
  * 主页
  */
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends MyActivity
 {
         /*静态变量*/
         public static final int TAG = 2;
@@ -47,10 +54,20 @@ public class HomeActivity extends AppCompatActivity
 
         /*变量*/
         private AppBarConfiguration mAppBarConfiguration;
+
         private Posts stickyPosts;
         private Posts posts;
         //用户信息
         UserLogin userLogin;
+
+        private Fragment homeMainFragment;
+        private Fragment homeCategoriesFragment;
+        private Fragment homeMessageFragment;
+        //当前激活的fragment
+        private Fragment currentActiveFragment;
+        //获取碎片管理器
+        private FragmentManager fm = getSupportFragmentManager();
+
 
         /*组件*/
         private DrawerLayout drawer;
@@ -91,6 +108,14 @@ public class HomeActivity extends AppCompatActivity
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
+                ActionBar actionBar = getSupportActionBar();
+                if (actionBar != null)
+                {
+                        //显示菜单键
+                        //  actionBar.setDisplayHomeAsUpEnabled(true);
+                        //更改菜单键图标
+                        //  actionBar.setHomeAsUpIndicator(R.drawable.menu);
+                }
 
                 initTopSearchBar();
 
@@ -100,6 +125,10 @@ public class HomeActivity extends AppCompatActivity
 
                 //检查登陆状态
                 checkLoginStatus();
+
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);
+                drawer.addDrawerListener(toggle);
+                toggle.syncState();
 
 
         }
@@ -122,16 +151,32 @@ public class HomeActivity extends AppCompatActivity
          */
         private void initBottomMenu()
         {
-                //在其他分页 点击返回后 会回到主页
-                mAppBarConfiguration = new AppBarConfiguration.Builder(
-                        R.id.navigation_home, R.id.navigation_category, R.id.navigation_message)
-                        .setDrawerLayout(drawer)
-                        .build();
-                NavController navController = Navigation.findNavController(this, R.id.home_navigation);
-                NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-                NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
 
+                bottomNavigationView.setOnNavigationItemSelectedListener
+                        (new BottomNavigationView.OnNavigationItemSelectedListener()
+                        {
+                                @Override
+                                public boolean onNavigationItemSelected(@NonNull MenuItem item)
+                                {
+
+                                        switch (item.getItemId())
+                                        {
+                                                case R.id.navigation_home:
+                                                        changeFragment(homeMainFragment,1);
+                                                        break;
+                                                case R.id.navigation_category:
+                                                        changeFragment(homeCategoriesFragment, 2);
+                                                        break;
+                                                case R.id.navigation_message:
+                                                        changeFragment(homeMessageFragment, 3);
+                                                        break;
+                                        }
+                                        return true;
+                                }
+                        });
+                //创建主页第一个碎片
+                changeFragment(homeMainFragment,1);
 
                 //获取未读消息数量
                 int unreadMessageCount = MessageUtils.getPrivateMessageCount() + MessageUtils.getReplyCommentCount();
@@ -150,6 +195,58 @@ public class HomeActivity extends AppCompatActivity
 
 
         }
+
+        /**
+         * 创建和切换fragment
+         * 通过隐藏和显示的方式, 避免重复attach和detach
+         *
+         * @param fragment
+         */
+        private void changeFragment(Fragment fragment, int fragmentTag)
+        {
+                //创建新fragment
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                //如果当前有在显示fragment
+                if(currentActiveFragment != null){
+                        //隐藏当前fragment
+                        fragmentTransaction = fragmentTransaction.hide(currentActiveFragment);
+                }
+
+                //如果对应的fragment还未生成
+                if (fragment == null)
+                {
+                        //根据tag创建对应fragment
+                        switch (fragmentTag)
+                        {
+                                case 1:
+                                        homeMainFragment = new HomeMainFragment();
+                                        fragment = homeMainFragment;
+                                        break;
+                                case 2:
+                                        homeCategoriesFragment = new HomeCategoriesFragment();
+                                        fragment = homeCategoriesFragment;
+                                        break;
+                                case 3:
+                                        homeMessageFragment = new HomeMessageFragment();
+                                        fragment = homeMessageFragment;
+                                        break;
+                        }
+                        //添加并显示新fragment
+                         fragmentTransaction = fragmentTransaction.add(R.id.home_navigation, fragment, String.valueOf(fragmentTag));
+                }
+                //如果已生成过
+                else
+                {
+                        //显示fragment
+                        fragmentTransaction.hide(currentActiveFragment).show(fragment);
+                }
+                //更新当前fragment
+                currentActiveFragment = fragment;
+                //提交fragment变更
+                fragmentTransaction.commit();
+
+        }
+
 
         /**
          * 初始化侧边栏, 绑定item动作监听
@@ -291,29 +388,32 @@ public class HomeActivity extends AppCompatActivity
          * 修正返回键动作
          *
          * @return
-         */
+         *//*
         @Override
         public boolean onSupportNavigateUp()
         {
                 NavController navController = Navigation.findNavController(this, R.id.home_navigation);
                 return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                         || super.onSupportNavigateUp();
-        }
-
-        /**
-         * 静态 启动本活动的方法
-         *
-         * @param context
-         * @param stickyPostList
-         * @param postList
-         */
-        public static void startAction(Context context, Posts stickyPostList, Posts postList)
+        }*/
+        @Override
+        public void onBackPressed()
         {
 
-                Intent intent = new Intent(context, HomeActivity.class);
-                intent.putExtra("sticky_post_list", stickyPostList);
-                intent.putExtra("post_list", postList);
-                context.startActivity(intent);
+                //如果侧边栏有开启
+                if (drawer.isDrawerOpen(GravityCompat.START))
+                {
+                        drawer.closeDrawer(GravityCompat.START);
+                }
+                //如果当前页面不是主页的碎片, 就屏蔽退出键, 切换显示主页碎片
+                else if (currentActiveFragment != homeMainFragment)
+                {
+                        changeFragment(homeMainFragment, 1);
+                }
+                else
+                {
+                        super.onBackPressed();
+                }
 
         }
 
@@ -335,5 +435,22 @@ public class HomeActivity extends AppCompatActivity
         public Posts getPosts()
         {
                 return posts;
+        }
+
+        /**
+         * 静态 启动本活动的方法
+         *
+         * @param context
+         * @param stickyPostList
+         * @param postList
+         */
+        public static void startAction(Context context, Posts stickyPostList, Posts postList)
+        {
+
+                Intent intent = new Intent(context, HomeActivity.class);
+                intent.putExtra("sticky_post_list", stickyPostList);
+                intent.putExtra("post_list", postList);
+                context.startActivity(intent);
+
         }
 }

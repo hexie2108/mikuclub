@@ -62,13 +62,8 @@ public class HomePrivateMessagesAdapter extends BaseAdapterWithFooter
                 //加载远程图片
                 GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), avatarSrc);
 
-                //获取私信内容
-                String htmlContent = privateMessage.getContent();
-                //移除内容外层P标签
-                htmlContent = HttpUtils.removeHtmlMainTag(htmlContent, "<p>", "</p>");
-
-                //解析 内容html
-                HttpUtils.parseHtmlDefault(getAdapterContext(), htmlContent, viewHolder.getItemContent());
+                //显示解析过html的内容
+                HttpUtils.parseHtmlDefault(getAdapterContext(), privateMessage.getContent(), viewHolder.getItemContent());
 
                 //如果是未读消息
                 if (privateMessage.getStatus() == 0)

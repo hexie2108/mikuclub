@@ -26,7 +26,6 @@ import org.mikuclub.app.controller.PrivateMessageController;
 import org.mikuclub.app.delegates.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
-import org.mikuclub.app.ui.activity.test.MyActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.http.Request;
 import org.mikuclub.app.utils.storage.UserUtils;

@@ -10,7 +10,7 @@ public class WpError implements Serializable
 
         private ErrorBody body;
         private Integer status;
-        private Headers headers;
+
 
         public class ErrorBody
         {
@@ -59,13 +59,5 @@ public class WpError implements Serializable
                 this.status = status;
         }
 
-        public Headers getHeaders()
-        {
-                return headers;
-        }
 
-        public void setHeaders(Headers headers)
-        {
-                this.headers = headers;
-        }
 }

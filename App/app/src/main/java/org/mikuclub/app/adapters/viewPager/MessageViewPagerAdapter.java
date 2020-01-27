@@ -2,6 +2,7 @@ package org.mikuclub.app.adapters.viewPager;
 
 import org.mikuclub.app.ui.fragments.EmptyFragment;
 import org.mikuclub.app.ui.fragments.HomeMessagePrivateFragment;
+import org.mikuclub.app.ui.fragments.HomeMessageReplyCommentFragment;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -45,10 +46,10 @@ public class MessageViewPagerAdapter extends FragmentStateAdapter
                         return new HomeMessagePrivateFragment();
 
                 }
-                //如果是后续分页, 就用评论页面
+                //如果是第二个分页, 就用评论回复页面
                 else
                 {
-                        return new EmptyFragment();
+                        return new HomeMessageReplyCommentFragment();
                 }
 
 

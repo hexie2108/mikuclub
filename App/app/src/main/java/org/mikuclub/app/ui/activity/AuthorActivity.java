@@ -14,6 +14,7 @@ import org.mikuclub.app.controller.AuthorPostController;
 import org.mikuclub.app.delegates.PostDelegate;
 import org.mikuclub.app.delegates.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
+import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
@@ -40,8 +41,7 @@ public class AuthorActivity extends AppCompatActivity
 {
         /*静态变量*/
         public static final int TAG = 9;
-        public static final String INTENT_AUTHOR_ID = "author_id";
-        public static final String INTENT_AUTHOR_NAME= "author_name";
+        public static final String INTENT_AUTHOR = "author";
 
         /*变量*/
 
@@ -54,8 +54,7 @@ public class AuthorActivity extends AppCompatActivity
         //列表数据
         private List<Post> recyclerDataList;
 
-        private int authorId;
-        private String authorName;
+        private Author author;
 
         /*组件*/
         private RecyclerView recyclerView;
@@ -76,8 +75,7 @@ public class AuthorActivity extends AppCompatActivity
                 floatingActionButton = findViewById(R.id.list_floating_action_button);
 
                 //获取作者数据
-                authorId =  getIntent().getIntExtra(INTENT_AUTHOR_ID, 0);
-                authorName =  getIntent().getStringExtra(INTENT_AUTHOR_NAME);
+                author =  (Author) getIntent().getSerializableExtra(INTENT_AUTHOR);
 
                 //创建数据请求 代理人
                 delegate = new PostDelegate(TAG);
@@ -91,7 +89,7 @@ public class AuthorActivity extends AppCompatActivity
                 {
                         //显示返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
-                        actionBar.setTitle(authorName);
+                        actionBar.setTitle(author.getName());
                 }
 
                 //初始化列表
@@ -112,6 +110,8 @@ public class AuthorActivity extends AppCompatActivity
         {
 
                 recyclerViewAdapter = new AuthorAdapter(recyclerDataList, this);
+                recyclerViewAdapter.setAuthor(author);
+                recyclerViewAdapter.setNotMoreErrorMessage("没有其他投稿");
 
                 //创建网格布局
                 int numberColumn = 2;
@@ -157,7 +157,7 @@ public class AuthorActivity extends AppCompatActivity
         {
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
-                parameters.setAuthor(new ArrayList<>(Arrays.asList(authorId)));
+                parameters.setAuthor(new ArrayList<>(Arrays.asList(author.getAuthor_id())));
                 //如果未登陆, 排除魔法区
                 if(!UserUtils.isLogin()){
                         parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
@@ -177,7 +177,7 @@ public class AuthorActivity extends AppCompatActivity
                 //第一次请求数据
                 controller.getMore();
                 //第一次获取作者信息
-                controller.getAuthor(authorId);
+                controller.getAuthor(author.getAuthor_id());
 
         }
 
@@ -221,14 +221,12 @@ public class AuthorActivity extends AppCompatActivity
         /**静态 启动本活动的方法
          *
          * @param context
-         * @param author_id
-         * @param author_name
+         * @param author
          */
-        public static void startAction(Context context, int author_id, String author_name)
+        public static void startAction(Context context, Author author)
         {
                 Intent intent = new Intent(context, AuthorActivity.class);
-                intent.putExtra(INTENT_AUTHOR_ID, author_id);
-                intent.putExtra(INTENT_AUTHOR_NAME, author_name);
+                intent.putExtra(INTENT_AUTHOR, author);
                 context.startActivity(intent);
         }
 

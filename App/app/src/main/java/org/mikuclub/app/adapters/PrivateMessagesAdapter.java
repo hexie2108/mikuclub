@@ -10,6 +10,7 @@ import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.javaBeans.response.baseResource.User;
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.PrivateMessageActivity;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
@@ -52,7 +53,14 @@ public class PrivateMessagesAdapter extends BaseAdapterWithFooter
          */
         protected void setItemOnClickListener(final PrivateMessageViewHolder holder)
         {
-                //取消点击事件
+                //绑定头像的点击事件
+                holder.getItemAvatarImg().setOnClickListener(v -> {
+                        //启动私信页
+                        AuthorActivity.startAction(getAdapterContext(),author);
+                });
+
+
+
         }
 
 
@@ -103,13 +111,8 @@ public class PrivateMessagesAdapter extends BaseAdapterWithFooter
                 //加载远程图片
                 GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), avatarSrc);
 
-                //获取私信内容
-                String htmlContent = privateMessage.getContent();
-                //移除内容外层P标签
-                htmlContent = HttpUtils.removeHtmlMainTag(htmlContent, "<p>", "</p>");
-
-                //解析 内容html
-                HttpUtils.parseHtmlDefault(getAdapterContext(), htmlContent, viewHolder.getItemContent());
+                //显示解析过html的内容
+                HttpUtils.parseHtmlDefault(getAdapterContext(), privateMessage.getContent(), viewHolder.getItemContent());
 
 
         }

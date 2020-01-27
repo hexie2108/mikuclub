@@ -35,6 +35,7 @@
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/normal"
             android:maxLines = "1"
+            android:maxLength="20"
             android:textColor = "@android:color/black"
             android:textSize = "@dimen/text_default"
             app:layout_constraintStart_toEndOf = "@id/author_img_box"
@@ -44,16 +45,31 @@
 
         <TextView
             android:id = "@+id/author_description"
-            android:layout_width = "wrap_content"
+            android:layout_width = "0dp"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/normal"
             android:layout_marginTop="@dimen/small"
+            android:layout_marginEnd="@dimen/normal"
             android:maxLines = "3"
             android:textColor = "@color/defaultTextColor"
             android:textSize = "@dimen/text_small"
             tools:text="我是描述"
             app:layout_constraintStart_toEndOf = "@id/author_img_box"
-            app:layout_constraintTop_toBottomOf = "@id/author_name" />
+            app:layout_constraintTop_toBottomOf = "@id/author_name"
+            app:layout_constraintEnd_toStartOf="@id/button_send_message"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id = "@+id/button_send_message"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginEnd = "@dimen/normal"
+            android:text = "发送私信"
+            android:textSize = "@dimen/text_default"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,12 +5,13 @@ import android.content.Context;
 import org.mikuclub.app.callBack.HttpCallBack;
 import org.mikuclub.app.delegates.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.PrivateMessages;
+import org.mikuclub.app.javaBeans.response.HomeReplyComments;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ToastUtils;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class HomePrivateMessageController extends BaseController
+public class HomeReplyCommentController extends BaseController
 {
         /*额外变量*/
         //下拉刷新后 需要跳转到的item位置
@@ -20,7 +21,7 @@ public class HomePrivateMessageController extends BaseController
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
 
-        public HomePrivateMessageController(Context context)
+        public HomeReplyCommentController(Context context)
         {
                 super(context);
         }
@@ -47,9 +48,9 @@ public class HomePrivateMessageController extends BaseController
                                 public void onSuccess(String response)
                                 {
                                         //解析数据
-                                        PrivateMessages privateMessages= ParserUtils.fromJson(response, PrivateMessages.class);
+                                        HomeReplyComments homeReplyComments = ParserUtils.fromJson(response, HomeReplyComments.class);
                                         //加载数据
-                                        getRecyclerDataList().addAll(privateMessages.getBody());
+                                        getRecyclerDataList().addAll(homeReplyComments.getBody());
                                         //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
                                         int position = getRecyclerDataList().size() + getRecyclerViewAdapter().getHeaderRow();
                                         getRecyclerViewAdapter().notifyItemInserted(position);
@@ -100,14 +101,12 @@ public class HomePrivateMessageController extends BaseController
 
 
 
-
-
         /**
          * 下拉刷新文章+跳转功能
          *
          * @param page 请求文章的页数
          */
-        public void refreshPosts(final int page)
+        public void refreshPosts(int page)
         {
                 setWantMore(false);
 
@@ -125,11 +124,11 @@ public class HomePrivateMessageController extends BaseController
                         public void onSuccess(String response)
                         {
                                 //解析新数据
-                                PrivateMessages privateMessages = ParserUtils.fromJson(response, PrivateMessages.class);
+                                HomeReplyComments homeReplyComments = ParserUtils.fromJson(response, HomeReplyComments.class);
                                 //清空旧数据
                                 getRecyclerDataList().clear();
                                 //添加数据到列表
-                                getRecyclerDataList().addAll(privateMessages.getBody());
+                                getRecyclerDataList().addAll(homeReplyComments.getBody());
 
                                 //重置列表尾部状态
                                 getRecyclerViewAdapter().updateFooterStatus(false, false, false);
@@ -165,8 +164,10 @@ public class HomePrivateMessageController extends BaseController
                                 onFinally();
                         }
                 };
-                startDelegate(httpCallBack, 1);
+
+                ((MessageDelegate) getDelegate()).getReplyComment(httpCallBack, 1);
         }
+
 
         /**
          * 启动代理人发送请求
@@ -175,8 +176,9 @@ public class HomePrivateMessageController extends BaseController
          */
         private void startDelegate(HttpCallBack httpCallBack, int page)
         {
-                ((MessageDelegate) getDelegate()).getPrivateMessage(httpCallBack, page, true, null);
+                ((MessageDelegate) getDelegate()).getReplyComment(httpCallBack,  page);
         }
+
 
         public void setSwipeRefresh(SwipeRefreshLayout swipeRefresh)
         {

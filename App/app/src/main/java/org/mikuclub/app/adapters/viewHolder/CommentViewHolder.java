@@ -23,6 +23,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder
         private TextView itemDate;
         private TextView itemContent;
         private TextView itemCountReplies;
+        private TextView itemUnread;
 
         public CommentViewHolder(@NonNull View itemView)
         {
@@ -34,6 +35,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder
                 itemDate = itemView.findViewById(R.id.item_date);
                 itemContent = itemView.findViewById(R.id.item_content);
                 itemCountReplies = itemView.findViewById(R.id.item_count_replies);
+                itemUnread = itemView.findViewById(R.id.item_unread);
 
         }
 
@@ -95,6 +97,16 @@ public class CommentViewHolder extends RecyclerView.ViewHolder
         public void setItemContent(TextView itemContent)
         {
                 this.itemContent = itemContent;
+        }
+
+        public TextView getItemUnread()
+        {
+                return itemUnread;
+        }
+
+        public void setItemUnread(TextView itemUnread)
+        {
+                this.itemUnread = itemUnread;
         }
 }
 

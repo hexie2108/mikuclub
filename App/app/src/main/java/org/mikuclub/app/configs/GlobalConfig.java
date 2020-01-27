@@ -91,6 +91,9 @@ public class GlobalConfig
                 //GET 获取回复评论数量
                 public static final String REPLY_COMMENTS_COUNT = HOST+UTILS+"comments_count/";
 
+                //GET 获取作者信息, 自定义接口,因为官方接口有权限问题
+                public static final String GET_AUTHOR= HOST+UTILS+"author/";
+
         }
 
         /**

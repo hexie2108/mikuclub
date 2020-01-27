@@ -206,13 +206,15 @@ public class ParserUtils
 
 
         /**
-         *  反序列化字符串为对象
+         * 反序列化字符串为对象
+         *
          * @param jsonText
          * @param type
          * @param <T>
          * @return
          */
-        public  static <T> T fromJson(String jsonText, Class<T> type){
+        public static <T> T fromJson(String jsonText, Class<T> type)
+        {
 
                 T output;
                 try
@@ -220,28 +222,34 @@ public class ParserUtils
                         //如果用默认的wordpress api日期格式解析错误
                         output = gsonWithWordpressApiDataFormat.fromJson(jsonText, type);
                 }
-                catch (JsonSyntaxException exception){
-                        //改用 数据库日期格式来尝试解析
-                        output = gsonWithDataBaseDataFormat.fromJson(jsonText, type);
+                catch (JsonSyntaxException e)
+                {
+                        try
+                        {
+                                //改用 数据库日期格式来尝试解析
+                                output = gsonWithDataBaseDataFormat.fromJson(jsonText, type);
+                        }
+                        catch (JsonSyntaxException exception)
+                        {
+                                LogUtils.e("GSON解析错误: " + jsonText);
+                                throw exception;
+                        }
                 }
                 return output;
         }
 
 
-
-
-
         /**
          * 序列化对象为json字符串
+         *
          * @param object
          * @return
          */
-        public static String toJson(Object object){
+        public static String toJson(Object object)
+        {
 
                 return gsonWithWordpressApiDataFormat.toJson(object);
         }
-
-
 
 
 }

@@ -164,7 +164,8 @@ public class PrivateMessageController extends BaseController
                                 @Override
                                 public void onError(String response)
                                 {
-                                        getRecyclerViewAdapter().updateFooterStatus(false, true, false);
+
+                                        getRecyclerViewAdapter().updateFooterStatus(false, false, false);
                                 }
 
                                 //网络失败的情况

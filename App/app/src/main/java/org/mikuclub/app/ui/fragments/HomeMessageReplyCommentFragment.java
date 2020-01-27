@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.adapters.HomePrivateMessagesAdapter;
+import org.mikuclub.app.adapters.CommentsAdapter;
+import org.mikuclub.app.adapters.HomeReplyCommentsAdapter;
 import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
 import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.controller.HomePrivateMessageController;
+import org.mikuclub.app.controller.HomeReplyCommentController;
 import org.mikuclub.app.delegates.MessageDelegate;
-import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
+import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -28,20 +30,20 @@ import mikuclub.app.R;
 /**
  * 主页活动-分类碎片
  */
-public class HomeMessagePrivateFragment extends Fragment
+public class HomeMessageReplyCommentFragment extends Fragment
 {
 
-        public static final int TAG = 12;
+        public static final int TAG = 13;
 
         /*变量*/
         //数据请求代理人
         private MessageDelegate delegate;
         //数据控制器
-        private HomePrivateMessageController controller;
+        private HomeReplyCommentController controller;
         //列表适配器
-        private HomePrivateMessagesAdapter recyclerViewAdapter;
+        private HomeReplyCommentsAdapter recyclerViewAdapter;
         //列表数据
-        private List<PrivateMessage> recyclerDataList;
+        private List<Comment> recyclerDataList;
 
         /*组件*/
         //下拉刷新布局
@@ -93,7 +95,7 @@ public class HomeMessagePrivateFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new HomePrivateMessagesAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new HomeReplyCommentsAdapter(recyclerDataList, getActivity());
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -133,7 +135,7 @@ public class HomeMessagePrivateFragment extends Fragment
         {
 
                 //创建数据控制器
-                controller = new HomePrivateMessageController(getActivity());
+                controller = new HomeReplyCommentController(getActivity());
                 controller.setDelegate(delegate);
                 controller.setRecyclerView(recyclerView);
                 controller.setRecyclerViewAdapter(recyclerViewAdapter);

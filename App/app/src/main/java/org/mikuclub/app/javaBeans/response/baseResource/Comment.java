@@ -31,6 +31,14 @@ public class Comment  implements Serializable
         private Object meta;
         private Metadata metadata;
 
+        /*首页评论回复列表专用*/
+        //作者信息
+        private Author reply_comment_author;
+        //相关文章标题
+        private String post_title;
+        //判断评论是否已读
+        private Integer read_status;
+
 
         public class Metadata  implements  Serializable{
               private List<Integer> comment_reply_ids;
@@ -57,8 +65,35 @@ public class Comment  implements Serializable
                 }
         }
 
+        public Integer getRead_status()
+        {
+                return read_status;
+        }
 
+        public void setRead_status(Integer read_status)
+        {
+                this.read_status = read_status;
+        }
 
+        public String getPost_title()
+        {
+                return post_title;
+        }
+
+        public void setPost_title(String post_title)
+        {
+                this.post_title = post_title;
+        }
+
+        public Author getReply_comment_author()
+        {
+                return reply_comment_author;
+        }
+
+        public void setReply_comment_author(Author reply_comment_author)
+        {
+                this.reply_comment_author = reply_comment_author;
+        }
 
         public int getId()
         {
@@ -239,4 +274,6 @@ public class Comment  implements Serializable
         {
                 this.metadata = metadata;
         }
+
+
 }

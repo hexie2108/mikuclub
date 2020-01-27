@@ -10,7 +10,7 @@
     android:layout_marginTop = "@dimen/small"
     android:layout_marginBottom = "@dimen/small"
 
->
+    >
 
         <androidx.cardview.widget.CardView
             android:id = "@+id/item_avatar_img_box"
@@ -36,10 +36,10 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/normal"
-            android:textStyle="bold"
+            android:maxLength = "20"
             android:maxLines = "1"
-            android:maxLength="20"
             android:textSize = "@dimen/text_small"
+            android:textStyle = "bold"
             app:layout_constraintStart_toEndOf = "@id/item_avatar_img_box"
             app:layout_constraintTop_toTopOf = "parent"
             tools:text = "神秘人"
@@ -61,13 +61,12 @@
             android:id = "@+id/item_date"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
-            android:layout_marginStart="@dimen/small"
+            android:layout_marginStart = "@dimen/small"
             android:textSize = "@dimen/text_small"
             app:layout_constraintBottom_toBottomOf = "@id/item_name"
             app:layout_constraintStart_toEndOf = "@id/item_date_icon"
             app:layout_constraintTop_toTopOf = "parent"
-            tools:text = "2019-10-15 01:05"
-            />
+            tools:text = "2019-10-15 01:05" />
 
         <TextView
             android:id = "@+id/item_content"
@@ -78,19 +77,37 @@
             android:layout_marginEnd = "@dimen/normal"
             android:layout_marginBottom = "@dimen/normal"
 
-            android:textIsSelectable = "true"
+
             android:textSize = "@dimen/text_default"
-            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintEnd_toStartOf = "@id/item_unread"
             app:layout_constraintStart_toStartOf = "@id/item_name"
             app:layout_constraintTop_toBottomOf = "@id/item_name"
+            app:layout_goneMarginEnd = "@dimen/normal"
             tools:text = "我是评论" />
+
+        <TextView
+            android:id = "@+id/item_unread"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginEnd = "@dimen/normal"
+            android:background = "@drawable/custom_rounded_corner_color_primary"
+            android:paddingStart = "@dimen/normal"
+            android:paddingTop = "@dimen/small"
+            android:paddingEnd = "@dimen/normal"
+            android:paddingBottom = "@dimen/small"
+            android:text = "未读"
+            android:textColor = "@android:color/white"
+            android:textSize = "@dimen/text_default"
+            android:visibility = "invisible"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
 
         <TextView
             android:id = "@+id/item_count_replies"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
             android:layout_marginTop = "@dimen/normal"
-            android:textSize = "@dimen/text_default"
+            android:textSize = "@dimen/text_small"
             android:visibility = "gone"
             app:layout_constraintEnd_toEndOf = "@id/item_content"
             app:layout_constraintStart_toStartOf = "@id/item_content"

@@ -148,7 +148,7 @@ public class PostMainFragment extends Fragment
 
                 //创建作者页面点击监听器
                 View.OnClickListener authorActivityListener = v -> {
-                        AuthorActivity.startAction(getActivity(), metadata.getAuthor().get(0).getAuthor_id(), metadata.getAuthor().get(0).getName());
+                        AuthorActivity.startAction(getActivity(), metadata.getAuthor().get(0));
                 };
                 //加载头像
                 GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, metadata.getAuthor().get(0).getAvatar_src());

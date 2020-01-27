@@ -130,7 +130,8 @@ public class HttpUtils
          */
         public static void parseHtml(final Context context, String htmlString, TextView textView, final OnTagClickListener onTagClickListener)
         {
-
+                //移除内容外层P标签
+                htmlString = HttpUtils.removeHtmlMainTag(htmlString, "<p>", "</p>");
                 if (htmlImageMaxWidth == 0)
                 {
                         //要扣除左右两边的填充边距
@@ -208,6 +209,7 @@ public class HttpUtils
          * @param textView
          */
         public static void parseHtmlDefault(final Context context, String htmlString, TextView textView){
+
                 HttpUtils.parseHtml(context, htmlString, textView, new OnTagClickListener()
                 {
                         //设置 点击图片tag的动作

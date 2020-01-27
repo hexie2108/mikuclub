@@ -7,6 +7,7 @@ import org.mikuclub.app.javaBeans.parameters.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.http.Request;
 
 import java.util.Map;
 
@@ -21,8 +22,20 @@ public class UserDelegate extends  BaseDelegate
                 super(tag, new ResourceModel(GlobalConfig.Server.ROOT + GlobalConfig.Server.USERS));
         }
 
+
         /**
-         * 获取指定用户的信息
+         * 获取指定作者的信息
+         * @param httpCallBack
+         * @param authorId
+         */
+        public void getAuthor(HttpCallBack httpCallBack, int authorId){
+
+                BaseParameters baseParameters = new BaseParameters();
+                Request.get(GlobalConfig.Server.GET_AUTHOR+authorId, baseParameters.toMap(), null, getTag(), httpCallBack);
+        }
+
+        /**
+         * 获取用户的信息
          * @param httpCallBack
          * @param userId
          */

@@ -159,12 +159,9 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(comment.getAuthor_avatar_urls().getSize96());
                 //加载远程图片
                 GlideImageUtils.getSquareImg(getActivity(), itemAvatarImg, avatarSrc);
-                //获取评论内容
-                String htmlContent = comment.getContent().getRendered();
-                //移除内容外层P标签
-                htmlContent = HttpUtils.removeHtmlMainTag(htmlContent, "<p>", "</p>");
-                //解析 内容html
-                HttpUtils.parseHtmlDefault(getActivity(), htmlContent, itemContent);
+
+                //显示解析过html的内容
+                HttpUtils.parseHtmlDefault(getActivity(), comment.getContent().getRendered(), itemContent);
 
                 item.setOnClickListener(v -> {
                         //原始父评论点击的话 就恢复为默认回复对象
