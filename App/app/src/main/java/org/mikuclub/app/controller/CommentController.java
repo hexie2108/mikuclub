@@ -245,7 +245,7 @@ public class CommentController extends BaseController
                         //在一级评论的情况 如果通知作者的选择框不是null  而且 被勾选了
                         if (checkBoxNotifyAuthor != null && checkBoxNotifyAuthor.isChecked())
                         {
-                                LogUtils.e("勾选作者通知");
+
                                 //创建元数据容器
                                 meta = new CreateCommentParameters.Meta();
                                 //设置被回复用户的id

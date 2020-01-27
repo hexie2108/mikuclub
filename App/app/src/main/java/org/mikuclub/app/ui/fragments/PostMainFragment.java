@@ -447,7 +447,7 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onSuccess(String response)
                         {
-                                LogUtils.e(response);
+
                                 ToastUtils.longToast("上报成功, 管理员将会根据上报次数对稿件进行退稿处理, 并通知UP主补档");
                         }
                 };

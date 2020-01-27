@@ -19,6 +19,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
@@ -26,7 +28,7 @@ import mikuclub.app.R;
 /**
  * 主页活动-分类碎片
  */
-public class HomeCategoriesFragment extends MyFragment
+public class HomeCategoriesFragment extends Fragment
 {
 
 

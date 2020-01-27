@@ -53,7 +53,7 @@ public class PrivateMessageController extends BaseController
                 //把换行符号字符替换成<br>换行
                 content= content.replace("\n","<br/>");
                 content= content.replace("\r","<br/>");
-                LogUtils.e(content);
+
                 //评论内容不是空的
                 if (!content.isEmpty())
                 {
@@ -135,7 +135,7 @@ public class PrivateMessageController extends BaseController
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        LogUtils.e("onSuccess"+response);
+
                                         //解析数据
                                         PrivateMessages privateMessages= ParserUtils.fromJson(response, PrivateMessages.class);
                                         //逆转数据列表的排列, 把从新到旧 改成 从旧到新排列
