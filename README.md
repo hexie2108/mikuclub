@@ -1,3 +1,7 @@
+# MIKUCLUB APP
+Project for lpsmt2019
+
+
 # 初音社手机安卓APP
 
 
