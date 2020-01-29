@@ -5,7 +5,6 @@ import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.javaBeans.response.modules.Headers;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class SinglePrivateMessage implements Serializable
 {

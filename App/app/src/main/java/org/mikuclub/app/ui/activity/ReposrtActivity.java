@@ -3,7 +3,6 @@ package org.mikuclub.app.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -11,12 +10,14 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.MessageDelegate;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
+import org.mikuclub.app.utils.AlertDialogUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.ViewUtils;
+import org.mikuclub.app.utils.custom.MyTextWatcher;
+import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.NonNull;
@@ -27,20 +28,20 @@ import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
 /**
- * 搜索页面
+ * 问题反馈页面
+ * report page
  */
 public class ReposrtActivity extends AppCompatActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 10;
 
-        /*变量*/
+        /* 变量 local variable */
 
         //数据请求代理人
         private MessageDelegate delegate;
 
-
-        /*组件*/
+        /* 组件 views */
         private TextInputLayout inputContactLayout;
         private TextInputEditText inputContact;
         private TextInputLayout inputReportLayout;
@@ -54,16 +55,16 @@ public class ReposrtActivity extends AppCompatActivity
         {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_report);
+
                 //绑定组件
                 Toolbar toolbar = findViewById(R.id.toolbar);
-
                 inputContactLayout = findViewById(R.id.input_contact_layout);
                 inputContact = findViewById(R.id.input_contact);
                 inputReportLayout = findViewById(R.id.input_report_layout);
                 inputReport = findViewById(R.id.input_report);
                 buttonSend = findViewById(R.id.button_send);
                 //创建进度条弹窗
-                progressDialog = ViewUtils.createProgressDialog(this, false, false);
+                progressDialog = AlertDialogUtils.createProgressDialog(this, false, false);
 
                 //创建数据请求 代理人
                 delegate = new MessageDelegate(TAG);
@@ -74,9 +75,9 @@ public class ReposrtActivity extends AppCompatActivity
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null)
                 {
-                        //显示返回键
+                        //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
-                        actionBar.setTitle("问题反馈");
+                        actionBar.setTitle(ResourcesUtils.getString(R.string.report_title));
                 }
                 //初始化表单
                 initInputForm();
@@ -85,39 +86,26 @@ public class ReposrtActivity extends AppCompatActivity
 
         /**
          * 初始化表单
+         * init input form
          */
         private void initInputForm()
         {
                 //input内容监听器, 在report内容不为空的情况激活发送按钮
-                TextWatcher textWatcher = new TextWatcher()
-                {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+                //自定义 text watcher, 只有在内容变化完成后才会激活回调
+                TextWatcher textWatcher = new MyTextWatcher(() -> {
+                        String content = inputReport.getText().toString().trim();
+                        //如果内容不是空, 并大于5个字
+                        if (!content.isEmpty() && content.length() > 5)
                         {
+                                //激活按钮
+                                buttonSend.setEnabled(true);
                         }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count)
+                        else
                         {
+                                //注销按钮
+                                buttonSend.setEnabled(false);
                         }
-
-                        @Override
-                        public void afterTextChanged(Editable s)
-                        {
-                                String content = inputReport.getText().toString().trim();
-                                //如果内容不是空, 并大于10个字
-                                if (!content.isEmpty() && content.length()>10)
-                                {
-                                        //激活按钮
-                                        buttonSend.setEnabled(true);
-                                }
-                                else
-                                {
-                                        //注销按钮
-                                        buttonSend.setEnabled(false);
-                                }
-                        }
-                };
+                });
                 //添加内容变化监听器
                 inputReport.addTextChangedListener(textWatcher);
                 //绑定发送按钮点击事件
@@ -129,27 +117,35 @@ public class ReposrtActivity extends AppCompatActivity
 
         /**
          * 发送错误报告信息
+         * send report
          */
-        private void sendReport(){
+        private void sendReport()
+        {
 
                 //显示加载进度条
                 progressDialog.show();
 
-                HttpCallBack httpCallBack = new HttpCallBack(){
+                HttpCallBack httpCallBack = new HttpCallBack()
+                {
                         @Override
                         public void onSuccess(String response)
                         {
                                 //清空内容
                                 inputContact.setText("");
                                 inputReport.setText("");
-                                ToastUtils.longToast("发送成功, 感谢反馈");
+                                ToastUtils.longToast(ResourcesUtils.getString(R.string.report_send_successful));
                         }
 
                         @Override
                         public void onError(String response)
                         {
+                                ToastUtils.longToast(ResourcesUtils.getString(R.string.report_send_failure));
+                        }
 
-                                ToastUtils.longToast("发送失败, 请重新尝试");
+                        @Override
+                        public void onHttpError()
+                        {
+                                onError(null);
                         }
 
                         @Override
@@ -173,9 +169,10 @@ public class ReposrtActivity extends AppCompatActivity
                 //获取联系方式
                 String contactQQ = inputContact.getText().toString().trim();
                 //如果联系方式不是空 并大于5个字
-                if(!contactQQ.isEmpty() && contactQQ.length()>5){
+                if (!contactQQ.isEmpty() && contactQQ.length() > 5)
+                {
                         //在消息尾上加上联系方式
-                        content += " 联系QQ: "+inputContact.getText().toString();
+                        content += " 联系QQ: " + inputContact.getText().toString();
                 }
                 //创建请求参数类
                 CreatePrivateMessageParameters bodyParameters = new CreatePrivateMessageParameters();
@@ -188,8 +185,13 @@ public class ReposrtActivity extends AppCompatActivity
         }
 
 
-
-        //监听标题栏菜单动作
+        /**
+         * 监听标题栏菜单动作
+         * listen toolbar item click event
+         *
+         * @param item
+         * @return
+         */
         @Override
         public boolean onOptionsItemSelected(@NonNull MenuItem item)
         {
@@ -215,7 +217,8 @@ public class ReposrtActivity extends AppCompatActivity
 
 
         /**
-         * 静态 启动本活动的方法
+         * 启动本活动的静态方法
+         * static method to start current activity
          *
          * @param context
          */

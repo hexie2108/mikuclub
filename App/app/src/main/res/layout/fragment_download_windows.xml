@@ -107,7 +107,7 @@
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/down1_password_text"
                     app:layout_goneMarginTop = "@dimen/ultra_large"
-                    app:rippleColor = "@color/rippleColor"
+                    app:rippleColor = "@color/defaultRippleColor"
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp"
                     tools:text = "下载" />
@@ -214,7 +214,7 @@
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/down2_password_text"
                     app:layout_goneMarginTop = "@dimen/ultra_large"
-                    app:rippleColor = "@color/rippleColor"
+                    app:rippleColor = "@color/defaultRippleColor"
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp"
                     tools:text = "下载" />
@@ -243,7 +243,7 @@
         <View
             android:layout_width = "0dp"
             android:layout_height = "0.5dp"
-            android:background = "@color/splitLineColor"
+            android:background = "@color/defaultSplitLineColor"
             app:layout_constraintBottom_toTopOf = "@id/return_button"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent" />
@@ -258,7 +258,7 @@
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:rippleColor = "@color/rippleColor" />
+            app:rippleColor = "@color/defaultRippleColor" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

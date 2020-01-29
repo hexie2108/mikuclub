@@ -12,7 +12,7 @@ android {
         versionName "v0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            //  设置支持的SO库架构
+            //  设置微博sdk支持的SO库架构
             abiFilters 'armeabi' //, 'armeabi-v7a','arm64-v8a'
         }
     }
@@ -80,13 +80,10 @@ dependencies {
     //implementation "com.github.bumptech.glide:okhttp3-integration:4.10.0"
     //java fileUtils
     implementation 'org.apache.commons:commons-io:1.3.2'
-    //implementation 'commons-io:commons-io:2.6'
 
     //get file mime type
     implementation 'com.sun.activation:javax.activation:1.2.0'
 
-    //import ViewPager
-    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     //轮播幻灯片组件 https://github.com/LillteZheng/ViewPagerHelper
     implementation 'com.github.LillteZheng:ViewPagerHelper:v2.1'
@@ -101,17 +98,6 @@ dependencies {
     //html代码自定义解析 https://github.com/wangchenyan/html-text
     implementation 'com.github.wangchenyan:html-text:1.0'
     implementation 'org.apache.commons:commons-text:1.8'
-
-
-    //可拖拽放大的图片位
-
-    // implementation 'org.apache.httpcomponents:httpmime:4.5.9'
-
-    //EasyRecyclerView https://github.com/zhou-you/EasyXRecyclerView
-    //implementation 'com.zhouyou:easyrecyclerview:1.0.6'
-
-    //repository link https://github.com/13767004362/VolleyHelper
-    //implementation 'com.xingen:volleyHelper:1.0.0'
 
 
     //谷歌数据分析

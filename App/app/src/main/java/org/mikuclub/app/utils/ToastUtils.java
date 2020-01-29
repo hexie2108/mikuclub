@@ -2,7 +2,12 @@ package org.mikuclub.app.utils;
 
 import android.widget.Toast;
 
-import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.context.MyApplication;
+
+/**
+ * 自定义Toast信息 实用类
+ * custom toast print utility class
+ */
 
 public class ToastUtils
 {

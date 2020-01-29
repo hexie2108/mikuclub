@@ -1,7 +1,6 @@
 package org.mikuclub.app.javaBeans.response;
 
 
-import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.javaBeans.response.baseResource.HomeReplyComment;
 import org.mikuclub.app.javaBeans.response.modules.Headers;
 

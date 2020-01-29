@@ -1,10 +1,13 @@
 package org.mikuclub.app.utils;
 
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/**
+ * recyclerView通用初始化配置
+ * recyclerView general initialization configuration
+ */
 public class RecyclerViewUtils
 {
 

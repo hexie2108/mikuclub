@@ -5,7 +5,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 /**
- * 键盘辅助类
+ * 键盘和焦点管理器
+ * Keyboard and focus manager
  */
 public class KeyboardUtils
 {
@@ -21,18 +22,14 @@ public class KeyboardUtils
                 if (imm != null)
                 {
                         //因为系统原因, 需要延迟运行才能正常
-                        view.postDelayed(new Runnable()
-                        {
-                                @Override
-                                public void run()
-                                {
-                                        view.requestFocus();
-                                        imm.showSoftInput(view, 0);
-                                }
+                        view.postDelayed(() -> {
+                                view.requestFocus();
+                                imm.showSoftInput(view, 0);
                         }, 100);
 
                 }
         }
+
         /**
          * 硬盘键盘+取消焦点
          * @param view

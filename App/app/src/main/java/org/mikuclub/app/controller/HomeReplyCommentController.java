@@ -2,18 +2,24 @@ package org.mikuclub.app.controller;
 
 import android.content.Context;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.MessageDelegate;
-import org.mikuclub.app.javaBeans.response.PrivateMessages;
+import org.mikuclub.app.controller.base.BaseController;
+import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.HomeReplyComments;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import mikuclub.app.R;
 
+/**
+ * 获取主页评论回复列表的请求控制器
+ * request controller to get  home comment reply list
+ */
 public class HomeReplyCommentController extends BaseController
 {
-        /*额外变量*/
+        /* 额外变量 Additional variables */
         //下拉刷新后 需要跳转到的item位置
         private int scrollPositionAfterRefresh = 0;
 
@@ -28,9 +34,7 @@ public class HomeReplyCommentController extends BaseController
 
 
 
-        /*
-       加载更多
-        */
+        @Override
         public void getMore()
         {
                 //检查信号标
@@ -144,7 +148,7 @@ public class HomeReplyCommentController extends BaseController
                         @Override
                         public void onError(String response)
                         {
-                                ToastUtils.shortToast("请求错误");
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.general_toast_message_on_error));
                         }
 
 

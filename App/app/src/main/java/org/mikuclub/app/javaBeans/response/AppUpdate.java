@@ -3,7 +3,7 @@ package org.mikuclub.app.javaBeans.response;
 import java.io.Serializable;
 
 /**
- * 更新信息封装
+ * 更新信息检查类
  */
 public class AppUpdate  implements Serializable
 {

@@ -17,7 +17,7 @@
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toTopOf = "parent"
-            app:rippleColor = "@color/rippleColor"
+            app:rippleColor = "@color/defaultRippleColor"
             app:strokeColor = "@color/defaultTextColor"
             app:strokeWidth = "0.5dp"
             tools:text = "分类名"

@@ -2,7 +2,6 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
-    xmlns:tools = "http://schemas.android.com/tools"
     android:id = "@+id/post_functional_box"
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
@@ -31,7 +30,7 @@
             app:layout_constraintEnd_toStartOf = "@id/post_count_share_button"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toTopOf = "parent"
-            app:rippleColor = "@color/rippleColor"
+            app:rippleColor = "@color/defaultRippleColor"
             app:shapeAppearanceOverlay = "@style/MyCircleButton"
             app:strokeWidth = "0.5dp" />
 
@@ -68,7 +67,7 @@
 
             app:layout_constraintStart_toEndOf = "@id/post_count_like_button"
             app:layout_constraintTop_toTopOf = "@id/post_count_like_button"
-            app:rippleColor = "@color/rippleColor"
+            app:rippleColor = "@color/defaultRippleColor"
             app:shapeAppearanceOverlay = "@style/MyCircleButton"
             app:strokeWidth = "0.5dp" />
 
@@ -106,7 +105,7 @@
             app:layout_constraintEnd_toStartOf = "@id/post_bilibili_button"
             app:layout_constraintStart_toEndOf = "@id/post_count_share_button"
             app:layout_constraintTop_toTopOf = "@id/post_count_share_button"
-            app:rippleColor = "@color/rippleColor"
+            app:rippleColor = "@color/defaultRippleColor"
             app:shapeAppearanceOverlay = "@style/MyCircleButton"
             app:strokeWidth = "0.5dp" />
 
@@ -142,7 +141,7 @@
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_count_fail_down_button"
             app:layout_constraintTop_toTopOf = "@id/post_count_fail_down_button"
-            app:rippleColor = "@color/rippleColor"
+            app:rippleColor = "@color/defaultRippleColor"
             app:shapeAppearanceOverlay = "@style/MyCircleButton"
             app:strokeWidth = "0.5dp"
 
@@ -166,7 +165,7 @@
         <View
             android:layout_width = "0dp"
             android:layout_height = "0.5dp"
-            android:background = "@color/splitLineColor"
+            android:background = "@color/defaultSplitLineColor"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toTopOf = "parent" />
@@ -174,7 +173,7 @@
         <View
             android:layout_width = "0dp"
             android:layout_height = "0.5dp"
-            android:background = "@color/splitLineColor"
+            android:background = "@color/defaultSplitLineColor"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent" />

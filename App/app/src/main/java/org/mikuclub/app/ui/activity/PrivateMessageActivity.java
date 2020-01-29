@@ -1,5 +1,30 @@
 package org.mikuclub.app.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.os.Bundle;
+import android.text.TextWatcher;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import org.mikuclub.app.adapter.PrivateMessageAdapter;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.controller.PrivateMessageController;
+import org.mikuclub.app.delegate.MessageDelegate;
+import org.mikuclub.app.javaBeans.response.baseResource.Author;
+import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
+import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.custom.MyTextWatcher;
+import org.mikuclub.app.utils.http.Request;
+import org.mikuclub.app.utils.storage.UserUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,54 +33,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
-import org.mikuclub.app.adapters.PrivateMessagesAdapter;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.controller.PrivateMessageController;
-import org.mikuclub.app.delegates.MessageDelegate;
-import org.mikuclub.app.javaBeans.response.baseResource.Author;
-import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
-import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.UserUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
+ * 私信页
+ * private message page
+ * <p>
  * 因为是 通过 fragment里的 viepager内置的fragment启动的活动
- * 导致了 onStop 和 onDestroy 异常, 会延迟10s左右才被加载,  不要在这里加任何代码
+ * 导致了 onStop 和 onDestroy 异常, 会延迟10s左右才被加载,  不要在这2个函数内加任何代码
  */
 public class PrivateMessageActivity extends AppCompatActivity
 {
 
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 11;
         public static final String INTENT_AUTHOR = "author";
 
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private MessageDelegate delegate;
         //数据控制器
         private PrivateMessageController controller;
         //列表适配器
-        private PrivateMessagesAdapter recyclerViewAdapter;
+        private PrivateMessageAdapter recyclerViewAdapter;
         //列表数据
         private List<PrivateMessage> recyclerDataList;
         private Author author;
 
-        /*组件*/
+        /* 组件 views */
         private Toolbar toolbar;
         private RecyclerView recyclerView;
         private TextInputLayout inputLayout;
@@ -67,9 +70,8 @@ public class PrivateMessageActivity extends AppCompatActivity
         {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_private_message);
-
-                toolbar = findViewById(R.id.toolbar);
                 //绑定组件
+                toolbar = findViewById(R.id.toolbar);
                 recyclerView = findViewById(R.id.recycler_view);
                 inputLayout = findViewById(R.id.input_layout);
                 input = findViewById(R.id.input);
@@ -86,7 +88,7 @@ public class PrivateMessageActivity extends AppCompatActivity
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null)
                 {
-                        //显示返回键
+                        //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                         //设置标题
                         actionBar.setTitle(author.getName());
@@ -102,12 +104,13 @@ public class PrivateMessageActivity extends AppCompatActivity
         }
 
         /**
-         * 初始化列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new PrivateMessagesAdapter(recyclerDataList, this, UserUtils.getUser(), author);
+                recyclerViewAdapter = new PrivateMessageAdapter(recyclerDataList, this, UserUtils.getUser(), author);
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -117,6 +120,7 @@ public class PrivateMessageActivity extends AppCompatActivity
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {
@@ -138,6 +142,7 @@ public class PrivateMessageActivity extends AppCompatActivity
 
         /**
          * 初始化文本输入框
+         * init input form
          */
         private void initInputForm()
         {
@@ -152,48 +157,49 @@ public class PrivateMessageActivity extends AppCompatActivity
                         };
 
                         //input内容监听器, 在内容不为空的情况激活发送按钮并更改图标颜色
-                        TextWatcher textWatcher = new TextWatcher()
-                        {
-                                @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after)
+                        //自定义 text watcher, 只有在内容变化完成后才会激活回调
+                        TextWatcher textWatcher = new MyTextWatcher(() -> {
+                                String content = input.getText().toString().trim();
+                                //如果内容不是空
+                                if (!content.isEmpty())
                                 {
+                                        //激活按钮点击事件, 更换按钮颜色
+                                        //绑定图标点击
+                                        inputLayout.setEndIconOnClickListener(onClickListener);
+                                        inputLayout.setEndIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
                                 }
-
-                                @Override
-                                public void onTextChanged(CharSequence s, int start, int before, int count)
+                                else
                                 {
+                                        //注销按钮, 更换按钮颜色
+                                        inputLayout.setEndIconOnClickListener(null);
+                                        inputLayout.setEndIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultTextColor)));
                                 }
-
-                                @Override
-                                public void afterTextChanged(Editable s)
-                                {
-                                        String content = input.getText().toString().trim();
-                                        //如果内容不是空
-                                        if (!content.isEmpty())
-                                        {
-                                                //激活按钮点击事件, 更换按钮颜色
-                                                //绑定图标点击
-                                                inputLayout.setEndIconOnClickListener(onClickListener);
-                                                inputLayout.setEndIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
-                                        }
-                                        else
-                                        {
-                                                //注销按钮, 更换按钮颜色
-                                                inputLayout.setEndIconOnClickListener(null);
-                                                inputLayout.setEndIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultTextColor)));
-                                        }
-                                }
-                        };
+                        });
                         //添加内容变化监听器
                         input.addTextChangedListener(textWatcher);
 
                 }
-                else{
+                else
+                {
                         //禁止写私信给系统消息
                         inputLayout.setEnabled(false);
                 }
         }
 
+
+        @Override
+        public boolean onOptionsItemSelected(@NonNull MenuItem item)
+        {
+                switch (item.getItemId())
+                {
+                        //如果点了返回键
+                        case android.R.id.home:
+                                //结束当前活动页
+                                finish();
+                                return true;
+                }
+                return super.onOptionsItemSelected(item);
+        }
 
         @Override
         protected void onStart()
@@ -210,25 +216,9 @@ public class PrivateMessageActivity extends AppCompatActivity
         @Override
         protected void onPause()
         {
-
                 //取消本活动相关的所有网络请求
                 Request.cancelRequest(TAG);
                 super.onPause();
-        }
-
-
-        @Override
-        public boolean onOptionsItemSelected(@NonNull MenuItem item)
-        {
-                switch (item.getItemId())
-                {
-                        //如果点了返回键
-                        case android.R.id.home:
-                                //结束当前活动页
-                                finish();
-                                return true;
-                }
-                return super.onOptionsItemSelected(item);
         }
 
 
@@ -252,7 +242,8 @@ public class PrivateMessageActivity extends AppCompatActivity
 
 
         /**
-         * 静态 启动本活动的方法
+         * 启动本活动的静态方法
+         * static method to start current activity
          *
          * @param context
          * @param author

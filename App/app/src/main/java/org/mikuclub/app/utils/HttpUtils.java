@@ -20,9 +20,13 @@ import me.wcy.htmltext.HtmlText;
 import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
+/**
+ * 网络请求相关实用方法
+ *  Internet request utility class
+ */
 public class HttpUtils
 {
-        //html图片的最大宽度, 初试为0, 在第一次运行中计算
+        //html内容里图片的最大宽度, 初试为0, 在第一次运行中计算
         private static int htmlImageMaxWidth = 0;
 
         /**
@@ -50,7 +54,7 @@ public class HttpUtils
         }
 
         /**
-         * 如果字符串是被包含在一个主体html TAG中, 就移除它
+         * 如果字符串是被包含在一个html TAG中, 就移除它
          *
          * @param text
          * @param tagStart
@@ -122,7 +126,7 @@ public class HttpUtils
 
 
         /**
-         * 第三方解析html方法, 支持给链接和图片 设置动作监听
+         * 第三方解析html方法, 支持保留链接和显示图片, 并给链接和图片 设置相应的动作监听
          * @param context
          * @param htmlString
          * @param textView
@@ -132,16 +136,16 @@ public class HttpUtils
         {
                 //移除内容外层P标签
                 htmlString = HttpUtils.removeHtmlMainTag(htmlString, "<p>", "</p>");
+                //如果html图片的最大宽度还未被计算过
                 if (htmlImageMaxWidth == 0)
                 {
                         //要扣除左右两边的填充边距
                         //int paddingDistance = (int) GeneralUtils.convertDpToPixel( context.getResources().getDimension(R.dimen.normal) , context);
                         //扣除屏幕的 px宽度
                         //htmlImageMaxWidth = ScreenUtils.getScreenWidth(context) - paddingDistance;
-
                         htmlImageMaxWidth = ScreenUtils.getScreenWidth(context);
                 }
-
+                //设置图片加载方式
                 HtmlText.from(htmlString).setImageLoader(new HtmlImageLoader()
                 {
                         @Override
@@ -173,19 +177,32 @@ public class HttpUtils
                                         });
                         }
 
+                        /**
+                         * 设置加载占位图
+                         * @return
+                         */
                         @Override
                         public Drawable getDefaultDrawable()
                         {
+
                                 //return ContextCompat.getDrawable(context, R.drawable.loop_grey_16x9);
                                 return null;
                         }
 
+                        /**
+                         * 设置错误占位图
+                         * @return
+                         */
                         @Override
                         public Drawable getErrorDrawable()
                         {
                                 return ContextCompat.getDrawable(context, R.drawable.error_black);
                         }
 
+                        /**
+                         * 设置显示html图片的最大宽度
+                         * @return
+                         */
                         @Override
                         public int getMaxWidth()
                         {
@@ -203,7 +220,7 @@ public class HttpUtils
 
 
         /**
-         * 默认解析html方法, 给链接添加点击事件监听, 图片没有监听
+         * 默认解析html的方法, 给链接添加点击事件监听, 但是图片没有监听
          * @param context
          * @param htmlString
          * @param textView

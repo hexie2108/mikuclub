@@ -1,5 +1,6 @@
 package org.mikuclub.app.javaBeans.parameters;
 
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.utils.DataUtils;
 
 import java.util.ArrayList;

@@ -1,7 +1,8 @@
 package org.mikuclub.app.utils.storage;
 
 /**
- * 操作消息相关的储存参数
+ * 管理消息相关的共享偏好
+ * Manage message-related sharing preferences
  */
 public class MessageUtils
 {

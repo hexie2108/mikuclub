@@ -11,26 +11,30 @@ import android.widget.EditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.controller.base.BaseController;
+import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyEditTextNumberFilterMinMax;
+import org.mikuclub.app.utils.http.HttpCallBack;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
+
 /**
- * 文章列表控制器
+ * 获取文章列表的请求控制器
+ * request controller to get  post list
  */
 public class PostController extends BaseController
 {
-        /*额外变量*/
+        /* 额外变量 Additional variables */
         //下拉刷新后 需要跳转到的item位置
         private int scrollPositionAfterRefresh = 1;
 
@@ -38,17 +42,11 @@ public class PostController extends BaseController
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
 
-
         public PostController(Context context)
         {
                 super(context);
-
-
         }
 
-        /**
-         * 加载更多
-         */
         @Override
         public void getMore()
         {
@@ -71,7 +69,7 @@ public class PostController extends BaseController
                                         //加载数据
                                         getRecyclerDataList().addAll(newPosts.getBody());
                                         //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
-                                        int position = getRecyclerDataList().size()+getRecyclerViewAdapter().getHeaderRow();
+                                        int position = getRecyclerViewAdapter().getLastItemPositionWithHeaderRowFix();
                                         getRecyclerViewAdapter().notifyItemInserted(position);
 
                                         //当前页数+1
@@ -103,6 +101,11 @@ public class PostController extends BaseController
                                 @Override
                                 public void onError(String response)
                                 {
+                                        //如果数据列表还是空的 就报了无内容错误, 说明这个用户没有投过稿
+                                        if(getRecyclerDataList().size()==0){
+                                                getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.author_empty_error_message));
+                                        }
+
                                         //隐藏尾部
                                         getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                                 }
@@ -179,7 +182,7 @@ public class PostController extends BaseController
                         @Override
                         public void onError(String response)
                         {
-                                ToastUtils.shortToast("请求错误");
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.general_toast_message_on_error));
                         }
 
 
@@ -217,7 +220,7 @@ public class PostController extends BaseController
 
 
         /**
-         * 显示跳转弹窗
+         * 显示跳转弹窗+跳转功能
          */
         public void openJumPageAlertDialog()
         {
@@ -227,7 +230,7 @@ public class PostController extends BaseController
                 final EditText input = view.findViewById(R.id.text_input);
                 TextInputLayout textInputLayout = view.findViewById(R.id.text_input_layout);
                 //加载占位符
-                textInputLayout.setHint("第" + getCurrentPage() + "页 / 总共" + getTotalPage() + "页");
+                textInputLayout.setHint(String.format(ResourcesUtils.getString(R.string.list_jump_windows_pagination), getCurrentPage(), getTotalPage()));
                 //限制input输入范围 [从1到最后一页]
                 input.setFilters(new InputFilter[]{new MyEditTextNumberFilterMinMax(1, getTotalPage())});
                 //获取焦点+弹出键盘
@@ -236,11 +239,11 @@ public class PostController extends BaseController
                 //创建 弹出构造器
                 final AlertDialog.Builder builder = new MaterialAlertDialogBuilder(activity);
                 //设置标题
-                builder.setTitle("跳转");
+                builder.setTitle(ResourcesUtils.getString(R.string.list_jump_windows_title));
                 //加载布局
                 builder.setView(view);
                 //设置确认按钮 和 动作
-                builder.setPositiveButton("确认", (dialog, which) -> {
+                builder.setPositiveButton(ResourcesUtils.getString(R.string.confirm), (dialog, which) -> {
                         //必须不是空
                         if (!input.getText().toString().isEmpty())
                         {
@@ -250,12 +253,12 @@ public class PostController extends BaseController
                         }
                         else
                         {
-                                ToastUtils.shortToast("未输入页数!");
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.list_jump_windows_empty_error));
                         }
-
                 });
+
                 //设置取消按钮 和 无动作
-                builder.setNegativeButton("取消", (dialog, which) -> {
+                builder.setNegativeButton(ResourcesUtils.getString(R.string.cancel), (dialog, which) -> {
                 });
                 //创建弹窗
                 final AlertDialog alertDialog = builder.create();

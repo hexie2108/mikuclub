@@ -13,12 +13,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.adapters.CommentsAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.adapters.viewHolder.CommentViewHolder;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.adapter.CommentAdapter;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
-import org.mikuclub.app.delegates.CommentDelegate;
+import org.mikuclub.app.delegate.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
@@ -26,10 +24,10 @@ import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ScreenUtils;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,26 +41,27 @@ import mikuclub.app.R;
 
 /**
  * 文章页 评论回复窗口碎片
+ * Post page: comment replay windows fragment
  */
 public class CommentRepliesFragment extends BottomSheetDialogFragment
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 5;
         public static final String BUNDLE_COMMENT = "comment";
 
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private CommentDelegate delegate;
         //数据控制器
         private CommentController controller;
         //列表适配器
-        private CommentsAdapter recyclerViewAdapter;
+        private CommentAdapter.RepliesAdapter recyclerViewAdapter;
         //列表数据
         private List<Comment> recyclerDataList;
         //获取评论数据
         private Comment comment;
 
-        /*组件*/
+        /* 组件 views */
         //父评论主体
         private ConstraintLayout item;
         private ImageView itemAvatarImg;
@@ -136,7 +135,8 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
 
 
         /**
-         * 初始化评论框
+         * 初始化评论发送框
+         * init comment input form
          */
         private void initCommentInput()
         {
@@ -147,18 +147,17 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
 
         /**
          * 初始化父评论
+         * init parent comment
          */
         private void initParentComment()
         {
                 //为视图设置数据
                 itemName.setText(comment.getAuthor_name());
                 //生成时间格式
-                String dateString = new SimpleDateFormat(GlobalConfig.DATE_FORMAT).format(comment.getDate());
+                String dateString = GeneralUtils.DateToString(comment.getDate());
                 itemDate.setText(dateString);
-                //确保给地址添加上https协议
-                String avatarSrc = HttpUtils.checkAndAddHttpsProtocol(comment.getAuthor_avatar_urls().getSize96());
                 //加载远程图片
-                GlideImageUtils.getSquareImg(getActivity(), itemAvatarImg, avatarSrc);
+                GlideImageUtils.getSquareImg(getActivity(), itemAvatarImg, comment.getAuthor_avatar_urls().getSize96());
 
                 //显示解析过html的内容
                 HttpUtils.parseHtmlDefault(getActivity(), comment.getContent().getRendered(), itemContent);
@@ -170,25 +169,13 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
         }
 
         /**
-         * 初始化 评论列表
+         * 初始化 RecyclerView
+         * init RecyclerView list
          */
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new CommentsAdapter.RepliesAdapter(recyclerDataList, getActivity())
-                {
-                        //修改默认item点击事件
-                        @Override
-                        protected void setItemOnClickListener(CommentViewHolder holder)
-                        {
-                                //绑定评论框点击动作
-                                holder.getItem().setOnClickListener(v -> {
-                                        //某个评论点击的话 就变更为被回复对象,  , 修复可能的position偏移
-                                        Comment parentComment = (Comment) getAdapterList().get(holder.getAdapterPosition()-getHeaderRow());
-                                        controller.changeParentComment(parentComment, false);
-                                });
-                        }
-                };
+                recyclerViewAdapter = new CommentAdapter.RepliesAdapter(recyclerDataList, getActivity());
 
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -212,6 +199,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {
@@ -244,12 +232,15 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
 
                 //第一次请求数据
                 controller.getMore();
+                //给适配器提供 controller 来实现点击事件
+                recyclerViewAdapter.setController(controller);
 
         }
 
 
         /**
          * 禁止浮动页面滑动
+         * Disable sliding of windows
          *
          * @param dialog
          * @param style
@@ -271,6 +262,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
 
         /**
          * 本碎片的静态启动方法
+         * static method to start current fragment
          *
          * @param comment
          * @return
@@ -283,8 +275,6 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 fragment.setArguments(bundle);
                 return fragment;
         }
-
-
 
 
 }

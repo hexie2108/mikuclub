@@ -1,18 +1,8 @@
 package org.mikuclub.app.ui.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,30 +15,46 @@ import com.tencent.tauth.Tencent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.UtilsDelegate;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.delegate.UtilsDelegate;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
+import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.utils.custom.MyTextWatcher;
+import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.social.TencentListener;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;
 import org.mikuclub.app.utils.social.WeiboUtils;
-import org.mikuclub.app.utils.ViewUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
+/**
+ * 登陆页面
+ * login page
+ */
 public class LoginActivity extends AppCompatActivity
 {
 
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 7;
         public static final int REQUEST_CODE = 1;
 
-        /*变量*/
+        /* 变量 local variable */
+        private UtilsDelegate delegate;
+        private TencentListener tencentListener;
+
+        /* 组件 views */
         private EditText inputUserName;
         private EditText inputUserPassword;
         private TextInputLayout inputUserNameLayout;
@@ -58,13 +64,6 @@ public class LoginActivity extends AppCompatActivity
         private Button socialButtonQQ;
         private AlertDialog progressDialog;
 
-        private UtilsDelegate delegate;
-
-        private TencentListener tencentListener;
-
-        /*组件*/
-
-
         @Override
         public void onCreate(Bundle savedInstanceState)
         {
@@ -72,6 +71,7 @@ public class LoginActivity extends AppCompatActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_login);
 
+                //绑定组件
                 inputUserName = findViewById(R.id.input_user_name);
                 inputUserPassword = findViewById(R.id.input_user_password);
                 inputUserNameLayout = findViewById(R.id.input_user_name_layout);
@@ -83,14 +83,14 @@ public class LoginActivity extends AppCompatActivity
                 Toolbar toolbar = findViewById(R.id.toolbar);
 
                 //创建进度条弹窗
-                progressDialog = ViewUtils.createProgressDialog(this, false, false);
+                progressDialog = AlertDialogUtils.createProgressDialog(this, false, false);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null)
                 {
-                        //显示返回键
+                        //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                 }
 
@@ -106,44 +106,31 @@ public class LoginActivity extends AppCompatActivity
 
         /**
          * 初始化输入框
+         * init editText form
          */
         private void initEditText()
         {
                 //获取焦点+弹出键盘
                 //KeyboardUtils.showKeyboard(inputUserName);
                 //input内容监听器, 在都不为空的情况激活登陆按钮
-                TextWatcher textWatcher = new TextWatcher()
-                {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after)
-                        {
-                        }
+                //自定义 text watcher, 只有在内容变化完成后才会激活回调
+                TextWatcher textWatcher = new MyTextWatcher(() -> {
+                        //重新输入后 就隐藏错误信息
+                        inputUserNameLayout.setError(null);
+                        inputUserPasswordLayout.setError(null);
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count)
+                        //如果用户名和密码都不是空
+                        if (!inputUserName.getText().toString().isEmpty() && !inputUserPassword.getText().toString().isEmpty())
                         {
+                                //激活按钮
+                                loginButton.setEnabled(true);
                         }
-
-                        @Override
-                        public void afterTextChanged(Editable s)
+                        else
                         {
-                                //重新输入后 就隐藏错误信息
-                                inputUserNameLayout.setError(null);
-                                inputUserPasswordLayout.setError(null);
-
-                                //如果用户名和密码都不是空
-                                if (!inputUserName.getText().toString().isEmpty() && !inputUserPassword.getText().toString().isEmpty())
-                                {
-                                        //激活按钮
-                                        loginButton.setEnabled(true);
-                                }
-                                else
-                                {
-                                        //注销按钮
-                                        loginButton.setEnabled(false);
-                                }
+                                //注销按钮
+                                loginButton.setEnabled(false);
                         }
-                };
+                });
                 //添加内容变化监听器
                 inputUserName.addTextChangedListener(textWatcher);
                 inputUserPassword.addTextChangedListener(textWatcher);
@@ -174,7 +161,8 @@ public class LoginActivity extends AppCompatActivity
 
 
         /**
-         * 初始化微博登陆按钮
+         * 初始化社会化登陆按钮
+         * init social network login button
          */
         private void initSocialButton()
         {
@@ -189,6 +177,9 @@ public class LoginActivity extends AppCompatActivity
 
         /**
          * 发送登陆请求
+         * send login request
+         *
+         * @param loginParameters
          */
         private void sendLogin(LoginParameters loginParameters)
         {
@@ -232,34 +223,28 @@ public class LoginActivity extends AppCompatActivity
                         {
                                 progressDialog.dismiss();
                                 loginButton.setEnabled(true);
-
+                                String errorMessage;
                                 if (errorCode.indexOf("username") != -1)
                                 {
-                                        //显示错误信息
-                                        inputUserNameLayout.setError("用户名错误");
-
+                                        errorMessage = ResourcesUtils.getString(R.string.login_username_error);
                                 }
                                 else if (errorCode.indexOf("email") != -1)
                                 {
-                                        //显示错误信息
-                                        inputUserNameLayout.setError("邮箱地址错误");
-
+                                        errorMessage = ResourcesUtils.getString(R.string.login_email_error);
                                 }
                                 else if (errorCode.indexOf("password") != -1)
                                 {
-                                        //显示错误信息
-                                        inputUserPasswordLayout.setError("密码错误");
+                                        errorMessage = ResourcesUtils.getString(R.string.login_password_error);
                                 }
                                 else if (errorCode.indexOf("social_login_error") != -1)
                                 {
-                                        //显示错误信息
-                                        inputUserPasswordLayout.setError("社会化登录错误");
+                                        errorMessage = ResourcesUtils.getString(R.string.login_social_login_error);
                                 }
                                 else
                                 {
-                                        //显示错误信息
-                                        inputUserPasswordLayout.setError("未知错误");
+                                        errorMessage = ResourcesUtils.getString(R.string.internet_unknown_error);
                                 }
+                                inputUserNameLayout.setError(errorMessage);
                         }
 
                         @Override
@@ -268,7 +253,7 @@ public class LoginActivity extends AppCompatActivity
                                 progressDialog.dismiss();
                                 loginButton.setEnabled(true);
                                 //显示错误信息
-                                inputUserPasswordLayout.setError("网络请求错误, 请重试");
+                                inputUserPasswordLayout.setError(ResourcesUtils.getString(R.string.login_server_error_and_please_retry));
                         }
 
                         @Override
@@ -285,6 +270,9 @@ public class LoginActivity extends AppCompatActivity
 
         /**
          * 设置登陆成功后的信息
+         * Set information after successful login
+         *
+         * @param response
          */
         private void setLoginResult(String response)
         {
@@ -299,6 +287,7 @@ public class LoginActivity extends AppCompatActivity
 
         /**
          * 启动QQ登陆
+         * Start QQ login
          */
         private void startQQAuth()
         {
@@ -323,6 +312,7 @@ public class LoginActivity extends AppCompatActivity
 
         /**
          * 启动微博登陆
+         * start weibo login
          */
         private void startWeiboAuth()
         {
@@ -363,7 +353,6 @@ public class LoginActivity extends AppCompatActivity
         }
 
 
-
         @Override
         public boolean onCreateOptionsMenu(Menu menu)
         {
@@ -391,7 +380,8 @@ public class LoginActivity extends AppCompatActivity
 
 
         /**
-         * 静态 启动本活动 并返回结果的方法
+         * 启动本活动的并返回结果的静态方法
+         * Static method that starts this activity and returns the result
          *
          * @param context
          */

@@ -10,7 +10,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.mikuclub.app.adapters.viewPager.MessageViewPagerAdapter;
+import org.mikuclub.app.adapter.viewPager.MessageViewPagerAdapter;
 import org.mikuclub.app.ui.activity.LoginActivity;
 import org.mikuclub.app.utils.storage.MessageUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
@@ -22,21 +22,21 @@ import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
 /**
- * 主页活动-分类碎片
+ * 主页-消息分页
+ * Home page: message fragment
  */
 public class HomeMessageFragment extends Fragment
 {
 
 
-
-        /*变量*/
+        /* 变量 local variable */
         //第一次查看
         private boolean isFirstView = true;
         //第一次创建
         private boolean isFirstCreated = true;
         private MessageViewPagerAdapter viewPagerAdapter;
 
-        /*组件*/
+        /* 组件 views */
         //分页菜单栏
         private TabLayout tabsMenuLayout;
         //分页管理器
@@ -76,6 +76,7 @@ public class HomeMessageFragment extends Fragment
 
         /**
          * 根据用户登陆状态 决定输出内容
+         * Determine the output content according to the user login status
          */
         private void checkUserLogin(){
                 //如果用户有登陆
@@ -117,6 +118,7 @@ public class HomeMessageFragment extends Fragment
 
         /**
          * 初始化 分页显示器
+         * init view pager
          */
         private void initViewPager()
         {

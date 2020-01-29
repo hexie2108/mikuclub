@@ -11,19 +11,24 @@ import android.widget.LinearLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.config.GlobalConfig;
 
 import java.lang.reflect.Field;
 
 import androidx.annotation.NonNull;
-import mikuclub.app.R;
 
 /**
- * 负责获取屏幕相关信息的类
+ * 屏幕相关实用类
+ * Screen related ulitily class
  */
 public class ScreenUtils
 {
-        //给弹窗设置固定比例的高度
+        /**
+         * 给弹窗设置固定比例的高度
+         * @param context
+         * @param view
+         */
+
         public static void setFixWindowsHeight(Context context,final View view){
 
                 view.post(new Runnable()
@@ -36,11 +41,8 @@ public class ScreenUtils
                 });
         }
 
-
-
         /**
          * 获得屏幕宽度
-         *
          * @param context
          * @return
          */
@@ -55,7 +57,6 @@ public class ScreenUtils
 
         /**
          * 获得屏幕高度
-         *
          * @param context
          * @return
          */
@@ -69,7 +70,7 @@ public class ScreenUtils
         }
 
         /**
-         * 禁用 弹窗拖拽功能
+         * 禁用 SheetDialog弹窗的拖拽功能
          * @param dialog
          */
         public static void disableDraggingOfBottomSheetDialogFragment(Dialog dialog)

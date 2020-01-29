@@ -7,19 +7,19 @@ import android.view.MenuItem;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.mikuclub.app.adapters.AuthorAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.adapter.AuthorAdapter;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.AuthorPostController;
-import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.delegates.UserDelegate;
+import org.mikuclub.app.delegate.PostDelegate;
+import org.mikuclub.app.delegate.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.http.Request;
+import org.mikuclub.app.utils.storage.UserUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,18 +36,20 @@ import mikuclub.app.R;
 
 /**
  * 搜索页面
+ * search page
  */
 public class AuthorActivity extends AppCompatActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 9;
         public static final String INTENT_AUTHOR = "author";
 
-        /*变量*/
+        /* 变量 local variable */
 
         //数据请求代理人
         private PostDelegate delegate;
         private UserDelegate userDelegate;
+        //请求控制器
         private AuthorPostController controller;
         //列表适配器
         private AuthorAdapter recyclerViewAdapter;
@@ -56,9 +58,8 @@ public class AuthorActivity extends AppCompatActivity
 
         private Author author;
 
-        /*组件*/
+        /* 组件 views */
         private RecyclerView recyclerView;
-        //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
         private FloatingActionButton floatingActionButton;
 
@@ -75,7 +76,7 @@ public class AuthorActivity extends AppCompatActivity
                 floatingActionButton = findViewById(R.id.list_floating_action_button);
 
                 //获取作者数据
-                author =  (Author) getIntent().getSerializableExtra(INTENT_AUTHOR);
+                author = (Author) getIntent().getSerializableExtra(INTENT_AUTHOR);
 
                 //创建数据请求 代理人
                 delegate = new PostDelegate(TAG);
@@ -87,8 +88,9 @@ public class AuthorActivity extends AppCompatActivity
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null)
                 {
-                        //显示返回键
+                        //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
+                        //设置标题栏标题
                         actionBar.setTitle(author.getName());
                 }
 
@@ -104,14 +106,14 @@ public class AuthorActivity extends AppCompatActivity
         }
 
         /**
-         * 初始化 空的文章列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
 
                 recyclerViewAdapter = new AuthorAdapter(recyclerDataList, this);
                 recyclerViewAdapter.setAuthor(author);
-                recyclerViewAdapter.setNotMoreErrorMessage("没有其他投稿");
 
                 //创建网格布局
                 int numberColumn = 2;
@@ -136,7 +138,10 @@ public class AuthorActivity extends AppCompatActivity
         }
 
         /**
-         * 配置上拉刷新动作
+         * 初始化 下拉刷新组件
+         * 绑定刷新动作监听器
+         * init swipeRefresh view
+         * set refresh listener
          */
         private void initSwipeRefresh()
         {
@@ -152,6 +157,7 @@ public class AuthorActivity extends AppCompatActivity
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {
@@ -159,7 +165,8 @@ public class AuthorActivity extends AppCompatActivity
                 PostParameters parameters = new PostParameters();
                 parameters.setAuthor(new ArrayList<>(Arrays.asList(author.getAuthor_id())));
                 //如果未登陆, 排除魔法区
-                if(!UserUtils.isLogin()){
+                if (!UserUtils.isLogin())
+                {
                         parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
                 }
 
@@ -183,7 +190,10 @@ public class AuthorActivity extends AppCompatActivity
 
 
         /**
-         * 为父活动上的浮动按钮点击事件绑定动作
+         * 初始化浮动按钮
+         * 绑定点击事件监听器
+         * init floating action button
+         * set click listener
          */
         private void initFloatingActionButton()
         {
@@ -193,7 +203,13 @@ public class AuthorActivity extends AppCompatActivity
         }
 
 
-        //监听标题栏菜单动作
+        /**
+         * 监听标题栏菜单动作
+         * listen toolbar item click event
+         *
+         * @param item
+         * @return
+         */
         @Override
         public boolean onOptionsItemSelected(@NonNull MenuItem item)
         {
@@ -218,7 +234,9 @@ public class AuthorActivity extends AppCompatActivity
         }
 
 
-        /**静态 启动本活动的方法
+        /**
+         * 启动本活动的静态方法
+         * static method to start current activity
          *
          * @param context
          * @param author

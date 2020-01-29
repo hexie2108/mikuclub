@@ -1,37 +1,33 @@
 package org.mikuclub.app.controller;
 
 import android.content.Context;
-import android.widget.EditText;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
+
+import mikuclub.app.R;
 
 /**
- * 文章列表控制器
+ * 根据搜索内容获取文章列表的请求控制器
+ * request controller to get  post list by keyword
  */
 public class SearchPostController extends PostController
 {
-        /*额外变量*/
+        /* 额外变量 Additional variables */
         //下拉刷新后 需要跳转到的item位置
         private int scrollPositionAfterRefresh = 0;
         //查询的内容
         private String query;
 
 
-        /*额外组件*/
-        //下拉刷新布局
-        private EditText searchInput;
-
-
         public SearchPostController(Context context)
         {
                 super(context);
-
         }
-
 
         /**
          * 搜索页专用
@@ -73,27 +69,26 @@ public class SearchPostController extends PostController
                                 setTotalPage(newPosts.getHeaders().getTotalPage());
                                 //重新开启信号标
                                 setWantMore(true);
-
                         }
 
                         @Override
                         public void onTokenError()
                         {
-                                getRecyclerViewAdapter().setNotMoreErrorMessage("请重新登陆");
+                                getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.login_token_error));
                                 getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                         }
 
                         @Override
                         public void onError(String response)
                         {
-                                getRecyclerViewAdapter().setNotMoreErrorMessage("抱歉, 没有找到相关内容");
+                                getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.search_empty_error_message));
                                 getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                         }
 
                         @Override
                         public void onHttpError()
                         {
-                                getRecyclerViewAdapter().setInternetErrorListener(v->{
+                                getRecyclerViewAdapter().setInternetErrorListener(v -> {
                                         refreshPosts(page);
                                 });
                                 getRecyclerViewAdapter().updateFooterStatus(false, false, true);
@@ -124,11 +119,6 @@ public class SearchPostController extends PostController
                 ((PostDelegate) getDelegate()).getPostList(httpCallBack, page, parameters);
         }
 
-
-        public String getQuery()
-        {
-                return query;
-        }
 
         public void setQuery(String query)
         {

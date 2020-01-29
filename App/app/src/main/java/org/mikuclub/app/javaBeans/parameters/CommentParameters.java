@@ -1,5 +1,6 @@
 package org.mikuclub.app.javaBeans.parameters;
 
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.utils.DataUtils;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
+
 
 public class CommentParameters extends BaseParameters
 {

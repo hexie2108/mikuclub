@@ -5,15 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.adapters.PostsAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.adapter.PostAdapter;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.controller.PostController;
+import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.CategoryActivity;
-import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 
@@ -29,25 +29,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
+/**
+ * 分类页: 单独分类的碎片
+ * category page: single category fragment
+ */
 public class CategoryFragment extends Fragment
 {
-        /*静态变量*/
-        public static final String BUNDLE_CATEGORY ="category";
+        /* 静态变量 Static variable */
+        public static final String BUNDLE_CATEGORY = "category";
 
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private PostDelegate delegate;
         //数据控制器
         private PostController controller;
         //列表适配器
-        private PostsAdapter recyclerViewAdapter;
+        private PostAdapter recyclerViewAdapter;
         //列表数据
         private List<Post> recyclerDataList;
         //当前页面需要的分类数据
         private Category category;
 
-        /*组件*/
-        //下拉刷新布局
+        /* 组件 views */
         private SwipeRefreshLayout swipeRefresh;
         private RecyclerView recyclerView;
 
@@ -57,7 +60,7 @@ public class CategoryFragment extends Fragment
                                  Bundle savedInstanceState)
         {
                 // 为fragment加载主布局
-                return  inflater.inflate(R.layout.fragment_category, container, false);
+                return inflater.inflate(R.layout.fragment_category, container, false);
         }
 
         @Override
@@ -87,7 +90,6 @@ public class CategoryFragment extends Fragment
                 initController();
 
 
-
         }
 
         @Override
@@ -100,13 +102,14 @@ public class CategoryFragment extends Fragment
 
 
         /**
-         * 初始化 空的文章列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
 
                 //创建数据适配器
-                recyclerViewAdapter = new PostsAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new PostAdapter(recyclerDataList, getActivity());
 
                 //创建列表网格布局
                 int numberColumn = 2;
@@ -115,7 +118,8 @@ public class CategoryFragment extends Fragment
                 layoutManager.setSpanSizeLookup(new MyGridLayoutSpanSizeLookup(recyclerDataList, numberColumn, false));
 
                 //创建列表滑动监听器
-                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager){
+                MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager)
+                {
                         @Override
                         public void onExecute()
                         {
@@ -129,7 +133,10 @@ public class CategoryFragment extends Fragment
         }
 
         /**
-         * 配置上拉刷新动作
+         * 初始化 下拉刷新组件
+         * 绑定刷新动作监听器
+         * init swipe refresh layout
+         * set refresh listener
          */
         private void initSwipeRefresh()
         {
@@ -144,8 +151,10 @@ public class CategoryFragment extends Fragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
-        private void initController(){
+        private void initController()
+        {
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
                 //参数里 需要的分类id
@@ -166,7 +175,10 @@ public class CategoryFragment extends Fragment
 
 
         /**
-         * 为父活动上的浮动按钮点击事件绑定动作 (显示跳转弹窗)
+         * 初始化浮动按钮
+         * 绑定点击事件监听器
+         * init floating action button
+         * set click listener (显示跳转弹窗)
          */
         private void initFloatingActionButton()
         {
@@ -179,6 +191,7 @@ public class CategoryFragment extends Fragment
 
         /**
          * 本碎片的静态启动方法
+         * static method to start current fragment
          *
          * @param category
          * @return

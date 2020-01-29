@@ -9,10 +9,13 @@ import com.tencent.tauth.UiError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mikuclub.app.contexts.MyApplication;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ToastUtils;
 
+/**
+ * 自定义QQ登陆动作监听器
+ * QQ login action listener
+ */
 public abstract class TencentListener implements IUiListener
 {
         private Context context;

@@ -1,12 +1,9 @@
 package org.mikuclub.app.javaBeans.parameters;
 
-import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
 
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 

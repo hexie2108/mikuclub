@@ -2,7 +2,6 @@ package org.mikuclub.app.controller;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -12,36 +11,42 @@ import android.widget.ImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.CommentDelegate;
+import org.mikuclub.app.controller.base.BaseController;
+import org.mikuclub.app.delegate.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
-import org.mikuclub.app.javaBeans.response.SingleComment;
-import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.javaBeans.response.Comments;
-import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.javaBeans.response.SingleComment;
 import org.mikuclub.app.javaBeans.response.WpError;
+import org.mikuclub.app.javaBeans.response.baseResource.Comment;
+import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
-import org.mikuclub.app.utils.ViewUtils;
+import org.mikuclub.app.utils.custom.MyTextWatcher;
 import org.mikuclub.app.utils.http.GlideImageUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
+import org.mikuclub.app.utils.storage.UserUtils;
 
 import androidx.appcompat.app.AlertDialog;
 import mikuclub.app.R;
 
+/**
+ * 获取评论列表的请求控制器
+ * request controller to get comment list
+ */
 public class CommentController extends BaseController
 {
 
-        /*变量*/
+        /* 变量 local variable */
         private UserLogin userLogin;
         private int postId;
         private int parentCommentId;
         private int authorId;
 
-        /*组件*/
+        /* 组件 views */
         private ImageView avatarImage;
         private TextInputLayout inputLayout;
         private TextInputEditText input;
@@ -52,12 +57,14 @@ public class CommentController extends BaseController
         public CommentController(Context context)
         {
                 super(context);
+                //如果用户有登陆
                 if (UserUtils.isLogin())
                 {
+                        //就设置用户信息
                         userLogin = UserUtils.getUser();
                 }
                 //创建进度条弹窗
-                progressDialog = ViewUtils.createProgressDialog(getContext(), false, false);
+                progressDialog = AlertDialogUtils.createProgressDialog(getContext(), false, false);
         }
 
         /**
@@ -80,7 +87,7 @@ public class CommentController extends BaseController
                         inputLayout.setEnabled(true);
 
                         //改变提示
-                        inputLayout.setHint("发表评论...");
+                        inputLayout.setHint(ResourcesUtils.getString(R.string.comment_input_default_hint));
                         //如果通知作者的选择框不是null
                         if (checkBoxNotifyAuthor != null)
                         {
@@ -88,49 +95,34 @@ public class CommentController extends BaseController
                                 checkBoxNotifyAuthor.setVisibility(View.VISIBLE);
                         }
 
-
                         //创建点击事件监听器
                         View.OnClickListener onClickListener = v -> {
                                 //发送评论
                                 sendComment();
                         };
 
+
                         //input内容监听器, 在内容不为空的情况激活发送按钮 更改图标颜色
-                        TextWatcher textWatcher = new TextWatcher()
-                        {
-                                @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after)
+                        //自定义 text watcher, 只有在内容变化完成后才会激活回调
+                        TextWatcher textWatcher = new MyTextWatcher(() -> {
+                                String content = input.getText().toString().trim();
+                                //如果内容不是空
+                                if (!content.isEmpty())
                                 {
+                                        //激活按钮点击事件, 更换按钮颜色
+                                        //绑定图标点击
+                                        inputLayout.setEndIconOnClickListener(onClickListener);
+                                        inputLayout.setEndIconTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorPrimary)));
                                 }
-
-                                @Override
-                                public void onTextChanged(CharSequence s, int start, int before, int count)
+                                else
                                 {
+                                        //注销按钮, 更换按钮颜色
+                                        inputLayout.setEndIconOnClickListener(null);
+                                        inputLayout.setEndIconTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.defaultTextColor)));
                                 }
-
-                                @Override
-                                public void afterTextChanged(Editable s)
-                                {
-                                        String content = input.getText().toString().trim();
-                                        //如果内容不是空
-                                        if (!content.isEmpty())
-                                        {
-                                                //激活按钮点击事件, 更换按钮颜色
-                                                //绑定图标点击
-                                                inputLayout.setEndIconOnClickListener(onClickListener);
-                                                inputLayout.setEndIconTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorPrimary)));
-                                        }
-                                        else
-                                        {
-                                                //注销按钮, 更换按钮颜色
-                                                inputLayout.setEndIconOnClickListener(null);
-                                                inputLayout.setEndIconTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.defaultTextColor)));
-                                        }
-                                }
-                        };
+                        });
                         //添加内容变化监听器
                         input.addTextChangedListener(textWatcher);
-
 
                         //监听键盘动作
                         input.setOnEditorActionListener((v, actionId, event) -> {
@@ -166,7 +158,8 @@ public class CommentController extends BaseController
                         //设置父评论作者id
                         setAuthorId(parentComment.getAuthor());
                         //修改显示名
-                        inputLayout.setHint("回复 " + parentComment.getAuthor_name() + ":");
+                        inputLayout.setHint(ResourcesUtils.getString(R.string.replay)+" " + parentComment.getAuthor_name() + ":");
+                        //如果不是一次调用
                         if (!isFirstTime)
                         {
                                 //获取焦点, 显示键盘
@@ -182,9 +175,9 @@ public class CommentController extends BaseController
          */
         private void sendComment()
         {
-                String content = input.getText().toString().trim();
+                String commentContent = input.getText().toString().trim();
                 //评论内容不是空的
-                if (!content.isEmpty())
+                if (!commentContent.isEmpty())
                 {
                         //显示加载进度条
                         progressDialog.show();
@@ -235,52 +228,46 @@ public class CommentController extends BaseController
                                 }
                         };
 
-                        CreateCommentParameters createCommentParameters = new CreateCommentParameters();
-                        createCommentParameters.setContent(content);
-                        createCommentParameters.setPost(postId);
-                        createCommentParameters.setParent(parentCommentId);
-
-                        //新建评论的元数据容器
-                        CreateCommentParameters.Meta meta;
-                        //在一级评论的情况 如果通知作者的选择框不是null  而且 被勾选了
-                        if (checkBoxNotifyAuthor != null && checkBoxNotifyAuthor.isChecked())
-                        {
-
-                                //创建元数据容器
-                                meta = new CreateCommentParameters.Meta();
-                                //设置被回复用户的id
-                                meta.setParent_user_id(authorId);
-                                //设置为未读
-                                meta.setParent_user_read(0);
-                                //添加元数据到请求
-                                createCommentParameters.setMeta(meta);
-                        }
-                        //在二级评论的情况 (回复其他人的评论)
-                        else if (checkBoxNotifyAuthor == null)
-                        {
-                                meta = new CreateCommentParameters.Meta();
-                                //设置被回复用户的id
-                                meta.setParent_user_id(authorId);
-                                //设置为未读
-                                meta.setParent_user_read(0);
-                                //添加元数据到请求
-                                createCommentParameters.setMeta(meta);
-                        }
-
-                        ((CommentDelegate) getDelegate()).createComment(httpCallBack, createCommentParameters);
+                        startDelegateToSendComment(httpCallBack, commentContent);
 
                 }
                 else
                 {
-                        ToastUtils.shortToast("评论内容不能为空!");
+                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.input_empty_error));
                 }
-
-
         }
 
-        /*
-       加载更多
-        */
+        /**
+         * 启动代理人发送评论
+         * @param httpCallBack
+         * @param commentContent
+         */
+        private void startDelegateToSendComment(HttpCallBack httpCallBack, String commentContent){
+                //创建请求body参数
+                CreateCommentParameters createCommentParameters = new CreateCommentParameters();
+                createCommentParameters.setContent(commentContent);
+                createCommentParameters.setPost(postId);
+                createCommentParameters.setParent(parentCommentId);
+
+                //新建评论的元数据容器
+                CreateCommentParameters.Meta meta;
+                //如果是二级子评论 checkbox就是null, 或者 是一级评论 checkbox不是null 而且被勾选了
+                if (checkBoxNotifyAuthor == null || checkBoxNotifyAuthor.isChecked())
+                {
+                        //创建元数据容器
+                        meta = new CreateCommentParameters.Meta();
+                        //设置被回复用户的id
+                        meta.setParent_user_id(authorId);
+                        //设置为未读
+                        meta.setParent_user_read(0);
+                        //添加元数据到请求
+                        createCommentParameters.setMeta(meta);
+                }
+
+                ((CommentDelegate) getDelegate()).createComment(httpCallBack, createCommentParameters);
+        }
+
+        @Override
         public void getMore()
         {
                 //检查信号标

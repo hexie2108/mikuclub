@@ -1,15 +1,13 @@
 <resources >
 
-        <!-- Base application theme. -->
+        <!-- 自定义主题颜色 -->
         <style name = "AppTheme" parent = "Theme.MaterialComponents.Light.NoActionBar.Bridge">
-                <!-- Customize your theme here.-->
                 <item name = "colorPrimary">@color/colorPrimary</item>
                 <item name = "colorPrimaryDark">@color/colorPrimaryDark</item>
                 <item name = "colorAccent">@color/colorAccent</item>
                 <item name="android:statusBarColor">@color/colorPrimary</item>
                 <item name="android:actionMenuTextColor">@android:color/white</item>
                 <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
-
         </style>
 
 
@@ -23,6 +21,7 @@
         <style name="TabLayoutTextStyle">
                 <item name="android:textSize">@dimen/text_default</item>
         </style>
+
 
         <!--  圆形按钮-->
         <style name="MyCircleButton">

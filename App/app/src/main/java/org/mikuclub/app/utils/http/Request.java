@@ -2,16 +2,10 @@ package org.mikuclub.app.utils.http;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
 
-import org.json.JSONObject;
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.context.MyApplication;
 import org.mikuclub.app.utils.DataUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
@@ -21,7 +15,8 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * questo è classe utils che occupa di mandare tutte le richieste
+ * 网络请求发送类
+ * Network Request Sending Class
  */
 public class Request
 {
@@ -90,7 +85,7 @@ public class Request
         }
 
         /**
-         * method di richiesta base
+         * 基础请求方法
          *
          * @param method
          * @param url
@@ -101,43 +96,30 @@ public class Request
          */
         private static void request(int method, String url, final Map<String, Object> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
-
+                //记录请求方式和地址
                 LogUtils.v("请求地址 "+(method == 1? "post":"get")+" "+url );
-
 
                 StringRequest stringRequest  = new StringRequest(method, url,
                         response -> {
                         //只有在不是null的情况
                                 if(httpCallBack != null){
+                                        //调用回调成功方法
                                         httpCallBack.onSuccessHandler(response);
                                 }
                         }, error -> {
                         //只有在不是null的情况
                         if(httpCallBack != null){
+                                //调用回调错误方法
                                 httpCallBack.onErrorHandler(error);
                         }
                 })
                 {
+
                         /**
-                         * 如果是POST类型的请求, 则从params 中读取参数
+                         * 如果有body参数, 则输出成JSON字符串格式
                          * @return
                          * @throws AuthFailureError
-                         *
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError
-                        {
-                           if (params != null && !params.isEmpty())
-                               {
-                                     return params;
-                            }
-                              else
-                          {
-                                        return null;
-                           }
-                        }
                          */
-
-
                         @Override
                         public byte[] getBody() throws AuthFailureError
                         {
@@ -151,6 +133,10 @@ public class Request
                                 }
                         }
 
+                        /**
+                         * 声明body的数据格式
+                         * @return
+                         */
                         @Override
                         public String getBodyContentType()
                         {
@@ -165,6 +151,7 @@ public class Request
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError
                         {
+                                //如果为空 则返回空map
                                 if (headers == null || headers.size() == 0)
                                 {
                                         return Collections.emptyMap();
@@ -175,21 +162,22 @@ public class Request
                                 }
                         }
 
-                        //取消的时候  回调函数
+                        /**
+                         * 请求被取消的时候  回调onCancel方法
+                         */
                         @Override
                         public void cancel()
                         {
-
                                 super.cancel();
                                 //只有在不是null的情况
                                 if(httpCallBack != null){
                                         httpCallBack.onCancel();
                                 }
-
                         }
                 };
-
+                //设置标签, 方便后续根据标签取消
                 stringRequest.setTag(tag);
+                //设置重试策略
                 stringRequest.setRetryPolicy(customRetryPolicy);
                 RequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(stringRequest);
         }
@@ -198,6 +186,7 @@ public class Request
 
 
         /**
+         * deprecated
          * 文件POST请求
          * @param url
          * @param params
@@ -233,87 +222,6 @@ public class Request
 
 */
         }
-
-
-
-
-
-
-        /**
-         * metodo get per JSON
-         * @param url
-         * @param params
-         * @param beanClass
-         * @param listClassesType
-         * @param tag
-         * @param wrapperCallBack
-         *//*
-        public static void jsonGet(String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType,int tag, HttpCallBack wrapperCallBack)
-        {
-                //se parametri non è vuoto
-                if (params != null && params.size() > 0)
-                {
-                        //contenare i parametri sul URL
-                        url = url + "?" + DataUtils.mapToString(params, "=", "&");
-                }
-
-                jsonRequest(Request.Method.GET, url, null, headers, beanClass, listClassesType, tag, wrapperCallBack);
-        }*/
-
-        /**
-         *
-         * @param url
-         * @param params
-         * @param beanClass
-         * @param listClassesType
-         * @param tag
-         * @param wrapperCallBack
-         *//*
-        public static void jsonPost(String url, Map<String,String> params, Map<String,String> headers,Class beanClass, Type listClassesType, int tag, HttpCallBack wrapperCallBack)
-        {
-                jsonRequest(Request.Method.POST, url, params, headers, beanClass, listClassesType, tag, wrapperCallBack);
-        }*/
-
-
-        /**
-         * method di richiesta base per JSON
-         * @param method
-         * @param url
-         * @param params
-         * @param headers
-         * @param beanClass
-         * @param listClassesType
-         * @param tag
-         * @param wrapperCallBack
-         */
-        /*
-        private static void jsonRequest(int method, String url, Map<String,String> params, Map<String,String> headers, Class beanClass, Type listClassesType, int tag, final HttpCallBack wrapperCallBack)
-        {
-                GsonRequest gsonRequest = new GsonRequest(method, url, params, headers, beanClass, listClassesType,
-                        new Response.Listener<Object>()
-                        {
-                                @Override
-                                public void onResponse(Object response)
-                                {
-                                        wrapperCallBack.onSuccess(response);
-
-                                }
-                        }, new Response.ErrorListener()
-                {
-                        @Override
-                        public void onErrorResponse(VolleyError error)
-                        {
-                                wrapperCallBack.onError(error);
-                        }
-                });
-
-                gsonRequest.setTag(tag);
-                gsonRequest.setRetryPolicy(customRetryPolicy);
-                RequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(gsonRequest);
-
-        }
-*/
-
 
 
         /**

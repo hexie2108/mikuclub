@@ -74,7 +74,7 @@
             android:id = "@+id/item_content"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-
+            android:textIsSelectable="true"
             android:layout_marginTop = "@dimen/normal"
             android:layout_marginEnd = "@dimen/normal"
             android:layout_marginBottom = "@dimen/normal"

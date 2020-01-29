@@ -6,6 +6,11 @@ import org.mikuclub.app.utils.ParserUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 管理用户登陆相关的共享偏好
+ *  * Manage user-login-related sharing preferences
+ */
 public class UserUtils
 {
         //用户登陆信息
@@ -44,7 +49,7 @@ public class UserUtils
 
 
         /**
-         * 记录用户登陆信息
+         * 设置用户登陆信息
          */
         public static void login(String userInfoString)
         {
@@ -79,7 +84,7 @@ public class UserUtils
         }
 
         /**
-         * 创建一个带token数据的 map用作网络请求的头部信息
+         * 创建一个带有用户登陆令牌的map, 用来添加到网络请求的header里 来通过服务端验证
          * 用户必须登陆
          *
          * @return Map 如果用户有登陆, null 如果没登陆

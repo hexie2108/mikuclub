@@ -5,14 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.adapters.CategoriesAdapter;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.adapter.CategoryAdapter;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.response.Categories;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
-import org.mikuclub.app.ui.activity.base.MyFragment;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
 
 import java.util.List;
@@ -20,25 +19,25 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
 /**
- * 主页活动-分类碎片
+ * 主页-分类分页
+ * Home page: category list fragment
  */
 public class HomeCategoriesFragment extends Fragment
 {
 
 
         //列表适配器
-        private CategoriesAdapter recyclerViewAdapter;
+        private CategoryAdapter recyclerViewAdapter;
         //列表数据
         private List<Category> recyclerDataList;
 
 
-        /*组件*/
+        /* 组件 views */
         //列表
         private RecyclerView recyclerView;
 
@@ -69,19 +68,20 @@ public class HomeCategoriesFragment extends Fragment
                 //检查用户是否登陆 , 没登陆的情况去除魔法区
                 checkAndRemoveMofaCategory();
 
-                //初始化数据列表
+                //初始化列表
                 initRecyclerView();
 
         }
 
 
         /**
-         * 初始化文章列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
                 //创建适配器
-                recyclerViewAdapter = new CategoriesAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new CategoryAdapter(recyclerDataList, getActivity());
 
                 //创建列表网格布局
                 //设置行数
@@ -95,7 +95,8 @@ public class HomeCategoriesFragment extends Fragment
 
         /**
          * 检查用户是否登陆
-         * 没登陆的情况去除魔法区
+         * 没登陆的情况去除魔法区分类
+         * Remove the magic zone category if user is not login
          */
         private void checkAndRemoveMofaCategory()
         {

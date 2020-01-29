@@ -4,7 +4,9 @@ import android.text.InputFilter;
 import android.text.Spanned;
 
 /**
- *限制数字类型的editext 输入的范围的过滤器
+ *限制数字范围的ediText 输入的范围的过滤器
+ * The filter to limit the range of input value of editText
+ *
  * author: Dharin Rajgor
  * EditText et = (EditText) findViewById(R.id.myEditText);
  * et.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "12")});

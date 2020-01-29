@@ -1,7 +1,6 @@
 package org.mikuclub.app.javaBeans.response;
 
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
-import org.mikuclub.app.javaBeans.response.baseResource.User;
 import org.mikuclub.app.javaBeans.response.modules.Headers;
 
 import java.io.Serializable;

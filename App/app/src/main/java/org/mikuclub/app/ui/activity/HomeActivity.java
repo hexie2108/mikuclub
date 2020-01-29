@@ -3,15 +3,32 @@ package org.mikuclub.app.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.ui.activity.base.MyActivity;
+import org.mikuclub.app.ui.fragments.HomeCategoriesFragment;
+import org.mikuclub.app.ui.fragments.HomeMainFragment;
+import org.mikuclub.app.ui.fragments.HomeMessageFragment;
+import org.mikuclub.app.utils.LogUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
+import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.http.GlideImageUtils;
+import org.mikuclub.app.utils.http.Request;
+import org.mikuclub.app.utils.storage.MessageUtils;
+import org.mikuclub.app.utils.storage.UserUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -19,41 +36,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.ui.AppBarConfiguration;
-
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-
-import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
-import org.mikuclub.app.javaBeans.response.Posts;
-import org.mikuclub.app.ui.activity.base.MyActivity;
-import org.mikuclub.app.ui.fragments.HomeCategoriesFragment;
-import org.mikuclub.app.ui.fragments.HomeMainFragment;
-import org.mikuclub.app.ui.fragments.HomeMessageFragment;
-import org.mikuclub.app.utils.LogUtils;
-import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.storage.MessageUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
-import org.mikuclub.app.utils.http.GlideImageUtils;
-import org.mikuclub.app.utils.http.Request;
-
 import mikuclub.app.R;
 
 /**
  * 主页
+ * home page
  */
 public class HomeActivity extends MyActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 2;
         public static final String INTENT_STICKY_POST_LIST = "sticky_post_list";
         public static final String INTENT_POST_LIST = "post_list";
 
-        /*变量*/
-        private AppBarConfiguration mAppBarConfiguration;
+        /* 变量 local variable */
 
         private Posts stickyPosts;
         private Posts posts;
@@ -68,8 +64,11 @@ public class HomeActivity extends MyActivity
         //获取碎片管理器
         private FragmentManager fm = getSupportFragmentManager();
 
+        //确认是否真要退出, 屏蔽用户第一次的退出点击防止是误碰
+        private boolean doYouReallyWantExit = false;
 
-        /*组件*/
+
+        /* 组件 views */
         private DrawerLayout drawer;
         private NavigationView leftNavigationView;
         private BottomNavigationView bottomNavigationView;
@@ -88,8 +87,8 @@ public class HomeActivity extends MyActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home);
 
+                //绑定组件
                 Toolbar toolbar = findViewById(R.id.toolbar);
-
                 drawer = findViewById(R.id.home_drawer_layout);
                 leftNavigationView = findViewById(R.id.home_left_navigation_view);
                 //获取侧边栏头部布局
@@ -108,20 +107,12 @@ public class HomeActivity extends MyActivity
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
-                ActionBar actionBar = getSupportActionBar();
-                if (actionBar != null)
-                {
-                        //显示菜单键
-                        //  actionBar.setDisplayHomeAsUpEnabled(true);
-                        //更改菜单键图标
-                        //  actionBar.setHomeAsUpIndicator(R.drawable.menu);
-                }
 
                 initTopSearchBar();
 
                 initBottomMenu();
 
-                initLeftNavigationVIew();
+                initLeftNavigationView();
 
                 //检查登陆状态
                 checkLoginStatus();
@@ -130,12 +121,12 @@ public class HomeActivity extends MyActivity
                 drawer.addDrawerListener(toggle);
                 toggle.syncState();
 
-
         }
 
 
         /**
          * 初始化 顶部搜索栏
+         * init top search bar view
          */
         private void initTopSearchBar()
         {
@@ -147,7 +138,10 @@ public class HomeActivity extends MyActivity
         }
 
         /**
-         * 初始化底部导航栏
+         * 初始化底部导航菜单栏,
+         * 加载显示第一个分页
+         * 如果有未读消息, 显示气泡提醒
+         * init bottom navigation view
          */
         private void initBottomMenu()
         {
@@ -163,7 +157,7 @@ public class HomeActivity extends MyActivity
                                         switch (item.getItemId())
                                         {
                                                 case R.id.navigation_home:
-                                                        changeFragment(homeMainFragment,1);
+                                                        changeFragment(homeMainFragment, 1);
                                                         break;
                                                 case R.id.navigation_category:
                                                         changeFragment(homeCategoriesFragment, 2);
@@ -176,7 +170,7 @@ public class HomeActivity extends MyActivity
                                 }
                         });
                 //创建主页第一个碎片
-                changeFragment(homeMainFragment,1);
+                changeFragment(homeMainFragment, 1);
 
                 //获取未读消息数量
                 int unreadMessageCount = MessageUtils.getPrivateMessageCount() + MessageUtils.getReplyCommentCount();
@@ -197,8 +191,10 @@ public class HomeActivity extends MyActivity
         }
 
         /**
-         * 创建和切换fragment
-         * 通过隐藏和显示的方式, 避免重复attach和detach
+         * 创建和切换fragment分页
+         * 通过隐藏和显示的切换方式, 避免重复attach和detach
+         * Create and toggle fragment pagination
+         * By switching between hide and show, avoid repeated attach and detach
          *
          * @param fragment
          */
@@ -207,7 +203,8 @@ public class HomeActivity extends MyActivity
                 //创建新fragment
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 //如果当前有在显示fragment
-                if(currentActiveFragment != null){
+                if (currentActiveFragment != null)
+                {
                         //隐藏当前fragment
                         fragmentTransaction = fragmentTransaction.hide(currentActiveFragment);
                 }
@@ -232,7 +229,7 @@ public class HomeActivity extends MyActivity
                                         break;
                         }
                         //添加并显示新fragment
-                         fragmentTransaction = fragmentTransaction.add(R.id.home_navigation, fragment, String.valueOf(fragmentTag));
+                        fragmentTransaction = fragmentTransaction.add(R.id.home_navigation, fragment, String.valueOf(fragmentTag));
                 }
                 //如果已生成过
                 else
@@ -249,9 +246,11 @@ public class HomeActivity extends MyActivity
 
 
         /**
-         * 初始化侧边栏, 绑定item动作监听
+         * 初始化侧边栏
+         * 绑定菜单item的点击事件监听器
+         * init navigation view on left sidebar
          */
-        private void initLeftNavigationVIew()
+        private void initLeftNavigationView()
         {
 
                 //绑定侧边栏菜单动作监听
@@ -268,7 +267,7 @@ public class HomeActivity extends MyActivity
                                         UserUtils.logout();
                                         //更新侧边栏用户信息和菜单
                                         setLogoutUserInfoAndMenu();
-                                        ToastUtils.shortToast("已登出");
+                                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.logout_notice));
                                         break;
                                 case R.id.item_report:
                                         //启动问题反馈页
@@ -284,19 +283,17 @@ public class HomeActivity extends MyActivity
 
         /**
          * 检测用户登陆状态
-         * 如果从未登陆过, 就什么都不做
-         * 如果是登陆令牌过期, 则跳转到登陆页面
-         * 如果登陆令牌有效, 则在主页侧边栏显示用户信息和替换默认侧边栏菜单
+         * 根据用户登陆状态, 加载不同的侧边栏菜单
+         * check user login status
+         * Load different sidebar based on user login status
          */
         private void checkLoginStatus()
         {
                 //如果用户有登陆
                 if (UserUtils.isLogin())
                 {
-
                         LogUtils.v("已登陆用户");
                         setLoggingUserInfoAndMenu();
-
                 }
                 // 如果没登陆过
                 else
@@ -309,6 +306,7 @@ public class HomeActivity extends MyActivity
 
         /**
          * 设置未登陆用户的信息和菜单
+         * Set up information and menus for non-login users
          */
         private void setLogoutUserInfoAndMenu()
         {
@@ -331,6 +329,7 @@ public class HomeActivity extends MyActivity
 
         /**
          * 设置已登陆用户的信息和菜单
+         * Set up information and menus for logged users
          */
         private void setLoggingUserInfoAndMenu()
         {
@@ -384,31 +383,28 @@ public class HomeActivity extends MyActivity
                 super.onStop();
         }
 
-        /**
-         * 修正返回键动作
-         *
-         * @return
-         *//*
-        @Override
-        public boolean onSupportNavigateUp()
-        {
-                NavController navController = Navigation.findNavController(this, R.id.home_navigation);
-                return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                        || super.onSupportNavigateUp();
-        }*/
         @Override
         public void onBackPressed()
         {
-
                 //如果侧边栏有开启
                 if (drawer.isDrawerOpen(GravityCompat.START))
                 {
+                        //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);
                 }
                 //如果当前页面不是主页的碎片, 就屏蔽退出键, 切换显示主页碎片
                 else if (currentActiveFragment != homeMainFragment)
                 {
+                        //切换分页到主页
                         changeFragment(homeMainFragment, 1);
+                        //让主页菜单图标变成选中状态
+                        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+                }
+                //屏蔽第一次退出点击, 防止是误碰
+                else if (!doYouReallyWantExit)
+                {
+                        doYouReallyWantExit = true;
+                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.exit_confirm));
                 }
                 else
                 {
@@ -417,11 +413,7 @@ public class HomeActivity extends MyActivity
 
         }
 
-        /**
-         * 获取浮动按钮组件
-         *
-         * @return
-         */
+
         public FloatingActionButton getFloatingActionButton()
         {
                 return floatingActionButton;
@@ -438,7 +430,8 @@ public class HomeActivity extends MyActivity
         }
 
         /**
-         * 静态 启动本活动的方法
+         * 启动本活动的静态方法
+         * static method to start current activity
          *
          * @param context
          * @param stickyPostList
@@ -448,8 +441,8 @@ public class HomeActivity extends MyActivity
         {
 
                 Intent intent = new Intent(context, HomeActivity.class);
-                intent.putExtra("sticky_post_list", stickyPostList);
-                intent.putExtra("post_list", postList);
+                intent.putExtra(INTENT_STICKY_POST_LIST, stickyPostList);
+                intent.putExtra(INTENT_POST_LIST, postList);
                 context.startActivity(intent);
 
         }

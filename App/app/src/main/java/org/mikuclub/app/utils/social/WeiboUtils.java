@@ -7,10 +7,9 @@ import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.openapi.IWBAPI;
 import com.sina.weibo.sdk.openapi.WBAPIFactory;
 
-import org.mikuclub.app.contexts.MyApplication;
-
 /**
- * WEIBO接口类
+ * 新浪微博 SDK接口管理器
+ * Weibo SDK interface management
  */
 public class WeiboUtils
 {

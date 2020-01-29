@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.ClipboardUtils;
@@ -28,15 +28,16 @@ import mikuclub.app.R;
 
 /**
  * 文章页 下载窗口碎片
+ * Post page: download windows fragment
  */
 public class DownloadFragment extends BottomSheetDialogFragment
 {
 
-        /*变量*/
+        /* 变量 local variable */
         //获取文章数据
         private Post post;
 
-        /*组件*/
+        /* 组件 views */
         private ConstraintLayout down1Box;
         private ConstraintLayout down2Box;
         private TextView down1Title;
@@ -55,9 +56,6 @@ public class DownloadFragment extends BottomSheetDialogFragment
         private TextView downInfo;
 
         private MaterialButton returnButton;
-
-
-
 
 
         @Nullable
@@ -97,7 +95,6 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 //获取文章的数据
                 post = ((PostActivity) getActivity()).getPost();
 
-
                 //初始化父评论
                 initDownloadView();
 
@@ -108,12 +105,13 @@ public class DownloadFragment extends BottomSheetDialogFragment
 
         /**
          * 初始化下载页面
+         * init page
          */
         private void initDownloadView()
         {
                 Post.Metadata metadata = post.getMetadata();
-                setubDownloadBox(metadata.getDown(), metadata.getPassword(), metadata.getUnzip_password(), down1Box, down1PasswordText, down1UnzipPasswordText, down1Password, down1UnzipPassword, down1Button);
-                setubDownloadBox(metadata.getDown2(), metadata.getPassword2(), metadata.getUnzip_password2(), down2Box, down2PasswordText, down2UnzipPasswordText, down2Password, down2UnzipPassword, down2Button);
+                setupDownloadBox(metadata.getDown(), metadata.getPassword(), metadata.getUnzip_password(), down1Box, down1PasswordText, down1UnzipPasswordText, down1Password, down1UnzipPassword, down1Button);
+                setupDownloadBox(metadata.getDown2(), metadata.getPassword2(), metadata.getUnzip_password2(), down2Box, down2PasswordText, down2UnzipPasswordText, down2Password, down2UnzipPassword, down2Button);
 
                 //如果没有访问密码
                 if (GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword()) && GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword2()))
@@ -132,6 +130,8 @@ public class DownloadFragment extends BottomSheetDialogFragment
 
         /**
          * 单独配置下载窗口
+         * setup download box
+         *
          * @param downList
          * @param passwordList
          * @param unzipPasswordList
@@ -142,7 +142,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
          * @param downUnzipPassword
          * @param downButton
          */
-        private void setubDownloadBox(final List<String> downList, List<String> passwordList, List<String> unzipPasswordList, ConstraintLayout downBox, TextView downPasswordText, TextView downUnzipPasswordText, final TextView downPassword, TextView downUnzipPassword, MaterialButton downButton)
+        private void setupDownloadBox(final List<String> downList, List<String> passwordList, List<String> unzipPasswordList, ConstraintLayout downBox, TextView downPasswordText, TextView downUnzipPasswordText, final TextView downPassword, TextView downUnzipPassword, MaterialButton downButton)
         {
 
                 //下载地址 不是空的
@@ -174,7 +174,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                 downUnzipPassword.setVisibility(View.GONE);
                         }
                         //获取下载地址
-                        final String downUrl = HttpUtils.checkAndAddHttpsProtocol(downList.get(0));
+                        final String downUrl = downList.get(0);
                         View.OnClickListener onClickListener;
                         //检测是否是磁链地址
                         if (downUrl.indexOf("magnet:") != -1 || downUrl.indexOf("ed2k:") != -1 )
@@ -250,6 +250,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
 
         /**
          * 禁止浮动页面滑动
+         * Disable sliding of windows
          *
          * @param dialog
          * @param style
@@ -263,6 +264,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
 
         /**
          * 本碎片的静态启动方法
+         * static method to start current fragment
          *
          * @return
          */

@@ -12,6 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * 自定义fragment
+ * 增加了命周期的日志输出功能, 方便debug
+ * custom fragment class
+ * Added the log function on the life cycle to facilitate debugging
+ */
 public class MyFragment extends Fragment
 {
         @Override

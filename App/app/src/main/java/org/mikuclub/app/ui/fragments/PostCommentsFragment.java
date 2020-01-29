@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.adapters.CommentsAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.adapter.CommentAdapter;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
-import org.mikuclub.app.delegates.CommentDelegate;
+import org.mikuclub.app.delegate.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
@@ -35,18 +35,19 @@ import mikuclub.app.R;
 
 /**
  * 文章页 评论页面碎片
+ * post page : comment list fragment
  */
 public class PostCommentsFragment extends Fragment
 {
 
 
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private CommentDelegate delegate;
         //数据控制器
         private CommentController controller;
         //列表适配器
-        private CommentsAdapter recyclerViewAdapter;
+        private CommentAdapter recyclerViewAdapter;
 
         private List<Comment> recyclerDataList;
         //当前页面的文章数据
@@ -54,7 +55,7 @@ public class PostCommentsFragment extends Fragment
 
 
 
-        /*组件*/
+        /* 组件 views */
         //文章列表
         private RecyclerView recyclerView;
         private ImageView avatarImage;
@@ -107,6 +108,7 @@ public class PostCommentsFragment extends Fragment
 
         /**
          * 初始化评论框
+         * init comment input  form
          */
         private void initCommentInput(){
                 controller.initCommentInput(avatarImage, inputLayout, input, checkBoxNotifyAuthor);
@@ -114,12 +116,13 @@ public class PostCommentsFragment extends Fragment
 
 
         /**
-         * 初始化 评论列表
+         * 初始化 RecyclerView
+         * init RecyclerView list
          */
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new CommentsAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new CommentAdapter(recyclerDataList, getActivity());
                 //如果评论数为0  修改默认错误信息
                 if(GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_comments())){
                         recyclerViewAdapter.setNotMoreErrorMessage("目前还没有评论哦");
@@ -144,6 +147,7 @@ public class PostCommentsFragment extends Fragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController(){
 

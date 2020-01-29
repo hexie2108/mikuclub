@@ -1,34 +1,38 @@
 package org.mikuclub.app.controller;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.MessageDelegate;
+import org.mikuclub.app.controller.base.BaseController;
+import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
 import org.mikuclub.app.javaBeans.response.PrivateMessages;
 import org.mikuclub.app.javaBeans.response.SinglePrivateMessage;
 import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
+import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.ViewUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
 
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import androidx.appcompat.app.AlertDialog;
+import mikuclub.app.R;
 
+
+/**
+ * 获取当前登陆用户和另外一个用户之间的私信列表的请求控制器
+ * Request controller to get the list of private messages between the current user and an another user
+ */
 public class PrivateMessageController extends BaseController
 {
         //私信作者的id
-       private  Integer senderId;
+        private Integer senderId;
 
         /*额外组件*/
         //输入框布局
@@ -41,18 +45,19 @@ public class PrivateMessageController extends BaseController
         {
                 super(context);
                 //创建进度条弹窗
-                progressDialog = ViewUtils.createProgressDialog(context, false, false);
+                progressDialog = AlertDialogUtils.createProgressDialog(context, false, false);
         }
 
         /**
          * 发送消息
          */
-        public void sendMessage(){
+        public void sendMessage()
+        {
 
                 String content = input.getText().toString().trim();
                 //把换行符号字符替换成<br>换行
-                content= content.replace("\n","<br/>");
-                content= content.replace("\r","<br/>");
+                content = content.replace("\n", "<br/>");
+                content = content.replace("\r", "<br/>");
 
                 //评论内容不是空的
                 if (!content.isEmpty())
@@ -75,7 +80,7 @@ public class PrivateMessageController extends BaseController
                                         //加进列表
                                         getRecyclerDataList().add(privateMessage);
                                         //通知更新, 修正可能存在的 头部header带来的位置偏移
-                                        int position = getRecyclerDataList().size()+getRecyclerViewAdapter().getHeaderRow();
+                                        int position = getRecyclerViewAdapter().getLastItemPositionWithHeaderRowFix();
                                         //通知更新
                                         getRecyclerViewAdapter().notifyItemInserted(position);
                                         //滚动到最后一行
@@ -111,14 +116,11 @@ public class PrivateMessageController extends BaseController
                 }
                 else
                 {
-                        ToastUtils.shortToast("私信内容不能为空!");
+                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.input_empty_error));
                 }
         }
 
-        /*
-       加载更多
-       @param senderId 私信作者id
-        */
+        @Override
         public void getMore()
         {
                 //检查信号标
@@ -137,7 +139,7 @@ public class PrivateMessageController extends BaseController
                                 {
 
                                         //解析数据
-                                        PrivateMessages privateMessages= ParserUtils.fromJson(response, PrivateMessages.class);
+                                        PrivateMessages privateMessages = ParserUtils.fromJson(response, PrivateMessages.class);
                                         //逆转数据列表的排列, 把从新到旧 改成 从旧到新排列
                                         Collections.reverse(privateMessages.getBody());
                                         //加载数据
@@ -147,7 +149,6 @@ public class PrivateMessageController extends BaseController
 
                                         //通知更新
                                         getRecyclerViewAdapter().notifyItemInserted(position);
-
 
                                         //跳转到最后一条消息
                                         getRecyclerView().scrollToPosition(position);
@@ -189,9 +190,22 @@ public class PrivateMessageController extends BaseController
                                 }
                         };
 
-                        ((MessageDelegate) getDelegate()).getPrivateMessage(httpCallBack, 1, false, senderId);
+                        //启动代理人发送请求 只获取第一页
+                        startDelegate(httpCallBack, 1);
                 }
         }
+
+        /**
+         * 启动代理人发送请求
+         *
+         * @param httpCallBack
+         * @param page
+         */
+        private void startDelegate(HttpCallBack httpCallBack, int page)
+        {
+                ((MessageDelegate) getDelegate()).getPrivateMessage(httpCallBack, page, false, senderId);
+        }
+
 
 
         public void setSenderId(Integer senderId)

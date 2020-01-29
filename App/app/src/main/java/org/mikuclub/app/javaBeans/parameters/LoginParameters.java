@@ -1,9 +1,7 @@
 package org.mikuclub.app.javaBeans.parameters;
 
-import org.mikuclub.app.utils.DataUtils;
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

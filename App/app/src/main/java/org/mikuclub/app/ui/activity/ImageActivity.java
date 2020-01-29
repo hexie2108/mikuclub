@@ -1,44 +1,38 @@
 package org.mikuclub.app.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import mikuclub.app.R;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.ortiz.touchview.TouchImageView;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
-import com.zhengsr.viewpagerlib.indicator.TextIndicator;
 import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
-import org.mikuclub.app.configs.GlobalConfig;
 import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
-import org.mikuclub.app.utils.http.networkImageSupport.GetRemoteImage;
-import org.mikuclub.app.utils.http.networkImageSupport.ZoomNetworkImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import mikuclub.app.R;
+
 public class ImageActivity extends AppCompatActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final String INTENT_IMAGES_SRC = "images_src";
-        public static final String INTENT_POSITION= "position";
+        public static final String INTENT_POSITION = "position";
 
-        /*变量*/
+        /* 变量 local variable */
         //当前页面需要的图片URL地址
         List<String> imagesSrc;
         int position;
 
-        /*组件*/
+        /* 组件 views */
         //幻灯片组件
         private BannerViewPager sliderViewPager;
 
@@ -54,15 +48,12 @@ public class ImageActivity extends AppCompatActivity
                 //
                 setContentView(R.layout.activity_image);
 
-                //获取幻灯片组件
+                //绑定组件
                 sliderViewPager = findViewById(R.id.image_slider_viewpager);
 
                 //获取图片地址的列表
                 imagesSrc = getIntent().getStringArrayListExtra(INTENT_IMAGES_SRC);
                 position = getIntent().getIntExtra(INTENT_POSITION, 0);
-
-
-
 
                 initSliders();
         }
@@ -70,22 +61,25 @@ public class ImageActivity extends AppCompatActivity
 
         /**
          * 初始化图片查看器 (幻灯片)
+         * Init the picture viewer (slideshow)
          **/
         private void initSliders()
         {
 
                 PageBean bean = new PageBean();
                 //如果只有一张图关闭循环
-                if(imagesSrc.size()==1){
+                if (imagesSrc.size() == 1)
+                {
                         bean.isAutoCycle = false;
                         bean.isAutoLoop = false;
                         bean.loopMaxCount = 2;
                 }
-                bean.transFormer= BannerTransType.UNKNOWN;
+                bean.transFormer = BannerTransType.UNKNOWN;
                 sliderViewPager.addPageBean(bean);
 
                 sliderViewPager.setCurrentPosition(position);
-                sliderViewPager.setPageListener(R.layout.slider_view_item_image, imagesSrc, new PageHelperListener<String>(){
+                sliderViewPager.setPageListener(R.layout.slider_view_item_image, imagesSrc, new PageHelperListener<String>()
+                {
                         @Override
                         public void bindView(View view, String imageSrc, int position)
                         {
@@ -97,14 +91,12 @@ public class ImageActivity extends AppCompatActivity
                         }
                 });
 
-
-
-
         }
 
 
         /**
-         * 静态 启动本活动的方法
+         * 启动本活动的静态方法
+         * static method to start current activity
          *
          * @param context
          * @param imagesSrc

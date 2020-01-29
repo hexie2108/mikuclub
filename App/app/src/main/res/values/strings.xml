@@ -1,21 +1,66 @@
 <resources>
         <string name = "app_name">初音社</string>
-        <!--        <string name = "version_name">beta0.1</string>-->
-
 
         <string name = "default_text">默认文字.......</string>
 
-        <!-- TODO: Remove or change this placeholder text -->
+        <string name = "confirm">确认</string>
+        <string name = "cancel">取消</string>
+        <string name = "replay">回复</string>
+        <string name = "all">全部</string>
 
-        <!-- menu item-->
+        <string name = "exit_confirm">再按一次退出</string>
+        <string name = "logout_notice">已登出</string>
 
-        <!-- home-->
+        <string name = "input_empty_error">内容不能为空!</string>
+        <string name = "login_token_error">登陆信息已过期, 请重新登陆</string>
 
-        <!-- search-->
+        <!--        recyclerView adapter-->
+        <string name = "not_more_error_message">已经到底了~</string>
+        <string name = "search_empty_error_message">抱歉, 没有找到相关内容</string>
+        <string name = "internet_error_message">加载失败, 请点击重试</string>
+        <string name = "general_toast_message_on_error">请求错误</string>
+        <string name = "list_jump_windows_title">跳转</string>
+        <string name = "list_jump_windows_empty_error">未输入页数!</string>
+        <string name = "list_jump_windows_pagination">第%1$d页 / 总共%2$d页</string>
+
+        <!--comment-->
+        <string name = "reply_count">条回复</string>
+        <string name = "comment_input_default_hint">发表评论...</string>
+        <string name = "comment_source">评论来源:</string>
 
 
-        <!-- recycle view-->
-        <string name = "recycler_empty">empty</string>
+        <!--author page-->
+        <string name = "author_empty_error_message">当前用户没有投稿记录</string>
+
+        <!--report page-->
+        <string name = "report_title">问题反馈</string>
+        <string name = "report_send_successful">发送成功, 感谢反馈</string>
+        <string name = "report_send_failure">发送失败, 请重新尝试</string>
+
+        <!--welcome page-->
+        <string name = "welcome_internet_not_available_error_message">未发现可用的网络连接, 请接入网络后 再点击重试</string>
+        <string name = "welcome_server_error">当前无法连接上服务器, 请点击重试</string>
+        <string name = "welcome_update_windows_title">发现应用的新版本</string>
+        <string name = "welcome_update_version_name">版本名:</string>
+        <string name = "welcome_update_positive_button">前往下载</string>
+        <string name = "welcome_force_update_notice">本次更新属于重大更新, 请下载安装新版本</string>
+
+
+        <!--     login error -->
+        <string name = "login_username_error">用户名错误</string>
+        <string name = "login_email_error">邮箱地址错误</string>
+        <string name = "login_password_error">密码错误</string>
+        <string name = "login_social_login_error">社会化登录错误</string>
+        <string name = "login_server_error_and_please_retry">网络请求错误, 请重试</string>
+
+        <!--     http error -->
+        <string name = "internet_unknown_error">未知错误</string>
+        <string name = "internet_auth_failure_error">请求信息验证失败</string>
+        <string name = "internet_network_error">评论来源</string>
+        <string name = "internet_no_connection_error">无法建立网络连接</string>
+        <string name = "internet_timeout_error">请求超时错误</string>
+        <string name = "internet_empty_error">404请求的页面不存在</string>
+        <string name = "internet_server_error">服务器内部错误</string>
 
 
 </resources>

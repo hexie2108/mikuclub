@@ -3,7 +3,6 @@ package org.mikuclub.app.ui.fragments;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +12,20 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.utils.http.HttpCallBack;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.storage.PreferencesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
+import org.mikuclub.app.utils.storage.PreferencesUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,15 +36,14 @@ import androidx.fragment.app.Fragment;
 import me.wcy.htmltext.OnTagClickListener;
 import mikuclub.app.R;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-
 /**
- * 文章页 主内容碎片
+ * 文章页 主内容分页
+ * Post page: main fragment
  */
 public class PostMainFragment extends Fragment
 {
         public static final int TAG = 8;
-        /*变量*/
+        /* 变量 local variable */
         //当前页面需要的文章数据
         private Post post;
         private PostDelegate delegate;
@@ -56,7 +52,7 @@ public class PostMainFragment extends Fragment
         private int countLike;
 
 
-        /*组件*/
+        /* 组件 views */
         private TextView postTitle;
         private TextView postDate;
         private TextView postViews;
@@ -121,13 +117,14 @@ public class PostMainFragment extends Fragment
 
         /**
          * 初始化文章描述
+         * init post page
          */
         private void initPost()
         {
 
                 postTitle.setText(post.getTitle().getRendered());
 
-                String dateString = new SimpleDateFormat(GlobalConfig.DATE_FORMAT).format(post.getDate());
+                String dateString = GeneralUtils.DateToString(post.getDate());
                 postDate.setText(dateString);
 
                 //获取文章元数据
@@ -231,8 +228,6 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onLinkClick(Context context, String url)
                         {
-                                //检测链接格式时候正确
-                                url = HttpUtils.checkAndAddHttpsProtocol(url);
                                 //启动第三方应用
                                 HttpUtils.startWebViewIntent(context, url, null);
                         }
@@ -241,6 +236,7 @@ public class PostMainFragment extends Fragment
 
         /**
          * 初始化点赞按钮
+         * init like button
          */
         private void initLikeButton()
         {
@@ -278,6 +274,7 @@ public class PostMainFragment extends Fragment
         /**
          * 点赞操作
          * 根据点赞状态, 变化点赞按钮
+         * like operation
          *
          * @param isActivated true=已激活过, false =未激活
          */
@@ -334,8 +331,8 @@ public class PostMainFragment extends Fragment
 
 
         /**
-         * 管理操控 点赞文章数组
-         *
+         * 管理操控点赞文章数组
+         *Manage likes array
          * @param isAdd true=添加, false=删除
          */
         private void manageLikedPost(boolean isAdd)
@@ -387,6 +384,7 @@ public class PostMainFragment extends Fragment
 
         /**
          * 初始化分享按钮
+         * init share button
          */
         private void initShareButton()
         {
@@ -401,6 +399,7 @@ public class PostMainFragment extends Fragment
 
         /**
          * 分享完后的动作
+         * callback after sharing
          */
         public void afterShareAction()
         {
@@ -423,6 +422,7 @@ public class PostMainFragment extends Fragment
 
         /**
          * 初始化反馈下载失效按钮
+         * Initial feedback button
          */
         private void initFailDownButton(){
 
@@ -434,6 +434,7 @@ public class PostMainFragment extends Fragment
 
         /**
          * 下载失效动作
+         * action on feedback button
          */
         private void failDownAction(){
                 //更改按钮颜色

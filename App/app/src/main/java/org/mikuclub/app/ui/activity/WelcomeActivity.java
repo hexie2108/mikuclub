@@ -1,14 +1,5 @@
 package org.mikuclub.app.ui.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import mikuclub.app.BuildConfig;
-import mikuclub.app.R;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -23,27 +14,37 @@ import android.widget.TextView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.MessageDelegate;
-import org.mikuclub.app.delegates.UtilsDelegate;
-import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.response.AppUpdate;
+import org.mikuclub.app.utils.ResourcesUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.delegate.MessageDelegate;
+import org.mikuclub.app.delegate.PostDelegate;
+import org.mikuclub.app.delegate.UtilsDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.AppUpdate;
 import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.javaBeans.response.SingleResponse;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.http.Request;
 import org.mikuclub.app.utils.storage.MessageUtils;
 import org.mikuclub.app.utils.storage.PreferencesUtils;
-import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.storage.UserUtils;
-import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import mikuclub.app.BuildConfig;
+import mikuclub.app.R;
 
 
 /**
@@ -52,12 +53,10 @@ import java.util.List;
  */
 public class WelcomeActivity extends AppCompatActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 1;
-        //需要等待的请求数量
-        private static final int REQUEST_TOTAL_NUMBER = 7;
 
-        /*变量*/
+        /* 变量 local variable */
         private PostDelegate postDelegate;
         private UtilsDelegate utilsDelegate;
         private MessageDelegate messageDelegate;
@@ -65,10 +64,13 @@ public class WelcomeActivity extends AppCompatActivity
         private Posts stickyPostList = null;
         private Posts postList = null;
         private String categoriesCache;
+
+        //需要完成的请求的总数
+        private final int REQUEST_TOTAL_NUMBER = 7;
         //已完成的请求数量 (成功和失败都算)
         private int requestCount = 0;
 
-        /*组件*/
+        /* 组件 views */
         private TextView welecomeInfoText;
         private ProgressBar welecomeProgressBar;
         private ConstraintLayout layout;
@@ -83,12 +85,12 @@ public class WelcomeActivity extends AppCompatActivity
                 welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
                 layout = findViewById(R.id.layout);
 
-                //创建代理人
+                //创建请求代理人
                 postDelegate = new PostDelegate(TAG);
                 utilsDelegate = new UtilsDelegate(TAG);
                 messageDelegate = new MessageDelegate(TAG);
 
-                //检测权限
+                //检测权限 permission check
                 permissionCheck();
         }
 
@@ -96,13 +98,15 @@ public class WelcomeActivity extends AppCompatActivity
         protected void onStart()
         {
                 super.onStart();
-                initApplication();
+                //初始化页面 init the page
+                initPage();
         }
 
         /**
-         * 初始化应用配置 和检测
+         * 初始化页面
+         * init the page
          */
-        private void initApplication()
+        private void initPage()
         {
                 //检测网络状态
                 boolean isInternetAvailable = internetCheck();
@@ -111,20 +115,20 @@ public class WelcomeActivity extends AppCompatActivity
                 {
                         //检测登陆令牌是否失效
                         checkTokenValidity();
-                        //检查更新, 之后会回调方法 获取文章和分类的数据
+                        //检查更新
                         checkUpdate();
                         //获取分类信息
                         checkCategories();
                         //获取未读消息数量
                         getUnreadMessageCount();
                         //获取主页文章数据
-                        getDataForHome();
+                        getPostDataForHome();
 
                 }
                 else
                 {
                         //没网络的话 就报错
-                        String errorMessage = "未发现可用的网络连接, 请接入网络后 再点击重试";
+                        String errorMessage = ResourcesUtils.getString(R.string.welcome_internet_not_available_error_message);
                         setErrorInfo(errorMessage);
                 }
         }
@@ -132,6 +136,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         /**
          * 检测登陆令牌是否失效
+         * check validity of login token for the current user
          */
         private void checkTokenValidity()
         {
@@ -196,6 +201,9 @@ public class WelcomeActivity extends AppCompatActivity
 
         /**
          * 检查软件更新
+         * 先获取上次检查的时间, 如果超时了 就重新检查一遍
+         * check if there is a new version of app
+         * check the time of the last check first, and check again if it times out
          */
         private void checkUpdate()
         {
@@ -217,7 +225,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         {
                                                 LogUtils.v("发现新版本");
                                                 //弹出弹窗
-                                                openAlertDialog(appUpdate);
+                                                openAlertDialogToUpdate(appUpdate);
                                         }
                                         //已经是新版 或者 请求发生了错误
                                         else
@@ -347,7 +355,8 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
         /**
-         * 获取用户未读消息数量
+         * 获取用户未读私信和未读评论回复的数量
+         *Get the counts of unread private messages and unread comment of current user
          */
         private void getUnreadMessageCount()
         {
@@ -369,34 +378,16 @@ public class WelcomeActivity extends AppCompatActivity
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
                                         MessageUtils.setPrivateMessageCount(Integer.valueOf(singleResponse.getBody()));
-                                        //增加计数器
-                                        startHomeSafety();
+
                                 }
 
-                                //令牌错误
                                 @Override
-                                public void onTokenError()
+                                public void onFinally()
                                 {
+                                        //不管是成功 , 内容错误, 登陆令牌错误, 还是网络错误, 通通无视
                                         //增加计数器
                                         startHomeSafety();
                                 }
-
-                                //内容错误
-                                @Override
-                                public void onError(String response)
-                                {
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                //网络错误
-                                @Override
-                                public void onHttpError()
-                                {
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
                                 @Override
                                 public void onCancel()
                                 {
@@ -411,35 +402,16 @@ public class WelcomeActivity extends AppCompatActivity
                                 public void onSuccess(String response)
                                 {
                                         LogUtils.v("获取未读评论数量成功");
-
                                         //解析回复
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
                                         MessageUtils.setReplyCommentCount(Integer.valueOf(singleResponse.getBody()));
-                                        //增加计数器
-                                        startHomeSafety();
                                 }
 
-                                //令牌错误
                                 @Override
-                                public void onTokenError()
+                                public void onFinally()
                                 {
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                //内容错误
-                                @Override
-                                public void onError(String response)
-                                {
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                //网络错误
-                                @Override
-                                public void onHttpError()
-                                {
+                                        //不管是成功 , 内容错误, 登陆令牌错误, 还是网络错误, 通通无视
                                         //增加计数器
                                         startHomeSafety();
                                 }
@@ -456,26 +428,24 @@ public class WelcomeActivity extends AppCompatActivity
                         messageDelegate.countPrivateMessage(countPrivateMessageCallBack, true, false);
                         messageDelegate.countReplyComment(countReplyCommentCallBack, true);
 
-
                 }
-                //如果未登陆
+                //如果未登陆直接增加2次计数器
                 else
                 {
                         //增加2次计数器
                         startHomeSafety();
                         startHomeSafety();
                 }
-
         }
 
-
         /**
-         * 获取主页数据
+         * 获取主页需要的文章数据
+         * get the post data for home
          */
-        private void getDataForHome()
+        private void getPostDataForHome()
         {
 
-                int page = 1;
+
                 //请求置顶文章 回调函数
                 HttpCallBack callBackToGetStickyPost = new HttpCallBack()
                 {
@@ -538,7 +508,8 @@ public class WelcomeActivity extends AppCompatActivity
                                 requestCount = 0;
                         }
                 };
-
+                //只需要第一页
+                int page = 1;
                 //获取置顶文章
                 postDelegate.getStickyPostList(callBackToGetStickyPost, page);
 
@@ -552,10 +523,13 @@ public class WelcomeActivity extends AppCompatActivity
 
         /**
          * 检测请求是否都已经完成, 并且数据都已获取
-         * 都成功的情况 才会 启动主页
+         * 只有在都请求都成功的情况 才会 启动主页
          * 否则 报错
+         * Check whether the requests have been completed and the data has been obtained
+         * The homepage will only be launched if all requests are successful
+         *Otherwise display error message
          */
-        private void startHomeSafety()
+        private synchronized void startHomeSafety()
         {
                 //增加请求计数器
                 addRequestCount();
@@ -571,14 +545,16 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
         /**
-         * 错误的情况
          * 显示错误信息
          * 并允许用户手动重试
+         * Show error message
+         * And allow users to manually retry
+         *
          * @param message 自定义错误信息
          */
         private void setErrorInfo(String message)
         {
-                String errorMessage = "当前无法连接上服务器, 请点击尝试";
+                String errorMessage = ResourcesUtils.getString(R.string.welcome_server_error);
                 if(message!=null){
                         errorMessage = message;
                 }
@@ -603,32 +579,36 @@ public class WelcomeActivity extends AppCompatActivity
                         //清零计数器
                         requestCount = 0;
                         //重试
-                        initApplication();
+                        initPage();
                 });
         }
 
 
         /**
-         * 创建显示更新提示的弹窗
-         *
+         * 创建和显示 更新提示弹窗
+         * Create alert dialog to showing update info
          * @param appUpdate 更新信息
          */
-        private void openAlertDialog(final AppUpdate appUpdate)
+        private void openAlertDialogToUpdate(final AppUpdate appUpdate)
         {
                 AlertDialog.Builder dialog = new MaterialAlertDialogBuilder(WelcomeActivity.this);
-                dialog.setTitle("发现应用的新版本");
-                String message = "版本名: " + appUpdate.getBody().getVersionName() + "\n" + appUpdate.getBody().getDescription();
+                dialog.setTitle(ResourcesUtils.getString(R.string.welcome_update_windows_title));
+                String message = ResourcesUtils.getString(R.string.welcome_update_version_name)+" "+ appUpdate.getBody().getVersionName() + "\n" + appUpdate.getBody().getDescription();
                 dialog.setMessage(message);
                 //如果是强制更新, 就无法取消
                 dialog.setCancelable(!appUpdate.getBody().isForceUpdate());
                 //设置确认按钮名和动作
-                dialog.setPositiveButton("前往下载", (dialog1, which) -> HttpUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getBody().getDownUrl(), null));
+                dialog.setPositiveButton(ResourcesUtils.getString(R.string.welcome_update_positive_button), (dialog1, which) -> {
+                        HttpUtils.startWebViewIntent(WelcomeActivity.this, appUpdate.getBody().getDownUrl(), null);
+                        //关闭应用
+                        finish();
+                });
                 //设置取消按钮名和动作
-                dialog.setNegativeButton("取消", (dialog12, which) -> {
+                dialog.setNegativeButton(ResourcesUtils.getString(R.string.cancel), (dialog12, which) -> {
                         //如果是强制更新, 取消等于关闭应用
                         if (appUpdate.getBody().isForceUpdate())
                         {
-                                ToastUtils.shortToast("本次更新非常重要, 请下载安装新版本");
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.welcome_force_update_notice));
                                 finish();
                         }
                         //如果不是强制
@@ -645,6 +625,8 @@ public class WelcomeActivity extends AppCompatActivity
         /**
          * 检查应用是否已获取敏感权限授权
          * 还没有的话, 则请求权限
+         *Check if the application has been authorized for sensitive permissions
+         * If not, request permission
          */
         private void permissionCheck()
         {
@@ -674,7 +656,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         /**
          * 检测网络状态
-         *
+         *check network status
          * @return
          */
         private boolean internetCheck()
@@ -714,7 +696,8 @@ public class WelcomeActivity extends AppCompatActivity
 
 
         /**
-         * 处理请求权限后的结果
+         * 请求权限后的结果回调
+         * callback after requesting permission
          */
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)

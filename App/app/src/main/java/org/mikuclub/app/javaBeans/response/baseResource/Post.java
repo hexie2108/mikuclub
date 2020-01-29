@@ -3,7 +3,6 @@ package org.mikuclub.app.javaBeans.response.baseResource;
 
 import com.google.gson.annotations.SerializedName;
 
-
 import org.mikuclub.app.javaBeans.response.modules.Rendered;
 
 import java.io.Serializable;

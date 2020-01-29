@@ -1,12 +1,8 @@
 package org.mikuclub.app.javaBeans.response.baseResource;
 
 
-import org.mikuclub.app.javaBeans.response.modules.Avatar_urls;
-import org.mikuclub.app.javaBeans.response.modules.Rendered;
-
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class HomeReplyComment implements Serializable
 {

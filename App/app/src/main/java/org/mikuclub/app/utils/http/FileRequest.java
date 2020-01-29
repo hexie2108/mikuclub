@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.activation.MimetypesFileTypeMap;
 
 /**
+ * deprecated====================
  * Custom request to make multipart header and upload file.
  * <p>
  * Sketch Project Studio

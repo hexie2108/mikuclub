@@ -4,8 +4,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 
-import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.context.MyApplication;
 
+/**
+ * 剪贴板管理器
+ * Clipboard manager
+ */
 public class ClipboardUtils
 {
         //获取剪贴板管理器
@@ -14,10 +18,12 @@ public class ClipboardUtils
         /**
          * 设置字符串到剪切板里
          */
-        public static void setText(String text){
+        public static void setText(String text)
+        {
 
                 //如果还不存在
-                if(clipboardManager ==null){
+                if (clipboardManager == null)
+                {
                         clipboardManager = (ClipboardManager) MyApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 }
                 //创建字符剪切内容

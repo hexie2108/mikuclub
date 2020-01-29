@@ -22,7 +22,7 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
@@ -46,11 +46,12 @@ import mikuclub.app.R;
 
 /**
  * 文章页 分享窗口碎片
+ * post page: sharing windows fragment
  */
 public class SharingFragment extends BottomSheetDialogFragment
 {
 
-        /*变量*/
+        /* 变量 local variable */
         //获取文章数据
         private Post post;
         //分享链接
@@ -60,7 +61,7 @@ public class SharingFragment extends BottomSheetDialogFragment
         //微博回调监听器
         private WbShareCallback weiboShareListener;
 
-        /*组件*/
+        /* 组件 views */
         private MaterialButton shareQQButton;
         private MaterialButton shareQQZoneButton;
         private MaterialButton shareLinkButton;
@@ -102,7 +103,8 @@ public class SharingFragment extends BottomSheetDialogFragment
         }
 
         /**
-         * 初始化按钮
+         * 初始化分享按钮们
+         * init sharing buttons
          */
         private void initButtons()
         {
@@ -122,7 +124,8 @@ public class SharingFragment extends BottomSheetDialogFragment
 
 
         /**
-         * QQ分享按钮
+         * 初始化QQ分享按钮
+         * init  QQ sharing button
          */
         private void initShareQQButton()
         {
@@ -165,11 +168,12 @@ public class SharingFragment extends BottomSheetDialogFragment
         }
 
         /**
-         * QQ空间分享按钮
+         * 初始化QQ空间分享按钮
+         * init QQ Zone sharing button
+         * qq空间分享直接共用qq的返回结果监听器
          */
         private void initShareQQZoneButton()
         {
-                //qq空间分享使用qq的返回结果监听器
 
                 Bundle params = new Bundle();
                 params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
@@ -188,13 +192,14 @@ public class SharingFragment extends BottomSheetDialogFragment
         }
 
         /**
-         * 微博分享按钮
+         * 初始化微博分享按钮
+         * init weibo sharing button
          */
         private void initWeiboButton()
         {
 
-
-               weiboShareListener = new WbShareCallback(){
+                weiboShareListener = new WbShareCallback()
+                {
                         @Override
                         public void onComplete()
                         {
@@ -220,7 +225,7 @@ public class SharingFragment extends BottomSheetDialogFragment
 
                 //设置分享文字
                 TextObject textObject = new TextObject();
-                textObject.text = "【"+getResources().getString(R.string.app_name)+"】" +post.getTitle().getRendered()+" ";
+                textObject.text = "【" + getResources().getString(R.string.app_name) + "】" + post.getTitle().getRendered() + " ";
                 message.textObject = textObject;
                 //设置分享链接
                 WebpageObject webObject = new WebpageObject();
@@ -232,18 +237,27 @@ public class SharingFragment extends BottomSheetDialogFragment
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
                 //把图片转换成 byte输出流
                 ByteArrayOutputStream os = null;
-                try {
+                try
+                {
                         os = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.PNG, 85, os);
                         webObject.thumbData = os.toByteArray();
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                         e.printStackTrace();
-                } finally {
-                        try {
-                                if (os != null) {
+                }
+                finally
+                {
+                        try
+                        {
+                                if (os != null)
+                                {
                                         os.close();
                                 }
-                        } catch (IOException e) {
+                        }
+                        catch (IOException e)
+                        {
                                 e.printStackTrace();
                         }
                 }
@@ -251,19 +265,20 @@ public class SharingFragment extends BottomSheetDialogFragment
 
                 //绑定分享按钮
                 shareWeiboButton.setOnClickListener(v -> {
-                        WeiboUtils.getInstance(getActivity()).shareMessage(message, false );
+                        WeiboUtils.getInstance(getActivity()).shareMessage(message, false);
                 });
         }
 
         /**
          * 复制链接按钮
+         * init general sharing button
          */
         private void initShareLinkButton()
         {
                 //绑定分享按钮
                 shareLinkButton.setOnClickListener(v -> {
                         //复制到剪切板
-                        ClipboardUtils.setText("【初音社】"+post.getTitle().getRendered() + " " + sharingUrl);
+                        ClipboardUtils.setText("【初音社】" + post.getTitle().getRendered() + " " + sharingUrl);
                         //生成用户提示
                         ToastUtils.shortToast("已复分享制链接到剪切板");
                         //完成分享后的动作
@@ -272,7 +287,8 @@ public class SharingFragment extends BottomSheetDialogFragment
         }
 
         /**
-         * 完成分享后的动作
+         * 完成分享后的回调动作
+         * callback after sharing
          */
         private void afterSharing()
         {
@@ -287,6 +303,7 @@ public class SharingFragment extends BottomSheetDialogFragment
 
         /**
          * 禁止浮动页面滑动
+         * Disable sliding of windows
          *
          * @param dialog
          * @param style
@@ -318,6 +335,7 @@ public class SharingFragment extends BottomSheetDialogFragment
 
         /**
          * 本碎片的静态启动方法
+         * static method to start current fragment
          *
          * @return
          */

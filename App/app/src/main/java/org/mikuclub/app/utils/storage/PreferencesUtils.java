@@ -3,10 +3,11 @@ package org.mikuclub.app.utils.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.context.MyApplication;
 
 /**
- * 管理 应用参数配置储存
+ * 应用共享偏好管理器
+ * shared preference manager
  */
 public class PreferencesUtils
 {
@@ -17,16 +18,17 @@ public class PreferencesUtils
         private static final String NAME_POST = "post_preference";
         private static final String NAME_MESSAGE = "message_preference";
 
-        //应用参数
+        //应用全局偏好
         private static SharedPreferences applicationPreference;
-        //分类参数
+        //分类偏好
         private static SharedPreferences categoryPreference;
-        //用户信息参数
+        //用户信息偏好
         private static SharedPreferences userPreference;
-        //文章信息参数
+        //文章偏好
         private static SharedPreferences postPreference;
-        //私信和回复参数
+        //消息偏好
         private static SharedPreferences messagePreference;
+
 
         public static SharedPreferences getApplicationPreference()
         {

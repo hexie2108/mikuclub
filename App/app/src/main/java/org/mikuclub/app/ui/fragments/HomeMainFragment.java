@@ -7,18 +7,17 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.mikuclub.app.adapters.HomeListAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.delegates.PostDelegate;
-import org.mikuclub.app.javaBeans.parameters.PostParameters;
-import org.mikuclub.app.javaBeans.response.baseResource.Post;
-import org.mikuclub.app.javaBeans.response.Posts;
-import org.mikuclub.app.ui.activity.HomeActivity;
+import org.mikuclub.app.adapter.HomeListAdapter;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.PostController;
-import org.mikuclub.app.ui.activity.base.MyFragment;
+import org.mikuclub.app.delegate.PostDelegate;
+import org.mikuclub.app.javaBeans.parameters.PostParameters;
+import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.ui.activity.HomeActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,17 +25,19 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
 /**
- * 主页活动-首页碎片
- */
-public class HomeMainFragment extends MyFragment
+ * 主页-首页碎片
+ * Home page: main fragment
+ * */
+public class HomeMainFragment extends Fragment
 {
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private PostDelegate delegate;
         private PostController controller;
@@ -50,7 +51,7 @@ public class HomeMainFragment extends MyFragment
         private Posts posts;
 
 
-        /*组件*/
+        /* 组件 views */
         //列表
         private RecyclerView recyclerView;
         //下拉刷新布局
@@ -67,7 +68,6 @@ public class HomeMainFragment extends MyFragment
                 return inflater.inflate(R.layout.fragment_home_main, container, false);
 
         }
-
 
 
         @Override
@@ -101,13 +101,13 @@ public class HomeMainFragment extends MyFragment
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState)
         {
-
                 super.onActivityCreated(savedInstanceState);
                 initFloatingActionButton();
         }
 
         /**
-         * 初始化文章列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
@@ -137,7 +137,10 @@ public class HomeMainFragment extends MyFragment
         }
 
         /**
-         * 配置上拉刷新动作
+         * 初始化 下拉刷新组件
+         * 绑定刷新动作监听器
+         * * init swipe refresh layout
+         * * set refresh listener
          */
         private void initSwipeRefresh()
         {
@@ -152,6 +155,7 @@ public class HomeMainFragment extends MyFragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {
@@ -177,12 +181,15 @@ public class HomeMainFragment extends MyFragment
 
                 //第一次请求数据
 
-                        controller.getMore();
+                controller.getMore();
 
         }
 
         /**
-         * 为父活动上的浮动按钮点击事件绑定动作
+         * 初始化浮动按钮
+         * 绑定点击事件监听器
+         * init floating action button
+         * set click listener
          */
         private void initFloatingActionButton()
         {
@@ -203,7 +210,6 @@ public class HomeMainFragment extends MyFragment
         @Override
         public void onResume()
         {
-
                 super.onResume();
                 //显示浮动按钮
                 floatingActionButton.setVisibility(View.VISIBLE);

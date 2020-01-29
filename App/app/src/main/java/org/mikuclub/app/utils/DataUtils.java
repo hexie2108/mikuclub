@@ -1,6 +1,6 @@
 package org.mikuclub.app.utils;
 
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.config.GlobalConfig;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -11,7 +11,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 结构化数据的处理类
+ * 结构化数据的实用处理类
+ * Structured data utility class
  */
 public class DataUtils
 {

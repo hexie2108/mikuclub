@@ -1,5 +1,7 @@
 package org.mikuclub.app.javaBeans.parameters;
 
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
+
 import java.util.HashMap;
 import java.util.Map;
 

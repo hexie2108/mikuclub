@@ -1,8 +1,6 @@
 package org.mikuclub.app.javaBeans.response;
 
 
-import org.mikuclub.app.javaBeans.response.modules.Headers;
-
 import java.io.Serializable;
 
 public class WpError implements Serializable

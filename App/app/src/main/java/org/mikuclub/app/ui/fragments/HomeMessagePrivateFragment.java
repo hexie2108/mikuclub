@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.adapters.HomePrivateMessagesAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.adapter.HomePrivateMessageAdapter;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.HomePrivateMessageController;
-import org.mikuclub.app.delegates.MessageDelegate;
+import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.http.Request;
@@ -26,24 +26,25 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
 /**
- * 主页活动-分类碎片
+ * 主页-消息分页-私信列表分页
+ * home page: message fragment : private message list fragment
  */
 public class HomeMessagePrivateFragment extends Fragment
 {
 
         public static final int TAG = 12;
 
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private MessageDelegate delegate;
         //数据控制器
         private HomePrivateMessageController controller;
         //列表适配器
-        private HomePrivateMessagesAdapter recyclerViewAdapter;
+        private HomePrivateMessageAdapter recyclerViewAdapter;
         //列表数据
         private List<PrivateMessage> recyclerDataList;
 
-        /*组件*/
+        /* 组件 views */
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
         private RecyclerView recyclerView;
@@ -83,17 +84,14 @@ public class HomeMessagePrivateFragment extends Fragment
         }
 
 
-
-
-
-
         /**
-         * 初始化列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new HomePrivateMessagesAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new HomePrivateMessageAdapter(recyclerDataList, getActivity());
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -113,7 +111,10 @@ public class HomeMessagePrivateFragment extends Fragment
         }
 
         /**
-         * 配置上拉刷新动作
+         * 初始化 下拉刷新组件
+         * 绑定刷新动作监听器
+         * init swipe refresh layout
+         * set refresh listener
          */
         private void initSwipeRefresh()
         {
@@ -128,6 +129,7 @@ public class HomeMessagePrivateFragment extends Fragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {

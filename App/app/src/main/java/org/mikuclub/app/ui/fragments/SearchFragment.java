@@ -1,13 +1,6 @@
 package org.mikuclub.app.ui.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +8,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import org.mikuclub.app.adapters.PostsAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.adapter.PostAdapter;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.SearchPostController;
-import org.mikuclub.app.delegates.PostDelegate;
-
+import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.SearchActivity;
@@ -32,20 +24,29 @@ import org.mikuclub.app.utils.http.Request;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
+/**
+ * 搜索页 - 主分页
+ * search page: main fragment
+ */
 public class SearchFragment extends Fragment
 {
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private PostDelegate delegate;
         private SearchPostController controller;
         //列表适配器
-        private PostsAdapter recyclerViewAdapter;
+        private PostAdapter recyclerViewAdapter;
         //列表数据
         private List<Post> recyclerDataList;
 
-        /*组件*/
+        /* 组件 views */
         private RecyclerView recyclerView;
         //搜索栏组件
         private EditText searchInput;
@@ -68,7 +69,6 @@ public class SearchFragment extends Fragment
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
         {
                 super.onViewCreated(view, savedInstanceState);
-
 
                 //绑定组件
                 recyclerView = view.findViewById(R.id.recycler_view);
@@ -96,14 +96,14 @@ public class SearchFragment extends Fragment
         }
 
 
-
         /**
-         * 初始化 空的文章列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
 
-                recyclerViewAdapter = new PostsAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new PostAdapter(recyclerDataList, getActivity());
 
                 //创建网格布局
                 int numberColumn = 2;
@@ -129,6 +129,7 @@ public class SearchFragment extends Fragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {
@@ -148,6 +149,7 @@ public class SearchFragment extends Fragment
 
         /**
          * 初始化搜索框
+         * init search input form
          */
         private void initSearchInput()
         {
@@ -198,6 +200,7 @@ public class SearchFragment extends Fragment
 
         /**
          * 发送搜索请求
+         * send search request
          */
         private void sendSearch()
         {
@@ -217,9 +220,11 @@ public class SearchFragment extends Fragment
         }
 
 
-
         /**
-         * 为父活动上的浮动按钮点击事件绑定动作
+         * 初始化浮动按钮
+         * 绑定点击事件监听器
+         * init floating action button
+         * set click listener
          */
         private void initFloatingActionButton()
         {

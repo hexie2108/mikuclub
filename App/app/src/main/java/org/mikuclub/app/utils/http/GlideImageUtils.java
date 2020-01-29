@@ -4,19 +4,23 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.mikuclub.app.utils.HttpUtils;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-
 import mikuclub.app.R;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
+/**
+ * GLIDE远程图片加载类
+ * GLIDE Remote image loader
+ */
 public class GlideImageUtils
 {
 
         /**
-         * 默认请求方式
+         * 默认加载方式
+         * 16x9 灰色占位图
          * @param context
          * @param imageView
          * @param url
@@ -36,6 +40,13 @@ public class GlideImageUtils
 
         }
 
+        /**
+         * 加载正方形图片的方式
+         * 1x1 灰色占位符
+         * @param context
+         * @param imageView
+         * @param url
+         */
         public static void getSquareImg(Context context, ImageView imageView, String url)
         {
                 //确保URL格式正确
@@ -51,8 +62,8 @@ public class GlideImageUtils
         }
 
         /**
-         * 设置预先加载缩微图的版本
-         *
+         * 预先加载缩微图的的方式
+         * 16x9 微缩图灰色占位图 + 缩微图
          * @param context
          * @param imageView
          * @param url
@@ -78,13 +89,19 @@ public class GlideImageUtils
 
         }
 
+        /**
+         * 在图片查看器里加载图片的方式
+         * 1x1 微缩图灰色占位图 + 缩微图
+         * @param context
+         * @param imageView
+         * @param url
+         * @param thumbnailUrl
+         */
         public static void getForZoomImageView(Context context, ImageView imageView, String url, String thumbnailUrl)
         {
                 //确保URL格式正确
                 url = HttpUtils.checkAndAddHttpsProtocol(url);
                 thumbnailUrl = HttpUtils.checkAndAddHttpsProtocol(thumbnailUrl);
-
-
 
                 Glide.with(context)
                         .load(url)

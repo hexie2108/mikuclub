@@ -11,8 +11,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.mikuclub.app.adapters.viewPager.CategoryViewPagerAdapter;
+import org.mikuclub.app.adapter.viewPager.CategoryViewPagerAdapter;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.NonNull;
@@ -23,18 +24,19 @@ import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
 /**
- * 文章页
+ * 分类文章页
+ * category post page
  */
 public class CategoryActivity extends AppCompatActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 6;
         public static final String INTENT_CATEGORY = "category";
 
-        /*变量*/
+        /* 变量 local variable */
         private Category category;
 
-        /*组件*/
+        /* 组件 views */
         private Toolbar toolbar;
         private ImageView searchInputIcon;
         //分页菜单栏
@@ -49,7 +51,7 @@ public class CategoryActivity extends AppCompatActivity
         {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_category);
-
+                //绑定组件
                 toolbar = findViewById(R.id.toolbar);
                 searchInputIcon = findViewById(R.id.search_input_icon);
                 viewPager = findViewById(R.id.view_pager);
@@ -64,7 +66,7 @@ public class CategoryActivity extends AppCompatActivity
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null)
                 {
-                        //显示返回键
+                        //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                         //设置标题
                         actionBar.setTitle(category.getTitle());
@@ -80,6 +82,7 @@ public class CategoryActivity extends AppCompatActivity
 
         /**
          * 初始化 分页显示器
+         * init view pager
          */
         private void initViewPager()
         {
@@ -89,7 +92,7 @@ public class CategoryActivity extends AppCompatActivity
                                 //第一个分页位
                                 if (position == 0)
                                 {
-                                        tab.setText("全部");
+                                        tab.setText(ResourcesUtils.getString(R.string.all));
                                 }
                                 //后续分页位
                                 else
@@ -101,7 +104,9 @@ public class CategoryActivity extends AppCompatActivity
         }
 
         /**
-         * 搜索图标绑定动作监听
+         * 初始化搜索图标
+         * 绑定动作监听
+         * init search icon
          */
         private void initSearchIcon()
         {
@@ -147,7 +152,8 @@ public class CategoryActivity extends AppCompatActivity
         }
 
         /**
-         * 静态 启动本活动的方法
+         * 启动本活动的静态方法
+         * static method to start current activity
          *
          * @param context
          * @param category

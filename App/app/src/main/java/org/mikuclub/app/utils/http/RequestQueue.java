@@ -6,7 +6,8 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.Volley;
 
 /**
- * 网络请求队列 统一管理器
+ * 网络请求队列管理器
+ * Network request queue manager
  */
 
 public class RequestQueue
@@ -16,6 +17,7 @@ public class RequestQueue
         private com.android.volley.RequestQueue mRequestQueue;
 
         /**
+         * 单例模式
          * singleton mode
          * @param context application context
          * @return
@@ -37,7 +39,7 @@ public class RequestQueue
         }
 
         /**
-         * 构建函数
+         * 私有构建函数
          * @param context
          */
         private RequestQueue(Context context)
@@ -47,19 +49,11 @@ public class RequestQueue
         }
 
         /**
-         * 获取请求队列
-         */
-        public com.android.volley.RequestQueue getRequestQueue()
-        {
-                return this.mRequestQueue;
-        }
-
-        /**
          * 插入新请求到队列
          */
         public <T> void  addRequestQueue(Request<T> request)
         {
-                getRequestQueue().add(request);
+               mRequestQueue.add(request);
         }
 
         /**
@@ -68,6 +62,6 @@ public class RequestQueue
          */
         public void cancelRequest(Object tag)
         {
-                getRequestQueue().cancelAll(tag);
+                mRequestQueue.cancelAll(tag);
         }
 }

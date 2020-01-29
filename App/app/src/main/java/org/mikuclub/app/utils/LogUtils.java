@@ -2,9 +2,12 @@ package org.mikuclub.app.utils;
 
 import android.util.Log;
 
-//控制应用整体的DEBUG日志输出
-//manage the print of debug info of application
 
+/**
+ * 自定义日志输出类
+ * 通过log level 可以控制应用整体的DEBUG日志输出
+ * custom log print function
+ */
 public class LogUtils
 {
         public static final String VERBOSE_TAG = "verbose_tag";

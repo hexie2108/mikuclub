@@ -1,20 +1,13 @@
 package org.mikuclub.app.utils.social;
 
 
-import android.content.Context;
-
-import com.sina.weibo.sdk.auth.AuthInfo;
-import com.sina.weibo.sdk.openapi.IWBAPI;
-import com.sina.weibo.sdk.openapi.WBAPIFactory;
-import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
 
-import org.json.JSONObject;
-import org.mikuclub.app.contexts.MyApplication;
+import org.mikuclub.app.context.MyApplication;
 
 /**
- * WEIBO接口类
+ * 腾讯QQ SDK接口管理
+ * Tencent QQ SDK interface management
  */
 public class TencentUtils
 {

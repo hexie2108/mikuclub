@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
-    xmlns:tools = "http://schemas.android.com/tools"
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
     android:orientation = "vertical"
@@ -30,7 +29,7 @@
             android:layout_width = "match_parent"
             android:layout_height = "0.5dp"
             android:layout_gravity = "bottom"
-            android:background = "@color/splitLineColor" />
+            android:background = "@color/defaultSplitLineColor" />
 
         <com.google.android.material.button.MaterialButton
             android:id = "@+id/return_button"
@@ -41,6 +40,6 @@
             android:text = "返回"
             android:textColor = "@color/defaultTextColor"
 
-            app:rippleColor = "@color/rippleColor" />
+            app:rippleColor = "@color/defaultRippleColor" />
 
 </LinearLayout>

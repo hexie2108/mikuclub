@@ -1,20 +1,21 @@
 package org.mikuclub.app.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.configs.GlobalConfig;
+import org.mikuclub.app.config.GlobalConfig;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
- * 通用数据处理函数集
+ * 通用实用方法集
+ * Common utility class
  */
 public class GeneralUtils
 {
@@ -50,29 +51,7 @@ public class GeneralUtils
 
 
         /**
-         * 计算 下个请求应该设置的页数
-         *
-         * @param offset 当前已拥有的数据数量
-         * @return numberPerPage 每页的数据数量
-         */
-        public static int getNextPageNumber(int offset, int numberPerPage)
-        {
-                //计算页面数字, 页数是从1开始所以要+1
-                int page = offset / numberPerPage + 1;
-                int currentModulo = offset % numberPerPage;
-
-                //如果有取余, 说明当前页数还需要+1
-                if (currentModulo > 0)
-                {
-                        page++;
-                }
-                return page;
-
-        }
-
-        /**
-         * 检测列表是否为空
-         * 如果不是空的, 而且是 string类型的列表, 继续检测里面的第一个元素是否为空字符串
+         * 检测列表是否为空 或者 列表包含的第一个元素是空字符串或者0
          *
          * @param list
          * @return 是否是空
@@ -91,12 +70,13 @@ public class GeneralUtils
                                 //检测是否是空字符串
                                 output = ((String) element).trim().isEmpty();
                         }
+                        //如果是整数
                         else if (element instanceof Integer)
                         {
                                 //如果是0 返回 true
                                 output = (((int) element) == 0 ? true : false);
                         }
-                        //不是字符串则返回 false
+                        //其他情况返回否
                         else
                         {
                                 output = false;
@@ -123,6 +103,15 @@ public class GeneralUtils
         }
 
 
+        /**
+         * 按照特定格式 把日期转换输出成字符串
+         * @param date
+         * @return 字符串格式的日期
+         */
+        public static String DateToString(Date date){
+                String dateString = new SimpleDateFormat(GlobalConfig.DISPLAY_DATE_FORMAT).format(date);
+                return dateString;
+        }
 
 
 
@@ -145,9 +134,9 @@ public class GeneralUtils
                 }
 
                 return newText;
-
-
         }
+
+
 
 
 }

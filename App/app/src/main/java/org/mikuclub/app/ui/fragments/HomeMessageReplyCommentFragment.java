@@ -5,13 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mikuclub.app.adapters.CommentsAdapter;
-import org.mikuclub.app.adapters.HomeReplyCommentsAdapter;
-import org.mikuclub.app.adapters.listener.MyListOnScrollListener;
-import org.mikuclub.app.configs.GlobalConfig;
-import org.mikuclub.app.controller.HomePrivateMessageController;
+import org.mikuclub.app.adapter.HomeReplyCommentAdapter;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.HomeReplyCommentController;
-import org.mikuclub.app.delegates.MessageDelegate;
+import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.http.Request;
@@ -28,24 +26,25 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
 /**
- * 主页活动-分类碎片
+ * 主页-消息分页-回复评论列表分页
+ * home page: message fragment : comment reply list fragment
  */
 public class HomeMessageReplyCommentFragment extends Fragment
 {
 
         public static final int TAG = 13;
 
-        /*变量*/
+        /* 变量 local variable */
         //数据请求代理人
         private MessageDelegate delegate;
         //数据控制器
         private HomeReplyCommentController controller;
         //列表适配器
-        private HomeReplyCommentsAdapter recyclerViewAdapter;
+        private HomeReplyCommentAdapter recyclerViewAdapter;
         //列表数据
         private List<Comment> recyclerDataList;
 
-        /*组件*/
+        /* 组件 views */
         //下拉刷新布局
         private SwipeRefreshLayout swipeRefresh;
         private RecyclerView recyclerView;
@@ -85,17 +84,14 @@ public class HomeMessageReplyCommentFragment extends Fragment
         }
 
 
-
-
-
-
         /**
-         * 初始化列表
+         * 初始化recyclerView列表
+         * init recyclerView
          */
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new HomeReplyCommentsAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new HomeReplyCommentAdapter(recyclerDataList, getActivity());
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -115,7 +111,10 @@ public class HomeMessageReplyCommentFragment extends Fragment
         }
 
         /**
-         * 配置上拉刷新动作
+         * 初始化 下拉刷新组件
+         * 绑定刷新动作监听器
+         * init swipe refresh layout
+         * set refresh listener
          */
         private void initSwipeRefresh()
         {
@@ -130,6 +129,7 @@ public class HomeMessageReplyCommentFragment extends Fragment
 
         /**
          * 初始化控制器
+         * init request controller
          */
         private void initController()
         {

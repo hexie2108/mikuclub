@@ -1,7 +1,6 @@
 package org.mikuclub.app.ui.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -11,13 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-
-
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.zhengsr.viewpagerlib.bean.PageBean;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
@@ -25,18 +21,18 @@ import com.zhengsr.viewpagerlib.indicator.TextIndicator;
 import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
-import org.mikuclub.app.adapters.viewPager.PostViewPagerAdapter;
-import org.mikuclub.app.callBack.HttpCallBack;
-import org.mikuclub.app.delegates.PostDelegate;
+import org.mikuclub.app.adapter.viewPager.PostViewPagerAdapter;
+import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.SinglePost;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.ui.fragments.windows.SharingFragment;
+import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ParserUtils;
-import org.mikuclub.app.utils.ViewUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.List;
@@ -53,15 +49,16 @@ import mikuclub.app.R;
 
 /**
  * 文章页
+ * post page
  */
 public class PostActivity extends AppCompatActivity
 {
-        /*静态变量*/
+        /* 静态变量 Static variable */
         public static final int TAG = 4;
         public static final String INTENT_POST = "post";
         public static final String INTENT_POST_ID = "pos_id";
 
-        /*变量*/
+        /* 变量 local variable */
         private Post post;
         private int postId;
         //碎片适配器
@@ -70,7 +67,7 @@ public class PostActivity extends AppCompatActivity
 
         private PostDelegate delegate;
 
-        /*组件*/
+        /* 组件 views */
         private AppBarLayout appBarLayout;
         private CollapsingToolbarLayout postCollapsingToolbarLayout;
         //标题栏
@@ -120,7 +117,7 @@ public class PostActivity extends AppCompatActivity
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null)
                 {
-                        //显示返回键
+                        //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                         //隐藏标题
                         actionBar.setDisplayShowTitleEnabled(false);
@@ -137,7 +134,8 @@ public class PostActivity extends AppCompatActivity
                         setup();
                 }
                 //准备通过post id 获取 文章
-                else{
+                else
+                {
                         //准备通过id请求文章
                         prepareGetPost();
                 }
@@ -149,7 +147,8 @@ public class PostActivity extends AppCompatActivity
         {
                 super.onStart();
                 //如果没有文章数据 , 但是有文章id
-                if(post==null && postId != 0){
+                if (post == null && postId != 0)
+                {
                         //发送请求
                         getPostData();
                 }
@@ -157,15 +156,16 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 准备请求文章
+         * prepare request to get post
          */
         private void prepareGetPost()
         {
                 //创建请求代理扔
                 delegate = new PostDelegate(TAG);
                 //创建进度条弹窗
-                progressDialog = ViewUtils.createProgressDialog(this, true, true);
+                progressDialog = AlertDialogUtils.createProgressDialog(this, true, true);
                 //创建重试弹窗
-                confirmDialog = ViewUtils.createConfirmDialog(this, "请求失败", null, true, true,"重试", (dialog, which) -> {
+                confirmDialog = AlertDialogUtils.createConfirmDialog(this, "请求失败", null, true, true, "重试", (dialog, which) -> {
                         //重试请求
                         getPostData();
                 });
@@ -175,6 +175,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 发送请求
+         * send request to get post
          */
         private void getPostData()
         {
@@ -192,6 +193,7 @@ public class PostActivity extends AppCompatActivity
                                 //初始化页面
                                 setup();
                         }
+
                         @Override
                         public void onError(String response)
                         {
@@ -225,6 +227,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 初始化本活动
+         * init page
          */
         private void setup()
         {
@@ -241,6 +244,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 初始化图片幻灯片
+         * init slider view
          **/
         private void initSliders()
         {
@@ -303,6 +307,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 初始化 文章主体fragment
+         * init view pager
          */
         private void initViewPager()
         {
@@ -330,6 +335,9 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 检测是否有下载地址, 有的话绑定动作, 没有的话隐藏
+         * check if there is download link
+         * in positive case, set click listener on download button
+         * otherwise hide download button
          */
         private void initDownButton()
         {
@@ -357,6 +365,7 @@ public class PostActivity extends AppCompatActivity
 
         /**
          * 根据appbar高度来更改标题栏图标的颜色
+         * Change the icon color of the title bar based on the appbar height
          */
         public void changeHomeIconColorListener()
         {
@@ -375,16 +384,18 @@ public class PostActivity extends AppCompatActivity
         }
 
 
-        @Override
-        protected void onStop()
+        /**
+         * 启动分享窗口
+         * start the sharing windows
+         */
+        public void startSharingWindowsFragment()
         {
-                //取消本活动相关的所有网络请求
-                Request.cancelRequest(TAG);
-                super.onStop();
-
+                //启动分享窗口
+                sharingWindowsFragment = SharingFragment.startAction();
+                sharingWindowsFragment.show(getSupportFragmentManager(), sharingWindowsFragment.getClass().toString());
         }
 
-        //监听标题栏菜单动作
+
         @Override
         public boolean onOptionsItemSelected(@NonNull MenuItem item)
         {
@@ -401,28 +412,15 @@ public class PostActivity extends AppCompatActivity
         }
 
 
-        public Post getPost()
+        @Override
+        protected void onStop()
         {
-                return post;
+                //取消本活动相关的所有网络请求
+                Request.cancelRequest(TAG);
+                super.onStop();
+
         }
 
-
-
-
-        /**
-         * 启动分享窗口
-         */
-        public void startSharingWindowsFragment()
-        {
-                //启动分享窗口
-                sharingWindowsFragment = SharingFragment.startAction();
-                sharingWindowsFragment.show(getSupportFragmentManager(), sharingWindowsFragment.getClass().toString());
-        }
-
-        public PostMainFragment getPostMainFragment()
-        {
-                return postViewPagerAdapter.getPostMainFragment();
-        }
 
         @Override
         protected void onActivityResult(int requestCode, int resultCode,
@@ -430,13 +428,19 @@ public class PostActivity extends AppCompatActivity
         {
 
                 super.onActivityResult(requestCode, resultCode, data);
-                //回调子碎片的相同方法
-                sharingWindowsFragment.onActivityResult(requestCode, resultCode, data);
+                //如果不是空的
+                if (sharingWindowsFragment != null)
+                {
+                        //回调分享子碎片的相同方法
+                        sharingWindowsFragment.onActivityResult(requestCode, resultCode, data);
+                }
         }
 
 
+
         /**
-         * 静态 启动本活动的方法
+         * 启动本活动的静态方法
+         * static method to start current activity
          * 提供完整post数据
          *
          * @param context
@@ -450,7 +454,8 @@ public class PostActivity extends AppCompatActivity
         }
 
         /**
-         * 静态 启动本活动的方法2
+         * 启动本活动的静态方法
+         * static method to start current activity2
          * 只提供post id
          *
          * @param context
@@ -461,6 +466,16 @@ public class PostActivity extends AppCompatActivity
                 Intent intent = new Intent(context, PostActivity.class);
                 intent.putExtra(INTENT_POST_ID, postId);
                 context.startActivity(intent);
+        }
+
+        public Post getPost()
+        {
+                return post;
+        }
+
+        public PostMainFragment getPostMainFragment()
+        {
+                return postViewPagerAdapter.getPostMainFragment();
         }
 
 }
