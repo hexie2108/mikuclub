@@ -6,7 +6,7 @@ import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class MessageDelegate extends BaseDelegate
         {
 
                 BaseParameters baseParameters = new BaseParameters();
-                Request.post(GlobalConfig.Server.PRIVATE_MESSAGE, baseParameters.toMap(), bodyParameters.toMap(), UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.post(GlobalConfig.Server.PRIVATE_MESSAGE, baseParameters.toMap(), bodyParameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 
@@ -55,7 +55,7 @@ public class MessageDelegate extends BaseDelegate
                 putIfNotNull(queryParameters, "unread", unread);
                 putIfNotNull(queryParameters, "self", selfMessage);
 
-                Request.get(GlobalConfig.Server.PRIVATE_MESSAGE_COUNT, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.get(GlobalConfig.Server.PRIVATE_MESSAGE_COUNT, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 
@@ -86,7 +86,7 @@ public class MessageDelegate extends BaseDelegate
                         putIfNotNull(queryParameters, "number", GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE*2);
                 }
 
-                Request.get(GlobalConfig.Server.PRIVATE_MESSAGE, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.get(GlobalConfig.Server.PRIVATE_MESSAGE, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 
@@ -103,7 +103,7 @@ public class MessageDelegate extends BaseDelegate
                 Map<String, Object> queryParameters = new HashMap();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "unread", unread);
-                Request.get(GlobalConfig.Server.REPLY_COMMENTS_COUNT, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.get(GlobalConfig.Server.REPLY_COMMENTS_COUNT, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 
@@ -120,7 +120,7 @@ public class MessageDelegate extends BaseDelegate
                 putIfNotNull(queryParameters, "paged", page);
                 putIfNotNull(queryParameters, "number", GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE);
 
-                Request.get(GlobalConfig.Server.REPLY_COMMENTS, queryParameters, UserUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.get(GlobalConfig.Server.REPLY_COMMENTS, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 

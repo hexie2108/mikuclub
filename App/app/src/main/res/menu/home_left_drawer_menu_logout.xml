@@ -3,7 +3,7 @@
     xmlns:tools = "http://schemas.android.com/tools"
     tools:showIn = "@layout/activity_home">
 
-        <group android:checkableBehavior = "none">
+        <group android:id = "@+id/group1">
 
                 <item
                     android:id = "@+id/item_login"
@@ -11,6 +11,20 @@
                     android:title = "登陆" />
 
 
+        </group>
+        <group android:id = "@+id/group2">
+                <item
+                    android:id = "@+id/item_settings"
+                    android:icon = "@drawable/settings"
+                    android:title = "配置" />
+
+        </group>
+
+        <group android:id = "@+id/group3">
+                <item
+                    android:id = "@+id/item_sponsor"
+                    android:icon = "@drawable/gift"
+                    android:title = "提供赞助" />
         </group>
 
 

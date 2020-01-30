@@ -1,4 +1,4 @@
-package org.mikuclub.app.utils.storage;
+package org.mikuclub.app.storage.base;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -9,10 +9,10 @@ import org.mikuclub.app.adapter.CategoryAdapter;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.response.Categories;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
+import org.mikuclub.app.storage.CategoryPreferencesUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
-import org.mikuclub.app.utils.storage.PreferencesUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
 
 import java.util.List;
 
@@ -60,11 +60,8 @@ public class HomeCategoriesFragment extends Fragment
 
                 recyclerView = view.findViewById(R.id.recycler_view);
 
-                //从参数里获取分类信息
-                String categoriesCache = PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
-
                 //反序列化
-                recyclerDataList = ParserUtils.fromJson(categoriesCache, Categories.class).getBody();
+                recyclerDataList = ParserUtils.fromJson(CategoryPreferencesUtils.getCategoryCache(), Categories.class).getBody();
                 //检查用户是否登陆 , 没登陆的情况去除魔法区
                 checkAndRemoveMofaCategory();
 
@@ -101,7 +98,7 @@ public class HomeCategoriesFragment extends Fragment
         private void checkAndRemoveMofaCategory()
         {
                 //如果用户未登陆, 从数组中去除 魔法区
-                if (!UserUtils.isLogin())
+                if (!UserPreferencesUtils.isLogin())
                 {
                         //从尾部开始遍历列表
                         for (int i = recyclerDataList.size() - 1; i >= 0; i--)

@@ -1,10 +1,12 @@
-package org.mikuclub.app.utils.storage;
+package org.mikuclub.app.storage;
+
+import org.mikuclub.app.storage.base.PreferencesUtils;
 
 /**
  * 管理消息相关的共享偏好
  * Manage message-related sharing preferences
  */
-public class MessageUtils
+public class MessagePreferencesUtils
 {
 
         private static final String PRIVATE_MESSAGE_COUNT = "private_message_count";

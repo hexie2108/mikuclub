@@ -29,7 +29,7 @@ import org.mikuclub.app.utils.social.TencentListener;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;
 import org.mikuclub.app.utils.social.WeiboUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -277,7 +277,7 @@ public class LoginActivity extends AppCompatActivity
         private void setLoginResult(String response)
         {
                 //储存用户登陆信息
-                UserUtils.login(response);
+                UserPreferencesUtils.login(response);
                 //设置请求结果 为 成功
                 setResult(RESULT_OK);
                 finish();

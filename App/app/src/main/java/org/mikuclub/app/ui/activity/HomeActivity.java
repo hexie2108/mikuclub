@@ -13,19 +13,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.storage.MessagePreferencesUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.ui.fragments.HomeCategoriesFragment;
 import org.mikuclub.app.ui.fragments.HomeMainFragment;
 import org.mikuclub.app.ui.fragments.HomeMessageFragment;
+import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.MessageUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -173,7 +175,7 @@ public class HomeActivity extends MyActivity
                 changeFragment(homeMainFragment, 1);
 
                 //获取未读消息数量
-                int unreadMessageCount = MessageUtils.getPrivateMessageCount() + MessageUtils.getReplyCommentCount();
+                int unreadMessageCount = MessagePreferencesUtils.getPrivateMessageCount() + MessagePreferencesUtils.getReplyCommentCount();
                 //如果未读消息大于0
                 if (unreadMessageCount > 0)
                 {
@@ -264,14 +266,31 @@ public class HomeActivity extends MyActivity
                                         break;
                                 case R.id.item_logout:
                                         //删除用户登陆信息
-                                        UserUtils.logout();
+                                        UserPreferencesUtils.logout();
                                         //更新侧边栏用户信息和菜单
                                         setLogoutUserInfoAndMenu();
                                         ToastUtils.shortToast(ResourcesUtils.getString(R.string.logout_notice));
                                         break;
+                                case R.id.item_sponsor:
+                                        //启动文章页 赞助
+                                        PostActivity.startAction(this, GlobalConfig.SPONSOR_POST_ID);
+                                        break;
+                                case R.id.item_shopping:
+                                        //启动淘宝
+                                        String taobaoUrl = GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_SCHEME + GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_SHOP_HOME;
+                                        String taobaoHtmlUrl = GlobalConfig.ThirdPartyApplicationInterface.HTTPS_SCHEME + GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_SHOP_HOME;
+                                        HttpUtils.startWebViewIntent(this, taobaoUrl, taobaoHtmlUrl);
+                                        break;
                                 case R.id.item_report:
                                         //启动问题反馈页
                                         ReposrtActivity.startAction(this);
+                                        break;
+
+                                case R.id.item_settings:
+                                        //启动配置页
+                                        SettingsActivity.startAction(this);
+                                        break;
+
                         }
                         //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);
@@ -290,7 +309,7 @@ public class HomeActivity extends MyActivity
         private void checkLoginStatus()
         {
                 //如果用户有登陆
-                if (UserUtils.isLogin())
+                if (UserPreferencesUtils.isLogin())
                 {
                         LogUtils.v("已登陆用户");
                         setLoggingUserInfoAndMenu();
@@ -335,7 +354,7 @@ public class HomeActivity extends MyActivity
         {
 
                 //获取用户数据
-                userLogin = UserUtils.getUser();
+                userLogin = UserPreferencesUtils.getUser();
                 //设置头像
                 GlideImageUtils.getSquareImg(this, userAvatar, userLogin.getAvatar_urls());
                 //设置头像的动作监听器

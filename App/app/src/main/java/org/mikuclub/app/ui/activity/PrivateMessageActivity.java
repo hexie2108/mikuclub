@@ -20,7 +20,7 @@ import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +110,7 @@ public class PrivateMessageActivity extends AppCompatActivity
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new PrivateMessageAdapter(recyclerDataList, this, UserUtils.getUser(), author);
+                recyclerViewAdapter = new PrivateMessageAdapter(recyclerDataList, this, UserPreferencesUtils.getUser(), author);
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 layoutManager.setOrientation(RecyclerView.VERTICAL);

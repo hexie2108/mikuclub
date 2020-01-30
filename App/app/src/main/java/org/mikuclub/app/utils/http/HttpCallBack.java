@@ -15,7 +15,7 @@ import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import mikuclub.app.R;
 
@@ -123,7 +123,7 @@ public class HttpCallBack
                                 if (wpError.getBody().getCode().indexOf("invalid_token") != -1)
                                 {
                                         //清空登陆状态
-                                        UserUtils.logout();
+                                        UserPreferencesUtils.logout();
                                         LogUtils.v("登陆信息已过期");
                                         //提示用户
                                         ToastUtils.shortToast("登陆信息已过期, 请重新登陆");

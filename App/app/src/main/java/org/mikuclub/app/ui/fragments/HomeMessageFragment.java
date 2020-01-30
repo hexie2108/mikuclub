@@ -12,8 +12,8 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.mikuclub.app.adapter.viewPager.MessageViewPagerAdapter;
 import org.mikuclub.app.ui.activity.LoginActivity;
-import org.mikuclub.app.utils.storage.MessageUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.MessagePreferencesUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,7 +80,7 @@ public class HomeMessageFragment extends Fragment
          */
         private void checkUserLogin(){
                 //如果用户有登陆
-                if (UserUtils.isLogin())
+                if (UserPreferencesUtils.isLogin())
                 {
                         //如果是第一次创建
                         if (isFirstCreated)
@@ -143,22 +143,22 @@ public class HomeMessageFragment extends Fragment
                         }).attach();
 
                 //如果未读私信大于0
-                if (MessageUtils.getPrivateMessageCount() > 0)
+                if (MessagePreferencesUtils.getPrivateMessageCount() > 0)
                 {
                         //在菜单右上角创建提醒气泡
                         BadgeDrawable badge = tabsMenuLayout.getTabAt(0).getOrCreateBadge();
                         //设置气泡数字
-                        badge.setNumber(MessageUtils.getPrivateMessageCount());
+                        badge.setNumber(MessagePreferencesUtils.getPrivateMessageCount());
                         //设置气泡背景颜色
                         badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
                 //如果未读评论大于0
-                if (MessageUtils.getReplyCommentCount() > 0)
+                if (MessagePreferencesUtils.getReplyCommentCount() > 0)
                 {
                         //在菜单右上角创建提醒气泡
                         BadgeDrawable badge = tabsMenuLayout.getTabAt(1).getOrCreateBadge();
                         //设置气泡数字
-                        badge.setNumber(MessageUtils.getReplyCommentCount());
+                        badge.setNumber(MessagePreferencesUtils.getReplyCommentCount());
                         //设置气泡背景颜色
                         badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }

@@ -1,7 +1,8 @@
-package org.mikuclub.app.utils.storage;
+package org.mikuclub.app.storage;
 
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.storage.base.PreferencesUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * 管理用户登陆相关的共享偏好
  *  * Manage user-login-related sharing preferences
  */
-public class UserUtils
+public class UserPreferencesUtils
 {
         //用户登陆信息
         private static final String USER_LOGIN = "user_login";

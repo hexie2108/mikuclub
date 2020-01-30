@@ -8,6 +8,7 @@ import org.mikuclub.app.adapter.base.BaseAdapterWithFooter;
 import org.mikuclub.app.adapter.viewHolder.PostViewHolder;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
@@ -55,7 +56,9 @@ public class PostAdapter extends BaseAdapterWithFooter
                 //先从列表获取对应位置的数据
                 Post post = (Post)getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
                 //为视图设置各项数据
-                postViewHolder.getItemText().setText(post.getTitle().getRendered());
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                postViewHolder.getItemText().setText(title);
                 String imgUrl = post.getMetadata().getThumbnail_src().get(0);
                 //加载远程图片
                 GlideImageUtils.get(getAdapterContext(), postViewHolder.getItemImage(), imgUrl);

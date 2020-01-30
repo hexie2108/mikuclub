@@ -155,7 +155,10 @@ public class SharingFragment extends BottomSheetDialogFragment
 
                 Bundle params = new Bundle();
                 params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-                params.putString(QQShare.SHARE_TO_QQ_TITLE, post.getTitle().getRendered());
+
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
                 params.putString(QQShare.SHARE_TO_QQ_SUMMARY, "");
                 params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, sharingUrl);
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, post.getMetadata().getThumbnail_src().get(0));
@@ -177,7 +180,9 @@ public class SharingFragment extends BottomSheetDialogFragment
 
                 Bundle params = new Bundle();
                 params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
-                params.putString(QzoneShare.SHARE_TO_QQ_TITLE, post.getTitle().getRendered());
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);
                 params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "");
                 params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, sharingUrl);
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, post.getMetadata().getThumbnail_src().get(0));
@@ -221,16 +226,19 @@ public class SharingFragment extends BottomSheetDialogFragment
                         }
                 };
 
-                WeiboMultiMessage message = new WeiboMultiMessage();
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
 
+                WeiboMultiMessage message = new WeiboMultiMessage();
                 //设置分享文字
                 TextObject textObject = new TextObject();
-                textObject.text = "【" + getResources().getString(R.string.app_name) + "】" + post.getTitle().getRendered() + " ";
+
+                textObject.text = "【" + getResources().getString(R.string.app_name) + "】" + title + " ";
                 message.textObject = textObject;
                 //设置分享链接
                 WebpageObject webObject = new WebpageObject();
                 webObject.identify = UUID.randomUUID().toString();
-                webObject.title = post.getTitle().getRendered();
+                webObject.title = title;
                 webObject.description = "";
                 webObject.actionUrl = sharingUrl;
                 //设置缩微图 图标
@@ -275,10 +283,12 @@ public class SharingFragment extends BottomSheetDialogFragment
          */
         private void initShareLinkButton()
         {
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
                 //绑定分享按钮
                 shareLinkButton.setOnClickListener(v -> {
                         //复制到剪切板
-                        ClipboardUtils.setText("【初音社】" + post.getTitle().getRendered() + " " + sharingUrl);
+                        ClipboardUtils.setText("【初音社】" + title + " " + sharingUrl);
                         //生成用户提示
                         ToastUtils.shortToast("已复分享制链接到剪切板");
                         //完成分享后的动作

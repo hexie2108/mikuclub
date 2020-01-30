@@ -7,7 +7,7 @@ import org.mikuclub.app.delegate.models.ResourceModel;
 import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.parameters.CreateCommentParameters;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.Map;
 
@@ -56,7 +56,7 @@ public class CommentDelegate extends BaseDelegate
         public void createComment(HttpCallBack httpCallBack, CreateCommentParameters createCommentParameters){
 
 
-                Map<String, String> headers = UserUtils.createLoggedUserHeader();
+                Map<String, String> headers = UserPreferencesUtils.createLoggedUserHeader();
                 getModel().insert(new BaseParameters().toMap(), createCommentParameters.toMap(), headers,getTag(), httpCallBack);
         }
 

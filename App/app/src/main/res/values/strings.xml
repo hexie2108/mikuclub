@@ -61,6 +61,26 @@
         <string name = "internet_timeout_error">请求超时错误</string>
         <string name = "internet_empty_error">404请求的页面不存在</string>
         <string name = "internet_server_error">服务器内部错误</string>
+        <string name = "title_activity_settings">Settings</string>
+
+        <!-- Settings page-->
+        <string name = "new_post_push_key">new_post_push</string>
+        <string name = "new_post_push_title">开启推送</string>
+        <string name = "new_post_push_summary">开启后将会定时接收到新投稿通知</string>
+        <string name = "new_post_push_cycle_key">new_post_push_cycle</string>
+        <string name = "new_post_push_cycle_title">推送频率</string>
+
+        <!-- Messages Preferences -->
+        <string name = "signature_title">Your signature</string>
+        <string name = "reply_title">Default reply action</string>
+        <!-- Sync Preferences -->
+        <string name = "sync_title">Sync email periodically</string>
+        <string name = "attachment_title">Download incoming attachments</string>
+        <string name = "attachment_summary_on">Automatically download attachments for incoming
+                emails
+        </string>
+        <string name = "attachment_summary_off">Only download attachments when manually requested
+        </string>
 
 
 </resources>

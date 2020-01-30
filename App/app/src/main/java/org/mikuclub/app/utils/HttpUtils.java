@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +26,7 @@ import mikuclub.app.R;
 
 /**
  * 网络请求相关实用方法
- *  Internet request utility class
+ * Internet request utility class
  */
 public class HttpUtils
 {
@@ -37,19 +41,24 @@ public class HttpUtils
          */
         public static String checkAndAddHttpsProtocol(String url)
         {
-                //去除左右空格
-                String new_url = url.trim();
-                char firstElement = url.charAt(0);
-                //如果只是没有添加http头部
-                if (firstElement == '/')
+                String new_url = null;
+                if (url != null)
                 {
-                        new_url = "https:" + url;
+                        //去除左右空格
+                        new_url = url.trim();
+                        char firstElement = url.charAt(0);
+                        //如果只是没有添加http头部
+                        if (firstElement == '/')
+                        {
+                                new_url = "https:" + url;
+                        }
+                        /*如果是连 斜杠//都没有 , 有bug 会导致b站链接无法正常解析
+                        else if (Character.isLetter(firstElement) && Character.toLowerCase(firstElement) != 'h')
+                        {
+                                new_url = "https://" + url;
+                        }*/
+
                 }
-                /*如果是连 斜杠//都没有 , 有bug 会导致b站链接无法正常解析
-                else if (Character.isLetter(firstElement) && Character.toLowerCase(firstElement) != 'h')
-                {
-                        new_url = "https://" + url;
-                }*/
                 return new_url;
         }
 
@@ -124,9 +133,9 @@ public class HttpUtils
         }
 
 
-
         /**
          * 第三方解析html方法, 支持保留链接和显示图片, 并给链接和图片 设置相应的动作监听
+         *
          * @param context
          * @param htmlString
          * @param textView
@@ -221,11 +230,13 @@ public class HttpUtils
 
         /**
          * 默认解析html的方法, 给链接添加点击事件监听, 但是图片没有监听
+         *
          * @param context
          * @param htmlString
          * @param textView
          */
-        public static void parseHtmlDefault(final Context context, String htmlString, TextView textView){
+        public static void parseHtmlDefault(final Context context, String htmlString, TextView textView)
+        {
 
                 HttpUtils.parseHtml(context, htmlString, textView, new OnTagClickListener()
                 {
@@ -242,6 +253,46 @@ public class HttpUtils
                                 startWebViewIntent(context, url, null);
                         }
                 });
+        }
+
+
+        /**
+         * 检测网络状态
+         *check network status
+         * @return
+         */
+        public static boolean internetCheck(Context context)
+        {
+                boolean isInternetAvailable = false;
+                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connectivityManager != null)
+                {
+                        //如果设备SDK版本等于大于29
+                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                        {
+                                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+                                if (capabilities != null)
+                                {
+                                        //如果有手机网络, wifi网络或以太网
+                                        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+                                        {
+                                                isInternetAvailable = true;
+                                        }
+
+                                }
+                        }
+                        //低于 sdk 29的版本
+                        else
+                        {
+                                //获取网络状态
+                                NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                                if (activeNetworkInfo != null && activeNetworkInfo.isConnected())
+                                {
+                                        isInternetAvailable = true;
+                                }
+                        }
+                }
+                return isInternetAvailable;
         }
 
 

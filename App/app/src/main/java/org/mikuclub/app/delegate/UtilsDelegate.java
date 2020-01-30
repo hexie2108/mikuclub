@@ -6,7 +6,7 @@ import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.Map;
 
@@ -66,7 +66,7 @@ public class UtilsDelegate extends BaseDelegate
         public void tokenValidate(HttpCallBack httpCallBack)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                Map header = UserUtils.createLoggedUserHeader();
+                Map header = UserPreferencesUtils.createLoggedUserHeader();
 
                 Request.post(GlobalConfig.Server.TOKEN_VALIDATE, baseParameters.toMap(), null, header, getTag(), httpCallBack);
         }

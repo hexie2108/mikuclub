@@ -1,14 +1,17 @@
 package org.mikuclub.app.delegate;
 
-import org.mikuclub.app.delegate.base.BaseDelegate;
-import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.delegate.base.BaseDelegate;
 import org.mikuclub.app.delegate.models.ResourceModel;
-import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
+import org.mikuclub.app.storage.ApplicationPreferencesUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.utils.DataUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.UserUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +88,7 @@ public class PostDelegate extends BaseDelegate
                 Map<String, String> headers = null;
                 if(parameters.getSearch()!=null)
                 {
-                        headers = UserUtils.createLoggedUserHeader();
+                        headers = UserPreferencesUtils.createLoggedUserHeader();
                 }
 
 
@@ -153,6 +156,27 @@ public class PostDelegate extends BaseDelegate
                 putIfNotNull(queryParameters, "post_id", postId);
                 Request.get(GlobalConfig.Server.POST_FAIL_DOWN_COUNT, queryParameters, null, getTag(), httpCallBack);
         }
+
+        /**
+         * 获取从最后访问时间 到目前为止 新发布的文章数量
+         * @param httpCallBack
+         * */
+        public void getNewPostCount(HttpCallBack httpCallBack)
+        {
+                long lastAccessTime = ApplicationPreferencesUtils.getLatestAccessTime();
+                //如果是0
+                if(lastAccessTime ==0){
+                        //就获取系统时间, 避免报错
+                        lastAccessTime = System.currentTimeMillis();
+                }
+                Date date = new Date(lastAccessTime);
+
+                Map<String, Object> queryParameters = new HashMap();
+                putIfNotNull(queryParameters, "_envelope", "1");
+                putIfNotNull(queryParameters, "date", DataUtils.dateToString(date));
+                Request.get(GlobalConfig.Server.NEW_POST_COUNT, queryParameters, null, getTag(), httpCallBack);
+        }
+
 
 
 }

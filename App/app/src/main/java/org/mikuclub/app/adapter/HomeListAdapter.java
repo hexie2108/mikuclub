@@ -12,6 +12,7 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 import org.mikuclub.app.adapter.viewHolder.HomeSliderHeaderViewHolder;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
@@ -84,7 +85,9 @@ public class HomeListAdapter extends PostAdapter
                                 GlideImageUtils.getWithThumbnail(getAdapterContext(), imageView, imageUrl, thumbnailSrc);
                                 //设置标题
                                 TextView textView = view.findViewById(R.id.item_text);
-                                textView.setText(post.getTitle().getRendered());
+                                //修复标题中可能存在的被html转义的特殊符号
+                                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                                textView.setText(title);
                                 //绑定点击事件监听器
                                 view.setOnClickListener(v -> {
                                         //启动 文章页

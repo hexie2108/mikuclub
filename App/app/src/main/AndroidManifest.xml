@@ -18,8 +18,15 @@
             android:roundIcon = "@mipmap/ic_launcher_round"
             android:supportsRtl = "true"
             android:theme = "@style/AppTheme">
-                <activity android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity"></activity>
-                <!-- 解决腾讯sdk 网络连接报错 -->
+                <service
+                    android:name = "org.mikuclub.app.service.PostPushService"
+                    android:enabled = "true"
+                    android:exported = "false"></service>
+
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
+                    android:label = "@string/title_activity_settings" />
+                <activity android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity" /> <!-- 解决腾讯sdk 网络连接报错 -->
                 <uses-library
                     android:name = "org.apache.http.legacy"
                     android:required = "false" />

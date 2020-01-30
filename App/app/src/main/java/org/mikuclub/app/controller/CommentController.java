@@ -28,7 +28,7 @@ import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import androidx.appcompat.app.AlertDialog;
 import mikuclub.app.R;
@@ -58,10 +58,10 @@ public class CommentController extends BaseController
         {
                 super(context);
                 //如果用户有登陆
-                if (UserUtils.isLogin())
+                if (UserPreferencesUtils.isLogin())
                 {
                         //就设置用户信息
-                        userLogin = UserUtils.getUser();
+                        userLogin = UserPreferencesUtils.getUser();
                 }
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(getContext(), false, false);

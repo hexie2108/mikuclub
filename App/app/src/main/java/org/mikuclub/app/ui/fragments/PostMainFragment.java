@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
@@ -21,12 +20,11 @@ import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
-import org.mikuclub.app.utils.storage.PreferencesUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
+import org.mikuclub.app.storage.PostPreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -121,8 +119,9 @@ public class PostMainFragment extends Fragment
          */
         private void initPost()
         {
-
-                postTitle.setText(post.getTitle().getRendered());
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                postTitle.setText(title);
 
                 String dateString = GeneralUtils.DateToString(post.getDate());
                 postDate.setText(dateString);
@@ -164,8 +163,8 @@ public class PostMainFragment extends Fragment
                         {
                                 //截取av号
                                 String av = videoSrc.split(",")[0];
-                                final String bilibiliAppSrc = GlobalConfig.BILIBILI_APP_WAKE_URL + av.substring(2);
-                                final String bilibiliWebSrc = GlobalConfig.BILIBILI_HOST + av;
+                                final String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL + av.substring(2);
+                                final String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + av;
                                 //监听按钮点击
                                 postBilibiliButton.setOnClickListener(v -> {
                                         //启动第三方应用
@@ -241,15 +240,6 @@ public class PostMainFragment extends Fragment
         private void initLikeButton()
         {
 
-                //获取点赞数据
-                String likedPostIdsString = PreferencesUtils.getPostPreference().getString(GlobalConfig.Preferences.POST_LIKED_ARRAY, null);
-                //如果相关点赞数据字符串存在
-                if (likedPostIdsString != null)
-                {
-                        //解析为数组
-                        likedPostIds = ParserUtils.integerArrayList(likedPostIdsString);
-                }
-
                 boolean buttonIsActivated = false;
                 //点赞数 不是空的也不是0
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_like()))
@@ -257,15 +247,14 @@ public class PostMainFragment extends Fragment
                         countLike = post.getMetadata().getCount_like().get(0);
                 }
 
-                //如果点赞文章数组不是空+这个文章已经点过赞
-                if (likedPostIds != null && likedPostIds.contains(post.getId()))
+                //如果点赞文章id数组里包含这个id, 说明已点过赞
+                if (PostPreferencesUtils.isContainedInLikedPostIds(post.getId()))
                 {
                         buttonIsActivated = true;
                         //检查是否是点过赞
                         countLike++;
                 }
                 postCountLike.setText(countLike + " 次点赞");
-
 
                 //根据激活状态 设置 按钮样式和动作
                 likeAction(buttonIsActivated);
@@ -296,20 +285,28 @@ public class PostMainFragment extends Fragment
                         //设置按钮
                         likeAction(!isActivated);
 
-                        delegate.postLikeCount(new HttpCallBack()
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
                                 {
                                         //更新数组
-                                        manageLikedPost(!isActivated);
+                                        PostPreferencesUtils.setLikedPostId(post.getId());
 
-                                        //提示信息
-                                        String toastMessage = "已点赞";
-                                        if (isActivated)
+                                        //提示信息和更新点赞数
+                                        String toastMessage;
+                                        if (!isActivated)
                                         {
-                                                toastMessage = "已取消点赞";
+                                                toastMessage = "已点赞";
+                                                countLike++;
                                         }
+                                        else{
+                                                toastMessage = "已取消点赞";
+                                                countLike--;
+                                        }
+                                        //更新UI
+                                        postCountLike.setText(countLike + " 次点赞");
+                                        //显示消息提示
                                         ToastUtils.shortToast(toastMessage);
                                 }
 
@@ -325,61 +322,10 @@ public class PostMainFragment extends Fragment
                                 {
                                         onFinally();
                                 }
-                        }, post.getId(), !isActivated);
+                        };
+
+                        delegate.postLikeCount(httpCallBack, post.getId(), !isActivated);
                 });
-        }
-
-
-        /**
-         * 管理操控点赞文章数组
-         *Manage likes array
-         * @param isAdd true=添加, false=删除
-         */
-        private void manageLikedPost(boolean isAdd)
-        {
-                //如果为null,
-                if (likedPostIds == null)
-                {
-                        //初始化一个新数组
-                        likedPostIds = new ArrayList<>();
-                }
-
-                //检查id是否已存在
-                int position = likedPostIds.indexOf(post.getId());
-                //如果id不存在, 而且 是添加操作
-                if (position == -1 && isAdd)
-                {
-                        //添加
-                        likedPostIds.add(post.getId());
-                        //如果数组长度已超过上限
-                        if (likedPostIds.size() > GlobalConfig.Preferences.POST_LIKED_ARRAY_SIZE)
-                        {
-                                //去除一半
-                                likedPostIds = likedPostIds.subList(likedPostIds.size() / 2, likedPostIds.size());
-                        }
-                }
-                else if (position != -1 && !isAdd)
-                {
-                        //移除
-                        likedPostIds.remove(position);
-                }
-                //保存数组参数里
-                PreferencesUtils.getPostPreference()
-                        .edit()
-                        .putString(GlobalConfig.Preferences.POST_LIKED_ARRAY, ParserUtils.integerArrayListToJson(likedPostIds))
-                        .apply();
-
-                //根据当前操作  增加或减少点赞数
-                if (isAdd)
-                {
-                        countLike++;
-                }
-                else
-                {
-                        countLike--;
-                }
-                //更新UI
-                postCountLike.setText(countLike + " 次点赞");
         }
 
         /**
@@ -423,12 +369,23 @@ public class PostMainFragment extends Fragment
         /**
          * 初始化反馈下载失效按钮
          * Initial feedback button
+         * 如果没有下载地址就隐藏相关按钮
          */
         private void initFailDownButton(){
 
-                postCountFailDownButton.setOnClickListener(v -> {
-                        failDownAction();
-                });
+                //如果有下载地址
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()))
+                {
+                        //绑定点击动作监听
+                        postCountFailDownButton.setOnClickListener(v -> {
+                                failDownAction();
+                        });
+                }
+                //如果没有下载地址
+                else{
+                        postCountFailDownButton.setVisibility(View.GONE);
+                        postCountFailDown.setVisibility(View.GONE);
+                }
 
         }
 

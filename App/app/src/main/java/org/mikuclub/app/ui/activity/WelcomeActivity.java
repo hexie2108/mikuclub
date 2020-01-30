@@ -1,12 +1,7 @@
 package org.mikuclub.app.ui.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -14,8 +9,6 @@ import android.widget.TextView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.mikuclub.app.utils.ResourcesUtils;
-import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.delegate.PostDelegate;
@@ -24,14 +17,17 @@ import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.AppUpdate;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.storage.ApplicationPreferencesUtils;
+import org.mikuclub.app.storage.CategoryPreferencesUtils;
+import org.mikuclub.app.storage.MessagePreferencesUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.MessageUtils;
-import org.mikuclub.app.utils.storage.PreferencesUtils;
-import org.mikuclub.app.utils.storage.UserUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +59,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         private Posts stickyPostList = null;
         private Posts postList = null;
-        private String categoriesCache;
+        private String categoryCache;
 
         //需要完成的请求的总数
         private final int REQUEST_TOTAL_NUMBER = 7;
@@ -108,10 +104,8 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void initPage()
         {
-                //检测网络状态
-                boolean isInternetAvailable = internetCheck();
                 //如果有网络连接
-                if (isInternetAvailable)
+                if (HttpUtils.internetCheck(this))
                 {
                         //检测登陆令牌是否失效
                         checkTokenValidity();
@@ -124,6 +118,8 @@ public class WelcomeActivity extends AppCompatActivity
                         //获取主页文章数据
                         getPostDataForHome();
 
+                        //设置最新的访问时间
+                        ApplicationPreferencesUtils.setLatestAccessTime();
                 }
                 else
                 {
@@ -141,7 +137,7 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkTokenValidity()
         {
                 //如果用户有登陆
-                if (UserUtils.isLogin())
+                if (UserPreferencesUtils.isLogin())
                 {
                         LogUtils.v("开始验证登陆信息有效性");
                         HttpCallBack httpCallBack = new HttpCallBack()
@@ -207,9 +203,9 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void checkUpdate()
         {
-                long appUpdateExpire = PreferencesUtils.getApplicationPreference().getLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, 0);
-                //如果检查更新已过期
-                if (System.currentTimeMillis() > appUpdateExpire)
+
+                //如果上次检查更新的有效期已过期
+                if (System.currentTimeMillis() > ApplicationPreferencesUtils.getUpdateCheckExpire())
                 {
                         LogUtils.v("检测时间已过期, 开始重新检测更新");
                         HttpCallBack httpCallBack = new HttpCallBack()
@@ -234,9 +230,8 @@ public class WelcomeActivity extends AppCompatActivity
                                                 if (BuildConfig.VERSION_CODE == appUpdate.getBody().getVersionCode())
                                                 {
                                                         LogUtils.v("已经是最新版了");
-                                                        long expire = System.currentTimeMillis() + GlobalConfig.Preferences.APP_UPDATE_EXPIRE_TIME;
-                                                        //保存 这次检查更新的过期时间
-                                                        PreferencesUtils.getApplicationPreference().edit().putLong(GlobalConfig.Preferences.APP_UPDATE_EXPIRE, expire).apply();
+                                                        // 设置检查更新的有效期
+                                                       ApplicationPreferencesUtils.setUpdateCheckExpire();
                                                 }
                                                 //增加计数器
                                                 startHomeSafety();
@@ -288,11 +283,10 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkCategories()
         {
 
-                final long categoriesCacheExpire = PreferencesUtils.getCategoryPreference().getLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, 0);
-                categoriesCache = PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
+                categoryCache = CategoryPreferencesUtils.getCategoryCache() ;
 
-                //如果分类缓存 已过期 或者 缓存为null
-                if (System.currentTimeMillis() > categoriesCacheExpire || categoriesCache == null)
+                //如果分类信息检测有效期已过期 或者 找不到分类缓存
+                if (System.currentTimeMillis() > CategoryPreferencesUtils.getCategoryCheckExpire() || categoryCache == null)
                 {
                         LogUtils.v("开始重新请求分类信息");
                         HttpCallBack httpCallBack = new HttpCallBack()
@@ -302,15 +296,9 @@ public class WelcomeActivity extends AppCompatActivity
                                 public void onSuccess(String response)
                                 {
                                         //获取分类信息
-                                        categoriesCache = response;
-                                        //计算缓存过期时间
-                                        long expire = System.currentTimeMillis() + GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE_TIME;
+                                        categoryCache = response;
                                         //更新分类缓存 和 缓存过期时间
-                                        PreferencesUtils.getCategoryPreference()
-                                                .edit()
-                                                .putString(GlobalConfig.Preferences.CATEGORIES_CACHE, categoriesCache)
-                                                .putLong(GlobalConfig.Preferences.CATEGORIES_CACHE_EXPIRE, expire)
-                                                .apply();
+                                        CategoryPreferencesUtils.setCategoryCacheAndExpire(categoryCache);
                                         LogUtils.v("重新请求分类信息 成功");
                                         startHomeSafety();
                                 }
@@ -319,7 +307,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 public void onError(String response)
                                 {
                                         //只有在无缓存的情况, 才会报错
-                                        if (categoriesCache.isEmpty())
+                                        if (categoryCache.isEmpty())
                                         {
                                                 setErrorInfo(null);
                                         }
@@ -362,7 +350,7 @@ public class WelcomeActivity extends AppCompatActivity
         {
 
                 //如果用户有登陆
-                if (UserUtils.isLogin())
+                if (UserPreferencesUtils.isLogin())
                 {
                         LogUtils.v("开始获取未读消息数量");
                         //获取未读私信计数的回调
@@ -377,7 +365,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //解析回复
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
-                                        MessageUtils.setPrivateMessageCount(Integer.valueOf(singleResponse.getBody()));
+                                        MessagePreferencesUtils.setPrivateMessageCount(Integer.valueOf(singleResponse.getBody()));
 
                                 }
 
@@ -405,7 +393,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //解析回复
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
-                                        MessageUtils.setReplyCommentCount(Integer.valueOf(singleResponse.getBody()));
+                                        MessagePreferencesUtils.setReplyCommentCount(Integer.valueOf(singleResponse.getBody()));
                                 }
 
                                 @Override
@@ -535,7 +523,7 @@ public class WelcomeActivity extends AppCompatActivity
                 addRequestCount();
 
                 //所有请求都完成, 并且数据都成功获取的情况
-                if (requestCount == REQUEST_TOTAL_NUMBER && stickyPostList != null && postList != null && !categoriesCache.isEmpty())
+                if (requestCount == REQUEST_TOTAL_NUMBER && stickyPostList != null && postList != null && !categoryCache.isEmpty())
                 {
                         //启动主页
                         HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
@@ -654,44 +642,7 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
-        /**
-         * 检测网络状态
-         *check network status
-         * @return
-         */
-        private boolean internetCheck()
-        {
-                boolean isInternetAvailable = false;
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (connectivityManager != null)
-                {
-                        //如果设备SDK版本等于大于29
-                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                        {
-                                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-                                if (capabilities != null)
-                                {
-                                        //如果有手机网络, wifi网络或以太网
-                                        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
-                                        {
-                                                isInternetAvailable = true;
-                                        }
 
-                                }
-                        }
-                        //低于 sdk 29的版本
-                        else
-                        {
-                                //获取网络状态
-                                NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-                                if (activeNetworkInfo != null && activeNetworkInfo.isConnected())
-                                {
-                                        isInternetAvailable = true;
-                                }
-                        }
-                }
-                return isInternetAvailable;
-        }
 
 
 

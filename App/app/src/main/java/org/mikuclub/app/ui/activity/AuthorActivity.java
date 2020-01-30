@@ -19,7 +19,7 @@ import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.utils.storage.UserUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,7 +165,7 @@ public class AuthorActivity extends AppCompatActivity
                 PostParameters parameters = new PostParameters();
                 parameters.setAuthor(new ArrayList<>(Arrays.asList(author.getAuthor_id())));
                 //如果未登陆, 排除魔法区
-                if (!UserUtils.isLogin())
+                if (!UserPreferencesUtils.isLogin())
                 {
                         parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
                 }

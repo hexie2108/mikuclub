@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.mikuclub.app.config.GlobalConfig;
 
 import java.io.UnsupportedEncodingException;
@@ -105,14 +106,27 @@ public class GeneralUtils
 
         /**
          * 按照特定格式 把日期转换输出成字符串
+         *
          * @param date
          * @return 字符串格式的日期
          */
-        public static String DateToString(Date date){
+        public static String DateToString(Date date)
+        {
                 String dateString = new SimpleDateFormat(GlobalConfig.DISPLAY_DATE_FORMAT).format(date);
                 return dateString;
         }
 
+
+        /**
+         * 恢复 文本内 被html转义的特殊符号
+         *
+         * @param text
+         * @return
+         */
+        public static String unescapeHtml(String text)
+        {
+                return StringEscapeUtils.unescapeHtml4(text);
+        }
 
 
         /**
@@ -135,8 +149,6 @@ public class GeneralUtils
 
                 return newText;
         }
-
-
 
 
 }

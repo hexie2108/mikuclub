@@ -3,29 +3,38 @@
     xmlns:tools = "http://schemas.android.com/tools"
     tools:showIn = "@layout/activity_home">
 
-        <group android:checkableBehavior = "none">
+        <group android:id = "@+id/group1">
+                <item
+                    android:id = "@+id/item_settings"
+                    android:icon = "@drawable/settings"
+                    android:title = "配置" />
+        </group>
+        <group android:id = "@+id/group2">
 
                 <item
                     android:id = "@+id/item_report"
-                   android:icon = "@drawable/bug_report"
+                    android:icon = "@drawable/bug_report"
                     android:title = "问题反馈" />
+                <item
+                    android:id = "@+id/item_sponsor"
+                    android:icon = "@drawable/gift"
+                    android:title = "提供赞助" />
+        </group>
 
+        <group android:id = "@+id/group3">
+
+                <item
+                    android:id = "@+id/item_shopping"
+                    android:icon = "@drawable/shopping_cart"
+                    android:title = "动漫周边" />
+
+        </group>
+
+        <group android:id = "@+id/group4">
                 <item
                     android:id = "@+id/item_logout"
                     android:icon = "@drawable/sign_out"
                     android:title = "退出" />
-
-
         </group>
-
-        <item android:title = "设置">
-                <menu>
-                        <item
-                            android:id = "@+id/item_manage"
-                            android:icon = "@drawable/manage"
-                            android:visible="false"
-                            android:title = "配置" />
-                </menu>
-        </item>
 
 </menu>

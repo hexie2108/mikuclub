@@ -191,7 +191,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                         {
 
                                 //如果是百度盘标准地址
-                                if (downUrl.indexOf(GlobalConfig.BAIDU_PAN_URL_VALIDATE_PATH) != -1)
+                                if (downUrl.indexOf(GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_URL_VALIDATE_PATH) != -1)
                                 {
                                         //更改按钮文字 为百度
                                         downButton.setText("百度网盘");
@@ -212,7 +212,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                 String identifyUrl = downUrl.substring(downUrl.indexOf(splitSymbole) + splitSymbole.length());
                                                 //去除第一位 的1位数 (百度app政策)
                                                 identifyUrl = identifyUrl.substring(1);
-                                                String baiduUrl = GlobalConfig.BAIDU_PAN_APP_WAKE_URL + "?" + GlobalConfig.BAIDU_PAN_PARAMETER_NAME + "=" + identifyUrl;
+                                                String baiduUrl = GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_APP_WAKE_URL + "?" + GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_PARAMETER_NAME + "=" + identifyUrl;
                                                 //启动第三方应用
                                                 HttpUtils.startWebViewIntent(getActivity(), baiduUrl, downUrl);
                                         };
