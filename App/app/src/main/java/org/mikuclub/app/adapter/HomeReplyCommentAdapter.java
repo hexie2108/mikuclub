@@ -70,7 +70,8 @@ public class HomeReplyCommentAdapter extends BaseAdapterWithFooter
 
 
                 //把评论回复数的view用来显示评论的文章来源
-                viewHolder.getItemCountReplies().setText(ResourcesUtils.getString(R.string.comment_source)+" "+replyComment.getPost_title());
+
+                viewHolder.getItemCountReplies().setText(ResourcesUtils.getString(R.string.comment_source)+" "+GeneralUtils.unescapeHtml(replyComment.getPost_title()));
                 viewHolder.getItemCountReplies().setVisibility(View.VISIBLE);
 
                 //如果未读标签存在 并且注明是未读

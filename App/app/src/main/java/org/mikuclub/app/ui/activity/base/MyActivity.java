@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class MyActivity extends AppCompatActivity
 {
-        public boolean lifeCycleDebug = false;
+        public boolean lifeCycleDebug = true;
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState)

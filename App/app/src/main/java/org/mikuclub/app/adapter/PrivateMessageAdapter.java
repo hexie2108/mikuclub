@@ -30,7 +30,7 @@ public class PrivateMessageAdapter extends BaseAdapterWithFooter
 {
         /* 静态变量 Static variable */
         /*定义一个新 主体元素类型, 随机选50*/
-        protected final static int TYPE_ITEM2 = 50;
+        private final static int TYPE_ITEM2 = 50;
 
         /* 变量 local variable */
         //当前用户

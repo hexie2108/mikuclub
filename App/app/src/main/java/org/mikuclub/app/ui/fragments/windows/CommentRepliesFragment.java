@@ -29,7 +29,7 @@ import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -105,9 +105,12 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 input = view.findViewById(R.id.input);
 
                 //获取传递的数据
-                comment = (Comment) getArguments().getSerializable(BUNDLE_COMMENT);
+                if(getArguments()!=null){
+                        comment = (Comment) getArguments().getSerializable(BUNDLE_COMMENT);
+                }
+
                 //创建数据请求 代理人
-                delegate = new CommentDelegate(((PostActivity) getActivity()).TAG);
+                delegate = new CommentDelegate(PostActivity.TAG);
 
                 //初始化变量
                 recyclerDataList = new ArrayList<>();
@@ -207,14 +210,14 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 CommentParameters parameters = new CommentParameters();
 
                 //生成子回复id列表
-                ArrayList<Integer> parentList = new ArrayList();
+                ArrayList<Integer> parentList = new ArrayList<>();
                 parentList.add(comment.getId());
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
                         parentList.addAll(comment.getMetadata().getComment_reply_ids());
                 }
                 //设置参数
-                parameters.setPost(new ArrayList<>(Arrays.asList(comment.getPost())));
+                parameters.setPost(new ArrayList<>(Collections.singletonList(comment.getPost())));
                 parameters.setParent(parentList);
                 parameters.setOrder(GlobalConfig.Order.ASC);
 

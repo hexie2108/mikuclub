@@ -4,6 +4,7 @@ import org.mikuclub.app.config.GlobalConfig;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,14 +32,16 @@ public class DataUtils
                 //如果列表不是空的
                 if (arraylistSource != null && !arraylistSource.isEmpty())
                 {
-                        output = "";
+                        StringBuilder  outputBuilder = new StringBuilder("");
                         for (int i = 0; i < arraylistSource.size(); i++)
                         {
-                                output += symbolAround + arraylistSource.get(i) + symbolAround + separatorElement;
+                                outputBuilder.append(symbolAround);
+                                outputBuilder.append(arraylistSource.get(i));
+                                outputBuilder.append(symbolAround);
+                                outputBuilder.append(separatorElement);
                         }
                         //去除末尾的分隔符号
-                        output = output.substring(0, output.length() - separatorElement.length());
-
+                        output = outputBuilder.substring(0, outputBuilder.length() - separatorElement.length());
                 }
                 return output;
         }
@@ -56,6 +59,7 @@ public class DataUtils
         {
 
                 String output = "";
+                StringBuilder  outputBuilder = new StringBuilder();
                 Iterator<Map.Entry<String, Object>> iterator = mapSource.entrySet().iterator();
                 try
                 {
@@ -64,7 +68,10 @@ public class DataUtils
                         {
                                 Map.Entry<String, Object> entry = iterator.next();
                                 //System.out.println(entry.getKey() + "　：" + entry.getValue());
-                                output += entry.getKey() + separatorKeyValue + URLEncoder.encode(entry.getValue().toString(), "UTF-8") + separatorEntry;
+                                outputBuilder.append(entry.getKey());
+                                outputBuilder.append(separatorKeyValue);
+                                outputBuilder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8.name()));
+                                outputBuilder.append(separatorEntry);
                         }
                 }
                 catch (UnsupportedEncodingException e)
@@ -74,7 +81,7 @@ public class DataUtils
                         e.printStackTrace();
                 }
                 //remove the last separatorEntry;
-                output = output.substring(0, output.length() - separatorEntry.length());
+                output = outputBuilder.substring(0, outputBuilder.length() - separatorEntry.length());
                 return output;
         }
 

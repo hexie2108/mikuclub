@@ -20,6 +20,7 @@ import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
@@ -131,15 +132,15 @@ public class PostMainFragment extends Fragment
                 //如果数据不是空
                 if (metadata.getViews() != null)
                 {
-                        postViews.setText(metadata.getViews().get(0).toString() + " 次查看");
+                        postViews.setText(metadata.getViews().get(0).toString() + " "+getResources().getString(R.string.post_view_count));
                 }
                 if (metadata.getCount_comments() != null)
                 {
-                        postCountComments.setText(metadata.getCount_comments().get(0).toString() + " 条评论");
+                        postCountComments.setText(metadata.getCount_comments().get(0).toString() + " "+getResources().getString(R.string.post_comment_count));
                 }
                 if (metadata.getCount_sharing() != null)
                 {
-                        postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " 次分享");
+                        postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " "+getResources().getString(R.string.post_sharing_count));
                 }
 
                 //创建作者页面点击监听器
@@ -159,7 +160,7 @@ public class PostMainFragment extends Fragment
                 {
                         String videoSrc = metadata.getVideo().get(0);
                         //确如果是 b站地址
-                        if (videoSrc.indexOf("av") != -1 && videoSrc.indexOf("cid") != -1)
+                        if (videoSrc.contains("av")&& videoSrc.contains("cid"))
                         {
                                 //截取av号
                                 String av = videoSrc.split(",")[0];
@@ -254,7 +255,7 @@ public class PostMainFragment extends Fragment
                         //检查是否是点过赞
                         countLike++;
                 }
-                postCountLike.setText(countLike + " 次点赞");
+                postCountLike.setText(countLike + " "+getResources().getString(R.string.post_like_count));
 
                 //根据激活状态 设置 按钮样式和动作
                 likeAction(buttonIsActivated);
@@ -305,7 +306,7 @@ public class PostMainFragment extends Fragment
                                                 countLike--;
                                         }
                                         //更新UI
-                                        postCountLike.setText(countLike + " 次点赞");
+                                        postCountLike.setText(countLike + " "+getResources().getString(R.string.post_like_count));
                                         //显示消息提示
                                         ToastUtils.shortToast(toastMessage);
                                 }
@@ -359,7 +360,7 @@ public class PostMainFragment extends Fragment
                         //就获取当前分享次数 然后 +1
                         countSharing = post.getMetadata().getCount_sharing().get(0) + 1;
                 }
-                postCountShare.setText(countSharing+" 次分享");
+                postCountShare.setText(countSharing+" "+getResources().getString(R.string.post_sharing_count));
                 //通知服务器 增加分享次数计数
                 delegate.postShareCount(post.getId());
 
@@ -377,9 +378,9 @@ public class PostMainFragment extends Fragment
                 if(!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()))
                 {
                         //绑定点击动作监听
-                        postCountFailDownButton.setOnClickListener(v -> {
-                                failDownAction();
-                        });
+                        postCountFailDownButton.setOnClickListener(
+                                v -> failDownAction()
+                        );
                 }
                 //如果没有下载地址
                 else{
@@ -406,7 +407,7 @@ public class PostMainFragment extends Fragment
                         public void onSuccess(String response)
                         {
 
-                                ToastUtils.longToast("上报成功, 管理员将会根据上报次数对稿件进行退稿处理, 并通知UP主补档");
+                                ToastUtils.longToast(ResourcesUtils.getString(R.string.post_fail_down_successful_message));
                         }
                 };
 

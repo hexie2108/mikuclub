@@ -13,8 +13,7 @@ public class TencentUtils
 {
         public static final String OPEN_TYPE = "qq";
         private static final String APP_KEY = "101842471";
-        private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
-        private static final String SCOPE = "follow_app_official_microblog";
+
         private static Tencent TencentAPI;
 
 

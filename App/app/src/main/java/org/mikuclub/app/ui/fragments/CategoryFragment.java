@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.mikuclub.app.adapter.PostAdapter;
-import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.delegate.PostDelegate;
@@ -16,9 +15,10 @@ import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.CategoryActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -36,7 +36,7 @@ import mikuclub.app.R;
 public class CategoryFragment extends Fragment
 {
         /* 静态变量 Static variable */
-        public static final String BUNDLE_CATEGORY = "category";
+        private static final String BUNDLE_CATEGORY = "category";
 
         /* 变量 local variable */
         //数据请求代理人
@@ -74,9 +74,12 @@ public class CategoryFragment extends Fragment
                 swipeRefresh = view.findViewById(R.id.swipe_refresh);
 
                 //获取传递的数据
-                category = (Category) getArguments().getSerializable(BUNDLE_CATEGORY);
+                if(getArguments() != null){
+                        category = (Category) getArguments().getSerializable(BUNDLE_CATEGORY);
+                }
+
                 //创建数据请求 代理人
-                delegate = new PostDelegate(((CategoryActivity) getActivity()).TAG);
+                delegate = new PostDelegate(CategoryActivity.TAG);
                 //初始化变量
                 recyclerDataList = new ArrayList<>();
 
@@ -158,7 +161,7 @@ public class CategoryFragment extends Fragment
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
                 //参数里 需要的分类id
-                parameters.setCategories(new ArrayList<>(Arrays.asList(category.getId())));
+                parameters.setCategories(new ArrayList<>(Collections.singletonList(category.getId())));
 
                 //创建数据控制器
                 controller = new PostController(getActivity());

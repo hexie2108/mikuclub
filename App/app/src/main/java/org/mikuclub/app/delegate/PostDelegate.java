@@ -108,7 +108,7 @@ public class PostDelegate extends BaseDelegate
         public void postLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                Map<String, Object> bodyParameters = new HashMap();
+                Map<String, Object> bodyParameters = new HashMap<>();
                 putIfNotNull(bodyParameters, "post_id", postId);
                 //如果是要取消点赞
                 if(!isAddLike)
@@ -126,7 +126,7 @@ public class PostDelegate extends BaseDelegate
          * */
         public void postShareCount(int postId)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "post_id", postId);
                 Request.get(GlobalConfig.Server.POST_SHARING_COUNT, queryParameters, null, getTag(), null);
@@ -138,7 +138,7 @@ public class PostDelegate extends BaseDelegate
          * */
         public void postViewCount(int postId)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "post_id", postId);
                 Request.get(GlobalConfig.Server.POST_VIEW_COUNT, queryParameters, null, getTag(), null);
@@ -151,7 +151,7 @@ public class PostDelegate extends BaseDelegate
          * */
         public void postFailDownCount(HttpCallBack httpCallBack,  int postId)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "post_id", postId);
                 Request.get(GlobalConfig.Server.POST_FAIL_DOWN_COUNT, queryParameters, null, getTag(), httpCallBack);
@@ -169,11 +169,12 @@ public class PostDelegate extends BaseDelegate
                         //就获取系统时间, 避免报错
                         lastAccessTime = System.currentTimeMillis();
                 }
-                Date date = new Date(lastAccessTime);
+                //转换成时间类, 然后再转发成对应时间格式的字符串
+                String dateString = DataUtils.dateToString(new Date(lastAccessTime));
 
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "date", DataUtils.dateToString(date));
+                putIfNotNull(queryParameters, "date", dateString);
                 Request.get(GlobalConfig.Server.NEW_POST_COUNT, queryParameters, null, getTag(), httpCallBack);
         }
 

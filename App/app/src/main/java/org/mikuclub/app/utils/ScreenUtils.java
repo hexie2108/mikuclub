@@ -19,17 +19,19 @@ import androidx.annotation.NonNull;
 
 /**
  * 屏幕相关实用类
- * Screen related ulitily class
+ * Screen related utility class
  */
 public class ScreenUtils
 {
         /**
          * 给弹窗设置固定比例的高度
+         *
          * @param context
          * @param view
          */
 
-        public static void setFixWindowsHeight(Context context,final View view){
+        public static void setFixWindowsHeight(Context context, final View view)
+        {
 
                 view.post(new Runnable()
                 {
@@ -43,6 +45,7 @@ public class ScreenUtils
 
         /**
          * 获得屏幕宽度
+         *
          * @param context
          * @return
          */
@@ -51,12 +54,17 @@ public class ScreenUtils
                 WindowManager wm = (WindowManager) context
                         .getSystemService(Context.WINDOW_SERVICE);
                 DisplayMetrics outMetrics = new DisplayMetrics();
-                wm.getDefaultDisplay().getMetrics(outMetrics);
+                if (wm != null)
+                {
+                        wm.getDefaultDisplay().getMetrics(outMetrics);
+                }
+
                 return outMetrics.widthPixels;
         }
 
         /**
          * 获得屏幕高度
+         *
          * @param context
          * @return
          */
@@ -64,13 +72,20 @@ public class ScreenUtils
         {
                 WindowManager wm = (WindowManager) context
                         .getSystemService(Context.WINDOW_SERVICE);
+
                 DisplayMetrics outMetrics = new DisplayMetrics();
-                wm.getDefaultDisplay().getMetrics(outMetrics);
+
+                if (wm != null)
+                {
+                        wm.getDefaultDisplay().getMetrics(outMetrics);
+                }
+
                 return outMetrics.heightPixels;
         }
 
         /**
          * 禁用 SheetDialog弹窗的拖拽功能
+         *
          * @param dialog
          */
         public static void disableDraggingOfBottomSheetDialogFragment(Dialog dialog)
@@ -86,28 +101,31 @@ public class ScreenUtils
                         Field behaviorField = bottomSheetDialog.getClass().getDeclaredField("behavior");
                         behaviorField.setAccessible(true);
                         final BottomSheetBehavior behavior = (BottomSheetBehavior) behaviorField.get(bottomSheetDialog);
-                        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback()
+                        if (behavior != null)
                         {
-                                @Override
-                                public void onStateChanged(@NonNull View bottomSheet, int newState)
+                                behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback()
                                 {
-                                        if (newState == BottomSheetBehavior.STATE_DRAGGING)
+                                        @Override
+                                        public void onStateChanged(@NonNull View bottomSheet, int newState)
                                         {
-                                                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                                if (newState == BottomSheetBehavior.STATE_DRAGGING)
+                                                {
+                                                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                                }
                                         }
-                                }
 
-                                @Override
-                                public void onSlide(@NonNull View bottomSheet, float slideOffset)
-                                {
-                                }
-                        });
+                                        @Override
+                                        public void onSlide(@NonNull View bottomSheet, float slideOffset)
+                                        {
+                                        }
+                                });
+                        }
                 }
                 catch (NoSuchFieldException e)
                 {
                         e.printStackTrace();
                 }
-                catch (IllegalAccessException e)
+                catch (Exception e)
                 {
                         e.printStackTrace();
                 }

@@ -16,6 +16,7 @@ import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
 
@@ -177,13 +178,13 @@ public class DownloadFragment extends BottomSheetDialogFragment
                         final String downUrl = downList.get(0);
                         View.OnClickListener onClickListener;
                         //检测是否是磁链地址
-                        if (downUrl.indexOf("magnet:") != -1 || downUrl.indexOf("ed2k:") != -1 )
+                        if (downUrl.contains("magnet:") || downUrl.contains("ed2k:") )
                         {
-                                downButton.setText("复制磁链");
+                                downButton.setText(ResourcesUtils.getString(R.string.post_down_magnet_link));
                                 onClickListener = v -> {
                                         //创建字符剪切内容, 因为是磁链, 不需要http头部,所以重新从原列表获取下载地址
                                         ClipboardUtils.setText(downList.get(0));
-                                        ToastUtils.shortToast("已复制磁链到剪切板");
+                                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.post_down_magnet_link_message));
                                 };
                         }
                         //如果普通下载地址
@@ -191,10 +192,10 @@ public class DownloadFragment extends BottomSheetDialogFragment
                         {
 
                                 //如果是百度盘标准地址
-                                if (downUrl.indexOf(GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_URL_VALIDATE_PATH) != -1)
+                                if (downUrl.contains(GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_URL_VALIDATE_PATH))
                                 {
                                         //更改按钮文字 为百度
-                                        downButton.setText("百度网盘");
+                                        downButton.setText(ResourcesUtils.getString(R.string.baidu_drive));
                                         //设置图标
                                         downButton.setIcon(getResources().getDrawable(R.drawable.baidu_pan));
                                         //绑定动作
@@ -203,13 +204,13 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                                 if (!downPassword.getText().toString().isEmpty())
                                                 {
                                                         ClipboardUtils.setText(downPassword.getText().toString());
-                                                        ToastUtils.shortToast("已复制访问密码到剪切板");
+                                                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.post_down_password_copy_message));
                                                 }
                                                 // 打开链接的方式
 
                                                 //百度地址 开始切割识别码的位置
-                                                String splitSymbole = "/s/";
-                                                String identifyUrl = downUrl.substring(downUrl.indexOf(splitSymbole) + splitSymbole.length());
+                                                String splitSymbol = "/s/";
+                                                String identifyUrl = downUrl.substring(downUrl.indexOf(splitSymbol) + splitSymbol.length());
                                                 //去除第一位 的1位数 (百度app政策)
                                                 identifyUrl = identifyUrl.substring(1);
                                                 String baiduUrl = GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_APP_WAKE_URL + "?" + GlobalConfig.ThirdPartyApplicationInterface.BAIDU_PAN_PARAMETER_NAME + "=" + identifyUrl;
@@ -221,13 +222,13 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                 else
                                 {
                                         //设置默认文字
-                                        downButton.setText("普通下载");
+                                        downButton.setText(ResourcesUtils.getString(R.string.download));
                                         onClickListener = v -> {
                                                 //如果访问密码不是空
                                                 if (!downPassword.getText().toString().isEmpty())
                                                 {
                                                         ClipboardUtils.setText(downPassword.getText().toString());
-                                                        ToastUtils.shortToast("已复制访问密码到剪切板");
+                                                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.post_down_password_copy_message));
                                                 }
                                                 // 用游览器打开链接
                                                 HttpUtils.startWebViewIntent(getActivity(), downUrl, null);
@@ -270,8 +271,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
          */
         public static DownloadFragment startAction()
         {
-                DownloadFragment fragment = new DownloadFragment();
-                return fragment;
+                return new DownloadFragment();
         }
 
 }

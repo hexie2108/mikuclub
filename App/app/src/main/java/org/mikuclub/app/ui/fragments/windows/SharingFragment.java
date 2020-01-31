@@ -37,7 +37,7 @@ import org.mikuclub.app.utils.social.WeiboUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
@@ -165,9 +165,9 @@ public class SharingFragment extends BottomSheetDialogFragment
 
 
                 //绑定分享按钮
-                shareQQButton.setOnClickListener(v -> {
-                        TencentUtils.getInstance().shareToQQ(getActivity(), params, qqShareListener);
-                });
+                shareQQButton.setOnClickListener(
+                        v -> TencentUtils.getInstance().shareToQQ(getActivity(), params, qqShareListener)
+                );
         }
 
         /**
@@ -187,13 +187,13 @@ public class SharingFragment extends BottomSheetDialogFragment
                 params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, sharingUrl);
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, post.getMetadata().getThumbnail_src().get(0));
                 //只使用一张图
-                ArrayList<String> images = new ArrayList<>(Arrays.asList(post.getMetadata().getImages_src().get(0)));
+                ArrayList<String> images = new ArrayList<>(Collections.singletonList(post.getMetadata().getImages_src().get(0)));
                 params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, images);
 
                 //绑定分享按钮
-                shareQQZoneButton.setOnClickListener(v -> {
-                        TencentUtils.getInstance().shareToQzone(getActivity(), params, qqShareListener);
-                });
+                shareQQZoneButton.setOnClickListener(
+                        v -> TencentUtils.getInstance().shareToQzone(getActivity(), params, qqShareListener)
+                );
         }
 
         /**
@@ -272,9 +272,9 @@ public class SharingFragment extends BottomSheetDialogFragment
                 message.mediaObject = webObject;
 
                 //绑定分享按钮
-                shareWeiboButton.setOnClickListener(v -> {
-                        WeiboUtils.getInstance(getActivity()).shareMessage(message, false);
-                });
+                shareWeiboButton.setOnClickListener(
+                        v ->  WeiboUtils.getInstance(getActivity()).shareMessage(message, false)
+                );
         }
 
         /**
@@ -351,8 +351,7 @@ public class SharingFragment extends BottomSheetDialogFragment
          */
         public static SharingFragment startAction()
         {
-                SharingFragment fragment = new SharingFragment();
-                return fragment;
+                return new SharingFragment();
         }
 
 }

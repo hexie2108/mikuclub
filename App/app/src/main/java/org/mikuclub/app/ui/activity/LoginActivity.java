@@ -166,12 +166,12 @@ public class LoginActivity extends AppCompatActivity
          */
         private void initSocialButton()
         {
-                socialButtonWeibo.setOnClickListener(v -> {
-                        startWeiboAuth();
-                });
-                socialButtonQQ.setOnClickListener(v -> {
-                        startQQAuth();
-                });
+                socialButtonWeibo.setOnClickListener(
+                        v -> startWeiboAuth()
+                );
+                socialButtonQQ.setOnClickListener(
+                        v -> startQQAuth()
+                );
         }
 
 
@@ -188,10 +188,7 @@ public class LoginActivity extends AppCompatActivity
 
                 HttpCallBack httpCallBack = new HttpCallBack()
                 {
-                        /**
-                         * 请求成功的情况, 但是返回数据还未验证
-                         * @param response
-                         */
+                        /**请求成功的情况, 但是返回数据还未验证*/
                         @Override
                         public void onSuccessHandler(String response)
                         {

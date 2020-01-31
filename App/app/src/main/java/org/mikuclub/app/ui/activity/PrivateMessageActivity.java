@@ -17,10 +17,10 @@ import org.mikuclub.app.controller.PrivateMessageController;
 import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,6 @@ import mikuclub.app.R;
 /**
  * 私信页
  * private message page
- * <p>
  * 因为是 通过 fragment里的 viepager内置的fragment启动的活动
  * 导致了 onStop 和 onDestroy 异常, 会延迟10s左右才被加载,  不要在这2个函数内加任何代码
  */
@@ -59,7 +58,7 @@ public class PrivateMessageActivity extends AppCompatActivity
         private Author author;
 
         /* 组件 views */
-        private Toolbar toolbar;
+
         private RecyclerView recyclerView;
         private TextInputLayout inputLayout;
         private TextInputEditText input;
@@ -71,7 +70,7 @@ public class PrivateMessageActivity extends AppCompatActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_private_message);
                 //绑定组件
-                toolbar = findViewById(R.id.toolbar);
+                Toolbar toolbar = findViewById(R.id.toolbar);
                 recyclerView = findViewById(R.id.recycler_view);
                 inputLayout = findViewById(R.id.input_layout);
                 input = findViewById(R.id.input);
@@ -159,7 +158,10 @@ public class PrivateMessageActivity extends AppCompatActivity
                         //input内容监听器, 在内容不为空的情况激活发送按钮并更改图标颜色
                         //自定义 text watcher, 只有在内容变化完成后才会激活回调
                         TextWatcher textWatcher = new MyTextWatcher(() -> {
-                                String content = input.getText().toString().trim();
+                                String content="";
+                                if(input.getText() != null){
+                                        content = input.getText().toString().trim();
+                                }
                                 //如果内容不是空
                                 if (!content.isEmpty())
                                 {
@@ -225,7 +227,7 @@ public class PrivateMessageActivity extends AppCompatActivity
         @Override
         protected void onStop()
         {
-                /**
+                /*
                  因为是 通过 fragment里的 viepager内置的fragment启动的活动
                  导致了 onStop 和 onDestroy 异常, 会延迟10s左右才被加载,  不要在这里加任何代码*/
                 super.onStop();
@@ -234,7 +236,7 @@ public class PrivateMessageActivity extends AppCompatActivity
         @Override
         protected void onDestroy()
         {
-                /**
+                /*
                  因为是 通过 fragment里的 viepager内置的fragment启动的活动
                  导致了 onStop 和 onDestroy 异常, 会延迟10s左右才被加载,  不要在这里加任何代码*/
                 super.onDestroy();

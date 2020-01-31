@@ -93,7 +93,10 @@ public class ReposrtActivity extends AppCompatActivity
                 //input内容监听器, 在report内容不为空的情况激活发送按钮
                 //自定义 text watcher, 只有在内容变化完成后才会激活回调
                 TextWatcher textWatcher = new MyTextWatcher(() -> {
-                        String content = inputReport.getText().toString().trim();
+                        String content="";
+                        if(inputReport.getText() != null){
+                                content = inputReport.getText().toString().trim();
+                        }
                         //如果内容不是空, 并大于5个字
                         if (!content.isEmpty() && content.length() > 5)
                         {
@@ -165,9 +168,16 @@ public class ReposrtActivity extends AppCompatActivity
 
 
                 String content = "APP问题反馈: ";
-                content += inputReport.getText().toString();
+                if(inputReport.getText() !=null){
+                        content += inputReport.getText().toString();
+                }
+
                 //获取联系方式
-                String contactQQ = inputContact.getText().toString().trim();
+                String contactQQ="";
+                if(inputContact.getText() !=null){
+                        //获取联系方式
+                        contactQQ = inputContact.getText().toString().trim();
+                }
                 //如果联系方式不是空 并大于5个字
                 if (!contactQQ.isEmpty() && contactQQ.length() > 5)
                 {

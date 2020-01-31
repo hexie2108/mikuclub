@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import org.apache.commons.text.StringEscapeUtils;
 import org.mikuclub.app.config.GlobalConfig;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +75,7 @@ public class GeneralUtils
                         else if (element instanceof Integer)
                         {
                                 //如果是0 返回 true
-                                output = (((int) element) == 0 ? true : false);
+                                output = ((int) element == 0);
                         }
                         //其他情况返回否
                         else
@@ -137,17 +137,7 @@ public class GeneralUtils
          */
         public static String fixStringEncoding(String text)
         {
-                String newText = "";
-                try
-                {
-                        newText = new String(text.getBytes("ISO-8859-1"), "UTF-8");
-                }
-                catch (UnsupportedEncodingException e)
-                {
-                        e.printStackTrace();
-                }
-
-                return newText;
+                return new String(text.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         }
 
 

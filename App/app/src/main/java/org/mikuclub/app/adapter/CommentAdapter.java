@@ -9,6 +9,7 @@ import org.mikuclub.app.adapter.viewHolder.CommentViewHolder;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.Comment;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
 import org.mikuclub.app.utils.GeneralUtils;
@@ -75,7 +76,7 @@ public class CommentAdapter extends BaseAdapterWithFooter
                 if (displayReplyCount && !GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
                 {
                         //显示回复数量
-                        viewHolder.getItemCountReplies().setText(comment.getMetadata().getComment_reply_ids().size() + " "+ ResourcesUtils.getString(R.string.reply_count));
+                        viewHolder.getItemCountReplies().setText(comment.getMetadata().getComment_reply_ids().size() + " " + ResourcesUtils.getString(R.string.reply_count));
                         viewHolder.getItemCountReplies().setVisibility(View.VISIBLE);
                 }
                 //获取回复内容
@@ -111,19 +112,23 @@ public class CommentAdapter extends BaseAdapterWithFooter
                         Comment comment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
                         CommentRepliesFragment fragment = CommentRepliesFragment.startAction(comment);
                         fragment.show(((AppCompatActivity) getAdapterContext()).getSupportFragmentManager(), fragment.getClass().toString());
+
                 });
 
                 //绑定头像的点击事件
                 holder.getItemAvatarImg().setOnClickListener(v -> {
                         //获取对应位置的数据 , 修复可能的position偏移
                         Comment comment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
-                        //启动作者页面
-                        Author author = new Author();
-                        author.setName(comment.getAuthor_name());
-                        author.setAuthor_id(comment.getAuthor());
-                        author.setAvatar_src(comment.getAuthor_avatar_urls().getSize96());
-
-                        AuthorActivity.startAction(getAdapterContext(), author);
+                        //只有在不是 登陆用户 和 评论作者 不是同个人的情况, 避免访问自己的作者页面
+                        if (!UserPreferencesUtils.isCurrentUser(comment.getAuthor()))
+                        {
+                                //启动作者页面
+                                Author author = new Author();
+                                author.setName(comment.getAuthor_name());
+                                author.setAuthor_id(comment.getAuthor());
+                                author.setAvatar_src(comment.getAuthor_avatar_urls().getSize96());
+                                AuthorActivity.startAction(getAdapterContext(), author);
+                        }
                 });
 
         }
@@ -164,7 +169,11 @@ public class CommentAdapter extends BaseAdapterWithFooter
                         holder.getItem().setOnClickListener(v -> {
                                 //某个评论点击的话 就变更为被回复对象,  , 修复可能的position偏移
                                 Comment parentComment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
-                                controller.changeParentComment(parentComment, false);
+                                //只有在不是 登陆用户 和 评论作者 不是同个人的情况, 避免自己回复自己
+                                if (!UserPreferencesUtils.isCurrentUser(parentComment.getAuthor()))
+                                {
+                                        controller.changeParentComment(parentComment, false);
+                                }
                         });
                 }
 
@@ -173,7 +182,6 @@ public class CommentAdapter extends BaseAdapterWithFooter
                         this.controller = controller;
                 }
         }
-
 
 
 }

@@ -20,7 +20,7 @@ import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -163,7 +163,7 @@ public class HomeMainFragment extends Fragment
                 PostParameters parameters = new PostParameters();
 
                 //参数里 需要排除的分类id
-                parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
+                parameters.setCategories_exclude(new ArrayList<>(Collections.singletonList(GlobalConfig.CATEGORY_ID_MOFA)));
 
                 //创建数据控制器
                 controller = new PostController(getActivity());
@@ -193,9 +193,9 @@ public class HomeMainFragment extends Fragment
          */
         private void initFloatingActionButton()
         {
-                floatingActionButton.setOnClickListener(v -> {
-                        controller.openJumPageAlertDialog();
-                });
+                floatingActionButton.setOnClickListener(
+                        v ->   controller.openJumPageAlertDialog()
+                );
         }
 
         @Override

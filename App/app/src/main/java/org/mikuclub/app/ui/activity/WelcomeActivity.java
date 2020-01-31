@@ -17,6 +17,7 @@ import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.AppUpdate;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.service.PostPushService;
 import org.mikuclub.app.storage.ApplicationPreferencesUtils;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
@@ -30,7 +31,7 @@ import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -39,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import mikuclub.app.BuildConfig;
 import mikuclub.app.R;
 
@@ -86,16 +88,16 @@ public class WelcomeActivity extends AppCompatActivity
                 utilsDelegate = new UtilsDelegate(TAG);
                 messageDelegate = new MessageDelegate(TAG);
 
-                //检测权限 permission check
-                permissionCheck();
+
         }
 
         @Override
         protected void onStart()
         {
                 super.onStart();
-                //初始化页面 init the page
-                initPage();
+                //检测权限 permission check
+                permissionCheck();
+
         }
 
         /**
@@ -120,9 +122,12 @@ public class WelcomeActivity extends AppCompatActivity
 
                         //设置最新的访问时间
                         ApplicationPreferencesUtils.setLatestAccessTime();
+                        //根据偏好配置 判断是否启动推送服务
+                        initPostPushService();
+
                 }
                 else
-                {
+               {
                         //没网络的话 就报错
                         String errorMessage = ResourcesUtils.getString(R.string.welcome_internet_not_available_error_message);
                         setErrorInfo(errorMessage);
@@ -504,7 +509,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //获取最新文章
                 //设置请求参数
                 PostParameters parameters = new PostParameters();
-                parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
+                parameters.setCategories_exclude(new ArrayList<>(Collections.singletonList(GlobalConfig.CATEGORY_ID_MOFA)));
                 postDelegate.getPostList(callBackToGetPost, page, parameters);
 
         }
@@ -531,6 +536,24 @@ public class WelcomeActivity extends AppCompatActivity
                         finish();
                 }
         }
+
+        /**
+         * 根据偏好配置 判断是否启动服务
+         */
+        private void initPostPushService(){
+
+                //确认是否有开启推送, 默认是开启
+                boolean postPushIsActivated = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(ResourcesUtils.getString(R.string.preference_new_post_push_key), true);
+                //只有在开启的情况
+                if(postPushIsActivated){
+                        //启动文章推送服务
+                        PostPushService.startAction(this);
+                }
+
+        }
+
+
+
 
         /**
          * 显示错误信息
@@ -632,13 +655,18 @@ public class WelcomeActivity extends AppCompatActivity
                         //添加权限名到 待申请列表
                         permissionList.add(Manifest.permission.READ_PHONE_STATE);
                 }
-                //如果申请列表不是空的
+                //如果待申请列表不是空的
                 if (!permissionList.isEmpty())
                 {
                         //把权限列表转换成 字符串数组
                         String[] permissions = permissionList.toArray(new String[permissionList.size()]);
                         //发起权限请求
                         ActivityCompat.requestPermissions(WelcomeActivity.this, permissions, 1);
+                }
+                //如果已经拥有全部权限
+                else{
+                        //正常初始化页面 init the page
+                        initPage();
                 }
         }
 
@@ -662,19 +690,18 @@ public class WelcomeActivity extends AppCompatActivity
                                         //遍历每个权限的请求结果
                                         for (int result : grantResults)
                                         {
-                                                //如果未同意
+                                                //如果有未同意的权限
                                                 if (result != PackageManager.PERMISSION_GRANTED)
                                                 {
                                                         //弹出提示 + 结束应用
-                                                        ToastUtils.longToast("必须授权本应用权限才能正常使用");
+                                                        ToastUtils.longToast("必须授权本应用所需的权限才能正常运行");
                                                         finish();
                                                         return;
                                                 }
                                         }
-                                }
-                                else
-                                {
-                                        ToastUtils.shortToast("发生未知错误");
+
+                                        //正常初始化应用
+                                        initPage();
                                 }
                                 break;
                 }

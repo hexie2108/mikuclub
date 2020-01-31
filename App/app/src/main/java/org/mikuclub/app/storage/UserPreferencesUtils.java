@@ -48,6 +48,23 @@ public class UserPreferencesUtils
                 return user;
         }
 
+        /**
+         *
+         * 检测当前用户的ID是否等于指定ID
+         * @param userId
+         * @return
+         */
+        public static boolean isCurrentUser(int userId){
+                boolean result= false;
+                UserLogin user = getUser();
+                //如果有登陆 并且 当前登陆的用户id 等于 指定的用户id
+                if(user != null && user.getId() == userId){
+                        result = true;
+                }
+                return result;
+        }
+
+
 
         /**
          * 设置用户登陆信息

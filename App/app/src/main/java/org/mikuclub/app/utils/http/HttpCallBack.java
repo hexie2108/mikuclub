@@ -120,7 +120,7 @@ public class HttpCallBack
 
                                 WpError wpError = ParserUtils.fromJson(response, WpError.class);
                                 //如果错误信息有code, 并且code包含 invalid token的关键词, 就是登陆令牌错误
-                                if (wpError.getBody().getCode().indexOf("invalid_token") != -1)
+                                if (wpError.getBody().getCode().contains("invalid_token"))
                                 {
                                         //清空登陆状态
                                         UserPreferencesUtils.logout();

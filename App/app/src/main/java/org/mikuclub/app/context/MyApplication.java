@@ -1,5 +1,6 @@
 package org.mikuclub.app.context;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
@@ -15,6 +16,8 @@ import org.mikuclub.app.utils.http.RequestQueue;
  */
 public class MyApplication extends Application
 {
+        @SuppressLint("StaticFieldLeak")
+        //因为这是个application的context所以不会造成内存泄露
         private static Context context;
 
         @Override

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.mikuclub.app.adapter.AuthorAdapter;
-import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.AuthorPostController;
 import org.mikuclub.app.delegate.PostDelegate;
@@ -16,13 +15,14 @@ import org.mikuclub.app.delegate.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.utils.http.Request;
-import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -163,11 +163,11 @@ public class AuthorActivity extends AppCompatActivity
         {
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
-                parameters.setAuthor(new ArrayList<>(Arrays.asList(author.getAuthor_id())));
+                parameters.setAuthor(new ArrayList<>(Collections.singletonList(author.getAuthor_id())));
                 //如果未登陆, 排除魔法区
                 if (!UserPreferencesUtils.isLogin())
                 {
-                        parameters.setCategories_exclude(new ArrayList<>(Arrays.asList(GlobalConfig.CATEGORY_ID_MOFA)));
+                        parameters.setCategories_exclude(new ArrayList<>(Collections.singletonList(GlobalConfig.CATEGORY_ID_MOFA)));
                 }
 
                 //创建数据控制器
@@ -197,9 +197,7 @@ public class AuthorActivity extends AppCompatActivity
          */
         private void initFloatingActionButton()
         {
-                floatingActionButton.setOnClickListener(v -> {
-                        controller.openJumPageAlertDialog();
-                });
+                floatingActionButton.setOnClickListener(v -> controller.openJumPageAlertDialog());
         }
 
 

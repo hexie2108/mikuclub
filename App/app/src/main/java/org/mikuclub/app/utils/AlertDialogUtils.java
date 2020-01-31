@@ -74,6 +74,12 @@ public class AlertDialogUtils
                         builder.setMessage(content);
                 }
                 builder.setPositiveButton(positiveButtonText, positiveButtonListener);
+                //设置取消按钮
+                builder.setNegativeButton(ResourcesUtils.getString(R.string.cancel), (dialog, which) ->
+                {
+                        //结束当前应用
+                        ((AppCompatActivity) context).finish();
+                });
                 AlertDialog dialog = builder.create();
                 //禁止通过触摸屏幕关闭弹窗
                 dialog.setCanceledOnTouchOutside(false);

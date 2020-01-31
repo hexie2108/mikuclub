@@ -50,7 +50,7 @@ public class MessageDelegate extends BaseDelegate
          */
         public void countPrivateMessage(HttpCallBack httpCallBack, boolean unread, boolean selfMessage)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "unread", unread);
                 putIfNotNull(queryParameters, "self", selfMessage);
@@ -69,7 +69,7 @@ public class MessageDelegate extends BaseDelegate
          */
         public void getPrivateMessage(HttpCallBack httpCallBack,  int page, boolean distinct, Integer sender_id)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "distinct", distinct);
                 putIfNotNull(queryParameters, "sender_id", sender_id);
@@ -100,7 +100,7 @@ public class MessageDelegate extends BaseDelegate
          */
         public void countReplyComment(HttpCallBack httpCallBack, boolean unread)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "unread", unread);
                 Request.get(GlobalConfig.Server.REPLY_COMMENTS_COUNT, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
@@ -115,7 +115,7 @@ public class MessageDelegate extends BaseDelegate
          */
         public void getReplyComment(HttpCallBack httpCallBack,  int page)
         {
-                Map<String, Object> queryParameters = new HashMap();
+                Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "paged", page);
                 putIfNotNull(queryParameters, "number", GlobalConfig.NUMBER_PER_PAGE_OF_MESSAGE);

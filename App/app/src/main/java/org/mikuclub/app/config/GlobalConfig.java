@@ -33,7 +33,8 @@ public class GlobalConfig
         //赞助页 文章ID
         public static final int SPONSOR_POST_ID = 150107;
 
-
+        //一天的毫秒数
+        public static final long DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 
         //每页显示的文章数量
         public static final int NUMBER_PER_PAGE = 12;
@@ -125,7 +126,7 @@ public class GlobalConfig
                 public static final String GET_AUTHOR = HOST + UTILS + "author/";
 
                 //GET 新发布文章计数
-                public static final String NEW_POST_COUNT = "new_post_count/";
+                public static final String NEW_POST_COUNT = HOST + UTILS + "new_post_count/";
 
         }
 
@@ -134,8 +135,7 @@ public class GlobalConfig
          */
         public class Preferences
         {
-                //一天的毫秒数
-                public static final long DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
+
 
                 //每次更新检查的有效戒指时间
                 public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";

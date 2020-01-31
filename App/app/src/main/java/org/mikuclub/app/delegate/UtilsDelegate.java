@@ -66,7 +66,7 @@ public class UtilsDelegate extends BaseDelegate
         public void tokenValidate(HttpCallBack httpCallBack)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                Map header = UserPreferencesUtils.createLoggedUserHeader();
+                Map<String,String> header = UserPreferencesUtils.createLoggedUserHeader();
 
                 Request.post(GlobalConfig.Server.TOKEN_VALIDATE, baseParameters.toMap(), null, header, getTag(), httpCallBack);
         }

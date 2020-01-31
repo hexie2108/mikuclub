@@ -105,7 +105,11 @@ public class CommentController extends BaseController
                         //input内容监听器, 在内容不为空的情况激活发送按钮 更改图标颜色
                         //自定义 text watcher, 只有在内容变化完成后才会激活回调
                         TextWatcher textWatcher = new MyTextWatcher(() -> {
-                                String content = input.getText().toString().trim();
+
+                                String content="";
+                                if(input.getText() != null){
+                                        content = input.getText().toString().trim();
+                                }
                                 //如果内容不是空
                                 if (!content.isEmpty())
                                 {
@@ -175,7 +179,11 @@ public class CommentController extends BaseController
          */
         private void sendComment()
         {
-                String commentContent = input.getText().toString().trim();
+                String commentContent="";
+                if(input.getText() != null){
+                        commentContent = input.getText().toString().trim();
+                }
+
                 //评论内容不是空的
                 if (!commentContent.isEmpty())
                 {

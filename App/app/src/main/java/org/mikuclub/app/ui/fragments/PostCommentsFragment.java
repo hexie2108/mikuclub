@@ -11,7 +11,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.mikuclub.app.adapter.CommentAdapter;
-import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.CommentController;
 import org.mikuclub.app.delegate.CommentDelegate;
@@ -21,9 +20,10 @@ import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -88,7 +88,7 @@ public class PostCommentsFragment extends Fragment
                 //从活动中获取文章数据
                 post = ((PostActivity) getActivity()).getPost();
                 //创建数据请求 代理人
-                delegate = new CommentDelegate(((PostActivity) getActivity()).TAG);
+                delegate = new CommentDelegate(PostActivity.TAG);
                 //初始化变量
                 recyclerDataList = new ArrayList<>();
 
@@ -153,9 +153,9 @@ public class PostCommentsFragment extends Fragment
 
                 //设置查询参数
                 CommentParameters parameters = new CommentParameters();
-                parameters.setPost(new ArrayList<>(Arrays.asList(post.getId())));
+                parameters.setPost(new ArrayList<>(Collections.singletonList(post.getId())));
                 //过滤子回复
-                parameters.setParent(new ArrayList<>(Arrays.asList(0)));
+                parameters.setParent(new ArrayList<>(Collections.singletonList(0)));
 
                 //创建数据控制器
                 controller = new CommentController(getActivity());

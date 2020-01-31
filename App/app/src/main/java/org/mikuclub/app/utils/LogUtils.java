@@ -10,23 +10,23 @@ import android.util.Log;
  */
 public class LogUtils
 {
-        public static final String VERBOSE_TAG = "verbose_tag";
-        public static final String DEBUG_TAG = "debug_tag";
-        public static final String INFO_TAG = "info_tag";
-        public static final String WARN_TAG = "warn_tag";
-        public static final String ERROR_TAG = "error_tag";
+        private static final String VERBOSE_TAG = "verbose_tag";
+        private static final String DEBUG_TAG = "debug_tag";
+        private static final String INFO_TAG = "info_tag";
+        private static final String WARN_TAG = "warn_tag";
+        private static final String ERROR_TAG = "error_tag";
 
 
-        public static final int VERBOSE = 1;
-        public static final int DEBUG = 2;
-        public static final int INFO = 3;
-        public static final int WARN = 4;
-        public static final int ERROR = 5;
-        public static final int NOTHING = 6;
+        private static final int VERBOSE = 1;
+        private static final int DEBUG = 2;
+        private static final int INFO = 3;
+        private static final int WARN = 4;
+        private static final int ERROR = 5;
+        private static final int NOTHING = 6;
 
         //改变这个变量来控制日志输出等级
         //change this variable to manage the level of info to print
-        public static int log_level = VERBOSE;
+        private static int log_level = VERBOSE;
 
         public static void v(String msg)
         {

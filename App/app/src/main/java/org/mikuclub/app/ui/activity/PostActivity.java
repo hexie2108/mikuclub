@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ import org.mikuclub.app.ui.fragments.windows.SharingFragment;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
@@ -165,7 +167,7 @@ public class PostActivity extends AppCompatActivity
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(this, true, true);
                 //创建重试弹窗
-                confirmDialog = AlertDialogUtils.createConfirmDialog(this, "请求失败", null, true, true, "重试", (dialog, which) -> {
+                confirmDialog = AlertDialogUtils.createConfirmDialog(this, ResourcesUtils.getString(R.string.post_get_by_id_error_message), null, true, true, ResourcesUtils.getString(R.string.retry), (dialog, which) -> {
                         //重试请求
                         getPostData();
                 });
@@ -371,15 +373,23 @@ public class PostActivity extends AppCompatActivity
         {
                 //根据折叠状态更改标题栏图标颜色
                 appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+                        Drawable backButtonIcon = toolbar.getNavigationIcon();
+                        //确保 标题栏返回键的图标不是null, 避免后续操作出现空指针错误
+                        if (backButtonIcon != null)
+                        {
 
-                        if ((postCollapsingToolbarLayout.getHeight() + verticalOffset) < (1.15 * ViewCompat.getMinimumHeight(postCollapsingToolbarLayout)))
-                        {
-                                toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.defaultTextColor), PorterDuff.Mode.SRC_ATOP);
+                                //如果菜单栏被折叠 超过一定高度
+                                if ((postCollapsingToolbarLayout.getHeight() + verticalOffset) < (1.15 * ViewCompat.getMinimumHeight(postCollapsingToolbarLayout)))
+                                {
+                                        backButtonIcon.setColorFilter(getResources().getColor(R.color.defaultTextColor), PorterDuff.Mode.SRC_ATOP);
+                                }
+                                else
+                                {
+                                        backButtonIcon.setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+                                }
                         }
-                        else
-                        {
-                                toolbar.getNavigationIcon().setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
-                        }
+
+
                 });
         }
 
@@ -435,7 +445,6 @@ public class PostActivity extends AppCompatActivity
                         sharingWindowsFragment.onActivityResult(requestCode, resultCode, data);
                 }
         }
-
 
 
         /**

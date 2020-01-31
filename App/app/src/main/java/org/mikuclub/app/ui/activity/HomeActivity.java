@@ -3,7 +3,6 @@ package org.mikuclub.app.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,7 +28,6 @@ import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -86,6 +84,7 @@ public class HomeActivity extends MyActivity
         @Override
         protected void onCreate(Bundle savedInstanceState)
         {
+
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home);
 
@@ -147,29 +146,22 @@ public class HomeActivity extends MyActivity
          */
         private void initBottomMenu()
         {
-
-
                 bottomNavigationView.setOnNavigationItemSelectedListener
-                        (new BottomNavigationView.OnNavigationItemSelectedListener()
-                        {
-                                @Override
-                                public boolean onNavigationItemSelected(@NonNull MenuItem item)
-                                {
+                        (item -> {
 
-                                        switch (item.getItemId())
-                                        {
-                                                case R.id.navigation_home:
-                                                        changeFragment(homeMainFragment, 1);
-                                                        break;
-                                                case R.id.navigation_category:
-                                                        changeFragment(homeCategoriesFragment, 2);
-                                                        break;
-                                                case R.id.navigation_message:
-                                                        changeFragment(homeMessageFragment, 3);
-                                                        break;
-                                        }
-                                        return true;
+                                switch (item.getItemId())
+                                {
+                                        case R.id.navigation_home:
+                                                changeFragment(homeMainFragment, 1);
+                                                break;
+                                        case R.id.navigation_category:
+                                                changeFragment(homeCategoriesFragment, 2);
+                                                break;
+                                        case R.id.navigation_message:
+                                                changeFragment(homeMessageFragment, 3);
+                                                break;
                                 }
+                                return true;
                         });
                 //创建主页第一个碎片
                 changeFragment(homeMainFragment, 1);
@@ -236,8 +228,7 @@ public class HomeActivity extends MyActivity
                 //如果已生成过
                 else
                 {
-                        //显示fragment
-                        fragmentTransaction.hide(currentActiveFragment).show(fragment);
+                      fragmentTransaction = fragmentTransaction.show(fragment);
                 }
                 //更新当前fragment
                 currentActiveFragment = fragment;

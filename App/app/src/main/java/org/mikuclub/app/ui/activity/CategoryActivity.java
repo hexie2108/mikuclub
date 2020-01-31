@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,7 +36,6 @@ public class CategoryActivity extends AppCompatActivity
         private Category category;
 
         /* 组件 views */
-        private Toolbar toolbar;
         private ImageView searchInputIcon;
         //分页菜单栏
         private TabLayout tabsMenuLayout;
@@ -52,7 +50,7 @@ public class CategoryActivity extends AppCompatActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_category);
                 //绑定组件
-                toolbar = findViewById(R.id.toolbar);
+                Toolbar toolbar = findViewById(R.id.toolbar);
                 searchInputIcon = findViewById(R.id.search_input_icon);
                 viewPager = findViewById(R.id.view_pager);
                 tabsMenuLayout = findViewById(R.id.tabs_menu);
@@ -111,15 +109,9 @@ public class CategoryActivity extends AppCompatActivity
         private void initSearchIcon()
         {
                 //绑定点击监听器到搜索栏
-                searchInputIcon.setOnClickListener(new View.OnClickListener()
-                {
-                        @Override
-                        public void onClick(View v)
-                        {
-                                //启动搜索页面
-                                SearchActivity.startAction(CategoryActivity.this);
-                        }
-                });
+                searchInputIcon.setOnClickListener(
+                        v ->SearchActivity.startAction(CategoryActivity.this)
+                );
         }
 
 

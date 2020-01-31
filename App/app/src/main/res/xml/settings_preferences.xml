@@ -20,17 +20,17 @@
 
                 <SwitchPreferenceCompat
                     app:defaultValue = "true"
-                    app:key = "@string/new_post_push_key"
-                    app:summary = "@string/new_post_push_summary"
-                    app:title = "@string/new_post_push_title" />
+                    app:key = "@string/preference_new_post_push_key"
+                    app:summary = "@string/preference_new_post_push_summary"
+                    app:title = "@string/preference_new_post_push_title" />
 
                 <ListPreference
                     app:defaultValue = "1"
-                    app:dependency = "@string/new_post_push_key"
+                    app:dependency = "@string/preference_new_post_push_key"
                     app:entries = "@array/new_post_push_cycle_entries"
                     app:entryValues = "@array/new_post_push_cycle_values"
-                    app:key = "@string/new_post_push_cycle_key"
-                    app:title = "@string/new_post_push_cycle_title"
+                    app:key = "@string/preference_new_post_push_cycle_key"
+                    app:title = "@string/preference_new_post_push_cycle_title"
                     app:useSimpleSummaryProvider = "true" />
 
         </PreferenceCategory>

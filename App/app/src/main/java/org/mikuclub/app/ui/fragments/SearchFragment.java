@@ -74,7 +74,7 @@ public class SearchFragment extends Fragment
                 recyclerView = view.findViewById(R.id.recycler_view);
 
                 //创建数据请求 代理人
-                delegate = new PostDelegate(((SearchActivity) getActivity()).TAG);
+                delegate = new PostDelegate(SearchActivity.TAG);
                 recyclerDataList = new ArrayList<>();
 
                 //初始化列表

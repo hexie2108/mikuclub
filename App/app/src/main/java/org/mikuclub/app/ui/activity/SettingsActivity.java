@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import org.mikuclub.app.service.PostPushService;
+import org.mikuclub.app.utils.ResourcesUtils;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
@@ -37,12 +40,16 @@ public class SettingsActivity extends AppCompatActivity
 
 
                 pref = PreferenceManager.getDefaultSharedPreferences(this);
-                listener = new SharedPreferences.OnSharedPreferenceChangeListener()
-                {
-                        @Override
-                        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-                        {
+                listener = (sharedPreferences, key) -> {
+                        //如果是修改了投稿推送参数
+                        if(key.equals(ResourcesUtils.getString(R.string.preference_new_post_push_key))){
 
+                                //启动服务 取消旧定时器  之后 根据推送参数 来决定是否设置新定时器
+                                PostPushService.startAction(SettingsActivity.this);
+                        }
+                        else if(key.equals(ResourcesUtils.getString(R.string.preference_new_post_push_cycle_key))){
+                                //启动服务 来重置定时器
+                                PostPushService.startAction(SettingsActivity.this);
                         }
                 };
                 pref.registerOnSharedPreferenceChangeListener(listener);

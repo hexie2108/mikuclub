@@ -12,7 +12,7 @@
             />
       <item
           android:id="@+id/navigation_message"
-           android:icon="@drawable/mail"
+           android:icon="@drawable/mail_outline"
           android:title="消息"
           />
 
