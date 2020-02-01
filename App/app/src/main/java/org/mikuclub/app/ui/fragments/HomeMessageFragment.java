@@ -11,13 +11,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.mikuclub.app.adapter.viewPager.MessageViewPagerAdapter;
-import org.mikuclub.app.ui.activity.LoginActivity;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.ui.activity.LoginActivity;
+import org.mikuclub.app.ui.activity.base.MyFragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
@@ -25,7 +25,7 @@ import mikuclub.app.R;
  * 主页-消息分页
  * Home page: message fragment
  */
-public class HomeMessageFragment extends Fragment
+public class HomeMessageFragment extends MyFragment
 {
 
 

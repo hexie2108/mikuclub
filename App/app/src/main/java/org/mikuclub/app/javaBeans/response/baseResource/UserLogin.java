@@ -13,7 +13,7 @@ public class UserLogin implements Serializable
         private String avatar_urls;
         private UserMeta user_meta;
 
-        class UserMeta{
+       public class UserMeta{
 
                 private List<String> mm_capabilities;
                 private List<Integer> mm_user_level;
@@ -26,6 +26,28 @@ public class UserLogin implements Serializable
                 private List<Integer> total_post_comment;
                 private List<Integer> total_post_rating;
                 private List<Integer> total_post_count;
+                private List<String> nickname;
+                private List<String> description;
+
+                public List<String> getNickname()
+                {
+                        return nickname;
+                }
+
+                public void setNickname(List<String> nickname)
+                {
+                        this.nickname = nickname;
+                }
+
+                public List<String> getDescription()
+                {
+                        return description;
+                }
+
+                public void setDescription(List<String> description)
+                {
+                        this.description = description;
+                }
 
                 public List<String> getMm_capabilities()
                 {

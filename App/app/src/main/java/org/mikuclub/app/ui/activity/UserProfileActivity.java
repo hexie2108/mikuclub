@@ -6,17 +6,20 @@ import android.os.Bundle;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.mikuclub.app.config.GlobalConfig;
-import org.mikuclub.app.delegate.MessageDelegate;
-import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
+import org.mikuclub.app.delegate.UserDelegate;
+import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.AlertDialogUtils;
+import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
+import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
@@ -28,25 +31,32 @@ import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
 /**
- * 问题反馈页面
- * report page
+ * 用户信息页面
+ * user profile page
  */
-public class ReposrtActivity extends AppCompatActivity
+public class UserProfileActivity extends AppCompatActivity
 {
         /* 静态变量 Static variable */
-        public static final int TAG = 10;
+        public static final int TAG = 15;
 
         /* 变量 local variable */
 
         //数据请求代理人
-        private MessageDelegate delegate;
+        private UserDelegate delegate;
+        private UserLogin user;
 
         /* 组件 views */
-        private TextInputLayout inputContactLayout;
-        private TextInputEditText inputContact;
-        private TextInputLayout inputReportLayout;
-        private TextInputEditText inputReport;
-        private Button buttonSend;
+        private ImageView avatarImg;
+        private Button buttonChangeAvatar;
+        private TextInputLayout inputEmailLayout;
+        private TextInputEditText inputEmail;
+        private TextInputLayout inputNicknameLayout;
+        private TextInputEditText inputNickname;
+        private TextInputLayout inputDescriptionLayout;
+        private TextInputEditText inputDescription;
+        private TextInputLayout inputPasswordLayout;
+        private TextInputEditText inputPassword;
+        private Button buttonUpdate;
         private AlertDialog progressDialog;
 
 
@@ -54,21 +64,28 @@ public class ReposrtActivity extends AppCompatActivity
         protected void onCreate(Bundle savedInstanceState)
         {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_report);
+                setContentView(R.layout.activity_user_profile);
 
                 //绑定组件
                 Toolbar toolbar = findViewById(R.id.toolbar);
-                inputContactLayout = findViewById(R.id.input_contact_layout);
-                inputContact = findViewById(R.id.input_contact);
-                inputReportLayout = findViewById(R.id.input_report_layout);
-                inputReport = findViewById(R.id.input_report);
-                buttonSend = findViewById(R.id.button_send);
+                avatarImg = findViewById(R.id.avatar_img);
+                buttonChangeAvatar = findViewById(R.id.button_change_avatar);
+                inputEmailLayout = findViewById(R.id.input_email_layout);
+                inputEmail = findViewById(R.id.input_email);
+                inputNicknameLayout = findViewById(R.id.input_nickname_layout);
+                inputNickname = findViewById(R.id.input_nickname);
+                inputDescriptionLayout = findViewById(R.id.input_description_layout);
+                inputDescription = findViewById(R.id.input_description);
+                inputPasswordLayout = findViewById(R.id.input_password_layout);
+                inputPassword = findViewById(R.id.input_password);
+                buttonUpdate = findViewById(R.id.button_update);
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(this, false, false);
 
                 //创建数据请求 代理人
-                delegate = new MessageDelegate(TAG);
-
+                delegate = new UserDelegate(TAG);
+                //获取用户数据
+                user = UserPreferencesUtils.getUser();
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -77,7 +94,7 @@ public class ReposrtActivity extends AppCompatActivity
                 {
                         //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
-                        actionBar.setTitle(ResourcesUtils.getString(R.string.report_title));
+                        actionBar.setTitle("用户信息");
                 }
                 //初始化表单
                 initInputForm();
@@ -90,32 +107,43 @@ public class ReposrtActivity extends AppCompatActivity
          */
         private void initInputForm()
         {
-                //input内容监听器, 在report内容不为空的情况激活发送按钮
+                //获取加载头像
+                GlideImageUtils.getSquareImg(this, avatarImg, user.getAvatar_urls());
+                inputEmail.setText(user.getUser_email());
+                inputNickname.setText(user.getUser_display_name());
+                //如果用户描述不是空
+                if(!GeneralUtils.listIsNullOrHasEmptyElement(user.getUser_meta().getDescription()))
+                {
+                        //加载用户描述
+                        inputDescription.setText(user.getUser_meta().getDescription().get(0));
+                }
+
+                //绑定密码栏状态监听器
+                //input内容监听器, 在密码内容为空的情况 或者 长度小于6 , 注销更新按钮
                 //自定义 text watcher, 只有在内容变化完成后才会激活回调
-                TextWatcher textWatcher = new MyTextWatcher(() -> {
+                TextWatcher textWatcherOnPassword = new MyTextWatcher(() -> {
                         String content="";
-                        if(inputReport.getText() != null){
-                                content = inputReport.getText().toString().trim();
+                        if(inputPassword.getText() != null){
+                                content = inputPassword.getText().toString().trim();
                         }
-                        //如果内容不是空, 并大于5个字
-                        if (!content.isEmpty() && content.length() > 5)
+                        //如果内容是空, 或者 小于6个字
+                        if (content.isEmpty() || content.length() < 6)
                         {
-                                //激活按钮
-                                buttonSend.setEnabled(true);
+                                //注销按钮
+                                buttonUpdate.setEnabled(false);
+                                inputPasswordLayout.setError(" 新密码长度必须是6位以上");
                         }
                         else
                         {
-                                //注销按钮
-                                buttonSend.setEnabled(false);
+                                //激活按钮
+                                buttonUpdate.setEnabled(true);
+                                //去除错误提示
+                                inputPasswordLayout.setError(null);
                         }
                 });
                 //添加内容变化监听器
-                inputReport.addTextChangedListener(textWatcher);
-                //绑定发送按钮点击事件
-                buttonSend.setOnClickListener(v -> {
-                        //发送私信
-                        sendReport();
-                });
+                inputPassword.addTextChangedListener(textWatcherOnPassword);
+
         }
 
         /**
@@ -133,9 +161,8 @@ public class ReposrtActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(String response)
                         {
-                                //清空内容
-                                inputContact.setText("");
-                                inputReport.setText("");
+
+
                                 ToastUtils.longToast(ResourcesUtils.getString(R.string.report_send_successful));
                         }
 
@@ -167,30 +194,9 @@ public class ReposrtActivity extends AppCompatActivity
                 };
 
 
-                String content = "APP问题反馈: ";
-                if(inputReport.getText() !=null){
-                        content += inputReport.getText().toString();
-                }
 
-                //获取联系方式
-                String contactQQ="";
-                if(inputContact.getText() !=null){
-                        //获取联系方式
-                        contactQQ = inputContact.getText().toString().trim();
-                }
-                //如果联系方式不是空 并大于5个字
-                if (!contactQQ.isEmpty() && contactQQ.length() > 5)
-                {
-                        //在消息尾上加上联系方式
-                        content += " 联系QQ: " + inputContact.getText().toString();
-                }
-                //创建请求参数类
-                CreatePrivateMessageParameters bodyParameters = new CreatePrivateMessageParameters();
-                bodyParameters.setContent(content);
-                //设置接收人为管理员
-                bodyParameters.setRecipient_id(GlobalConfig.ADMIN_USER_ID);
 
-                delegate.sendPrivateMessage(httpCallBack, bodyParameters);
+                // delegate.sendPrivateMessage(httpCallBack, bodyParameters);
 
         }
 
@@ -234,7 +240,7 @@ public class ReposrtActivity extends AppCompatActivity
          */
         public static void startAction(Context context)
         {
-                Intent intent = new Intent(context, ReposrtActivity.class);
+                Intent intent = new Intent(context, UserProfileActivity.class);
                 context.startActivity(intent);
         }
 

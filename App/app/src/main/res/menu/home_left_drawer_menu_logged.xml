@@ -5,6 +5,12 @@
 
         <group android:id = "@+id/group1">
                 <item
+                    android:id = "@+id/item_user_profile"
+                    android:icon = "@drawable/person"
+                    android:title = "个人信息"
+                    android:visible="false"
+                    />
+                <item
                     android:id = "@+id/item_settings"
                     android:icon = "@drawable/settings"
                     android:title = "配置" />

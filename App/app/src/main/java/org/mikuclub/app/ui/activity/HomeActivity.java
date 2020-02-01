@@ -62,7 +62,7 @@ public class HomeActivity extends MyActivity
         //当前激活的fragment
         private Fragment currentActiveFragment;
         //获取碎片管理器
-        private FragmentManager fm = getSupportFragmentManager();
+        private FragmentManager fm;
 
         //确认是否真要退出, 屏蔽用户第一次的退出点击防止是误碰
         private boolean doYouReallyWantExit = false;
@@ -105,6 +105,7 @@ public class HomeActivity extends MyActivity
                 //从intent里读取上个活动传送来的数据
                 stickyPosts = (Posts) getIntent().getSerializableExtra(INTENT_STICKY_POST_LIST);
                 posts = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
+                fm = getSupportFragmentManager();
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -194,6 +195,7 @@ public class HomeActivity extends MyActivity
          */
         private void changeFragment(Fragment fragment, int fragmentTag)
         {
+                LogUtils.w("切换 FRAGMENT");
                 //创建新fragment
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 //如果当前有在显示fragment
@@ -201,6 +203,14 @@ public class HomeActivity extends MyActivity
                 {
                         //隐藏当前fragment
                         fragmentTransaction = fragmentTransaction.hide(currentActiveFragment);
+                }
+                //如果是空的 说明是首次创建
+                else{
+                        //遍历所有旧fragment
+                        for (Fragment eachFragment : fm.getFragments()) {
+                                //删除之前的每个旧fragment
+                                fragmentTransaction = fragmentTransaction.remove(eachFragment);
+                        }
                 }
 
                 //如果对应的fragment还未生成
@@ -234,6 +244,7 @@ public class HomeActivity extends MyActivity
                 currentActiveFragment = fragment;
                 //提交fragment变更
                 fragmentTransaction.commit();
+
 
         }
 
@@ -274,14 +285,17 @@ public class HomeActivity extends MyActivity
                                         break;
                                 case R.id.item_report:
                                         //启动问题反馈页
-                                        ReposrtActivity.startAction(this);
+                                        ReportActivity.startAction(this);
                                         break;
 
                                 case R.id.item_settings:
                                         //启动配置页
                                         SettingsActivity.startAction(this);
                                         break;
-
+                                case R.id.item_user_profile:
+                                        //启动个人信息页
+                                        UserProfileActivity.startAction(this);
+                                        break;
                         }
                         //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);

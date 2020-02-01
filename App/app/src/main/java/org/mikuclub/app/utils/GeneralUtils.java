@@ -45,6 +45,7 @@ public class GeneralUtils
         public static void setMaxHeightOfLayout(Context context, View view, float percentage)
         {
                 ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+
                 int height = (int) (context.getResources().getDisplayMetrics().heightPixels * percentage);//屏幕高的60%
                 layoutParams.height = height;
                 view.setLayoutParams(layoutParams);

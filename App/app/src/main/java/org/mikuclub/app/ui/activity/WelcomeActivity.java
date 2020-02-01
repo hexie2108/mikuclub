@@ -604,7 +604,11 @@ public class WelcomeActivity extends AppCompatActivity
         {
                 AlertDialog.Builder dialog = new MaterialAlertDialogBuilder(WelcomeActivity.this);
                 dialog.setTitle(ResourcesUtils.getString(R.string.welcome_update_windows_title));
-                String message = ResourcesUtils.getString(R.string.welcome_update_version_name)+" "+ appUpdate.getBody().getVersionName() + "\n" + appUpdate.getBody().getDescription();
+                //获取描述
+                String description = appUpdate.getBody().getDescription();
+                //把被转义\\n恢复成普通换行符
+                description = description.replace("\\n", "\n");
+                String message = ResourcesUtils.getString(R.string.welcome_update_version_name)+" "+ appUpdate.getBody().getVersionName() + "\n" + description;
                 dialog.setMessage(message);
                 //如果是强制更新, 就无法取消
                 dialog.setCancelable(!appUpdate.getBody().isForceUpdate());

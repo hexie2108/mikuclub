@@ -49,7 +49,11 @@
                 <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.AuthorActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.ReposrtActivity" /> <!-- 腾讯QQ sdk专用 -->
+                <activity android:name = "org.mikuclub.app.ui.activity.ReportActivity" />
+                <activity android:name = "org.mikuclub.app.ui.activity.UserProfileActivity" />
+
+
+                <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"
                     android:launchMode = "singleTask"

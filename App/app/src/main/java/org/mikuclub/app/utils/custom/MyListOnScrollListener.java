@@ -40,9 +40,11 @@ public abstract  class MyListOnScrollListener extends RecyclerView.OnScrollListe
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState)
         {
+
                 //滑动停止的时候
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE  )
                 {
+
                         //获取列表最后一个可见item的位置
                         lastVisibleItem = manager.findLastVisibleItemPosition();
                         //如果可见item 到达了加载范围里, 触发加载

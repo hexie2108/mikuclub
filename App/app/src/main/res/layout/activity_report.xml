@@ -5,7 +5,7 @@
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
 
-    tools:context = "org.mikuclub.app.ui.activity.ReposrtActivity">
+    tools:context = "org.mikuclub.app.ui.activity.ReportActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id = "@+id/app_bar"
