@@ -42,7 +42,10 @@ public class UserPreferencesUtils
                 if (user == null)
                 {
                         String userInfoString = PreferencesUtils.getUserPreference().getString(USER_LOGIN, null);
-                        user = ParserUtils.fromJson(userInfoString, UserLogin.class);
+                        if(userInfoString != null)
+                        {
+                                user = ParserUtils.fromJson(userInfoString, UserLogin.class);
+                        }
                 }
 
                 return user;
@@ -65,6 +68,21 @@ public class UserPreferencesUtils
         }
 
 
+        /**
+         * 更新用户信息
+         * @param userLogin
+         */
+        public static void setUser(UserLogin userLogin){
+                //更新新用户信息
+                user = userLogin;
+                //序列化为字符串
+                String userInfoString  = ParserUtils.toJson(userLogin);
+                //保存
+                PreferencesUtils.getUserPreference()
+                        .edit()
+                        .putString(USER_LOGIN, userInfoString)
+                        .apply();
+        }
 
         /**
          * 设置用户登陆信息

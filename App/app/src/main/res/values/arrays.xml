@@ -3,7 +3,7 @@
 
         <!-- Reply Preference -->
         <string-array name = "new_post_push_cycle_entries">
-                <item>每1天1次</item>
+                <item>@string/preference_new_post_push_cycle_one_day</item>
                 <item>每2天1次</item>
                 <item>每3天1次</item>
                 <item>每5天1次</item>

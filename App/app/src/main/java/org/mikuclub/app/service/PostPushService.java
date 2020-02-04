@@ -11,6 +11,7 @@ import android.os.IBinder;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.ui.activity.WelcomeActivity;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
@@ -96,6 +97,9 @@ public class PostPushService extends Service
                                 break;
                 }
 
+                //走完流程就关闭服务
+                stopSelf();
+
                 return super.onStartCommand(intent, flags, startId);
         }
 
@@ -114,17 +118,13 @@ public class PostPushService extends Service
                 //如果有开启投稿推送配置
                 if (postPushIsActivated)
                 {
+                        //配置新的定时器
                         //获取推送频率 的 总毫秒数 = 1天的毫秒数 * 推送频率的天数
                         long postPushCycleInMilliseconds = GlobalConfig.DAY_IN_MILLISECONDS * Integer.valueOf(postPushCycle);
                         //方便测试 设置 1分钟
                         //long postPushCycleInMilliseconds = 1000 * 15;
 
                         setScheduledTask(postPushCycleInMilliseconds);
-                }
-                //如果是关闭状态
-                else{
-                        //关闭服务
-                        stopSelf();
                 }
         }
 
@@ -170,7 +170,7 @@ public class PostPushService extends Service
                                 }
 
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         setScheduledTask(ALARM_RETRY_TIME);
                                 }

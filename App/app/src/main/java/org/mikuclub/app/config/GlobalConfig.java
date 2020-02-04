@@ -25,6 +25,8 @@ public class GlobalConfig
         //缩微图大小
         public static final String THUMBNAIL_SIZE = "-500x280";
 
+        //用户头像的大小 px
+        public static final int USER_AVATAR_SIZE = 100;
 
         //wordpress管理员ID
         public static final int ADMIN_USER_ID = 1;
@@ -43,9 +45,10 @@ public class GlobalConfig
         //每页显示的消息数量
         public static final int NUMBER_PER_PAGE_OF_MESSAGE = 12;
         //首页幻灯片的文章数量
-        public static final int NUMBER_PER_PAGE_OF_SLIDERSHOW = 5;
+        public static final int NUMBER_PER_PAGE_OF_SLIDERS = 5;
         //提前多少item触发自动加载
         public static final int PRE_LOAD_ITEM_NUMBER = 3;
+
 
         /**
          * 第三方应用的schema接口和网络地址
@@ -127,6 +130,31 @@ public class GlobalConfig
 
                 //GET 新发布文章计数
                 public static final String NEW_POST_COUNT = HOST + UTILS + "new_post_count/";
+
+                //POST 更新文章和附件的meta元数据
+                public static final String POST_META = HOST + UTILS + "post_meta/";
+
+                //POST 更新用户信息
+                public static final String UPDATE_USER = HOST  + "wp-json/wp/v2/users/me/";
+        }
+
+        /**
+         * 资源的元数据
+         */
+        public class Metadata{
+
+                public class Attachment{
+                        //用来注明该附件图片 是头像, 和储存作者ID
+                        public static final String _WP_ATTACHMENT_WP_USER_AVATAR = "_wp_attachment_wp_user_avatar";
+
+                }
+
+                public class User{
+                        //储存 用户使用的头像 的post id
+                        public static final String MM_USER_AVATAR = "mm_user_avatar";
+                }
+
+
 
         }
 

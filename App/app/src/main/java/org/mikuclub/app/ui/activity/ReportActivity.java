@@ -13,6 +13,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -77,7 +78,6 @@ public class ReportActivity extends AppCompatActivity
                 {
                         //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
-                        actionBar.setTitle(ResourcesUtils.getString(R.string.report_title));
                 }
                 //初始化表单
                 initInputForm();
@@ -140,7 +140,7 @@ public class ReportActivity extends AppCompatActivity
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 ToastUtils.longToast(ResourcesUtils.getString(R.string.report_send_failure));
                         }

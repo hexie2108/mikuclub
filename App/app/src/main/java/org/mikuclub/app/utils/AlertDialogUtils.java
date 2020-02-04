@@ -59,12 +59,12 @@ public class AlertDialogUtils
          * @param title
          * @param content
          * @param positiveButtonText
-         * @param positiveButtonListener
+         * @param positiveClickListener
          * @return
          */
         public static AlertDialog createConfirmDialog(Context context, String title, String
                 content, boolean cancelable, boolean forceFinish, String
-                                                              positiveButtonText, DialogInterface.OnClickListener positiveButtonListener)
+                                                              positiveButtonText, DialogInterface.OnClickListener positiveClickListener, String negativeButtonText,DialogInterface.OnClickListener negativeClickListener)
         {
                 AlertDialog.Builder builder = new MaterialAlertDialogBuilder(context);
                 builder.setCancelable(cancelable);
@@ -73,13 +73,11 @@ public class AlertDialogUtils
                 {
                         builder.setMessage(content);
                 }
-                builder.setPositiveButton(positiveButtonText, positiveButtonListener);
+                //设置确认按钮
+                builder.setPositiveButton(positiveButtonText, positiveClickListener);
                 //设置取消按钮
-                builder.setNegativeButton(ResourcesUtils.getString(R.string.cancel), (dialog, which) ->
-                {
-                        //结束当前应用
-                        ((AppCompatActivity) context).finish();
-                });
+                builder.setNegativeButton(negativeButtonText , negativeClickListener );
+                //创建弹窗
                 AlertDialog dialog = builder.create();
                 //禁止通过触摸屏幕关闭弹窗
                 dialog.setCanceledOnTouchOutside(false);
@@ -91,7 +89,7 @@ public class AlertDialogUtils
                                 if (keyCode == KeyEvent.KEYCODE_BACK)
                                 {
                                         dialog.dismiss();
-                                        //如果是 活动上下文的话
+                                        //如果 可以强制取消 而且 是活动上下文的话
                                         if (forceFinish && context instanceof AppCompatActivity)
                                         {
                                                 //结束相关活动

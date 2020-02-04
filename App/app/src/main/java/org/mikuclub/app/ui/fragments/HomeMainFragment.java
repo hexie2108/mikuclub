@@ -15,7 +15,6 @@ import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.HomeActivity;
-import org.mikuclub.app.ui.activity.base.MyFragment;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.custom.MyListOnScrollListener;
@@ -26,6 +25,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -35,7 +35,7 @@ import mikuclub.app.R;
  * 主页-首页碎片
  * Home page: main fragment
  * */
-public class HomeMainFragment extends MyFragment
+public class HomeMainFragment extends Fragment
 {
         /* 变量 local variable */
         //数据请求代理人
@@ -202,8 +202,7 @@ public class HomeMainFragment extends MyFragment
         public void onPause()
         {
                 super.onPause();
-                //隐藏浮动按钮
-                floatingActionButton.setVisibility(View.GONE);
+
 
         }
 
@@ -211,7 +210,5 @@ public class HomeMainFragment extends MyFragment
         public void onResume()
         {
                 super.onResume();
-                //显示浮动按钮
-                floatingActionButton.setVisibility(View.VISIBLE);
         }
 }

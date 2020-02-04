@@ -48,7 +48,7 @@
                                                     android:layout_height = "wrap_content"
                                                     android:background = "@android:color/white"
                                                     android:padding = "@dimen/small"
-                                                    android:text = "要搜索点什么吗..."
+                                                    android:text = "@string/search_input_hint"
                                                     android:textColor = "@android:color/darker_gray" />
 
 

@@ -129,6 +129,22 @@ public class GeneralUtils
                 return StringEscapeUtils.unescapeHtml4(text);
         }
 
+        /**
+         * 检测email字符串是否是个有效的邮箱地址
+         * @param emailText
+         * @return
+         */
+        public final static boolean isValidEmail(CharSequence emailText) {
+                Boolean isValid = false;
+                if (emailText != null)
+                {
+                        isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(emailText).matches();
+                }
+
+                return isValid;
+        }
+
+
 
         /**
          * 修正乱码字符串, 忽视错误
@@ -140,6 +156,9 @@ public class GeneralUtils
         {
                 return new String(text.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         }
+
+
+
 
 
 }

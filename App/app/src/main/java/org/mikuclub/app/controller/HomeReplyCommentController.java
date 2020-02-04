@@ -5,6 +5,7 @@ import android.content.Context;
 import org.mikuclub.app.controller.base.BaseController;
 import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.HomeReplyComments;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -71,7 +72,7 @@ public class HomeReplyCommentController extends BaseController
                                 //请求结果包含错误的情况
                                 //结果主体为空, 无更多内容
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                                 }
@@ -146,7 +147,7 @@ public class HomeReplyCommentController extends BaseController
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 ToastUtils.shortToast(ResourcesUtils.getString(R.string.general_toast_message_on_error));
                         }

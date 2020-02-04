@@ -2,6 +2,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
     android:id = "@+id/post_info_box"
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
@@ -24,12 +25,12 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/small"
-            android:text = "20-01-01 00:00"
             android:textSize = "@dimen/text_small"
-
             app:layout_constraintBottom_toBottomOf = "parent"
+
             app:layout_constraintStart_toEndOf = "@id/post_date_icon"
-            app:layout_constraintTop_toTopOf = "parent" />
+            app:layout_constraintTop_toTopOf = "parent"
+            tools:text = "20-01-01 00:00" />
 
         <ImageView
             android:id = "@+id/post_views_icon"
@@ -46,7 +47,7 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/small"
-            android:text = "0 次查看"
+            android:text = "@string/post_view_zero_count"
             android:textSize = "@dimen/text_small"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_views_icon"
@@ -68,14 +69,11 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/small"
-            android:text = "0 评论"
+            android:text = "@string/post_comment_zero_count"
             android:textSize = "@dimen/text_small"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_count_comments_icon"
             app:layout_constraintTop_toTopOf = "parent" />
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

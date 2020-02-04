@@ -5,6 +5,7 @@ import android.content.Context;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
@@ -79,7 +80,7 @@ public class SearchPostController extends PostController
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.search_empty_error_message));
                                 getRecyclerViewAdapter().updateFooterStatus(false, true, false);

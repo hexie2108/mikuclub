@@ -14,10 +14,11 @@ import org.mikuclub.app.adapter.viewPager.MessageViewPagerAdapter;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.LoginActivity;
-import org.mikuclub.app.ui.activity.base.MyFragment;
+import org.mikuclub.app.utils.ResourcesUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
 
@@ -25,7 +26,7 @@ import mikuclub.app.R;
  * 主页-消息分页
  * Home page: message fragment
  */
-public class HomeMessageFragment extends MyFragment
+public class HomeMessageFragment extends Fragment
 {
 
 
@@ -132,13 +133,13 @@ public class HomeMessageFragment extends MyFragment
                                 if (position == 0)
                                 {
                                         //私信页面
-                                        tab.setText("我的私信");
+                                        tab.setText(ResourcesUtils.getString(R.string.my_private_message));
                                 }
                                 //后续分页位
                                 else
                                 {
                                         //评论回复
-                                        tab.setText("评论回复");
+                                        tab.setText(ResourcesUtils.getString(R.string.comment_reply));
                                 }
                         }).attach();
 

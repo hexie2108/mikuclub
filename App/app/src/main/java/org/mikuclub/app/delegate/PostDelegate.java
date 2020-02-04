@@ -40,7 +40,7 @@ public class PostDelegate extends BaseDelegate
         {
                 PostParameters parametersPosts = new PostParameters();
                 parametersPosts.setSticky(true);
-                parametersPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_SLIDERSHOW);
+                parametersPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_SLIDERS);
                 getPostList(httpCallBack, page, parametersPosts);
         }
 

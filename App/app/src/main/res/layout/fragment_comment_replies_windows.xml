@@ -13,7 +13,7 @@
             layout = "@layout/post_comment_input_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/very_large"
+            android:layout_marginStart="@dimen/very_large"
             />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -22,7 +22,9 @@
             android:layout_height = "0dp"
             android:layout_marginTop = "@dimen/normal"
             android:layout_weight = "1"
-            android:paddingStart = "@dimen/very_large" />
+            android:paddingStart = "@dimen/very_large"
+            android:paddingEnd="0dp"
+            />
 
 
         <View
@@ -37,7 +39,7 @@
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content"
             android:layout_gravity = "bottom"
-            android:text = "返回"
+            android:text = "@string/return_text"
             android:textColor = "@color/defaultTextColor"
 
             app:rippleColor = "@color/defaultRippleColor" />

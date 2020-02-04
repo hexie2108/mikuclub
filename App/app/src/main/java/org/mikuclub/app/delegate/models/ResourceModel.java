@@ -3,6 +3,7 @@ package org.mikuclub.app.delegate.models;
 import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
+import java.io.File;
 import java.util.Map;
 
 
@@ -65,6 +66,22 @@ public class ResourceModel
         }
 
         /**
+         * 上传一个文件
+         *
+         * @param params
+         * @param tag
+         * @param httpCallBack
+         */
+        public void insertFile(Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, File file, int tag, HttpCallBack httpCallBack)
+        {
+
+                String url = resource_url;
+                Request.filePost(url, params, bodyParams, headers, file, tag, httpCallBack);
+
+        }
+
+
+        /**
          * 根据id更新一个资源
          *
          * @param params
@@ -87,10 +104,10 @@ public class ResourceModel
          * @param tag
          * @param httpCallBack
          */
-        public void deleteById(int id, int tag, HttpCallBack httpCallBack)
+        public void deleteById(int id, Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
                 String url = resource_url + id;
-                Request.delete(url, tag, httpCallBack);
+                Request.delete(url, params, bodyParams, headers, tag, httpCallBack);
         }
 
 

@@ -17,7 +17,6 @@ import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
-import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.ui.fragments.HomeCategoriesFragment;
 import org.mikuclub.app.ui.fragments.HomeMainFragment;
 import org.mikuclub.app.ui.fragments.HomeMessageFragment;
@@ -30,6 +29,7 @@ import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -42,7 +42,7 @@ import mikuclub.app.R;
  * 主页
  * home page
  */
-public class HomeActivity extends MyActivity
+public class HomeActivity extends AppCompatActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 2;
@@ -106,6 +106,7 @@ public class HomeActivity extends MyActivity
                 stickyPosts = (Posts) getIntent().getSerializableExtra(INTENT_STICKY_POST_LIST);
                 posts = (Posts) getIntent().getSerializableExtra(INTENT_POST_LIST);
                 fm = getSupportFragmentManager();
+
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -205,9 +206,11 @@ public class HomeActivity extends MyActivity
                         fragmentTransaction = fragmentTransaction.hide(currentActiveFragment);
                 }
                 //如果是空的 说明是首次创建
-                else{
+                else
+                {
                         //遍历所有旧fragment
-                        for (Fragment eachFragment : fm.getFragments()) {
+                        for (Fragment eachFragment : fm.getFragments())
+                        {
                                 //删除之前的每个旧fragment
                                 fragmentTransaction = fragmentTransaction.remove(eachFragment);
                         }
@@ -238,13 +241,25 @@ public class HomeActivity extends MyActivity
                 //如果已生成过
                 else
                 {
-                      fragmentTransaction = fragmentTransaction.show(fragment);
+                        fragmentTransaction = fragmentTransaction.show(fragment);
                 }
                 //更新当前fragment
                 currentActiveFragment = fragment;
                 //提交fragment变更
                 fragmentTransaction.commit();
 
+                //如果最后显示的fragment 是 主页
+                if (currentActiveFragment == homeMainFragment)
+                {
+                        //显示按钮
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                }
+                //如果是其他分页
+                else
+                {
+                        //隐藏按钮
+                        floatingActionButton.setVisibility(View.GONE);
+                }
 
         }
 
@@ -294,7 +309,7 @@ public class HomeActivity extends MyActivity
                                         break;
                                 case R.id.item_user_profile:
                                         //启动个人信息页
-                                        UserProfileActivity.startAction(this);
+                                        UserProfileActivity.startActionFroResult(this);
                                         break;
                         }
                         //关闭侧边栏
@@ -316,7 +331,7 @@ public class HomeActivity extends MyActivity
                 //如果用户有登陆
                 if (UserPreferencesUtils.isLogin())
                 {
-                        LogUtils.v("已登陆用户");
+                        LogUtils.v("登陆用户");
                         setLoggingUserInfoAndMenu();
                 }
                 // 如果没登陆过
@@ -336,7 +351,7 @@ public class HomeActivity extends MyActivity
         {
 
                 userAvatar.setImageResource(R.drawable.person);
-                userName.setText("点击头像登陆");
+                userName.setText(ResourcesUtils.getString(R.string.login_by_avatar));
                 userEmail.setVisibility(View.GONE);
 
                 //头像绑定点击监听器
@@ -357,13 +372,16 @@ public class HomeActivity extends MyActivity
          */
         private void setLoggingUserInfoAndMenu()
         {
-
                 //获取用户数据
                 userLogin = UserPreferencesUtils.getUser();
+
                 //设置头像
                 GlideImageUtils.getSquareImg(this, userAvatar, userLogin.getAvatar_urls());
                 //设置头像的动作监听器
-                userAvatar.setOnClickListener(null);
+                userAvatar.setOnClickListener(v -> {
+                        //启动个人信息页
+                        UserProfileActivity.startActionFroResult(this);
+                });
                 //设置名称
                 userName.setText(userLogin.getUser_display_name());
                 //设置+显示邮箱
@@ -379,24 +397,8 @@ public class HomeActivity extends MyActivity
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
         {
                 super.onActivityResult(requestCode, resultCode, data);
-                //判断请求id
-                switch (requestCode)
-                {
-                        //如果是登陆页面返回的请求结果
-                        case LoginActivity.REQUEST_CODE:
-                                //如果结果是成功
-                                if (resultCode == RESULT_OK)
-                                {
-                                        //在侧边栏显示已登陆用户信息 和 登陆用户菜单
-                                        setLoggingUserInfoAndMenu();
-                                }
-                                else
-                                {
-                                        //如果未成功登陆, 设置未登陆菜单
-                                        setLogoutUserInfoAndMenu();
-                                }
-                                break;
-                }
+
+                checkLoginStatus();
         }
 
         @Override
@@ -405,6 +407,13 @@ public class HomeActivity extends MyActivity
                 //取消本活动相关的所有网络请求
                 Request.cancelRequest(TAG);
                 super.onStop();
+        }
+
+        @Override
+        protected void onDestroy()
+        {
+                super.onDestroy();
+
         }
 
         @Override

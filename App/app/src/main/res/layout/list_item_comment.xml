@@ -12,23 +12,18 @@
 
     >
 
-        <androidx.cardview.widget.CardView
-            android:id = "@+id/item_avatar_img_box"
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
-            app:cardCornerRadius = "20dp"
-            app:cardElevation = "0dp"
-            app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toTopOf = "parent">
+
 
                 <ImageView
                     android:id = "@+id/item_avatar_img"
                     android:layout_width = "40dp"
                     android:layout_height = "40dp"
                     android:scaleType = "centerCrop"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "parent"
                     tools:src = "@drawable/person" />
 
-        </androidx.cardview.widget.CardView>
+
 
 
         <TextView
@@ -40,7 +35,7 @@
             android:maxLines = "1"
             android:textSize = "@dimen/text_small"
             android:textStyle = "bold"
-            app:layout_constraintStart_toEndOf = "@id/item_avatar_img_box"
+            app:layout_constraintStart_toEndOf = "@id/item_avatar_img"
             app:layout_constraintTop_toTopOf = "parent"
             tools:text = "神秘人"
 

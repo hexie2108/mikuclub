@@ -32,7 +32,7 @@
                     android:id = "@+id/input_info"
                     android:layout_width = "0dp"
                     android:layout_height = "wrap_content"
-                    android:text = "在这里可以报告在使用本应用中碰到的问题, 请指出是在哪个页面, 在什么情况下发生的BUG, 如果有可能请留下QQ号, 方便后续联系定位BUG的原因"
+                    android:text = "@string/report_help"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toTopOf = "parent" />
@@ -43,7 +43,7 @@
                     android:layout_width = "0dp"
                     android:layout_height = "wrap_content"
                     android:layout_marginTop = "@dimen/very_large"
-                    android:hint = "联系QQ号 (可填可不填)"
+                    android:hint = "@string/report_contact_input_hint"
 
                     app:boxStrokeWidth = "1dp"
 
@@ -76,7 +76,7 @@
                     android:layout_marginTop = "@dimen/very_large"
                     android:layout_marginBottom = "@dimen/very_large"
 
-                    android:hint = "请在这里尽可能详细 描述问题"
+                    android:hint = "@string/report_input_hint"
                     app:layout_constraintBottom_toTopOf = "@id/button_send"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
@@ -108,7 +108,7 @@
                     android:enabled = "false"
                     android:paddingLeft = "@dimen/super_large"
                     android:paddingRight = "@dimen/super_large"
-                    android:text = "发送"
+                    android:text = "@string/send"
                     app:icon = "@drawable/send"
                     app:iconGravity = "textEnd"
                     app:layout_constraintBottom_toBottomOf = "parent"

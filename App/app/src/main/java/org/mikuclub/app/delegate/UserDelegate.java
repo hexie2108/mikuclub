@@ -1,6 +1,8 @@
 package org.mikuclub.app.delegate;
 
 import org.mikuclub.app.delegate.base.BaseDelegate;
+import org.mikuclub.app.javaBeans.parameters.UpdateUserParameters;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.models.ResourceModel;
@@ -39,6 +41,15 @@ public class UserDelegate extends BaseDelegate
         public void getUser(HttpCallBack httpCallBack, int userId){
 
                 getModel().selectById(userId, new BaseParameters().toMap(), null, getTag(), httpCallBack);
+        }
+
+        /**
+         * 更新用户自己的信息
+         * @param httpCallBack
+         */
+        public void updateUser(HttpCallBack httpCallBack, UpdateUserParameters bodyParameters){
+
+                Request.post(GlobalConfig.Server.UPDATE_USER, new BaseParameters().toMap(),  bodyParameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(),getTag(), httpCallBack);
         }
 
 

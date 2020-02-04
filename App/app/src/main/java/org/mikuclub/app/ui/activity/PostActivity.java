@@ -1,6 +1,7 @@
 package org.mikuclub.app.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -25,6 +26,7 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 import org.mikuclub.app.adapter.viewPager.PostViewPagerAdapter;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.SinglePost;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
@@ -166,11 +168,18 @@ public class PostActivity extends AppCompatActivity
                 delegate = new PostDelegate(TAG);
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(this, true, true);
-                //创建重试弹窗
-                confirmDialog = AlertDialogUtils.createConfirmDialog(this, ResourcesUtils.getString(R.string.post_get_by_id_error_message), null, true, true, ResourcesUtils.getString(R.string.retry), (dialog, which) -> {
+                //弹窗确认按钮点击事件监听
+                DialogInterface.OnClickListener positiveClickListener = (dialog, which) -> {
                         //重试请求
                         getPostData();
-                });
+                };
+                //弹窗取消按钮点击事件监听
+                DialogInterface.OnClickListener negativeClickListener = (dialog, which) -> {
+                        //关闭当前页面
+                        finish();
+                };
+                //创建重试弹窗
+                confirmDialog = AlertDialogUtils.createConfirmDialog(this, ResourcesUtils.getString(R.string.post_get_by_id_error_message), null, true, true, ResourcesUtils.getString(R.string.retry), positiveClickListener, ResourcesUtils.getString(R.string.cancel), negativeClickListener);
 
         }
 
@@ -197,7 +206,7 @@ public class PostActivity extends AppCompatActivity
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 //弹出确认窗口 允许用户重试
                                 confirmDialog.show();
@@ -321,11 +330,11 @@ public class PostActivity extends AppCompatActivity
                         (tab, position) -> {
                                 if (position == 0)
                                 {
-                                        tab.setText("描述");
+                                        tab.setText(ResourcesUtils.getString(R.string.description));
                                 }
                                 else if (position == 1)
                                 {
-                                        tab.setText("评论");
+                                        tab.setText(ResourcesUtils.getString(R.string.comment));
                                 }
                         }).attach();
 

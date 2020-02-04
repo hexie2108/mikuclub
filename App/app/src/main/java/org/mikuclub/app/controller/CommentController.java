@@ -217,9 +217,9 @@ public class CommentController extends BaseController
                                 }
 
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
-                                        WpError wpError = ParserUtils.fromJson(response, WpError.class);
+
                                         ToastUtils.shortToast(wpError.getBody().getMessage());
                                 }
 
@@ -327,7 +327,7 @@ public class CommentController extends BaseController
                                 //请求结果包含错误的情况
                                 //结果主体为空, 无更多内容
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                                 }

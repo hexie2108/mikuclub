@@ -15,6 +15,7 @@ import org.mikuclub.app.controller.base.BaseController;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.Posts;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
@@ -99,7 +100,7 @@ public class PostController extends BaseController
                                 //请求结果包含错误的情况
                                 //结果主体为空, 无更多内容
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         //如果数据列表还是空的 就报了无内容错误, 说明这个用户没有投过稿
                                         if(getRecyclerDataList().size()==0){
@@ -180,7 +181,7 @@ public class PostController extends BaseController
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 ToastUtils.shortToast(ResourcesUtils.getString(R.string.general_toast_message_on_error));
                         }

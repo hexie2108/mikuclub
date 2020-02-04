@@ -7,24 +7,23 @@
                 <item
                     android:id = "@+id/item_user_profile"
                     android:icon = "@drawable/person"
-                    android:title = "个人信息"
-                    android:visible="false"
+                    android:title = "@string/user_profile"
                     />
                 <item
                     android:id = "@+id/item_settings"
                     android:icon = "@drawable/settings"
-                    android:title = "配置" />
+                    android:title = "@string/settings" />
         </group>
         <group android:id = "@+id/group2">
 
                 <item
                     android:id = "@+id/item_report"
                     android:icon = "@drawable/bug_report"
-                    android:title = "问题反馈" />
+                    android:title = "@string/report" />
                 <item
                     android:id = "@+id/item_sponsor"
                     android:icon = "@drawable/gift"
-                    android:title = "提供赞助" />
+                    android:title = "@string/sponsor" />
         </group>
 
         <group android:id = "@+id/group3">
@@ -32,7 +31,7 @@
                 <item
                     android:id = "@+id/item_shopping"
                     android:icon = "@drawable/shopping_cart"
-                    android:title = "动漫周边" />
+                    android:title = "@string/shopping" />
 
         </group>
 
@@ -40,7 +39,7 @@
                 <item
                     android:id = "@+id/item_logout"
                     android:icon = "@drawable/sign_out"
-                    android:title = "退出" />
+                    android:title = "@string/logout" />
         </group>
 
 </menu>

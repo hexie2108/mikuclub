@@ -10,25 +10,17 @@
     android:layout_marginTop = "@dimen/small"
     android:layout_marginBottom = "@dimen/small">
 
-        <androidx.cardview.widget.CardView
-            android:id = "@+id/item_avatar_img_box"
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
-            app:cardCornerRadius = "20dp"
-            app:cardElevation = "0dp"
+
+        <ImageView
+            android:id = "@+id/item_avatar_img"
+            android:layout_width = "40dp"
+            android:layout_height = "40dp"
+            android:scaleType = "centerCrop"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintTop_toTopOf = "parent">
+            app:layout_constraintTop_toTopOf = "parent"
+            tools:src = "@drawable/person"
 
-                <ImageView
-                    android:id = "@+id/item_avatar_img"
-                    android:layout_width = "40dp"
-                    android:layout_height = "40dp"
-                    android:scaleType = "centerCrop"
-                    tools:src = "@drawable/person"
-
-                    />
-
-        </androidx.cardview.widget.CardView>
+            />
 
 
         <TextView
@@ -40,7 +32,7 @@
             android:maxLines = "1"
             android:textSize = "@dimen/text_small"
             android:textStyle = "bold"
-            app:layout_constraintEnd_toStartOf = "@id/item_avatar_img_box"
+            app:layout_constraintEnd_toStartOf = "@id/item_avatar_img"
             app:layout_constraintTop_toTopOf = "parent"
             tools:text = "神秘人"
 
@@ -75,7 +67,7 @@
             android:layout_marginStart = "@dimen/normal"
             android:layout_marginTop = "@dimen/normal"
             android:layout_marginBottom = "@dimen/normal"
-            android:gravity = "right"
+            android:gravity = "end"
             android:textIsSelectable = "true"
             android:textSize = "@dimen/text_default"
             app:layout_constraintEnd_toEndOf = "@id/item_name"

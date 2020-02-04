@@ -28,8 +28,19 @@ public class UserLogin implements Serializable
                 private List<Integer> total_post_count;
                 private List<String> nickname;
                 private List<String> description;
+               private List<String> mm_user_avatar;
 
-                public List<String> getNickname()
+               public List<String> getMm_user_avatar()
+               {
+                       return mm_user_avatar;
+               }
+
+               public void setMm_user_avatar(List<String> mm_user_avatar)
+               {
+                       this.mm_user_avatar = mm_user_avatar;
+               }
+
+               public List<String> getNickname()
                 {
                         return nickname;
                 }

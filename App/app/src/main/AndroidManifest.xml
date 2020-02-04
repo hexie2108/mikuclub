@@ -10,6 +10,7 @@
         <uses-permission android:name = "android.permission.READ_PHONE_STATE" />
         <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
 
+
         <application
             android:name = "org.mikuclub.app.context.MyApplication"
             android:allowBackup = "true"
@@ -27,7 +28,7 @@
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
-                    android:label = "@string/title_activity_settings" />
+                    android:label = "@string/settings" />
                 <activity android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity" /> <!-- 解决腾讯sdk 网络连接报错 -->
                 <uses-library
                     android:name = "org.apache.http.legacy"
@@ -35,7 +36,7 @@
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.LoginActivity"
-                    android:label = "登陆" />
+                    android:label = "@string/login" />
                 <activity android:name = "org.mikuclub.app.ui.activity.ImageActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.WelcomeActivity">
                         <intent-filter>
@@ -49,8 +50,8 @@
                 <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.AuthorActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.ReportActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.UserProfileActivity" />
+                <activity android:name = "org.mikuclub.app.ui.activity.ReportActivity" android:label = "@string/report" />
+                <activity android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"   android:label = "@string/user_profile" />
 
 
                 <!-- 腾讯QQ sdk专用 -->

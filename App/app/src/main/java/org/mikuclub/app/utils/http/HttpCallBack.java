@@ -39,9 +39,9 @@ public class HttpCallBack
         /**
          * 出现内容错误后 调用的函数 (请求成功,但是回复内容有问题)
          *
-         * @param response
+         * @param wpError
          */
-        public void onError(String response)
+        public void onError(WpError wpError)
         {
 
         }
@@ -106,8 +106,8 @@ public class HttpCallBack
                                 //如果是一个json数组 , 但是长度为0
                                 if (body instanceof JSONArray && ((JSONArray) body).length() == 0)
                                 {
-                                        //报空内容错误
-                                        onError(response);
+                                        //空数组内容错误
+                                        onError(null);
                                 }
                                 else
                                 {
@@ -132,8 +132,8 @@ public class HttpCallBack
                                 //否则则是 内容错误
                                 else
                                 {
-                                        LogUtils.v("内容错误:" + response);
-                                        onError(response);
+                                        LogUtils.v("内容错误: "+wpError.getBody().getCode()+" / " + wpError.getBody().getMessage());
+                                        onError(wpError);
                                 }
 
                         }
@@ -190,7 +190,6 @@ public class HttpCallBack
 
                 LogUtils.w(errorMessage + " : " + error.getMessage());
                 ToastUtils.shortToast(errorMessage);
-                error.printStackTrace();
 
                 onHttpError();
 

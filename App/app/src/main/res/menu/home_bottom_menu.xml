@@ -4,16 +4,16 @@
         <item
             android:id="@+id/navigation_home"
             android:icon="@drawable/home"
-            android:title="主页" />
+            android:title="@string/home" />
         <item
             android:id="@+id/navigation_category"
             android:icon="@drawable/dashboard"
-            android:title="分类"
+            android:title="@string/category"
             />
       <item
           android:id="@+id/navigation_message"
            android:icon="@drawable/mail_outline"
-          android:title="消息"
+          android:title="@string/message"
           />
 
 

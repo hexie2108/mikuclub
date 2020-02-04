@@ -23,9 +23,7 @@ import java.util.Map;
 import javax.activation.MimetypesFileTypeMap;
 
 /**
- * deprecated====================
  * Custom request to make multipart header and upload file.
- * <p>
  * Sketch Project Studio
  * Created by Angga on 27/04/2016 12.05.
  * source :https://gist.github.com/anggadarkprince/a7c536da091f4b26bb4abf2f92926594
@@ -35,6 +33,9 @@ public class FileRequest extends Request<NetworkResponse>
         private final String twoHyphens = "--";
         private final String lineEnd = "\r\n";
         private final String boundary = "apiclient-" + System.currentTimeMillis();
+
+        private static final String CONTENT_TYPE_JSON = "application/json";
+        private static final String CONTENT_TYPE_TEXT = "text/plain";
 
         private Response.Listener<NetworkResponse> mListener;
         private Response.ErrorListener mErrorListener;
@@ -46,13 +47,13 @@ public class FileRequest extends Request<NetworkResponse>
          * Default constructor with predefined header and post method.
          *
          * @param url           request destination
-         * @param params params of request
-         * @param file file to upload
-         * @param headers  headers of request
+         * @param bodyParams        params of request
+         * @param file          file to upload
+         * @param headers       headers of request
          * @param listener      on success achieved 200 code from request
          * @param errorListener on error http or library timeout
          */
-        public FileRequest(int method, String url, Map<String, String> params, File file, Map<String, String> headers,
+        public FileRequest(int method, String url, Map<String, String> bodyParams, File file, Map<String, String> headers,
                            Response.Listener<NetworkResponse> listener,
                            Response.ErrorListener errorListener)
         {
@@ -60,7 +61,7 @@ public class FileRequest extends Request<NetworkResponse>
                 this.mListener = listener;
                 this.mErrorListener = errorListener;
                 this.mHeaders = headers;
-                this.mParams = params;
+                this.mParams = bodyParams;
                 this.mFile = file;
         }
 
@@ -90,22 +91,39 @@ public class FileRequest extends Request<NetworkResponse>
         }
 
         /**
-         * method handle data payload.
+         * 弃用
+         * 支持解析 body里的对象参数
          *
          * @return Map data part label with data byte
          * @throws IOException
          */
 
-        protected Map<String, DataPart> getByteData() throws IOException
+        /*
+        private Map<String, DataPart> getByteDataOfBodyParameters()
         {
                 Map<String, DataPart> params = new HashMap<>();
-                // file name could found file base or direct access from real path
-                byte[] fileContent = FileUtils.readFileToByteArray(mFile);
 
-                params.put("file", new DataPart(mFile.getName(), fileContent, new MimetypesFileTypeMap().getContentType(mFile)));
+                for (Map.Entry<String, Object> entry : mParams.entrySet())
+                {
+                        byte[] byteData;
+                        String contentType;
+                        if (entry.getValue() instanceof String)
+                        {
+                                byteData = ((String) entry.getValue()).getBytes(StandardCharsets.UTF_8);
+                                contentType = CONTENT_TYPE_TEXT;
+                        }
+                        else
+                        {
+                                byteData = ParserUtils.toJson(entry.getValue()).getBytes();
+                                contentType = CONTENT_TYPE_JSON;
+                        }
+                        params.put(entry.getKey(), new DataPart(mFile.getName(), byteData, contentType));
+                }
+
 
                 return params;
         }
+        */
 
 
 
@@ -118,14 +136,17 @@ public class FileRequest extends Request<NetworkResponse>
                 try
                 {
                         // populate text payload
-                        Map<String, String> params = getParams();
+                       Map<String, String> params = getParams();
                         if (params != null && params.size() > 0)
                         {
                                 textParse(dos, params, getParamsEncoding());
                         }
 
                         // populate data byte payload
-                        Map<String, DataPart> data = getByteData();
+                        //设置body参数
+                      //  getByteDataOfBodyParameters();
+                        //设置body文件
+                        Map<String, DataPart> data =  getByteData();
                         if (data != null && data.size() > 0)
                         {
                                 dataParse(dos, data);
@@ -149,7 +170,6 @@ public class FileRequest extends Request<NetworkResponse>
         {
                 return "multipart/form-data;boundary=" + boundary;
         }
-
 
 
         @Override
@@ -178,6 +198,25 @@ public class FileRequest extends Request<NetworkResponse>
         {
                 mErrorListener.onErrorResponse(error);
         }
+
+        /**
+         * method handle data payload.
+         *
+         * @return Map data part label with data byte
+         * @throws IOException
+         */
+
+        private Map<String, DataPart> getByteData() throws IOException
+        {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                byte[] fileContent = FileUtils.readFileToByteArray(mFile);
+
+                params.put("file", new DataPart(mFile.getName(), fileContent, new MimetypesFileTypeMap().getContentType(mFile)));
+
+                return params;
+        }
+
 
         /**
          * Parse string map into data output stream by key and value.

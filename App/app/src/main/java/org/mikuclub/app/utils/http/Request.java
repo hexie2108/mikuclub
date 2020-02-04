@@ -28,7 +28,7 @@ public class Request
          */
         private static DefaultRetryPolicy customRetryPolicy = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME, DefaultRetryPolicy.DEFAULT_MAX_RETRIES*2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        private static DefaultRetryPolicy retryPolicyForFile = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME_FOR_FILE, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        private static DefaultRetryPolicy retryPolicyForFile = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME_FOR_FILE, DefaultRetryPolicy.DEFAULT_MAX_RETRIES*2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
 
@@ -36,9 +36,10 @@ public class Request
 
 
         /**
-          * GET请求
+         * GET请求
          * @param url
          * @param params
+         * @param headers
          * @param tag
          * @param httpCallBack
          */
@@ -58,6 +59,8 @@ public class Request
          * POST请求
          * @param url
          * @param params
+         * @param bodyParams
+         * @param headers
          * @param tag
          * @param httpCallBack
          */
@@ -73,15 +76,24 @@ public class Request
         }
 
         /**
-         * metodo delete
-         *
+         * DELETE请求
          * @param url
-         * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
+         * @param params
+         * @param bodyParams
+         * @param headers
+         * @param tag
          * @param httpCallBack
          */
-        public static void delete(String url, int tag, HttpCallBack httpCallBack)
+        public static void delete(String url,Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
         {
-                request(com.android.volley.Request.Method.DELETE, url, null, null, tag, httpCallBack);
+                //如果有URL参数要传递
+                if (params != null && params.size() > 0)
+                {
+                        //把参数拼入url中
+                        url = url + "?" + DataUtils.mapToString(params, "=", "&");
+                }
+
+                request(com.android.volley.Request.Method.DELETE, url, bodyParams, headers, tag, httpCallBack);
         }
 
         /**
@@ -97,7 +109,20 @@ public class Request
         private static void request(int method, String url, final Map<String, Object> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
                 //记录请求方式和地址
-                LogUtils.v("请求地址 "+(method == 1? "post":"get")+" "+url );
+                String methodString="";
+                switch (method){
+                        case com.android.volley.Request.Method.GET:
+                                methodString = "GET";
+                                break;
+                        case com.android.volley.Request.Method.POST:
+                                methodString = "POST";
+                                break;
+                        case com.android.volley.Request.Method.DELETE:
+                                methodString = "DELETE";
+                                break;
+                }
+
+                LogUtils.v("请求地址 "+methodString+" "+url );
 
                 StringRequest stringRequest  = new StringRequest(method, url,
                         response -> {
@@ -195,32 +220,28 @@ public class Request
          * @param tag
          * @param httpCallBack
          */
-        public static void filePost(String url, Map<String,String> params, Map<String,String> headers, File file, int tag, final HttpCallBack httpCallBack){
+        public static void filePost(String url, final Map<String, Object> params, Map<String,Object> bodyParams, Map<String,String> headers, File file, int tag, final HttpCallBack httpCallBack){
 
-/*
-                FileRequest fileRequest = new FileRequest(com.android.volley.Request.Method.POST, url, params, file ,headers, new Response.Listener<NetworkResponse>()
+                //如果有URL参数要传递
+                if (params != null && params.size() > 0)
                 {
-                        @Override
-                        public void onResponse(NetworkResponse response)
-                        {
-                                String resultResponse = new String(response.data);
-                                //Log.d("TAG", "hallo");
+                        //把参数拼入url中
+                        url = url + "?" + DataUtils.mapToString(params, "=", "&");
+                }
+                //改成string格式
+                Map<String, String> bodyParamsString = (Map) bodyParams;
 
-                        }
-                }, new Response.ErrorListener()
-                {
-                        @Override
-                        public void onErrorResponse(VolleyError error)
-                        {
-                                httpCallBack.onErrorHandler(error);
-                        }
-                });
+                FileRequest fileRequest = new FileRequest(com.android.volley.Request.Method.POST, url, bodyParamsString, file ,headers, response -> {
+                        String resultResponse = new String(response.data);
+                        //调用回调成功方法
+                        httpCallBack.onSuccessHandler(resultResponse);
+                }, error -> httpCallBack.onErrorHandler(error));
 
                 fileRequest.setTag(tag);
                 fileRequest.setRetryPolicy(retryPolicyForFile);
                 RequestQueue.getInstance(MyApplication.getContext()).addRequestQueue(fileRequest);
 
-*/
+
         }
 
 

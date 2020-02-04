@@ -3,30 +3,27 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
     android:id = "@+id/comment_input_box"
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
     android:layout_marginTop = "@dimen/normal"
     android:layout_marginBottom = "@dimen/normal">
 
-        <androidx.cardview.widget.CardView
-            android:id = "@+id/comment_input__avatar_img_box"
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
-            app:cardCornerRadius = "20dp"
-            app:cardElevation = "0dp"
-            app:layout_constraintBottom_toBottomOf = "@id/input_layout"
-            app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toTopOf = "@id/input_layout">
+
 
                 <ImageView
                     android:id = "@+id/comment_input_avatar_img"
                     android:layout_width = "40dp"
                     android:layout_height = "40dp"
                     android:scaleType = "centerCrop"
-                    android:src = "@drawable/person" />
+                    android:src = "@drawable/person"
+                    app:layout_constraintBottom_toBottomOf = "@id/input_layout"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toTopOf = "@id/input_layout"
+                    />
 
-        </androidx.cardview.widget.CardView>
+
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -36,7 +33,7 @@
             android:layout_height = "wrap_content"
             android:layout_margin = "0dp"
             android:enabled = "false"
-            android:hint = "需要登录后才能发表评论"
+            android:hint = "@string/post_must_login_before_to_comment"
             android:textColorHint = "@android:color/darker_gray"
             app:boxStrokeWidth = "0dp"
             app:boxStrokeWidthFocused = "0dp"
@@ -44,7 +41,7 @@
             app:endIconMode = "custom"
             app:hintTextColor = "@color/colorPrimary"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintStart_toEndOf = "@id/comment_input__avatar_img_box"
+            app:layout_constraintStart_toEndOf = "@id/comment_input_avatar_img"
             app:layout_constraintTop_toTopOf = "parent">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -56,6 +53,7 @@
                     android:maxLines = "3"
                     android:padding = "0dp"
                     android:paddingStart = "@dimen/normal"
+                    android:paddingEnd = "0dp"
                     android:textCursorDrawable = "@drawable/edi_text_cursor_color"
 
                     android:textSize = "@dimen/text_default" />
@@ -69,11 +67,11 @@
             android:layout_height = "wrap_content"
             android:layout_marginTop = "@dimen/small"
             android:buttonTint = "@color/defaultTextColor"
-            android:text = "本次评论要通知UP主"
+            android:text = "@string/comment_must_notify_author"
             android:textColor = "@color/defaultTextColor"
-                android:visibility="gone"
             android:textSize = "@dimen/text_small"
-            app:layout_constraintStart_toStartOf = "@id/comment_input__avatar_img_box"
+            android:visibility = "gone"
+            app:layout_constraintStart_toStartOf = "@id/comment_input_avatar_img"
             app:layout_constraintTop_toBottomOf = "@id/input_layout" />
 
 

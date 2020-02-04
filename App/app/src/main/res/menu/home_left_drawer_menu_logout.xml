@@ -8,7 +8,7 @@
                 <item
                     android:id = "@+id/item_login"
                     android:icon = "@drawable/sign_in"
-                    android:title = "登陆" />
+                    android:title = "@string/login" />
 
 
         </group>
@@ -16,7 +16,7 @@
                 <item
                     android:id = "@+id/item_settings"
                     android:icon = "@drawable/settings"
-                    android:title = "配置" />
+                    android:title = "@string/settings" />
 
         </group>
 
@@ -24,8 +24,16 @@
                 <item
                     android:id = "@+id/item_sponsor"
                     android:icon = "@drawable/gift"
-                    android:title = "提供赞助" />
+                    android:title = "@string/sponsor" />
         </group>
 
+        <group android:id = "@+id/group4">
+
+                <item
+                    android:id = "@+id/item_shopping"
+                    android:icon = "@drawable/shopping_cart"
+                    android:title = "@string/shopping" />
+
+        </group>
 
 </menu>

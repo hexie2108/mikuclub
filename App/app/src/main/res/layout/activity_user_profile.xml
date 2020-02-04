@@ -32,26 +32,18 @@
                     android:padding = "@dimen/normal">
 
 
-                        <androidx.cardview.widget.CardView
-                            android:id = "@+id/avatar_img_box"
-                            android:layout_width = "wrap_content"
-                            android:layout_height = "wrap_content"
-                            app:cardCornerRadius = "60dp"
-                            app:cardElevation = "0dp"
-                            app:layout_constraintEnd_toEndOf = "parent"
-                            app:layout_constraintStart_toStartOf = "parent"
-                            app:layout_constraintTop_toTopOf = "parent">
 
                                 <ImageView
                                     android:id = "@+id/avatar_img"
-                                    android:layout_width = "120dp"
-                                    android:layout_height = "120dp"
+                                    android:layout_width = "100dp"
+                                    android:layout_height = "100dp"
                                     android:scaleType = "centerCrop"
                                     android:src = "@drawable/person"
-
+                                    app:layout_constraintEnd_toEndOf = "parent"
+                                    app:layout_constraintStart_toStartOf = "parent"
+                                    app:layout_constraintTop_toTopOf = "parent"
                                     />
 
-                        </androidx.cardview.widget.CardView>
 
                         <com.google.android.material.button.MaterialButton
                             android:id = "@+id/button_change_avatar"
@@ -59,10 +51,10 @@
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_marginTop = "@dimen/normal"
-                            android:text = "更改头像"
-                            app:layout_constraintEnd_toEndOf = "@id/avatar_img_box"
-                            app:layout_constraintStart_toStartOf = "@id/avatar_img_box"
-                            app:layout_constraintTop_toBottomOf = "@id/avatar_img_box" />
+                            android:text = "@string/button_change_avatar"
+                            app:layout_constraintEnd_toEndOf = "@id/avatar_img"
+                            app:layout_constraintStart_toStartOf = "@id/avatar_img"
+                            app:layout_constraintTop_toBottomOf = "@id/avatar_img" />
 
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -71,12 +63,14 @@
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_marginTop = "@dimen/very_large"
-                            android:hint = "邮箱地址"
-                            app:helperText = "请记得填写有效的邮箱地址, 将来可以用来找回账号"
+                            android:hint = "@string/email_address"
+                            app:counterEnabled = "true"
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/input_email_address_help"
                             app:layout_constraintEnd_toEndOf = "parent"
                             app:layout_constraintStart_toStartOf = "parent"
                             app:layout_constraintTop_toBottomOf = "@id/button_change_avatar"
-                            app:startIconDrawable = "@drawable/mail_outline">
+                            app:startIconDrawable = "@drawable/mail">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id = "@+id/input_email"
@@ -95,8 +89,11 @@
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_marginTop = "@dimen/normal"
-                            android:hint = "昵称"
-                            app:helperText = "公开显示的名称"
+                            android:hint = "@string/nickname"
+                            app:counterEnabled = "true"
+                            app:counterMaxLength = "25"
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/input_nickname_help"
                             app:layout_constraintEnd_toEndOf = "parent"
                             app:layout_constraintStart_toStartOf = "parent"
                             app:layout_constraintTop_toBottomOf = "@id/input_email_layout"
@@ -108,6 +105,7 @@
                                     android:layout_height = "wrap_content"
                                     android:imeOptions = "actionNext"
                                     android:inputType = "text"
+                                    android:maxLength = "25"
                                     android:maxLines = "1"
                                     android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -118,8 +116,11 @@
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_marginTop = "@dimen/normal"
-                            android:hint = "个性签名"
-                            app:helperText = "公开一些信息描述下自己吧"
+                            android:hint = "@string/user_description"
+                            app:counterEnabled = "true"
+                            app:counterMaxLength = "100"
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/input_user_drescription_help"
                             app:layout_constraintEnd_toEndOf = "parent"
                             app:layout_constraintStart_toStartOf = "parent"
                             app:layout_constraintTop_toBottomOf = "@id/input_nickname_layout"
@@ -131,6 +132,7 @@
                                     android:layout_height = "wrap_content"
                                     android:imeOptions = "actionNext"
                                     android:inputType = "text"
+                                    android:maxLength = "100"
                                     android:textCursorDrawable = "@drawable/edi_text_cursor_color"
 
                                     android:textSize = "@dimen/text_default" />
@@ -143,10 +145,11 @@
                             android:layout_width = "0dp"
                             android:layout_height = "wrap_content"
                             android:layout_marginTop = "@dimen/normal"
-                            android:hint = "新密码"
-                            app:endIconMode="password_toggle"
+                            android:hint = "@string/new_password"
+                            app:counterEnabled = "true"
+                            app:endIconMode = "password_toggle"
                             app:errorEnabled = "true"
-                            app:helperText="无需修改密码的话留空即可"
+                            app:helperText = "@string/input_password_help"
                             app:layout_constraintEnd_toEndOf = "parent"
                             app:layout_constraintStart_toStartOf = "parent"
                             app:layout_constraintTop_toBottomOf = "@id/input_description_layout"
@@ -163,8 +166,6 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
 
-
-
                         <com.google.android.material.button.MaterialButton
                             android:id = "@+id/button_update"
                             style = "@style/Widget.MaterialComponents.Button"
@@ -174,8 +175,9 @@
 
                             android:layout_marginBottom = "@dimen/ultra_large"
 
-                            android:text = "保存更新"
+                            android:text = "@string/save_the_update"
                             app:layout_constraintBottom_toBottomOf = "parent"
+                            android:enabled="false"
                             app:layout_constraintEnd_toEndOf = "parent"
                             app:layout_constraintStart_toStartOf = "parent"
                             app:layout_constraintTop_toBottomOf = "@id/input_password_layout" />

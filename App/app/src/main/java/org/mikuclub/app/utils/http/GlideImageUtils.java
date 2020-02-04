@@ -57,6 +57,7 @@ public class GlideImageUtils
                         .placeholder(R.drawable.loop_grey_1x1)
                         .error(R.drawable.error_grey_1x1)
                         .transition(withCrossFade())
+                        .circleCrop()
                         .into(imageView);
 
         }

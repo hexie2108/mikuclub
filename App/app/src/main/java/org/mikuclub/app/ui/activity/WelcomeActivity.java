@@ -17,6 +17,7 @@ import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.AppUpdate;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.service.PostPushService;
 import org.mikuclub.app.storage.ApplicationPreferencesUtils;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
@@ -167,7 +168,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                                 //内容错误
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         //增加计数器
                                         startHomeSafety();
@@ -245,7 +246,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                                 //内容错误的情况, 忽视, 下次再检查更新
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         LogUtils.v("更新信息内容有错误, 下次再检测");
                                         //增加计数器
@@ -309,7 +310,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 }
 
                                 @Override
-                                public void onError(String response)
+                                public void onError(WpError wpError)
                                 {
                                         //只有在无缓存的情况, 才会报错
                                         if (categoryCache.isEmpty())
@@ -453,7 +454,7 @@ public class WelcomeActivity extends AppCompatActivity
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 setErrorInfo(null);
                         }
@@ -483,7 +484,7 @@ public class WelcomeActivity extends AppCompatActivity
                         }
 
                         @Override
-                        public void onError(String response)
+                        public void onError(WpError wpError)
                         {
                                 setErrorInfo(null);
                         }

@@ -5,28 +5,18 @@
     android:layout_width = "match_parent"
     android:layout_height = "wrap_content"
     android:layout_margin = "@dimen/small"
-    android:layout_marginBottom="@dimen/normal"
-    >
+    android:layout_marginBottom = "@dimen/normal">
 
 
-        <androidx.cardview.widget.CardView
-            android:id = "@+id/author_img_box"
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
-            app:cardCornerRadius = "20dp"
+        <ImageView
+            android:id = "@+id/author_img"
+            android:layout_width = "40dp"
+            android:layout_height = "40dp"
+            android:scaleType = "centerCrop"
+            android:src = "@drawable/person"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toTopOf = "parent">
-
-                <ImageView
-                    android:id = "@+id/author_img"
-                    android:layout_width = "40dp"
-                    android:layout_height = "40dp"
-                    android:scaleType = "centerCrop"
-                    android:src="@drawable/person"
-                    />
-
-        </androidx.cardview.widget.CardView>
+            app:layout_constraintTop_toTopOf = "parent" />
 
 
         <TextView
@@ -34,38 +24,36 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/normal"
+            android:maxLength = "20"
             android:maxLines = "1"
-            android:maxLength="20"
             android:textColor = "@android:color/black"
             android:textSize = "@dimen/text_default"
-            app:layout_constraintStart_toEndOf = "@id/author_img_box"
+            app:layout_constraintStart_toEndOf = "@id/author_img"
             app:layout_constraintTop_toTopOf = "parent"
-            tools:text="用户名"
-            />
+            tools:text = "用户名" />
 
         <TextView
             android:id = "@+id/author_description"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/normal"
-            android:layout_marginTop="@dimen/small"
-            android:layout_marginEnd="@dimen/normal"
+            android:layout_marginTop = "@dimen/small"
+            android:layout_marginEnd = "@dimen/normal"
             android:maxLines = "3"
             android:textColor = "@color/defaultTextColor"
             android:textSize = "@dimen/text_small"
-            tools:text="我是描述"
-            app:layout_constraintStart_toEndOf = "@id/author_img_box"
+            app:layout_constraintEnd_toStartOf = "@id/button_send_message"
+            app:layout_constraintStart_toEndOf = "@id/author_img"
             app:layout_constraintTop_toBottomOf = "@id/author_name"
-            app:layout_constraintEnd_toStartOf="@id/button_send_message"
-            />
+            tools:text = "我是描述" />
 
         <com.google.android.material.button.MaterialButton
             android:id = "@+id/button_send_message"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            style = "@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginEnd = "@dimen/normal"
-            android:text = "发送私信"
+            android:text = "@string/author_send_private_message"
             android:textSize = "@dimen/text_default"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toEndOf = "parent"

@@ -11,7 +11,6 @@ import org.mikuclub.app.javaBeans.response.Categories;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
-import org.mikuclub.app.ui.activity.base.MyFragment;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
@@ -19,6 +18,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
@@ -27,7 +27,7 @@ import mikuclub.app.R;
  * 主页-分类分页
  * Home page: category list fragment
  */
-public class HomeCategoriesFragment extends MyFragment
+public class HomeCategoriesFragment extends Fragment
 {
 
 
