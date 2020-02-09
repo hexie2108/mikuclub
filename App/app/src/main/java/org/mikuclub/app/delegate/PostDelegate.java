@@ -76,17 +76,13 @@ public class PostDelegate extends BaseDelegate
                 //如果排列顺序未设置
                 if (parameters.getOrderby() == null)
                 {
-                        parameters.setOrderby(GlobalConfig.OrderBy.DATE);
-                }
-                //如果文章状态未设置
-                if (parameters.getStatus() == null)
-                {
-                        parameters.setStatus(GlobalConfig.Status.PUBLISH);
+                        parameters.setOrderby(GlobalConfig.Post.OrderBy.DATE);
                 }
 
                 //如果是搜索文章
                 Map<String, String> headers = null;
-                if(parameters.getSearch()!=null)
+                //如果是要搜索的情况, 或者是要获取 除了publish 以外其他状态的文章
+                if(parameters.getSearch()!=null || parameters.getStatus() != null)
                 {
                         headers = UserPreferencesUtils.createLoggedUserHeader();
                 }
@@ -96,6 +92,21 @@ public class PostDelegate extends BaseDelegate
 
         }
 
+
+        /**
+         * 删除文章
+         *
+         * @param httpCallBack
+         * @param postId
+         */
+        public void deletePost(HttpCallBack httpCallBack, int postId)
+        {
+                //设置基本url参数
+                Map<String, Object> baseParametersMap =new BaseParameters().toMap();
+                //增加确认永远删除参数
+                baseParametersMap.put("force", 1);
+                getModel().deleteById(postId, baseParametersMap, null, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+        }
 
 
 

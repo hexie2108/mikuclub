@@ -30,7 +30,7 @@ public class AlertDialogUtils
                 AlertDialog dialog = builder.create();
                 //禁止通过触摸屏幕关闭弹窗
                 //禁止通过触摸屏幕关闭弹窗
-                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCanceledOnTouchOutside(cancelable);
                 //只有在可取消的情况下
                 if (cancelable)
                 {
@@ -80,7 +80,7 @@ public class AlertDialogUtils
                 //创建弹窗
                 AlertDialog dialog = builder.create();
                 //禁止通过触摸屏幕关闭弹窗
-                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCanceledOnTouchOutside(cancelable);
                 //只有在可取消的情况下
                 if (cancelable)
                 {

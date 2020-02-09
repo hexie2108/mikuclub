@@ -60,7 +60,7 @@ public class CategoryFragment extends Fragment
                                  Bundle savedInstanceState)
         {
                 // 为fragment加载主布局
-                return inflater.inflate(R.layout.fragment_category, container, false);
+                return inflater.inflate(R.layout.recycler_view, container, false);
         }
 
         @Override

@@ -63,30 +63,7 @@
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp" />
 
-                <com.google.android.material.button.MaterialButton
 
-                    android:id = "@+id/share_qq_zone_button"
-                    style = "@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width = "0dp"
-                    android:layout_height = "wrap_content"
-                    android:layout_marginTop = "@dimen/very_large"
-                    android:insetLeft = "0dp"
-                    android:insetTop = "0dp"
-                    android:insetRight = "0dp"
-                    android:insetBottom = "0dp"
-                    android:padding = "0dp"
-                    android:text = "@string/sharing_to_qq_zone"
-                    android:textColor = "@color/colorPrimary"
-                    app:icon = "@drawable/qzone"
-                    app:iconGravity = "textStart"
-                    app:iconPadding = "@dimen/normal"
-                    app:iconTint = "@color/colorPrimary"
-                    app:layout_constraintEnd_toEndOf = "parent"
-                    app:layout_constraintStart_toStartOf = "parent"
-                    app:layout_constraintTop_toBottomOf = "@id/share_qq_button"
-                    app:rippleColor = "@color/defaultRippleColor"
-                    app:strokeColor = "@color/defaultTextColor"
-                    app:strokeWidth = "0.5dp" />
 
 
                 <com.google.android.material.button.MaterialButton
@@ -109,7 +86,7 @@
                     app:iconTint = "@color/colorPrimary"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
-                    app:layout_constraintTop_toBottomOf = "@id/share_qq_zone_button"
+                    app:layout_constraintTop_toBottomOf = "@id/share_qq_button"
                     app:rippleColor = "@color/defaultRippleColor"
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp" />
@@ -139,6 +116,35 @@
                     app:rippleColor = "@color/defaultRippleColor"
                     app:strokeColor = "@color/defaultTextColor"
                     app:strokeWidth = "0.5dp" />
+
+
+                <com.google.android.material.button.MaterialButton
+
+                    android:id = "@+id/another_methods"
+                    style = "@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/very_large"
+                    android:insetLeft = "0dp"
+                    android:insetTop = "0dp"
+                    android:insetRight = "0dp"
+                    android:insetBottom = "0dp"
+                    android:padding = "0dp"
+                    android:text = "@string/another_methods"
+                    android:textColor = "@color/colorPrimary"
+                    app:icon = "@drawable/more_vert"
+                    app:iconGravity = "textStart"
+                    app:iconPadding = "@dimen/normal"
+                    app:iconTint = "@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/share_link_button"
+                    app:rippleColor = "@color/defaultRippleColor"
+                    app:strokeColor = "@color/defaultTextColor"
+                    app:strokeWidth = "0.5dp" />
+
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

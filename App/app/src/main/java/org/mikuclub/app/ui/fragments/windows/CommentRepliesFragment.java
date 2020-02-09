@@ -219,7 +219,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 //设置参数
                 parameters.setPost(new ArrayList<>(Collections.singletonList(comment.getPost())));
                 parameters.setParent(parentList);
-                parameters.setOrder(GlobalConfig.Order.ASC);
+                parameters.setOrder(GlobalConfig.Post.Order.ASC);
 
 
                 //创建数据控制器

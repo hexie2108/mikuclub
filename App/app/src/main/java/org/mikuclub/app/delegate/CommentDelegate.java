@@ -41,7 +41,7 @@ public class CommentDelegate extends BaseDelegate
                 //如果排列顺序未设置
                 if (parameters.getOrderby() == null)
                 {
-                        parameters.setOrderby(GlobalConfig.OrderBy.DATE);
+                        parameters.setOrderby(GlobalConfig.Post.OrderBy.DATE);
                 }
 
                 getModel().selectForList(parameters.toMap(), null, getTag(), httpCallBack);

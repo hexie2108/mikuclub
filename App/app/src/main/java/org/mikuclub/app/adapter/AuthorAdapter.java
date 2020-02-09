@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import org.mikuclub.app.adapter.viewHolder.AuthorHeaderViewHolder;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.PrivateMessageActivity;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -91,6 +92,11 @@ public class AuthorAdapter extends PostAdapter
                         //设置用户名
                         viewHolder.getAuthorName().setText(author.getName());
                         viewHolder.getAuthorDescription().setText(author.getDescription());
+                }
+                //如果用户未登陆
+                if(!UserPreferencesUtils.isLogin()){
+                        //隐藏私信按钮
+                        viewHolder.getButtonSendMessage().setVisibility(View.GONE);
                 }
         }
 

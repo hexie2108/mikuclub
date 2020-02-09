@@ -252,7 +252,7 @@ public class HomeActivity extends AppCompatActivity
                 if (currentActiveFragment == homeMainFragment)
                 {
                         //显示按钮
-                        floatingActionButton.setVisibility(View.VISIBLE);
+                        floatingActionButton.setVisibility(View.INVISIBLE);
                 }
                 //如果是其他分页
                 else
@@ -311,6 +311,14 @@ public class HomeActivity extends AppCompatActivity
                                         //启动个人信息页
                                         UserProfileActivity.startActionFroResult(this);
                                         break;
+                                case R.id.item_post_manage:
+                                        //启动投稿管理
+                                        PostManageActivity.startAction(this);
+                                        break;
+                                case R.id.item_submit_post:
+
+                                        break;
+
                         }
                         //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);

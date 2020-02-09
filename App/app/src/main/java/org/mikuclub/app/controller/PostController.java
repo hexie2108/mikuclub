@@ -65,6 +65,7 @@ public class PostController extends BaseController
                                 @Override
                                 public void onSuccess(String response)
                                 {
+
                                         //解析数据
                                         Posts newPosts = ParserUtils.fromJson(response, Posts.class);
                                         //加载数据
@@ -102,12 +103,12 @@ public class PostController extends BaseController
                                 @Override
                                 public void onError(WpError wpError)
                                 {
+
                                         //如果数据列表还是空的 就报了无内容错误, 说明这个用户没有投过稿
                                         if(getRecyclerDataList().size()==0){
                                                 getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.author_empty_error_message));
                                         }
-
-                                        //隐藏尾部
+                                        //显示尾部
                                         getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                                 }
 
@@ -115,6 +116,7 @@ public class PostController extends BaseController
                                 @Override
                                 public void onHttpError()
                                 {
+
                                         //显示错误信息, 绑定点击事件允许用户手动重试
                                         getRecyclerViewAdapter().setInternetErrorListener(v -> {
                                                 //重置请求状态
@@ -128,6 +130,7 @@ public class PostController extends BaseController
                                 @Override
                                 public void onCancel()
                                 {
+
                                         setWantMore(true);
                                         //隐藏尾部加载进度条
                                         getRecyclerViewAdapter().updateFooterStatus(false, false, false);
@@ -282,5 +285,10 @@ public class PostController extends BaseController
         public void setSwipeRefresh(SwipeRefreshLayout swipeRefresh)
         {
                 this.swipeRefresh = swipeRefresh;
+        }
+
+        public void setScrollPositionAfterRefresh(int scrollPositionAfterRefresh)
+        {
+                this.scrollPositionAfterRefresh = scrollPositionAfterRefresh;
         }
 }

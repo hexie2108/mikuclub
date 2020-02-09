@@ -10,7 +10,6 @@
         <uses-permission android:name = "android.permission.READ_PHONE_STATE" />
         <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
 
-
         <application
             android:name = "org.mikuclub.app.context.MyApplication"
             android:allowBackup = "true"
@@ -19,12 +18,14 @@
             android:networkSecurityConfig = "@xml/network_security_config"
             android:roundIcon = "@mipmap/ic_launcher_round"
             android:supportsRtl = "true"
-            android:theme = "@style/AppTheme"
-           >
+            android:theme = "@style/AppTheme">
+
                 <service
                     android:name = "org.mikuclub.app.service.PostPushService"
                     android:enabled = "true"
-                    android:exported = "false"/>
+                    android:exported = "false" />
+
+                <activity android:name = "org.mikuclub.app.ui.activity.PostManageActivity" android:label="@string/post_manage_title"/>
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
@@ -50,11 +51,12 @@
                 <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
                 <activity android:name = "org.mikuclub.app.ui.activity.AuthorActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.ReportActivity" android:label = "@string/report" />
-                <activity android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"   android:label = "@string/user_profile" />
-
-
-                <!-- 腾讯QQ sdk专用 -->
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.ReportActivity"
+                    android:label = "@string/report" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"
+                    android:label = "@string/user_profile" /> <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"
                     android:launchMode = "singleTask"

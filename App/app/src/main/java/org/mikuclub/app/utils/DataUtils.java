@@ -32,7 +32,7 @@ public class DataUtils
                 //如果列表不是空的
                 if (arraylistSource != null && !arraylistSource.isEmpty())
                 {
-                        StringBuilder  outputBuilder = new StringBuilder("");
+                        StringBuilder outputBuilder = new StringBuilder("");
                         for (int i = 0; i < arraylistSource.size(); i++)
                         {
                                 outputBuilder.append(symbolAround);
@@ -59,7 +59,7 @@ public class DataUtils
         {
 
                 String output = "";
-                StringBuilder  outputBuilder = new StringBuilder();
+                StringBuilder outputBuilder = new StringBuilder();
                 Iterator<Map.Entry<String, Object>> iterator = mapSource.entrySet().iterator();
                 try
                 {
@@ -67,11 +67,31 @@ public class DataUtils
                         while (iterator.hasNext())
                         {
                                 Map.Entry<String, Object> entry = iterator.next();
-                                //System.out.println(entry.getKey() + "　：" + entry.getValue());
-                                outputBuilder.append(entry.getKey());
-                                outputBuilder.append(separatorKeyValue);
-                                outputBuilder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8.name()));
-                                outputBuilder.append(separatorEntry);
+
+                                //如果是列表类型
+                                if (entry.getValue() instanceof ArrayList)
+                                {
+
+                                        ArrayList list = (ArrayList) entry.getValue();
+                                        //遍历添加数组到query参数里
+                                        for (int i = 0; i < list.size(); i++)
+                                        {
+                                                outputBuilder.append(entry.getKey());
+                                                outputBuilder.append("[]");
+                                                outputBuilder.append(separatorKeyValue);
+                                                outputBuilder.append(URLEncoder.encode(list.get(i).toString(), StandardCharsets.UTF_8.name()));
+                                                outputBuilder.append(separatorEntry);
+                                        }
+
+                                }
+                                else
+                                {
+                                        outputBuilder.append(entry.getKey());
+                                        outputBuilder.append(separatorKeyValue);
+                                        outputBuilder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8.name()));
+                                        outputBuilder.append(separatorEntry);
+                                }
+
                         }
                 }
                 catch (UnsupportedEncodingException e)
@@ -126,7 +146,8 @@ public class DataUtils
                                 }
                         }
                         //如果是其他类型
-                        else{
+                        else
+                        {
                                 map.put(key, inputValue);
                         }
 

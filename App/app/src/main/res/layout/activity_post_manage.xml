@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context="org.mikuclub.app.ui.activity.PostManageActivity"
+    >
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id = "@+id/app_bar"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id = "@+id/toolbar"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "?attr/actionBarSize"
+                    android:background = "?attr/colorPrimary"
+
+                    app:layout_scrollFlags = "scroll|enterAlways|snap"
+                    app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
+
+                </androidx.appcompat.widget.Toolbar>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <include layout="@layout/recycler_view"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior"
+            />
+
+        <include layout = "@layout/list_floating_action_button" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

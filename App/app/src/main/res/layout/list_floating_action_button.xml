@@ -11,4 +11,5 @@
     app:backgroundTint = "@color/defaultBackground"
     app:layout_behavior = "org.mikuclub.app.utils.custom.MyFloatingActionButtonScrollBehavior"
     app:srcCompat = "@drawable/double_arrow"
+    android:visibility="invisible"
     app:tint = "@color/colorPrimary" />

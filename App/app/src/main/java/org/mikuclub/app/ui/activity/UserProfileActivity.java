@@ -542,10 +542,13 @@ public class UserProfileActivity extends AppCompatActivity
                         //提示信息更新
                         ToastUtils.shortToast(ResourcesUtils.getString(R.string.update_successfully_message));
                         //注销提交按钮
-                        buttonUpdate.setEnabled(false);
+                        //buttonUpdate.setEnabled(false);
                         //移除图片文件的指针
-                        newAvatarFile = null;
-                        newAvatarId = 0;
+                        //newAvatarFile = null;
+                        //newAvatarId = 0;
+
+                        //更新成功结束当前页面
+                        finish();
                 }
 
         }

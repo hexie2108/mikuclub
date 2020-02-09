@@ -22,6 +22,13 @@
         <string name = "unread">未读</string>
         <string name = "email_address">邮箱地址</string>
 
+        <string name = "status">状态:</string>
+        <string name = "edit">编辑</string>
+        <string name = "delete">删除</string>
+
+
+
+
         <!--   menu 菜单-->
         <string name = "home">主页</string>
         <string name = "category">分类</string>
@@ -34,6 +41,8 @@
         <string name = "user_profile">个人信息</string>
         <string name = "report">问题反馈</string>
         <string name = "shopping">动漫周边</string>
+        <string name = "submit_post">投稿</string>
+
 
         <!--home page-->
         <string name = "home_must_login_before" translatable = "false">请登陆后再访问本页面</string>
@@ -54,6 +63,15 @@
         <string name = "reply_count">条回复</string>
         <string name = "comment_input_default_hint">发表评论&#8230;</string>
         <string name = "comment_source">评论来源:</string>
+
+        <!--post manage page 投稿管理 -->
+        <string name = "post_manage_title">投稿管理</string>
+        <string name = "post_status_publish">已发布</string>
+        <string name = "post_status_pending">等待审核</string>
+        <string name = "post_status_draft">草稿</string>
+        <string name = "delete_post">删除投稿</string>
+        <string name = "confirm_delete_post">确认要删除投稿吗?</string>
+        <string name = "delete_successful">删除成功</string>
 
         <!--post page-->
         <string name = "description">描述</string>
@@ -77,13 +95,15 @@
         <string name = "post_unzip_password">解压密码</string>
         <string name = "post_download_help">提示: 点击下载后会自动复制提取码到剪切板</string>
         <string name = "sharing_to_qq">分享到QQ</string>
-        <string name = "sharing_to_qq_zone">分享到QQ空间</string>
+        <string name = "another_methods">其他方式</string>
         <string name = "sharing_to_weibo">分享到微博</string>
         <string name = "sharing_to_link">复制链接</string>
         <string name = "post_must_login_before_to_comment">需要登录后才能发表评论</string>
         <string name = "comment_must_notify_author">本次评论要通知UP主</string>
         <string name = "download_failure_feedback">反馈下载失效</string>
         <string name = "watch_on_bilibili">去B站观看</string>
+        <string name = "share_to">分享到</string>
+
 
         <!--user profile page-->
         <string name = "save_the_update">保存更新</string>
@@ -101,7 +121,7 @@
         <string name = "update_image_error_message" translatable = "false">上传图片失败</string>
         <string name = "update_image_meta_error_message" translatable = "false">更新图片元数据失败</string>
         <string name = "update_user_error_message" translatable = "false">更新图片元数据失败</string>
-        <string name = "update_successfully_message" >信息已更新完成</string>
+        <string name = "update_successfully_message">信息已更新完成</string>
 
         <!--search page-->
         <string name = "search_input_hint">要搜索点什么吗&#8230;</string>
@@ -125,8 +145,6 @@
         <string name = "welcome_update_version_name">版本名:</string>
         <string name = "welcome_update_positive_button">前往下载</string>
         <string name = "welcome_force_update_notice" translatable = "false">本次更新属于重大更新, 请下载安装新版本</string>
-
-
 
 
         <!--     login page -->
@@ -165,8 +183,6 @@
         <string name = "notification_content">距离上次查看又有 %1$d 条新投稿发布了, 快来看看吧~</string>
         <string name = "channel_name" translatable = "false">消息推送</string>
         <string name = "channel_description" translatable = "false">消息推送的渠道</string>
-
-
 
 
 </resources>

@@ -135,25 +135,27 @@ public class GlobalConfig
                 public static final String POST_META = HOST + UTILS + "post_meta/";
 
                 //POST 更新用户信息
-                public static final String UPDATE_USER = HOST  + "wp-json/wp/v2/users/me/";
+                public static final String UPDATE_USER = HOST + "wp-json/wp/v2/users/me/";
         }
 
         /**
          * 资源的元数据
          */
-        public class Metadata{
+        public class Metadata
+        {
 
-                public class Attachment{
+                public class Attachment
+                {
                         //用来注明该附件图片 是头像, 和储存作者ID
                         public static final String _WP_ATTACHMENT_WP_USER_AVATAR = "_wp_attachment_wp_user_avatar";
 
                 }
 
-                public class User{
+                public class User
+                {
                         //储存 用户使用的头像 的post id
                         public static final String MM_USER_AVATAR = "mm_user_avatar";
                 }
-
 
 
         }
@@ -189,21 +191,29 @@ public class GlobalConfig
 
         }
 
-
-        public class OrderBy
+        public static class Post
         {
-                public static final String DATE = "date";
-        }
+                public class OrderBy
+                {
+                        public static final String DATE = "date";
+                }
 
-        public class Order
-        {
-                public static final String ASC = "asc";
-                public static final String DESC = "desc";
-        }
+                public class Order
+                {
+                        public static final String ASC = "asc";
+                        public static final String DESC = "desc";
+                }
 
-        public class Status
-        {
-                public static final String PUBLISH = "publish";
+                public static class Status
+                {
+                        public static final String PUBLISH = "publish";
+                        public static final String DRAFT = "draft";
+                        public static final String PENDING = "pending";
+                        //投稿管理页面的的文章状态
+                        public static final String[] POST_MANAGE_STATUS = {PUBLISH, DRAFT, PENDING};
+                }
+
+
         }
 
 
