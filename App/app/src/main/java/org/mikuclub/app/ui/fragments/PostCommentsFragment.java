@@ -122,7 +122,7 @@ public class PostCommentsFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new CommentAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new CommentAdapter(getActivity(), recyclerDataList);
                 //如果评论数为0  修改默认错误信息
                 if(GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_comments())){
                         recyclerViewAdapter.setNotMoreErrorMessage("目前还没有评论哦");

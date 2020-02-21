@@ -43,6 +43,8 @@ public class HttpCallBack
          */
         public void onError(WpError wpError)
         {
+                //默认 弹窗显示错误信息
+                ToastUtils.shortToast(wpError.getBody().getMessage());
 
         }
 

@@ -109,7 +109,7 @@ public class PrivateMessageActivity extends AppCompatActivity
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new PrivateMessageAdapter(recyclerDataList, this, UserPreferencesUtils.getUser(), author);
+                recyclerViewAdapter = new PrivateMessageAdapter(this, recyclerDataList, UserPreferencesUtils.getUser(), author);
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 layoutManager.setOrientation(RecyclerView.VERTICAL);

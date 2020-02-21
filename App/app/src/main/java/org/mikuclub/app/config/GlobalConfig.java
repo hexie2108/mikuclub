@@ -49,6 +49,9 @@ public class GlobalConfig
         //提前多少item触发自动加载
         public static final int PRE_LOAD_ITEM_NUMBER = 3;
 
+        //投稿的最大预览图片数量
+        public static final int MAX_IMAGE_PREVIEWS_COUNT = 8;
+
 
         /**
          * 第三方应用的schema接口和网络地址
@@ -64,6 +67,8 @@ public class GlobalConfig
                 //百度网盘app url唤醒格式
                 public static final String BAIDU_PAN_APP_WAKE_URL = "bdnetdisk://n/action.SHARE_LINK";
 
+                //b站视频识别码
+                public static final String BILIBILI_AV = "av";
                 //b站视频前缀地址
                 public static final String BILIBILI_HOST = "https://www.bilibili.com/video/";
                 //bilibili app url唤醒格式
@@ -71,6 +76,10 @@ public class GlobalConfig
 
                 public static final String TAOBAO_SCHEME = "taobao://";
                 public static final String TAOBAO_SHOP_HOME = "mikuclub.taobao.com/";
+
+                public static final String TAOBAO_APK_URL = TAOBAO_SCHEME + TAOBAO_SHOP_HOME;
+                public static final String TAOBAO_WEB_URL = HTTPS_SCHEME + TAOBAO_SHOP_HOME;
+
         }
 
 

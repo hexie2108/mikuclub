@@ -112,7 +112,7 @@ public class HomeMainFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建适配器
-                recyclerViewAdapter = new HomeListAdapter(recyclerDataList, stickyPosts.getBody(), getActivity());
+                recyclerViewAdapter = new HomeListAdapter(stickyPosts.getBody(), recyclerDataList, getActivity());
 
                 //创建列表网格布局
                 //设置行数

@@ -157,16 +157,14 @@ public class PostMainFragment extends Fragment
                 postAuthorName.setOnClickListener(authorActivityListener);
 
                 //在线视频不是空的
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getVideo()))
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getBilibili()))
                 {
-                        String videoSrc = metadata.getVideo().get(0);
+                        String videoSrc = metadata.getBilibili().get(0);
                         //确如果是 b站地址
-                        if (videoSrc.contains("av") && videoSrc.contains("cid"))
+                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV))
                         {
-                                //截取av号
-                                String av = videoSrc.split(",")[0];
-                                final String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL + av.substring(2);
-                                final String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + av;
+                                final String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL + videoSrc.substring(2);
+                                final String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + videoSrc;
                                 //监听按钮点击
                                 postBilibiliButton.setOnClickListener(v -> {
                                         //启动第三方应用

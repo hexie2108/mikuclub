@@ -12,7 +12,7 @@
                 <item
                     android:id = "@+id/item_submit_post"
                     android:icon = "@drawable/publish"
-                    android:title = "@string/submit_post"
+                    android:title = "@string/submit_post_title"
                     />
                 <item
                     android:id = "@+id/item_post_manage"

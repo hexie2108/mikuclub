@@ -103,7 +103,7 @@ public class SearchFragment extends Fragment
         private void initRecyclerView()
         {
 
-                recyclerViewAdapter = new PostAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new PostAdapter(getActivity(), recyclerDataList);
 
                 //创建网格布局
                 int numberColumn = 2;

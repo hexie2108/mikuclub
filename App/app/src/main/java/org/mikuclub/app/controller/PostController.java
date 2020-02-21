@@ -68,10 +68,11 @@ public class PostController extends BaseController
 
                                         //解析数据
                                         Posts newPosts = ParserUtils.fromJson(response, Posts.class);
-                                        //加载数据
-                                        getRecyclerDataList().addAll(newPosts.getBody());
                                         //通知列表更新, 获取正确的插入位置, 排除可能的头部造成的偏移
                                         int position = getRecyclerViewAdapter().getLastItemPositionWithHeaderRowFix();
+                                        //加载数据
+                                        getRecyclerDataList().addAll(newPosts.getBody());
+
                                         getRecyclerViewAdapter().notifyItemInserted(position);
 
                                         //当前页数+1

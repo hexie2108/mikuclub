@@ -25,9 +25,7 @@
         <string name = "status">状态:</string>
         <string name = "edit">编辑</string>
         <string name = "delete">删除</string>
-
-
-
+        <string name = "confirm_delete">确认要删除吗?</string>
 
         <!--   menu 菜单-->
         <string name = "home">主页</string>
@@ -41,7 +39,7 @@
         <string name = "user_profile">个人信息</string>
         <string name = "report">问题反馈</string>
         <string name = "shopping">动漫周边</string>
-        <string name = "submit_post">投稿</string>
+        <string name = "submit_post_title">投稿</string>
 
 
         <!--home page-->
@@ -71,6 +69,7 @@
         <string name = "post_status_draft">草稿</string>
         <string name = "delete_post">删除投稿</string>
         <string name = "confirm_delete_post">确认要删除投稿吗?</string>
+
         <string name = "delete_successful">删除成功</string>
 
         <!--post page-->
@@ -93,7 +92,7 @@
         <string name = "post_download2">下载点2</string>
         <string name = "post_access_password">访问密码</string>
         <string name = "post_unzip_password">解压密码</string>
-        <string name = "post_download_help">提示: 点击下载后会自动复制提取码到剪切板</string>
+        <string name = "post_download_help">提示1: 点击下载后会自动复制提取码到剪切板\n提示2: 如果解压时提示密码错误, 先确认密码是否复制正确, 之后尝试更换一个靠谱的下载和解压软件, 文件下载时损坏和辣鸡解压软件是导致压缩包无法正常解压的主要原因</string>
         <string name = "sharing_to_qq">分享到QQ</string>
         <string name = "another_methods">其他方式</string>
         <string name = "sharing_to_weibo">分享到微博</string>
@@ -137,6 +136,27 @@
         <string name = "report_input_hint">请在这里尽可能详细 描述问题</string>
         <string name = "report_contact_input_hint">联系QQ号 (可填可不填)</string>
         <string name = "report_help">在这里可以报告在使用本应用中碰到的问题, 请指出是在哪个页面, 在什么情况下发生的BUG, 如果有可能请留下QQ号, 方便后续联系定位BUG的原因</string>
+
+        <!--post submit page-->
+        <string name = "title">标题</string>
+        <string name = "source_name">来源说明 (可选)</string>
+        <string name = "source_name_help">注明来源地址, 原标题 和 原作者名</string>
+        <string name = "image_preview">图片预览</string>
+        <string name = "upload_image">上传图片</string>
+        <string name = "image_preview_help">需要提供至少1张图片作为封面, 最多支持8张</string>
+        <string name = "image_preview_max_count_error">每个投稿最多支持8张图片</string>
+        <string name = "download_link">下载地址</string>
+        <string name = "download_link_error">下载地址的格式不正确, 只支持http开头的网址</string>
+        <string name = "tag">标签 (可选)</string>
+        <string name = "tag_help">可以输入投稿相关的关键词, 人物, 歌曲名等等, 需要输入多个标签可以用逗号 , 分割</string>
+        <string name = "bilibili_link">B站视频地址 (可选)</string>
+        <string name = "bilibili_link_error">不是正确的B站地址</string>
+        <string name = "submit_post">提交投稿</string>
+        <string name = "draft_post">保存为草稿</string>
+        <string name = "select_category">选择分类</string>
+        <string name = "confim_exit_title">确认要退出吗?</string>
+        <string name = "confirm_exit_content">未提交的信息将不会被保存</string>
+
 
         <!--welcome page-->
         <string name = "welcome_internet_not_available_error_message" translatable = "false">未发现可用的网络连接, 请接入网络后 再点击重试</string>
@@ -183,6 +203,9 @@
         <string name = "notification_content">距离上次查看又有 %1$d 条新投稿发布了, 快来看看吧~</string>
         <string name = "channel_name" translatable = "false">消息推送</string>
         <string name = "channel_description" translatable = "false">消息推送的渠道</string>
+
+        <!-- home category page-->
+        <string name = "home_cateogry_help">登陆后才能使用魔法</string>
 
 
 </resources>

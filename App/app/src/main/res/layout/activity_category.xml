@@ -14,7 +14,6 @@ tools:context="org.mikuclub.app.ui.activity.CategoryActivity"
             android:layout_height = "wrap_content"
             android:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-
                 <androidx.appcompat.widget.Toolbar
                     android:id = "@+id/toolbar"
                     android:layout_width = "match_parent"
@@ -23,7 +22,6 @@ tools:context="org.mikuclub.app.ui.activity.CategoryActivity"
 
                     app:layout_scrollFlags = "scroll|enterAlways|snap"
                     app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
-
 
                                 <ImageView
                                     android:id = "@+id/search_input_icon"
@@ -34,12 +32,7 @@ tools:context="org.mikuclub.app.ui.activity.CategoryActivity"
                                     android:src = "@drawable/search"
                                     />
 
-
-
-
                 </androidx.appcompat.widget.Toolbar>
-
-
 
                 <com.google.android.material.tabs.TabLayout
                     android:id = "@+id/tabs_menu"
@@ -51,9 +44,7 @@ tools:context="org.mikuclub.app.ui.activity.CategoryActivity"
                     style="@style/Widget.MaterialComponents.TabLayout.Colored"
                     />
 
-
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <androidx.viewpager2.widget.ViewPager2
             android:id = "@+id/view_pager"

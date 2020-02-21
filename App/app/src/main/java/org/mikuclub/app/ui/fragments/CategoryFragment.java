@@ -112,7 +112,7 @@ public class CategoryFragment extends Fragment
         {
 
                 //创建数据适配器
-                recyclerViewAdapter = new PostAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new PostAdapter(getActivity(), recyclerDataList);
 
                 //创建列表网格布局
                 int numberColumn = 2;

@@ -28,12 +28,12 @@ public class CategoryAdapter extends BaseAdapterWithFooter
         /**
          * 构建函数 default constructor
          *
-         * @param list
          * @param context
+         * @param list
          */
-        public CategoryAdapter(List<Category> list, Context context)
+        public CategoryAdapter(Context context, List<Category> list)
         {
-                super(list, context);
+                super(context, list);
         }
 
 

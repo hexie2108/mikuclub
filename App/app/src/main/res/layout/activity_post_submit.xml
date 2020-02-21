@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context = "org.mikuclub.app.ui.activity.PostSubmitActivity">
+
+
+        <include layout = "@layout/app_bar" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior">
+
+                <LinearLayout
+                    android:layout_width = "match_parent"
+                    android:layout_height = "match_parent"
+                    android:orientation = "vertical"
+                    android:padding = "@dimen/normal">
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_title_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/title"
+                            app:boxStrokeWidth = "1dp"
+                            app:endIconMode = "clear_text"
+                            app:errorEnabled = "true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_title"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:imeOptions = "actionNext"
+                                    android:inputType = "text"
+                                    android:maxLines = "1"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_category_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+
+                            android:hint = "@string/category"
+                            app:boxStrokeWidth = "1dp"
+                            app:errorEnabled = "true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_category"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:focusable = "false"
+                                    android:imeOptions = "actionNext"
+                                    android:inputType = "text"
+                                    android:maxLines = "1"
+
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_source_name_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/source_name"
+                            app:boxStrokeWidth = "1dp"
+                            app:endIconMode = "clear_text"
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/source_name_help">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_source_name"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+
+                                    android:imeOptions = "actionNext"
+                                    android:inputType = "text"
+                                    android:maxLines = "1"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_description_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/description"
+                            app:boxStrokeWidth = "1dp"
+                            app:endIconMode = "clear_text"
+                            app:errorEnabled = "true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_description"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:inputType = "textMultiLine"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <include
+                            layout = "@layout/split_line"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "0.5dp"
+                            android:layout_marginTop = "@dimen/normal"
+                            android:layout_marginBottom = "@dimen/normal" />
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id = "@+id/button_upload"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:text = "@string/upload_image" />
+
+                        <TextView
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:text = "@string/image_preview_help" />
+
+                        <TextView
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
+                            android:layout_marginBottom = "@dimen/normal"
+                            android:text = "@string/image_preview" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id = "@+id/recycler_view"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content" />
+
+
+                        <include
+                            layout = "@layout/split_line"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "0.5dp"
+                            android:layout_marginTop = "@dimen/normal"
+                            android:layout_marginBottom = "@dimen/normal" />
+
+
+                        <TextView
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "@dimen/normal"
+                            android:text = "@string/post_download1" />
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_download1_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/download_link"
+                            android:imeOptions = "actionNext"
+                            android:maxLines = "1"
+                            app:boxStrokeWidth = "1dp"
+                            app:endIconMode = "clear_text"
+                            app:errorEnabled = "true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_download1"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:inputType = "text"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:orientation = "horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id = "@+id/input_password1_layout"
+                                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_marginEnd = "@dimen/normal"
+                                    android:layout_weight = "1"
+                                    android:hint = "@string/post_access_password"
+                                    android:imeOptions = "actionNext"
+                                    android:maxLines = "1"
+                                    app:boxStrokeWidth = "1dp"
+                                    app:endIconMode = "clear_text"
+                                    app:errorEnabled = "true">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id = "@+id/input_password1"
+                                            android:layout_width = "match_parent"
+                                            android:layout_height = "wrap_content"
+                                            android:inputType = "text"
+                                            android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id = "@+id/input_unzip_password1_layout"
+                                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_weight = "1"
+                                    android:hint = "@string/post_unzip_password"
+                                    android:imeOptions = "actionNext"
+                                    android:maxLines = "1"
+                                    app:boxStrokeWidth = "1dp"
+                                    app:endIconMode = "clear_text"
+                                    app:errorEnabled = "true">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id = "@+id/input_unzip_password1"
+                                            android:layout_width = "match_parent"
+                                            android:layout_height = "wrap_content"
+                                            android:inputType = "text"
+                                            android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+
+                        <TextView
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginBottom = "@dimen/normal"
+                            android:text = "@string/post_download2" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_download2_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/download_link"
+                            android:imeOptions = "actionNext"
+                            android:maxLines = "1"
+                            app:boxStrokeWidth = "1dp"
+                            app:endIconMode = "clear_text"
+                            app:errorEnabled = "true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_download2"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:inputType = "text"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:orientation = "horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id = "@+id/input_password2_layout"
+                                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_marginEnd = "@dimen/normal"
+                                    android:layout_weight = "1"
+                                    android:hint = "@string/post_access_password"
+                                    android:imeOptions = "actionNext"
+                                    android:maxLines = "1"
+                                    app:boxStrokeWidth = "1dp"
+                                    app:endIconMode = "clear_text"
+                                    app:errorEnabled = "true">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id = "@+id/input_password2"
+                                            android:layout_width = "match_parent"
+                                            android:layout_height = "wrap_content"
+                                            android:inputType = "text"
+                                            android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id = "@+id/input_unzip_password2_layout"
+                                    style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width = "0dp"
+                                    android:layout_height = "wrap_content"
+                                    android:layout_weight = "1"
+                                    android:hint = "@string/post_unzip_password"
+                                    android:imeOptions = "actionNext"
+                                    android:maxLines = "1"
+                                    app:boxStrokeWidth = "1dp"
+                                    app:endIconMode = "clear_text"
+                                    app:errorEnabled = "true">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id = "@+id/input_unzip_password2"
+                                            android:layout_width = "match_parent"
+                                            android:layout_height = "wrap_content"
+                                            android:inputType = "text"
+                                            android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+
+                        <include
+                            layout = "@layout/split_line"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "0.5dp"
+                            android:layout_marginTop = "@dimen/normal"
+                            android:layout_marginBottom = "@dimen/normal" />
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_tag_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/tag"
+                            android:visibility = "gone"
+                            app:boxStrokeWidth = "1dp"
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/tag_help">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_tag"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:imeOptions = "actionNext"
+                                    android:inputType = "text"
+                                    android:maxLines = "1"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id = "@+id/input_bilibili_layout"
+                            style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:hint = "@string/bilibili_link"
+                            app:boxStrokeWidth = "1dp"
+                            app:endIconMode = "clear_text"
+                            app:errorEnabled = "true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id = "@+id/input_bilibili"
+                                    android:layout_width = "match_parent"
+                                    android:layout_height = "wrap_content"
+                                    android:imeOptions = "actionNext"
+                                    android:inputType = "text"
+                                    android:maxLines = "1"
+                                    android:textCursorDrawable = "@drawable/edi_text_cursor_color" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id = "@+id/button_submit"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/ultra_large"
+                            android:layout_marginBottom = "@dimen/ultra_large"
+                            android:text = "@string/submit_post" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id = "@+id/button_draft"
+                            android:layout_width = "match_parent"
+                            android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/very_large"
+                            android:layout_marginBottom = "@dimen/ultra_large"
+                            android:backgroundTint = "@color/defaultTextColor"
+                            android:text = "@string/draft_post"
+                            android:visibility = "gone" />
+
+                </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

@@ -30,12 +30,12 @@ public class HomePrivateMessageAdapter extends BaseAdapterWithFooter
         /**
          * 构建函数 default constructor
          *
-         * @param list
          * @param context
+         * @param list
          */
-        public HomePrivateMessageAdapter(List list, Context context)
+        public HomePrivateMessageAdapter(Context context, List list)
         {
-                super(list, context);
+                super(context, list);
         }
 
 

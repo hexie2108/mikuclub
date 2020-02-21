@@ -3,6 +3,7 @@ package org.mikuclub.app.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 通用实用方法集
@@ -20,6 +23,58 @@ import java.util.List;
  */
 public class GeneralUtils
 {
+        // 中文字符的正则
+        private static String REGEX_CHINESE = "[\u4e00-\u9fa5]";
+
+        /**
+         * 全角字符转半角
+         * @param text input string
+         * @return the converted String
+         */
+        public static String fullSymbolToHalf(String text)
+        {
+                String output = text;
+                if (!text.isEmpty())
+                {
+                        char[] charArray = text.toCharArray();
+                        for (int i = 0; i < charArray.length; i++)
+                        {
+                                if (charArray[i] == 12288)
+                                {
+                                        charArray[i] = ' ';
+                                }
+                                else if (charArray[i] >= ' ' &&
+                                        charArray[i] <= 65374)
+                                {
+                                        charArray[i] = (char) (charArray[i] - 65248);
+                                }
+                        }
+                        output = new String(charArray);
+                }
+
+                return output;
+        }
+
+
+
+        /**
+         * 去除字符串里的中文字符
+         */
+        public static String replaceChineseCharacters(String text)
+        {
+                String output = text;
+                if (!text.isEmpty())
+                {
+                        // 加载正则表达式
+                        Pattern pat = Pattern.compile(REGEX_CHINESE);
+                        Matcher mat = pat.matcher(text);
+                        output = mat.replaceAll("");
+                }
+                return output;
+
+        }
+
+
         /**
          * 把DP转换成PX
          *
@@ -131,10 +186,12 @@ public class GeneralUtils
 
         /**
          * 检测email字符串是否是个有效的邮箱地址
+         *
          * @param emailText
          * @return
          */
-        public final static boolean isValidEmail(CharSequence emailText) {
+        public final static boolean isValidEmail(CharSequence emailText)
+        {
                 Boolean isValid = false;
                 if (emailText != null)
                 {
@@ -143,6 +200,25 @@ public class GeneralUtils
 
                 return isValid;
         }
+
+
+        /**
+         * 检测URL字符串是否是个有效的链接地址
+         *
+         * @param urlText
+         * @return
+         */
+        public final static boolean isValidUrl(String urlText)
+        {
+                Boolean isValid = false;
+                if (Patterns.WEB_URL.matcher(urlText).matches())
+                {
+                        isValid = true;
+                }
+
+                return isValid;
+        }
+
 
 
 
@@ -156,9 +232,6 @@ public class GeneralUtils
         {
                 return new String(text.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         }
-
-
-
 
 
 }

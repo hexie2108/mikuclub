@@ -20,13 +20,18 @@
             android:supportsRtl = "true"
             android:theme = "@style/AppTheme">
 
+
+
                 <service
                     android:name = "org.mikuclub.app.service.PostPushService"
                     android:enabled = "true"
                     android:exported = "false" />
 
-                <activity android:name = "org.mikuclub.app.ui.activity.PostManageActivity" android:label="@string/post_manage_title"/>
+                <activity android:name = "org.mikuclub.app.ui.activity.PostSubmitActivity" android:label="@string/submit_post_title"></activity>
 
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.PostManageActivity"
+                    android:label = "@string/post_manage_title" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
                     android:label = "@string/settings" />

@@ -184,10 +184,10 @@
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/large"
-                    android:textSize = "@dimen/text_default"
                     android:selectAllOnFocus = "true"
                     android:textColor = "@android:color/black"
                     android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_default"
 
                     app:layout_constraintStart_toEndOf = "@id/down2_unzip_password_text"
                     app:layout_constraintTop_toTopOf = "@id/down2_unzip_password_text"
@@ -229,15 +229,15 @@
             android:id = "@+id/down_info"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
+            android:layout_marginStart = "@dimen/normal"
             android:layout_marginTop = "@dimen/very_large"
-            android:gravity = "center"
+            android:layout_marginEnd = "@dimen/normal"
             android:text = "@string/post_download_help"
             android:textSize = "@dimen/text_default"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toBottomOf = "@id/down2_box"
             app:layout_goneMarginTop = "@dimen/normal" />
-
 
 
         <View

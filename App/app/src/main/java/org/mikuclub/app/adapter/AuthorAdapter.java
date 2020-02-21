@@ -35,12 +35,12 @@ public class AuthorAdapter extends PostAdapter
         /**
          * 构建函数 default constructor
          *
-         * @param list  文章列表
          * @param context
+         * @param list  文章列表
          */
-        public AuthorAdapter(List<Post> list, Context context)
+        public AuthorAdapter(Context context, List<Post> list)
         {
-                super(list, context);
+                super(context, list);
                 setHeaderRow(1);
         }
 

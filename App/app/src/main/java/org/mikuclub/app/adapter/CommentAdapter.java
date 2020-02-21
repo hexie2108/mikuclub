@@ -37,12 +37,12 @@ public class CommentAdapter extends BaseAdapterWithFooter
         /**
          * 构建函数 default constructor
          *
-         * @param list
          * @param context
+         * @param list
          */
-        public CommentAdapter(List<Comment> list, Context context)
+        public CommentAdapter(Context context, List<Comment> list)
         {
-                super(list, context);
+                super(context, list);
         }
 
 
@@ -156,7 +156,7 @@ public class CommentAdapter extends BaseAdapterWithFooter
                  */
                 public RepliesAdapter(List<Comment> list, Context context)
                 {
-                        super(list, context);
+                        super(context, list);
                         //关闭显示被回复数
                         setDisplayReplyCount(false);
 

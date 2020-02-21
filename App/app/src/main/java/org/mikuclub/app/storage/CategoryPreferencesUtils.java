@@ -1,7 +1,12 @@
 package org.mikuclub.app.storage;
 
 import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.javaBeans.response.Categories;
+import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.storage.base.PreferencesUtils;
+import org.mikuclub.app.utils.ParserUtils;
+
+import java.util.List;
 
 /**
  * 管理分类相关的共享偏好
@@ -28,6 +33,22 @@ public class CategoryPreferencesUtils
         public static String getCategoryCache()
         {
                 return PreferencesUtils.getCategoryPreference().getString(GlobalConfig.Preferences.CATEGORIES_CACHE, null);
+        }
+
+        /**
+         * 获取分类信息缓存
+         *
+         * @return
+         */
+        public static List<Category> getCategory()
+        {
+                List<Category> output=null;
+                String categoryCache = getCategoryCache();
+                if (categoryCache != null)
+                {
+                        output = ParserUtils.fromJson(CategoryPreferencesUtils.getCategoryCache(), Categories.class).getBody();
+                }
+                return output;
         }
 
 

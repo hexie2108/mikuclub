@@ -24,6 +24,7 @@ import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
+import org.mikuclub.app.utils.file.FileUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -48,6 +49,9 @@ public class HomeActivity extends AppCompatActivity
         public static final int TAG = 2;
         public static final String INTENT_STICKY_POST_LIST = "sticky_post_list";
         public static final String INTENT_POST_LIST = "post_list";
+        private static final String TAG_HOME_MAIN_FRAGMENT ="homeMainFragment";
+        private static final String TAG_HOME_CATEGORIES_FRAGMENT ="homeCategoriesFragment";
+        private static final String TAG_HOME_MESSAGE_FRAGMENT ="homeMessageFragment";
 
         /* 变量 local variable */
 
@@ -154,19 +158,19 @@ public class HomeActivity extends AppCompatActivity
                                 switch (item.getItemId())
                                 {
                                         case R.id.navigation_home:
-                                                changeFragment(homeMainFragment, 1);
+                                                changeFragment(homeMainFragment, TAG_HOME_MAIN_FRAGMENT);
                                                 break;
                                         case R.id.navigation_category:
-                                                changeFragment(homeCategoriesFragment, 2);
+                                                changeFragment(homeCategoriesFragment, TAG_HOME_CATEGORIES_FRAGMENT);
                                                 break;
                                         case R.id.navigation_message:
-                                                changeFragment(homeMessageFragment, 3);
+                                                changeFragment(homeMessageFragment, TAG_HOME_MESSAGE_FRAGMENT);
                                                 break;
                                 }
                                 return true;
                         });
                 //创建主页第一个碎片
-                changeFragment(homeMainFragment, 1);
+                changeFragment(homeMainFragment, TAG_HOME_MAIN_FRAGMENT);
 
                 //获取未读消息数量
                 int unreadMessageCount = MessagePreferencesUtils.getPrivateMessageCount() + MessagePreferencesUtils.getReplyCommentCount();
@@ -194,7 +198,7 @@ public class HomeActivity extends AppCompatActivity
          *
          * @param fragment
          */
-        private void changeFragment(Fragment fragment, int fragmentTag)
+        private void changeFragment(Fragment fragment, String fragmentTag)
         {
                 LogUtils.w("切换 FRAGMENT");
                 //创建新fragment
@@ -216,27 +220,33 @@ public class HomeActivity extends AppCompatActivity
                         }
                 }
 
-                //如果对应的fragment还未生成
-                if (fragment == null)
+                //如果对应的fragment还未生成, 或者fragment是切换到分类页的情况
+                // (因为通过显示/隐藏方式会造成分类页fragment在登陆后不显示魔法分类的问题, 所以每次切换到分类页就重新生成新的fragment)
+                if (fragment == null || fragmentTag.equals(TAG_HOME_CATEGORIES_FRAGMENT)  )
                 {
                         //根据tag创建对应fragment
                         switch (fragmentTag)
                         {
-                                case 1:
+                                case TAG_HOME_MAIN_FRAGMENT:
                                         homeMainFragment = new HomeMainFragment();
                                         fragment = homeMainFragment;
                                         break;
-                                case 2:
+                                case TAG_HOME_CATEGORIES_FRAGMENT:
+                                        //如果分类页已经创建过
+                                        if(fragment!=null){
+                                                //删除之前的旧分类页
+                                                fragmentTransaction = fragmentTransaction.remove(fragment);
+                                        }
                                         homeCategoriesFragment = new HomeCategoriesFragment();
                                         fragment = homeCategoriesFragment;
                                         break;
-                                case 3:
+                                case TAG_HOME_MESSAGE_FRAGMENT:
                                         homeMessageFragment = new HomeMessageFragment();
                                         fragment = homeMessageFragment;
                                         break;
                         }
                         //添加并显示新fragment
-                        fragmentTransaction = fragmentTransaction.add(R.id.home_navigation, fragment, String.valueOf(fragmentTag));
+                        fragmentTransaction = fragmentTransaction.add(R.id.home_navigation, fragment, fragmentTag);
                 }
                 //如果已生成过
                 else
@@ -293,10 +303,8 @@ public class HomeActivity extends AppCompatActivity
                                         PostActivity.startAction(this, GlobalConfig.SPONSOR_POST_ID);
                                         break;
                                 case R.id.item_shopping:
-                                        //启动淘宝
-                                        String taobaoUrl = GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_SCHEME + GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_SHOP_HOME;
-                                        String taobaoHtmlUrl = GlobalConfig.ThirdPartyApplicationInterface.HTTPS_SCHEME + GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_SHOP_HOME;
-                                        HttpUtils.startWebViewIntent(this, taobaoUrl, taobaoHtmlUrl);
+                                        //启动淘宝 (启动apk 或者 启动浏览器)
+                                        HttpUtils.startWebViewIntent(this, GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_APK_URL, GlobalConfig.ThirdPartyApplicationInterface.TAOBAO_WEB_URL);
                                         break;
                                 case R.id.item_report:
                                         //启动问题反馈页
@@ -316,7 +324,7 @@ public class HomeActivity extends AppCompatActivity
                                         PostManageActivity.startAction(this);
                                         break;
                                 case R.id.item_submit_post:
-
+                                        PostSubmitActivity.startAction(this);
                                         break;
 
                         }
@@ -422,6 +430,9 @@ public class HomeActivity extends AppCompatActivity
         {
                 super.onDestroy();
 
+                //清空缓存文件夹
+                FileUtils.clearCacheDirectory(this);
+
         }
 
         @Override
@@ -437,7 +448,7 @@ public class HomeActivity extends AppCompatActivity
                 else if (currentActiveFragment != homeMainFragment)
                 {
                         //切换分页到主页
-                        changeFragment(homeMainFragment, 1);
+                        changeFragment(homeMainFragment, TAG_HOME_MAIN_FRAGMENT);
                         //让主页菜单图标变成选中状态
                         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
                 }

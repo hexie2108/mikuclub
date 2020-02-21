@@ -62,10 +62,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<RecyclerView.View
         /**
          * 构建函数 default constructor
          *
-         * @param adapterList
          * @param context
+         * @param adapterList
          */
-        protected BaseAdapter(List adapterList, Context context)
+        protected BaseAdapter(Context context, List adapterList)
         {
                 this.adapterList = adapterList;
                 this.adapterContext = context;
@@ -275,6 +275,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<RecyclerView.View
         public void removeAdapterListElementWithHeaderRowFix(int position){
                 getAdapterList().remove(position-headerRow);
         }
+
+
 
 
 

@@ -35,14 +35,13 @@ public class HomeListAdapter extends PostAdapter
 
         /**
          * 构建函数 default constructor
-         *
+         *  @param headerPostList 头部幻灯片文章
          * @param list 列表文章
-         * @param headerPostList 头部幻灯片文章
          * @param context
          */
-        public HomeListAdapter(List<Post> list, List<Post> headerPostList, Context context)
+        public HomeListAdapter(List<Post> headerPostList, List<Post> list, Context context)
         {
-                super(list, context);
+                super(context, list);
                 this.headerPostList = headerPostList;
                 //开启头部组件显示
                 setHeaderRow(1);

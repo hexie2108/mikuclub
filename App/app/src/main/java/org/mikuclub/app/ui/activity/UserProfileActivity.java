@@ -59,7 +59,7 @@ public class UserProfileActivity extends AppCompatActivity
         /* 静态变量 Static variable */
         public static final int TAG = 15;
 
-        private static final int TOTAL_REQUEST_COUNT = 4;
+        private static final int TOTAL_REQUEST_COUNT = 3;
 
         /* 变量 local variable */
         private int requestCount = 0;
@@ -238,7 +238,7 @@ public class UserProfileActivity extends AppCompatActivity
                 inputPassword.addTextChangedListener(textWatcherOnPassword);
                 inputDescription.addTextChangedListener(textWatcherOnDescription);
                 //按钮绑定点击事件监听
-                buttonUpdate.setOnClickListener(v -> updateUser());
+                buttonUpdate.setOnClickListener(v -> startUpdateUserProcess());
 
         }
 
@@ -265,7 +265,7 @@ public class UserProfileActivity extends AppCompatActivity
          * 如果有更换过头像 就先上传图片, 之后再更新用户信息
          * 如果没有更换过游戏, 就直接更新用户信息
          */
-        private void updateUser()
+        private void startUpdateUserProcess()
         {
                 //显示进度条加载
                 progressDialog.show();
@@ -280,7 +280,7 @@ public class UserProfileActivity extends AppCompatActivity
                 //没有新头像, 只需要更新用户信息
                 else
                 {
-                        requestCount = 3;
+                        requestCount = 2;
                         updateUserInfo();
                 }
         }
@@ -300,8 +300,9 @@ public class UserProfileActivity extends AppCompatActivity
                                 LogUtils.v("图片上传完成");
                                 newAvatarId = ParserUtils.fromJson(response, SingleMedia.class).getBody().getId();
 
-                                //更新新头像的元数据
-                                updateAvatarMeta();
+                                //删除本地缓存文件
+                                newAvatarFile.delete();
+
                                 //删除旧头像,  如果存在的话
                                 deleteOldAvatar();
                                 //更新用户信息
@@ -331,48 +332,10 @@ public class UserProfileActivity extends AppCompatActivity
                                 progressDialog.dismiss();
                         }
                 };
-                mediaDelegate.updateAvatar(httpCallBack, newAvatarFile, user.getId());
+                mediaDelegate.uploadAvatar(httpCallBack, newAvatarFile, user.getId());
         }
 
-        /**
-         * 更新头像的元数据metadata
-         */
-        private void updateAvatarMeta()
-        {
-                LogUtils.v("开始更新新头像的元数据");
-                HttpCallBack httpCallBack = new HttpCallBack()
-                {
-                        @Override
-                        public void onSuccess(String response)
-                        {
-                                LogUtils.v("更新新头像的元数据成功");
-                                //检查所有请求的完成状态
-                                checkCompletionStatus();
-                        }
 
-                        @Override
-                        public void onError(WpError wpError)
-                        {
-                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.update_image_meta_error_message));
-                                onCancel();
-                        }
-
-                        @Override
-                        public void onHttpError()
-                        {
-                                onCancel();
-                        }
-
-                        @Override
-                        public void onCancel()
-                        {
-                                requestCount = 0;
-                                progressDialog.dismiss();
-                        }
-                };
-                mediaDelegate.updateAvatarMeta(httpCallBack, newAvatarId, user.getId());
-
-        }
 
         /**
          * 请求删除旧头像, 如果存在的话

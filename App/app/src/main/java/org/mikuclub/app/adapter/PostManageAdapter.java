@@ -9,7 +9,6 @@ import org.mikuclub.app.adapter.base.BaseAdapterWithFooter;
 import org.mikuclub.app.adapter.viewHolder.PostManageViewHolder;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
-import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.AlertDialogUtils;
@@ -37,14 +36,13 @@ public class PostManageAdapter extends BaseAdapterWithFooter
 
         /**
          * 构建函数 default constructor
-         *
+         *  @param context
          * @param list     列表文章
-         * @param context
          * @param delegate 删除按钮的点击确认动作
          */
-        public PostManageAdapter(List<Post> list, Context context, PostDelegate delegate)
+        public PostManageAdapter(Context context, List<Post> list, PostDelegate delegate)
         {
-                super(list, context);
+                super(context, list);
                 this.delegate = delegate;
                 this.progressDialog = AlertDialogUtils.createProgressDialog(context, false, false);
         }
@@ -142,7 +140,7 @@ public class PostManageAdapter extends BaseAdapterWithFooter
                         };
 
                         //创建确认弹窗
-                        AlertDialog dialog = AlertDialogUtils.createConfirmDialog(getAdapterContext(), title, content, true, false, ResourcesUtils.getString(R.string.confirm), positiveClickListener, ResourcesUtils.getString(R.string.cancel), null);
+                        AlertDialog dialog = AlertDialogUtils.createDeleteConfirmDialog(getAdapterContext(), positiveClickListener);
                         //显示弹窗
                         dialog.show();
 
@@ -213,12 +211,6 @@ public class PostManageAdapter extends BaseAdapterWithFooter
                                 notifyItemRemoved(position);
                         }
 
-                        @Override
-                        public void onError(WpError wpError)
-                        {
-                                //显示错误
-                                ToastUtils.shortToast(wpError.getBody().getMessage());
-                        }
 
                         @Override
                         public void onFinally()

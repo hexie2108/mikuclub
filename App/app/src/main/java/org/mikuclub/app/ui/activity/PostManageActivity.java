@@ -102,7 +102,7 @@ public class PostManageActivity extends AppCompatActivity
 
 
                 //创建适配器
-                recyclerViewAdapter = new PostManageAdapter(recyclerDataList,  this, delegate);
+                recyclerViewAdapter = new PostManageAdapter(this, recyclerDataList, delegate);
 
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
