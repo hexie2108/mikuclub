@@ -30,7 +30,7 @@ public class AlertDialogUtils
                 AlertDialog dialog = builder.create();
                 //禁止通过触摸屏幕关闭弹窗
                 //禁止通过触摸屏幕关闭弹窗
-                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCanceledOnTouchOutside(cancelable);
                 //只有在可取消的情况下
                 if (cancelable)
                 {
@@ -52,8 +52,9 @@ public class AlertDialogUtils
                 return dialog;
         }
 
+
         /**
-         * 创建询问弹窗
+         * 创建通用询问弹窗
          *
          * @param context
          * @param title
@@ -64,7 +65,7 @@ public class AlertDialogUtils
          */
         public static AlertDialog createConfirmDialog(Context context, String title, String
                 content, boolean cancelable, boolean forceFinish, String
-                                                              positiveButtonText, DialogInterface.OnClickListener positiveClickListener, String negativeButtonText,DialogInterface.OnClickListener negativeClickListener)
+                                                              positiveButtonText, DialogInterface.OnClickListener positiveClickListener, String negativeButtonText, DialogInterface.OnClickListener negativeClickListener)
         {
                 AlertDialog.Builder builder = new MaterialAlertDialogBuilder(context);
                 builder.setCancelable(cancelable);
@@ -76,11 +77,11 @@ public class AlertDialogUtils
                 //设置确认按钮
                 builder.setPositiveButton(positiveButtonText, positiveClickListener);
                 //设置取消按钮
-                builder.setNegativeButton(negativeButtonText , negativeClickListener );
+                builder.setNegativeButton(negativeButtonText, negativeClickListener);
                 //创建弹窗
                 AlertDialog dialog = builder.create();
                 //禁止通过触摸屏幕关闭弹窗
-                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCanceledOnTouchOutside(cancelable);
                 //只有在可取消的情况下
                 if (cancelable)
                 {
@@ -101,6 +102,17 @@ public class AlertDialogUtils
                 }
 
                 return dialog;
+        }
+
+        /**
+         * 创建删除确认弹窗
+         *
+         * @return
+         */
+        public static AlertDialog createDeleteConfirmDialog(Context context, DialogInterface.OnClickListener positiveClickListener)
+        {
+                return createConfirmDialog(context, ResourcesUtils.getString(R.string.confirm_delete), null, true, false, ResourcesUtils.getString(R.string.confirm), positiveClickListener, ResourcesUtils.getString(R.string.cancel), null);
+
         }
 
 

@@ -17,7 +17,6 @@ import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.share.WbShareCallback;
 import com.tencent.connect.common.Constants;
 import com.tencent.connect.share.QQShare;
-import com.tencent.connect.share.QzoneShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -28,6 +27,7 @@ import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -36,8 +36,6 @@ import org.mikuclub.app.utils.social.WeiboUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
@@ -63,9 +61,10 @@ public class SharingFragment extends BottomSheetDialogFragment
 
         /* 组件 views */
         private MaterialButton shareQQButton;
-        private MaterialButton shareQQZoneButton;
-        private MaterialButton shareLinkButton;
         private MaterialButton shareWeiboButton;
+        private MaterialButton shareLinkButton;
+        private MaterialButton shareAnotherMethodsButton;
+
         private MaterialButton returnButton;
 
 
@@ -84,7 +83,7 @@ public class SharingFragment extends BottomSheetDialogFragment
                 super.onViewCreated(view, savedInstanceState);
 
                 shareQQButton = view.findViewById(R.id.share_qq_button);
-                shareQQZoneButton = view.findViewById(R.id.share_qq_zone_button);
+                shareAnotherMethodsButton = view.findViewById(R.id.another_methods);
                 shareLinkButton = view.findViewById(R.id.share_link_button);
                 shareWeiboButton = view.findViewById(R.id.share_weibo_button);
                 returnButton = view.findViewById(R.id.return_button);
@@ -110,10 +109,9 @@ public class SharingFragment extends BottomSheetDialogFragment
         {
 
                 initShareQQButton();
-                initShareQQZoneButton();
                 initWeiboButton();
                 initShareLinkButton();
-
+                initShareAnotherMethodsButton();
 
                 //绑定返回按钮
                 returnButton.setOnClickListener(v -> {
@@ -170,31 +168,6 @@ public class SharingFragment extends BottomSheetDialogFragment
                 );
         }
 
-        /**
-         * 初始化QQ空间分享按钮
-         * init QQ Zone sharing button
-         * qq空间分享直接共用qq的返回结果监听器
-         */
-        private void initShareQQZoneButton()
-        {
-
-                Bundle params = new Bundle();
-                params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
-                //修复标题中可能存在的被html转义的特殊符号
-                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
-                params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);
-                params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "");
-                params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, sharingUrl);
-                params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, post.getMetadata().getThumbnail_src().get(0));
-                //只使用一张图
-                ArrayList<String> images = new ArrayList<>(Collections.singletonList(post.getMetadata().getImages_src().get(0)));
-                params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, images);
-
-                //绑定分享按钮
-                shareQQZoneButton.setOnClickListener(
-                        v -> TencentUtils.getInstance().shareToQzone(getActivity(), params, qqShareListener)
-                );
-        }
 
         /**
          * 初始化微博分享按钮
@@ -273,7 +246,7 @@ public class SharingFragment extends BottomSheetDialogFragment
 
                 //绑定分享按钮
                 shareWeiboButton.setOnClickListener(
-                        v ->  WeiboUtils.getInstance(getActivity()).shareMessage(message, false)
+                        v -> WeiboUtils.getInstance(getActivity()).shareMessage(message, false)
                 );
         }
 
@@ -284,16 +257,32 @@ public class SharingFragment extends BottomSheetDialogFragment
         private void initShareLinkButton()
         {
                 //修复标题中可能存在的被html转义的特殊符号
-                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                String text = "【初音社】" + GeneralUtils.unescapeHtml(post.getTitle().getRendered()) + " " + sharingUrl;
                 //绑定分享按钮
                 shareLinkButton.setOnClickListener(v -> {
                         //复制到剪切板
-                        ClipboardUtils.setText("【初音社】" + title + " " + sharingUrl);
+                        ClipboardUtils.setText(text);
                         //生成用户提示
                         ToastUtils.shortToast("已复分享制链接到剪切板");
                         //完成分享后的动作
                         afterSharing();
                 });
+        }
+
+        /**
+         * 初始化其他方式的分享按钮
+         * init QQ Zone sharing button
+         * qq空间分享直接共用qq的返回结果监听器
+         */
+        private void initShareAnotherMethodsButton()
+        {
+                String text = "【初音社】" + GeneralUtils.unescapeHtml(post.getTitle().getRendered()) + " " + sharingUrl;
+                shareAnotherMethodsButton.setOnClickListener(v -> {
+                        HttpUtils.startSharingIntent(getActivity(), text);
+                        //完成分享后的动作
+                        afterSharing();
+                });
+
         }
 
         /**

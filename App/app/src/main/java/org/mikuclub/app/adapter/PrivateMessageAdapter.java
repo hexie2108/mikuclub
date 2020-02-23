@@ -40,14 +40,13 @@ public class PrivateMessageAdapter extends BaseAdapterWithFooter
 
         /**
          * 构建函数 default constructor
-         *
+         *  @param context
          * @param list
-         * @param context
          * @param user    当前用户信息
          */
-        public PrivateMessageAdapter(List list, Context context, UserLogin user, Author author)
+        public PrivateMessageAdapter(Context context, List list, UserLogin user, Author author)
         {
-                super(list, context);
+                super(context, list);
                 this.user = user;
                 this.author = author;
         }

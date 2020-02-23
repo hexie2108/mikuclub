@@ -1,5 +1,7 @@
 package org.mikuclub.app.utils;
 
+import android.os.Build;
+
 import org.mikuclub.app.context.MyApplication;
 
 /**
@@ -24,5 +26,19 @@ public class ResourcesUtils
                 return MyApplication.getContext().getResources().getString(id);
         }
 
+        /**
+         * @param id
+         * @return
+         */
+        public static int getColor(int id)
+        {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                {
+                        return MyApplication.getContext().getResources().getColor(id, null);
+                }
+                else{
+                        return MyApplication.getContext().getResources().getColor(id);
+                }
+        }
 
 }

@@ -17,6 +17,9 @@ public abstract class WeiboListener implements WbAuthListener
         private String accessToken;
         private String expires;
 
+
+
+
         @Override
         public void onComplete(Oauth2AccessToken token)
         {

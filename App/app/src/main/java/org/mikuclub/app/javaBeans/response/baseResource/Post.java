@@ -66,8 +66,31 @@ public class Post implements Serializable
 
                 private List<Author> author;
 
-
                 private List<Integer> count_sharing;
+
+                private List<String> bilibili;
+
+                private List<Integer> previews;
+
+                public List<Integer> getPreviews()
+                {
+                        return previews;
+                }
+
+                public void setPreviews(List<Integer> previews)
+                {
+                        this.previews = previews;
+                }
+
+                public List<String> getBilibili()
+                {
+                        return bilibili;
+                }
+
+                public void setBilibili(List<String> bilibili)
+                {
+                        this.bilibili = bilibili;
+                }
 
                 public List<Integer> getCount_sharing()
                 {

@@ -29,14 +29,33 @@ public class MediaDelegate extends BaseDelegate
          *
          * @param httpCallBack
          * @param file
-         * @param userId
          */
-        public void updateAvatar(HttpCallBack httpCallBack, File file, int userId)
+        public void uploadImage(HttpCallBack httpCallBack, File file)
         {
 
                 BaseParameters baseParameters = new BaseParameters();
-
                 getModel().insertFile(baseParameters.toMap(), null, UserPreferencesUtils.createLoggedUserHeader(), file, getTag(), httpCallBack);
+
+        }
+
+
+        /**
+         * 上传头像
+         *
+         * @param httpCallBack
+         * @param file
+         * @param userId
+         */
+        public void uploadAvatar(HttpCallBack httpCallBack, File file, int userId)
+        {
+
+                BaseParameters baseParameters = new BaseParameters();
+                //设置body参数
+                UpdatePostMetaParameters bodyParameter = new UpdatePostMetaParameters();
+                bodyParameter.setMeta_key(GlobalConfig.Metadata.Attachment._WP_ATTACHMENT_WP_USER_AVATAR);
+                bodyParameter.setMeta_value(userId);
+
+                getModel().insertFile(baseParameters.toMap(), bodyParameter.toMap(), UserPreferencesUtils.createLoggedUserHeader(), file, getTag(), httpCallBack);
 
         }
 
@@ -73,14 +92,28 @@ public class MediaDelegate extends BaseDelegate
          */
         public void deleteMedia(HttpCallBack httpCallBack, int mediaId)
         {
-
                 //设置基本url参数
                 Map<String, Object> baseParametersMap =new BaseParameters().toMap();
                 //增加确认永远删除参数
                 baseParametersMap.put("force", 1);
-
                 //发送请求
                 getModel().deleteById(mediaId, baseParametersMap, null, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+
+        }
+
+        /**
+         * 在后台请求删除图片, 无回调, 无标签
+         *
+         * @param mediaId
+         */
+        public void deleteMediaInBackground(int mediaId)
+        {
+                //设置基本url参数
+                Map<String, Object> baseParametersMap =new BaseParameters().toMap();
+                //增加确认永远删除参数
+                baseParametersMap.put("force", 1);
+                //发送请求
+                getModel().deleteById(mediaId, baseParametersMap, null, UserPreferencesUtils.createLoggedUserHeader(), 0, null);
 
         }
 

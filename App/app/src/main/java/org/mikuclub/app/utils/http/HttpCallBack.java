@@ -43,6 +43,8 @@ public class HttpCallBack
          */
         public void onError(WpError wpError)
         {
+                //默认 弹窗显示错误信息
+                ToastUtils.shortToast(wpError.getBody().getMessage());
 
         }
 
@@ -106,11 +108,13 @@ public class HttpCallBack
                                 //如果是一个json数组 , 但是长度为0
                                 if (body instanceof JSONArray && ((JSONArray) body).length() == 0)
                                 {
+                                        LogUtils.v("内容空数组错误");
                                         //空数组内容错误
                                         onError(null);
                                 }
                                 else
                                 {
+
                                         onSuccess(response);
                                 }
                         }

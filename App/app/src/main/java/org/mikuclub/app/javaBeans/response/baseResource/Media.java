@@ -5,7 +5,7 @@ import org.mikuclub.app.javaBeans.response.modules.Rendered;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Media  implements Serializable
+public class Media implements Serializable
 {
         private Date date;
         private Date date_gmt;
@@ -29,9 +29,143 @@ public class Media  implements Serializable
         private Rendered description;
         private String media_type;
         private String mime_type;
-        private Object media_details;
+        private Media_details media_details;
         private int post;
         private String source_url;
+
+        public class Media_details
+        {
+                private int width;
+                private int height;
+                private String file;
+                private Sizes sizes;
+
+                public   class Sizes
+                {
+                        private SizeDetail thumbnail;
+                        private SizeDetail full;
+
+                        public  class SizeDetail
+                        {
+                                private String file;
+                                private int width;
+                                private int height;
+                                private String mime_type;
+                                private String source_url;
+
+                                public String getFile()
+                                {
+                                        return file;
+                                }
+
+                                public void setFile(String file)
+                                {
+                                        this.file = file;
+                                }
+
+                                public int getWidth()
+                                {
+                                        return width;
+                                }
+
+                                public void setWidth(int width)
+                                {
+                                        this.width = width;
+                                }
+
+                                public int getHeight()
+                                {
+                                        return height;
+                                }
+
+                                public void setHeight(int height)
+                                {
+                                        this.height = height;
+                                }
+
+                                public String getMime_type()
+                                {
+                                        return mime_type;
+                                }
+
+                                public void setMime_type(String mime_type)
+                                {
+                                        this.mime_type = mime_type;
+                                }
+
+                                public String getSource_url()
+                                {
+                                        return source_url;
+                                }
+
+                                public void setSource_url(String source_url)
+                                {
+                                        this.source_url = source_url;
+                                }
+                        }
+
+                        public SizeDetail getThumbnail()
+                        {
+                                return thumbnail;
+                        }
+
+                        public void setThumbnail(SizeDetail thumbnail)
+                        {
+                                this.thumbnail = thumbnail;
+                        }
+
+                        public SizeDetail getFull()
+                        {
+                                return full;
+                        }
+
+                        public void setFull(SizeDetail full)
+                        {
+                                this.full = full;
+                        }
+                }
+
+                public int getWidth()
+                {
+                        return width;
+                }
+
+                public void setWidth(int width)
+                {
+                        this.width = width;
+                }
+
+                public int getHeight()
+                {
+                        return height;
+                }
+
+                public void setHeight(int height)
+                {
+                        this.height = height;
+                }
+
+                public String getFile()
+                {
+                        return file;
+                }
+
+                public void setFile(String file)
+                {
+                        this.file = file;
+                }
+
+                public Sizes getSizes()
+                {
+                        return sizes;
+                }
+
+                public void setSizes(Sizes sizes)
+                {
+                        this.sizes = sizes;
+                }
+        }
+
 
         public Date getDate()
         {
@@ -253,12 +387,12 @@ public class Media  implements Serializable
                 this.mime_type = mime_type;
         }
 
-        public Object getMedia_details()
+        public Media_details getMedia_details()
         {
                 return media_details;
         }
 
-        public void setMedia_details(Object media_details)
+        public void setMedia_details(Media_details media_details)
         {
                 this.media_details = media_details;
         }

@@ -49,6 +49,9 @@ public class GlobalConfig
         //提前多少item触发自动加载
         public static final int PRE_LOAD_ITEM_NUMBER = 3;
 
+        //投稿的最大预览图片数量
+        public static final int MAX_IMAGE_PREVIEWS_COUNT = 8;
+
 
         /**
          * 第三方应用的schema接口和网络地址
@@ -64,6 +67,8 @@ public class GlobalConfig
                 //百度网盘app url唤醒格式
                 public static final String BAIDU_PAN_APP_WAKE_URL = "bdnetdisk://n/action.SHARE_LINK";
 
+                //b站视频识别码
+                public static final String BILIBILI_AV = "av";
                 //b站视频前缀地址
                 public static final String BILIBILI_HOST = "https://www.bilibili.com/video/";
                 //bilibili app url唤醒格式
@@ -71,6 +76,10 @@ public class GlobalConfig
 
                 public static final String TAOBAO_SCHEME = "taobao://";
                 public static final String TAOBAO_SHOP_HOME = "mikuclub.taobao.com/";
+
+                public static final String TAOBAO_APK_URL = TAOBAO_SCHEME + TAOBAO_SHOP_HOME;
+                public static final String TAOBAO_WEB_URL = HTTPS_SCHEME + TAOBAO_SHOP_HOME;
+
         }
 
 
@@ -135,25 +144,27 @@ public class GlobalConfig
                 public static final String POST_META = HOST + UTILS + "post_meta/";
 
                 //POST 更新用户信息
-                public static final String UPDATE_USER = HOST  + "wp-json/wp/v2/users/me/";
+                public static final String UPDATE_USER = HOST + "wp-json/wp/v2/users/me/";
         }
 
         /**
          * 资源的元数据
          */
-        public class Metadata{
+        public class Metadata
+        {
 
-                public class Attachment{
+                public class Attachment
+                {
                         //用来注明该附件图片 是头像, 和储存作者ID
                         public static final String _WP_ATTACHMENT_WP_USER_AVATAR = "_wp_attachment_wp_user_avatar";
 
                 }
 
-                public class User{
+                public class User
+                {
                         //储存 用户使用的头像 的post id
                         public static final String MM_USER_AVATAR = "mm_user_avatar";
                 }
-
 
 
         }
@@ -175,7 +186,7 @@ public class GlobalConfig
                 //菜单缓存
                 public static final String CATEGORIES_CACHE = "categories_cache";
                 //菜单缓存的时间
-                public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire";
+                public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire_1";
                 //菜单缓存的有效期
                 public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 15; //每15天检查一次
 
@@ -189,21 +200,29 @@ public class GlobalConfig
 
         }
 
-
-        public class OrderBy
+        public static class Post
         {
-                public static final String DATE = "date";
-        }
+                public class OrderBy
+                {
+                        public static final String DATE = "date";
+                }
 
-        public class Order
-        {
-                public static final String ASC = "asc";
-                public static final String DESC = "desc";
-        }
+                public class Order
+                {
+                        public static final String ASC = "asc";
+                        public static final String DESC = "desc";
+                }
 
-        public class Status
-        {
-                public static final String PUBLISH = "publish";
+                public static class Status
+                {
+                        public static final String PUBLISH = "publish";
+                        public static final String DRAFT = "draft";
+                        public static final String PENDING = "pending";
+                        //投稿管理页面的的文章状态
+                        public static final String[] POST_MANAGE_STATUS = {PUBLISH, DRAFT, PENDING};
+                }
+
+
         }
 
 

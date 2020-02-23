@@ -8,6 +8,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import org.mikuclub.app.utils.LogUtils;
+
 import java.io.File;
 
 public class FileUtils
@@ -33,7 +35,8 @@ public class FileUtils
         }
 
         /**
-         * 在缓存文件夹里创建新文件
+         * 在缓存文件夹里创建新JPG文件
+         *
          * @param context
          * @return
          */
@@ -47,7 +50,7 @@ public class FileUtils
                 if (cacheDirectory != null)
                 {
                         //生成随机文件名, 后缀加上jpg
-                        String fileName = String.valueOf(System.currentTimeMillis() / 1000)+".jpg";
+                        String fileName = String.valueOf(System.currentTimeMillis() / 1000) + ".jpg";
                         outputFile = new File(cacheDirectory, fileName);
 
                 }
@@ -55,6 +58,69 @@ public class FileUtils
                 return outputFile;
         }
 
+
+        /**
+         * 清空缓存文件夹
+         * 在退出应用时调用
+         */
+        public static void clearCacheDirectory(Context context)
+        {
+                //获取缓存文件夹
+                File cacheDirectory = context.getExternalCacheDir();
+                if (cacheDirectory != null)
+                {
+                        //循环清空缓存文件夹
+                        deleteFileRecursion(cacheDirectory);
+                }
+        }
+
+        /**
+         * 递归删除文件和文件夹
+         *
+         * @param file
+         */
+        private static void deleteFileRecursion(File file)
+        {
+                if (file.isDirectory())
+                {
+                        File[] entries = file.listFiles();
+                        if (entries != null)
+                        {
+                                for (File entry : entries)
+                                {
+                                        deleteFileRecursion(entry);
+                                }
+                        }
+                }
+                if (!file.delete())
+                {
+                        LogUtils.v("文件删除失败");
+                }
+        }
+
+
+        /**
+         * 根据URI 获取对应的文件对象
+         *
+         * @param context
+         * @param uri
+         * @return
+         */
+        public static File getFileByUri(final Context context, final Uri uri)
+        {
+
+                File file = null;
+                //获取文件真实路径
+                String path = FileUtils.getPath(context, uri);
+                if (path != null)
+                {
+                        //根据路径获取文件对象
+                        file = new File(path);
+                }
+                return file;
+
+
+        }
 
         /**
          * 通过URI获取文件真实地址
@@ -89,8 +155,14 @@ public class FileUtils
                         // DownloadsProvider
                         else if (isDownloadsDocument(uri))
                         {
-
                                 final String id = DocumentsContract.getDocumentId(uri);
+                                //如果已经获取到了真实地址
+                                if (id.startsWith("raw:"))
+                                {
+                                        //直接去除raw头部 然后返回地址
+                                        return id.replaceFirst("raw:", "");
+                                }
+
                                 final Uri contentUri = ContentUris.withAppendedId(
                                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 

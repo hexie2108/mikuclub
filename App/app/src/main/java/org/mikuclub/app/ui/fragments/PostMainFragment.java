@@ -49,6 +49,7 @@ public class PostMainFragment extends Fragment
         //点赞过的文章id数组
         private List<Integer> likedPostIds;
         private int countLike;
+        private boolean alreadyShare = false;
 
 
         /* 组件 views */
@@ -130,17 +131,17 @@ public class PostMainFragment extends Fragment
                 //获取文章元数据
                 Post.Metadata metadata = post.getMetadata();
                 //如果数据不是空
-                if (metadata.getViews() != null)
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getViews()))
                 {
-                        postViews.setText(metadata.getViews().get(0).toString() + " "+getResources().getString(R.string.post_view_count));
+                        postViews.setText(metadata.getViews().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_view_count));
                 }
-                if (metadata.getCount_comments() != null)
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_comments()))
                 {
-                        postCountComments.setText(metadata.getCount_comments().get(0).toString() + " "+getResources().getString(R.string.post_comment_count));
+                        postCountComments.setText(metadata.getCount_comments().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_comment_count));
                 }
-                if (metadata.getCount_sharing() != null)
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_sharing()))
                 {
-                        postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " "+getResources().getString(R.string.post_sharing_count));
+                        postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_sharing_count));
                 }
 
                 //创建作者页面点击监听器
@@ -156,16 +157,14 @@ public class PostMainFragment extends Fragment
                 postAuthorName.setOnClickListener(authorActivityListener);
 
                 //在线视频不是空的
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getVideo()))
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getBilibili()))
                 {
-                        String videoSrc = metadata.getVideo().get(0);
+                        String videoSrc = metadata.getBilibili().get(0);
                         //确如果是 b站地址
-                        if (videoSrc.contains("av")&& videoSrc.contains("cid"))
+                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV))
                         {
-                                //截取av号
-                                String av = videoSrc.split(",")[0];
-                                final String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL + av.substring(2);
-                                final String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + av;
+                                final String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL + videoSrc.substring(2);
+                                final String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + videoSrc;
                                 //监听按钮点击
                                 postBilibiliButton.setOnClickListener(v -> {
                                         //启动第三方应用
@@ -255,7 +254,7 @@ public class PostMainFragment extends Fragment
                         //检查是否是点过赞
                         countLike++;
                 }
-                postCountLike.setText(countLike + " "+getResources().getString(R.string.post_like_count));
+                postCountLike.setText(countLike + " " + getResources().getString(R.string.post_like_count));
 
                 //根据激活状态 设置 按钮样式和动作
                 likeAction(buttonIsActivated);
@@ -301,12 +300,13 @@ public class PostMainFragment extends Fragment
                                                 toastMessage = "已点赞";
                                                 countLike++;
                                         }
-                                        else{
+                                        else
+                                        {
                                                 toastMessage = "已取消点赞";
                                                 countLike--;
                                         }
                                         //更新UI
-                                        postCountLike.setText(countLike + " "+getResources().getString(R.string.post_like_count));
+                                        postCountLike.setText(countLike + " " + getResources().getString(R.string.post_like_count));
                                         //显示消息提示
                                         ToastUtils.shortToast(toastMessage);
                                 }
@@ -339,7 +339,7 @@ public class PostMainFragment extends Fragment
                 //绑定点击监听器
                 postCountShareButton.setOnClickListener(v -> {
                         //启动分享窗口
-                        ((PostActivity)getActivity()).startSharingWindowsFragment();
+                        ((PostActivity) getActivity()).startSharingWindowsFragment();
                 });
 
         }
@@ -355,15 +355,21 @@ public class PostMainFragment extends Fragment
                 postCountShareButton.setIconTint(ColorStateList.valueOf(iconColorId));
                 //设置默认分享次数为1
                 int countSharing = 1;
-                //如果文章不是第一次被分享
-                if(post.getMetadata().getCount_sharing()!=null){
+                //如果已经分享过了
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_sharing()))
+                {
                         //就获取当前分享次数 然后 +1
                         countSharing = post.getMetadata().getCount_sharing().get(0) + 1;
                 }
-                postCountShare.setText(countSharing+" "+getResources().getString(R.string.post_sharing_count));
-                //通知服务器 增加分享次数计数
-                delegate.postShareCount(post.getId());
+                //设置新的分享次数
+                postCountShare.setText(countSharing + " " + getResources().getString(R.string.post_sharing_count));
 
+                //如果还未通知服务器更新分享次数
+                if (!alreadyShare)
+                {
+                        //通知服务器 增加分享次数计数
+                        delegate.postShareCount(post.getId());
+                }
         }
 
 
@@ -372,10 +378,11 @@ public class PostMainFragment extends Fragment
          * Initial feedback button
          * 如果没有下载地址就隐藏相关按钮
          */
-        private void initFailDownButton(){
+        private void initFailDownButton()
+        {
 
                 //如果有下载地址
-                if(!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()))
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getDown()))
                 {
                         //绑定点击动作监听
                         postCountFailDownButton.setOnClickListener(
@@ -383,7 +390,8 @@ public class PostMainFragment extends Fragment
                         );
                 }
                 //如果没有下载地址
-                else{
+                else
+                {
                         postCountFailDownButton.setVisibility(View.GONE);
                         postCountFailDown.setVisibility(View.GONE);
                 }
@@ -394,7 +402,8 @@ public class PostMainFragment extends Fragment
          * 下载失效动作
          * action on feedback button
          */
-        private void failDownAction(){
+        private void failDownAction()
+        {
                 //更改按钮颜色
                 int iconColorId = R.color.colorPrimary;
                 postCountFailDownButton.setIconTint(ContextCompat.getColorStateList(getActivity(), iconColorId));
@@ -411,6 +420,6 @@ public class PostMainFragment extends Fragment
                         }
                 };
 
-                delegate.postFailDownCount(httpCallBack , post.getId());
+                delegate.postFailDownCount(httpCallBack, post.getId());
         }
 }

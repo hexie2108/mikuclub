@@ -77,22 +77,18 @@ public class PrivateMessageController extends BaseController
                                         //如果通知作者的选择框不是null  而且 被勾选了
                                         //获取新添加的评论
                                         PrivateMessage privateMessage = ParserUtils.fromJson(response, SinglePrivateMessage.class).getBody();
-                                        //加进列表
-                                        getRecyclerDataList().add(privateMessage);
+
                                         //通知更新, 修正可能存在的 头部header带来的位置偏移
                                         int position = getRecyclerViewAdapter().getLastItemPositionWithHeaderRowFix();
+                                        //加进列表
+                                        getRecyclerDataList().add(privateMessage);
+
                                         //通知更新
                                         getRecyclerViewAdapter().notifyItemInserted(position);
                                         //滚动到最后一行
                                         getRecyclerView().smoothScrollToPosition(position);
                                 }
 
-                                @Override
-                                public void onError(WpError wpError)
-                                {
-
-                                        ToastUtils.shortToast(wpError.getBody().getMessage());
-                                }
 
                                 @Override
                                 public void onFinally()

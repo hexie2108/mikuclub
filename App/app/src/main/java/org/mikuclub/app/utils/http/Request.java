@@ -21,29 +21,27 @@ import java.util.Map;
 public class Request
 {
 
-        private static final String CONTENT_TYPE_JSON ="application/json";
+        private static final String CONTENT_TYPE_JSON = "application/json";
 
         /**
          * 自定义网络超时重试策略
          */
-        private static DefaultRetryPolicy customRetryPolicy = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME, DefaultRetryPolicy.DEFAULT_MAX_RETRIES*2,
+        private static DefaultRetryPolicy customRetryPolicy = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME, DefaultRetryPolicy.DEFAULT_MAX_RETRIES * 2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        private static DefaultRetryPolicy retryPolicyForFile = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME_FOR_FILE, DefaultRetryPolicy.DEFAULT_MAX_RETRIES*2,
+        private static DefaultRetryPolicy retryPolicyForFile = new DefaultRetryPolicy(GlobalConfig.RETRY_TIME_FOR_FILE, DefaultRetryPolicy.DEFAULT_MAX_RETRIES * 2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-
-
-
 
 
         /**
          * GET请求
+         *
          * @param url
          * @param params
          * @param headers
          * @param tag
          * @param httpCallBack
          */
-        public static void get(String url, Map<String, Object> params, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
+        public static void get(String url, Map<String, Object> params, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
                 //如果有URL参数要传递
                 if (params != null && params.size() > 0)
@@ -57,6 +55,7 @@ public class Request
 
         /**
          * POST请求
+         *
          * @param url
          * @param params
          * @param bodyParams
@@ -77,6 +76,7 @@ public class Request
 
         /**
          * DELETE请求
+         *
          * @param url
          * @param params
          * @param bodyParams
@@ -84,7 +84,7 @@ public class Request
          * @param tag
          * @param httpCallBack
          */
-        public static void delete(String url,Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers,  int tag, HttpCallBack httpCallBack)
+        public static void delete(String url, Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, int tag, HttpCallBack httpCallBack)
         {
                 //如果有URL参数要传递
                 if (params != null && params.size() > 0)
@@ -103,37 +103,25 @@ public class Request
          * @param url
          * @param params
          * @param headers
-         * @param tag             assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
+         * @param tag          assegnare un tag specifico alla richiesta, che può essere servito in caso di annullamento
          * @param httpCallBack
          */
         private static void request(int method, String url, final Map<String, Object> params, Map<String, String> headers, int tag, final HttpCallBack httpCallBack)
         {
-                //记录请求方式和地址
-                String methodString="";
-                switch (method){
-                        case com.android.volley.Request.Method.GET:
-                                methodString = "GET";
-                                break;
-                        case com.android.volley.Request.Method.POST:
-                                methodString = "POST";
-                                break;
-                        case com.android.volley.Request.Method.DELETE:
-                                methodString = "DELETE";
-                                break;
-                }
+                printRequestUrl(method, url);
 
-                LogUtils.v("请求地址 "+methodString+" "+url );
-
-                StringRequest stringRequest  = new StringRequest(method, url,
+                StringRequest stringRequest = new StringRequest(method, url,
                         response -> {
-                        //只有在不是null的情况
-                                if(httpCallBack != null){
+                                //只有在不是null的情况
+                                if (httpCallBack != null)
+                                {
                                         //调用回调成功方法
                                         httpCallBack.onSuccessHandler(response);
                                 }
                         }, error -> {
                         //只有在不是null的情况
-                        if(httpCallBack != null){
+                        if (httpCallBack != null)
+                        {
                                 //调用回调错误方法
                                 httpCallBack.onErrorHandler(error);
                         }
@@ -195,7 +183,8 @@ public class Request
                         {
                                 super.cancel();
                                 //只有在不是null的情况
-                                if(httpCallBack != null){
+                                if (httpCallBack != null)
+                                {
                                         httpCallBack.onCancel();
                                 }
                         }
@@ -208,11 +197,10 @@ public class Request
         }
 
 
-
-
         /**
          * deprecated
          * 文件POST请求
+         *
          * @param url
          * @param params
          * @param headers
@@ -220,7 +208,10 @@ public class Request
          * @param tag
          * @param httpCallBack
          */
-        public static void filePost(String url, final Map<String, Object> params, Map<String,Object> bodyParams, Map<String,String> headers, File file, int tag, final HttpCallBack httpCallBack){
+        public static void filePost(String url, final Map<String, Object> params, Map<String, Object> bodyParams, Map<String, String> headers, File file, int tag, final HttpCallBack httpCallBack)
+        {
+
+                printRequestUrl(com.android.volley.Request.Method.POST, url);
 
                 //如果有URL参数要传递
                 if (params != null && params.size() > 0)
@@ -231,11 +222,41 @@ public class Request
                 //改成string格式
                 Map<String, String> bodyParamsString = (Map) bodyParams;
 
-                FileRequest fileRequest = new FileRequest(com.android.volley.Request.Method.POST, url, bodyParamsString, file ,headers, response -> {
+                FileRequest fileRequest = new FileRequest(com.android.volley.Request.Method.POST, url, bodyParamsString, file, headers, response -> {
                         String resultResponse = new String(response.data);
-                        //调用回调成功方法
-                        httpCallBack.onSuccessHandler(resultResponse);
-                }, error -> httpCallBack.onErrorHandler(error));
+                        //只有在不是null的情况
+                        if (httpCallBack != null)
+                        {
+                                //调用回调成功方法
+                                httpCallBack.onSuccessHandler(resultResponse);
+                        }
+
+                }, error -> {
+                        //只有在不是null的情况
+                        if (httpCallBack != null)
+                        {
+                                //调用回调错误方法
+                                httpCallBack.onErrorHandler(error);
+                        }
+
+                })
+                {
+
+                        /**
+                         * 请求被取消的时候  回调onCancel方法
+                         */
+                        @Override
+                        public void cancel()
+                        {
+                                super.cancel();
+                                //只有在不是null的情况
+                                if (httpCallBack != null)
+                                {
+                                        httpCallBack.onCancel();
+                                }
+                        }
+
+                };
 
                 fileRequest.setTag(tag);
                 fileRequest.setRetryPolicy(retryPolicyForFile);
@@ -244,9 +265,34 @@ public class Request
 
         }
 
+        /**
+         * 记录 请求方式 和请求地址
+         *
+         * @param methodCode
+         * @param url
+         */
+        private static void printRequestUrl(int methodCode, String url)
+        {
+                //记录请求方式和地址
+                String methodString = "";
+                switch (methodCode)
+                {
+                        case com.android.volley.Request.Method.GET:
+                                methodString = "GET";
+                                break;
+                        case com.android.volley.Request.Method.POST:
+                                methodString = "POST";
+                                break;
+                        case com.android.volley.Request.Method.DELETE:
+                                methodString = "DELETE";
+                                break;
+                }
+                LogUtils.v("请求地址 " + methodString + " " + url);
+
+        }
 
         /**
-         *  根据TAG批量取消请求
+         * 根据TAG批量取消请求
          *
          * @param tag
          */
@@ -254,7 +300,6 @@ public class Request
         {
                 RequestQueue.getInstance(MyApplication.getContext()).cancelRequest(tag);
         }
-
 
 
 }

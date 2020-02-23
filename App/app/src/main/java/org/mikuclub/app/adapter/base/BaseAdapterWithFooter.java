@@ -24,12 +24,12 @@ public abstract class BaseAdapterWithFooter extends BaseAdapter
         /**
          * 构建函数 default constructor
          *
-         * @param list
          * @param context
+         * @param list
          */
-        protected BaseAdapterWithFooter(List list, Context context)
+        protected BaseAdapterWithFooter(Context context, List list)
         {
-                super(list, context);
+                super(context, list);
                 //开启尾部
                 setFooterRow(1);
         }

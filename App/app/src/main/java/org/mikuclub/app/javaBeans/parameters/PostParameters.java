@@ -26,7 +26,7 @@ public class PostParameters extends BaseParameters
         private String order;
         private String orderby;
         private ArrayList<String> slug;
-        private String status;
+        private ArrayList<String> status;
         private ArrayList<Integer> categories;
         private ArrayList<Integer> categories_exclude;
         private ArrayList<Integer> tags;
@@ -211,12 +211,12 @@ public class PostParameters extends BaseParameters
                 this.slug = slug;
         }
 
-        public String getStatus()
+        public ArrayList<String> getStatus()
         {
                 return status;
         }
 
-        public void setStatus(String status)
+        public void setStatus(ArrayList<String> status)
         {
                 this.status = status;
         }

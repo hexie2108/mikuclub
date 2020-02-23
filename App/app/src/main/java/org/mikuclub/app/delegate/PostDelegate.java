@@ -3,6 +3,7 @@ package org.mikuclub.app.delegate;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.base.BaseDelegate;
 import org.mikuclub.app.delegate.models.ResourceModel;
+import org.mikuclub.app.javaBeans.parameters.CreatePostParameters;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.storage.ApplicationPreferencesUtils;
@@ -18,8 +19,8 @@ import java.util.Map;
 import static org.mikuclub.app.utils.DataUtils.putIfNotNull;
 
 /**
- *  文章资源请求代理人
- *  post resource request delegate
+ * 文章资源请求代理人
+ * post resource request delegate
  */
 public class PostDelegate extends BaseDelegate
 {
@@ -53,15 +54,16 @@ public class PostDelegate extends BaseDelegate
         public void getPost(HttpCallBack httpCallBack, int postId)
         {
                 BaseParameters baseParameters = new BaseParameters();
-                getModel().selectById(postId, baseParameters.toMap(), null, getTag(), httpCallBack);
+                getModel().selectById(postId, baseParameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
         }
 
 
         /**
          * 获取文章列表 (基础函数)
-         *  @param httpCallBack        回调方法
-         * @param page                请求页数
-         * @param parameters 请求参数类
+         *
+         * @param httpCallBack 回调方法
+         * @param page         请求页数
+         * @param parameters   请求参数类
          */
 
         public void getPostList(HttpCallBack httpCallBack, int page, PostParameters parameters)
@@ -76,17 +78,13 @@ public class PostDelegate extends BaseDelegate
                 //如果排列顺序未设置
                 if (parameters.getOrderby() == null)
                 {
-                        parameters.setOrderby(GlobalConfig.OrderBy.DATE);
-                }
-                //如果文章状态未设置
-                if (parameters.getStatus() == null)
-                {
-                        parameters.setStatus(GlobalConfig.Status.PUBLISH);
+                        parameters.setOrderby(GlobalConfig.Post.OrderBy.DATE);
                 }
 
                 //如果是搜索文章
                 Map<String, String> headers = null;
-                if(parameters.getSearch()!=null)
+                //如果是要搜索的情况, 或者是要获取 除了publish 以外其他状态的文章
+                if (parameters.getSearch() != null || parameters.getStatus() != null)
                 {
                         headers = UserPreferencesUtils.createLoggedUserHeader();
                 }
@@ -97,21 +95,36 @@ public class PostDelegate extends BaseDelegate
         }
 
 
+        /**
+         * 删除文章
+         *
+         * @param httpCallBack
+         * @param postId
+         */
+        public void deletePost(HttpCallBack httpCallBack, int postId)
+        {
+                //设置基本url参数
+                Map<String, Object> baseParametersMap = new BaseParameters().toMap();
+                //增加确认永远删除参数
+                baseParametersMap.put("force", 1);
+                getModel().deleteById(postId, baseParametersMap, null, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+        }
 
 
         /**
          * 文章点赞和取消点赞功能
+         *
          * @param httpCallBack
          * @param postId
-         * @param isAddLike true = 点赞, false = 取消点赞
-         * */
+         * @param isAddLike    true = 点赞, false = 取消点赞
+         */
         public void postLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
         {
                 BaseParameters baseParameters = new BaseParameters();
                 Map<String, Object> bodyParameters = new HashMap<>();
                 putIfNotNull(bodyParameters, "post_id", postId);
                 //如果是要取消点赞
-                if(!isAddLike)
+                if (!isAddLike)
                 {
                         putIfNotNull(bodyParameters, "cancel", 1);
                 }
@@ -122,8 +135,9 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 文章分享次数计算
+         *
          * @param postId
-         * */
+         */
         public void postShareCount(int postId)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
@@ -134,8 +148,9 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 文章查看次数计算
+         *
          * @param postId
-         * */
+         */
         public void postViewCount(int postId)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
@@ -146,10 +161,11 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 文章失效次数计算
+         *
          * @param httpCallBack
          * @param postId
-         * */
-        public void postFailDownCount(HttpCallBack httpCallBack,  int postId)
+         */
+        public void postFailDownCount(HttpCallBack httpCallBack, int postId)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
@@ -159,13 +175,15 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 获取从最后访问时间 到目前为止 新发布的文章数量
+         *
          * @param httpCallBack
-         * */
+         */
         public void getNewPostCount(HttpCallBack httpCallBack)
         {
                 long lastAccessTime = ApplicationPreferencesUtils.getLatestAccessTime();
                 //如果是0
-                if(lastAccessTime ==0){
+                if (lastAccessTime == 0)
+                {
                         //就获取系统时间, 避免报错
                         lastAccessTime = System.currentTimeMillis();
                 }
@@ -178,6 +196,33 @@ public class PostDelegate extends BaseDelegate
                 Request.get(GlobalConfig.Server.NEW_POST_COUNT, queryParameters, null, getTag(), httpCallBack);
         }
 
+        /**
+         * 创建文章
+         *
+         * @param httpCallBack
+         * @param parameters
+         */
+        public void createPost(HttpCallBack httpCallBack, CreatePostParameters parameters)
+        {
 
+                BaseParameters baseParameters = new BaseParameters();
+                getModel().insert(baseParameters.toMap(), parameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+
+        }
+
+        /**
+         * 更新文章
+         *
+         * @param httpCallBack
+         * @param parameters
+         * @param postId
+         */
+        public void updatePost(HttpCallBack httpCallBack, CreatePostParameters parameters, int postId)
+        {
+
+                BaseParameters baseParameters = new BaseParameters();
+                getModel().updateById(postId, baseParameters.toMap(), parameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+
+        }
 
 }

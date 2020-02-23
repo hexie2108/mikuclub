@@ -132,6 +132,25 @@ public class HttpUtils
 
         }
 
+        /**
+         * 创建隐式intent 实现分享功能
+         *
+         * @param context
+         * @param text          主要地址
+         */
+        public static void startSharingIntent(Context context, String text)
+        {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, text);//extraText为文本的内容
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//为Activity新建一个任务栈
+                Intent shareIntent = Intent.createChooser(intent,  ResourcesUtils.getString(R.string.share_to));
+                context.startActivity(shareIntent);
+
+
+        }
+
+
 
         /**
          * 第三方解析html方法, 支持保留链接和显示图片, 并给链接和图片 设置相应的动作监听

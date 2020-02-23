@@ -7,18 +7,16 @@ import android.view.ViewGroup;
 
 import org.mikuclub.app.adapter.CategoryAdapter;
 import org.mikuclub.app.config.GlobalConfig;
-import org.mikuclub.app.javaBeans.response.Categories;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
-import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.ui.activity.base.MyFragment;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
@@ -27,7 +25,7 @@ import mikuclub.app.R;
  * 主页-分类分页
  * Home page: category list fragment
  */
-public class HomeCategoriesFragment extends Fragment
+public class HomeCategoriesFragment extends MyFragment
 {
 
 
@@ -61,7 +59,7 @@ public class HomeCategoriesFragment extends Fragment
                 recyclerView = view.findViewById(R.id.recycler_view);
 
                 //反序列化
-                recyclerDataList = ParserUtils.fromJson(CategoryPreferencesUtils.getCategoryCache(), Categories.class).getBody();
+                recyclerDataList = CategoryPreferencesUtils.getCategory();
                 //检查用户是否登陆 , 没登陆的情况去除魔法区
                 checkAndRemoveMofaCategory();
 
@@ -78,7 +76,7 @@ public class HomeCategoriesFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建适配器
-                recyclerViewAdapter = new CategoryAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new CategoryAdapter(getActivity(), recyclerDataList);
 
                 //创建列表网格布局
                 //设置行数
@@ -113,6 +111,7 @@ public class HomeCategoriesFragment extends Fragment
                                 }
                         }
                 }
+
         }
 
 

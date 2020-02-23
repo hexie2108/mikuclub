@@ -33,12 +33,12 @@ public class HomeReplyCommentAdapter extends BaseAdapterWithFooter
         /**
          * 构建函数 default constructor
          *
-         * @param list
          * @param context
+         * @param list
          */
-        public HomeReplyCommentAdapter(List<Comment> list, Context context)
+        public HomeReplyCommentAdapter(Context context, List<Comment> list)
         {
-                super(list, context);
+                super(context, list);
         }
 
 

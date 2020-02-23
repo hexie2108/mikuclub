@@ -216,12 +216,6 @@ public class CommentController extends BaseController
                                         getRecyclerView().smoothScrollToPosition(0);
                                 }
 
-                                @Override
-                                public void onError(WpError wpError)
-                                {
-
-                                        ToastUtils.shortToast(wpError.getBody().getMessage());
-                                }
 
                                 @Override
                                 public void onFinally()

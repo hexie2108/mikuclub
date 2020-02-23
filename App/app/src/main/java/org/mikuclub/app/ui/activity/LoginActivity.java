@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.sina.weibo.sdk.openapi.IWBAPI;
 import com.tencent.connect.common.Constants;
 import com.tencent.tauth.Tencent;
 
@@ -18,8 +19,10 @@ import org.json.JSONObject;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.UtilsDelegate;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.KeyboardUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -29,7 +32,6 @@ import org.mikuclub.app.utils.social.TencentListener;
 import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;
 import org.mikuclub.app.utils.social.WeiboUtils;
-import org.mikuclub.app.storage.UserPreferencesUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +55,7 @@ public class LoginActivity extends AppCompatActivity
         /* 变量 local variable */
         private UtilsDelegate delegate;
         private TencentListener tencentListener;
+        private IWBAPI weiboAPI;
 
         /* 组件 views */
         private EditText inputUserName;
@@ -84,6 +87,8 @@ public class LoginActivity extends AppCompatActivity
 
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(this, false, false);
+                //创建微博分享的API
+                weiboAPI = WeiboUtils.getInstance(this);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -185,6 +190,8 @@ public class LoginActivity extends AppCompatActivity
         {
                 progressDialog.show();
                 loginButton.setEnabled(false);
+                //去除当前焦点 和隐藏键盘
+                KeyboardUtils.hideKeyboard(getCurrentFocus());
 
                 HttpCallBack httpCallBack = new HttpCallBack()
                 {
@@ -301,7 +308,7 @@ public class LoginActivity extends AppCompatActivity
                                 loginParameters.setUnion_id(getUnionId());
                                 sendLogin(loginParameters);
                                 //释放QQ api
-                                TencentUtils.getInstance().logout(LoginActivity.this);
+                                //TencentUtils.getInstance().logout(LoginActivity.this);
                         }
                 };
                 TencentUtils.getInstance().login(this, "all", tencentListener);
@@ -313,6 +320,7 @@ public class LoginActivity extends AppCompatActivity
          */
         private void startWeiboAuth()
         {
+
                 WeiboListener listener = new WeiboListener()
                 {
                         @Override
@@ -325,10 +333,11 @@ public class LoginActivity extends AppCompatActivity
                                 loginParameters.setOpen_id(getOpenID());
                                 sendLogin(loginParameters);
                                 //释放微博api
-                                WeiboUtils.removeInstance();
+                                //WeiboUtils.removeInstance();
                         }
                 };
-                WeiboUtils.getInstance(this).authorize(listener);
+
+                weiboAPI.authorize(listener);
 
         }
 
@@ -345,7 +354,7 @@ public class LoginActivity extends AppCompatActivity
                 else
                 {
                         LogUtils.v("微博登陆回调");
-                        WeiboUtils.getInstance(this).authorizeCallback(requestCode, resultCode, data);
+                        weiboAPI.authorizeCallback(requestCode, resultCode, data);
                 }
         }
 

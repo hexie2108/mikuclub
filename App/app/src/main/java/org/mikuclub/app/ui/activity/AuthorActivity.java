@@ -112,7 +112,7 @@ public class AuthorActivity extends AppCompatActivity
         private void initRecyclerView()
         {
 
-                recyclerViewAdapter = new AuthorAdapter(recyclerDataList, this);
+                recyclerViewAdapter = new AuthorAdapter(this, recyclerDataList);
                 recyclerViewAdapter.setAuthor(author);
 
                 //创建网格布局

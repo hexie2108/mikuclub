@@ -91,7 +91,7 @@ public class HomeMessageReplyCommentFragment extends Fragment
         private void initRecyclerView()
         {
                 //创建数据适配器
-                recyclerViewAdapter = new HomeReplyCommentAdapter(recyclerDataList, getActivity());
+                recyclerViewAdapter = new HomeReplyCommentAdapter(getActivity(), recyclerDataList);
                 //创建列表主布局
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 layoutManager.setOrientation(RecyclerView.VERTICAL);

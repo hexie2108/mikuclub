@@ -62,10 +62,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<RecyclerView.View
         /**
          * 构建函数 default constructor
          *
-         * @param adapterList
          * @param context
+         * @param adapterList
          */
-        protected BaseAdapter(List adapterList, Context context)
+        protected BaseAdapter(Context context, List adapterList)
         {
                 this.adapterList = adapterList;
                 this.adapterContext = context;
@@ -264,6 +264,19 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<RecyclerView.View
         public Object getAdapterListElementWithHeaderRowFix(int position){
                 return getAdapterList().get(position-headerRow);
         }
+
+        /**
+         * 删除适配器元素对应的数据 (解决可能存在的头部带来的位置偏移)
+         * 排除可能存在的头部组件带来的主体元素位置 和 数据列表里的数据位置 之间偏移的问题
+         *
+         * @param position
+         * @return
+         */
+        public void removeAdapterListElementWithHeaderRowFix(int position){
+                getAdapterList().remove(position-headerRow);
+        }
+
+
 
 
 
