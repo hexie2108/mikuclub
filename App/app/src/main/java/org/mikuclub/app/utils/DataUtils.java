@@ -145,6 +145,17 @@ public class DataUtils
                                         map.put(key, value);
                                 }
                         }
+                        //如果是列表
+                        else if (inputValue instanceof ArrayList)
+                        {
+                                ArrayList list = (ArrayList) inputValue;
+                                //如果列表不是空的
+                                if (!list.isEmpty())
+                                {
+                                        map.put(key, inputValue);
+                                }
+
+                        }
                         //如果是其他类型
                         else
                         {
@@ -172,4 +183,6 @@ public class DataUtils
                 }
                 return output;
         }
+
+
 }

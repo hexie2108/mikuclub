@@ -224,6 +224,8 @@ public class PostManageActivity extends AppCompatActivity
         public static void startAction(Context context)
         {
                 Intent intent = new Intent(context, PostManageActivity.class);
+                //重新创建模式, 并删除所有之上的活动
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
         }
 }

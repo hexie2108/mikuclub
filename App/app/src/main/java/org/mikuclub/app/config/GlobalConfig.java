@@ -186,7 +186,7 @@ public class GlobalConfig
                 //菜单缓存
                 public static final String CATEGORIES_CACHE = "categories_cache";
                 //菜单缓存的时间
-                public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire";
+                public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire_1";
                 //菜单缓存的有效期
                 public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 15; //每15天检查一次
 

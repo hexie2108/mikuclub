@@ -26,34 +26,6 @@ public class GeneralUtils
         // 中文字符的正则
         private static String REGEX_CHINESE = "[\u4e00-\u9fa5]";
 
-        /**
-         * 全角字符转半角
-         * @param text input string
-         * @return the converted String
-         */
-        public static String fullSymbolToHalf(String text)
-        {
-                String output = text;
-                if (!text.isEmpty())
-                {
-                        char[] charArray = text.toCharArray();
-                        for (int i = 0; i < charArray.length; i++)
-                        {
-                                if (charArray[i] == 12288)
-                                {
-                                        charArray[i] = ' ';
-                                }
-                                else if (charArray[i] >= ' ' &&
-                                        charArray[i] <= 65374)
-                                {
-                                        charArray[i] = (char) (charArray[i] - 65248);
-                                }
-                        }
-                        output = new String(charArray);
-                }
-
-                return output;
-        }
 
 
 

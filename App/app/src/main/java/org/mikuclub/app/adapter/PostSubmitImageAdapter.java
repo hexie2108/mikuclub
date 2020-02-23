@@ -135,7 +135,7 @@ public class PostSubmitImageAdapter extends BaseAdapterWithFooter
          */
         private void moveAction(int startPosition, int endPosition)
         {
-                LogUtils.e("点击触发");
+
                 int listStartPosition = startPosition - getHeaderRow();
                 int listEndPosition = endPosition - getHeaderRow();
 

@@ -11,6 +11,7 @@ import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.ui.activity.PostSubmitActivity;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
@@ -125,6 +126,8 @@ public class PostManageAdapter extends BaseAdapterWithFooter
 
                         //获取数据, 修复可能的position偏移
                         Post post = (Post) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+                        //启动投稿编辑页面
+                        PostSubmitActivity.startAction(getAdapterContext(), post.getId());
 
                 });
                 //删除按钮

@@ -21,47 +21,72 @@
             android:theme = "@style/AppTheme">
 
 
-
                 <service
                     android:name = "org.mikuclub.app.service.PostPushService"
                     android:enabled = "true"
                     android:exported = "false" />
 
-                <activity android:name = "org.mikuclub.app.ui.activity.PostSubmitActivity" android:label="@string/submit_post_title"></activity>
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.PostSubmitActivity"
+                    android:label = "@string/submit_post_title"
+                    android:screenOrientation = "portrait"></activity>
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PostManageActivity"
-                    android:label = "@string/post_manage_title" />
+                    android:label = "@string/post_manage_title"
+                    android:screenOrientation = "portrait" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
-                    android:label = "@string/settings" />
-                <activity android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity" /> <!-- 解决腾讯sdk 网络连接报错 -->
+                    android:label = "@string/settings"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity"
+                    android:screenOrientation = "portrait" /> <!-- 解决腾讯sdk 网络连接报错 -->
                 <uses-library
                     android:name = "org.apache.http.legacy"
                     android:required = "false" />
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.LoginActivity"
-                    android:label = "@string/login" />
-                <activity android:name = "org.mikuclub.app.ui.activity.ImageActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.WelcomeActivity">
+                    android:label = "@string/login"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.ImageActivity"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.WelcomeActivity"
+                    android:screenOrientation = "portrait">
                         <intent-filter>
                                 <action android:name = "android.intent.action.MAIN" />
 
                                 <category android:name = "android.intent.category.LAUNCHER" />
                         </intent-filter>
                 </activity>
-                <activity android:name = "org.mikuclub.app.ui.activity.HomeActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.SearchActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.CategoryActivity" />
-                <activity android:name = "org.mikuclub.app.ui.activity.AuthorActivity" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.HomeActivity"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.SearchActivity"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.PostActivity"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.CategoryActivity"
+                    android:screenOrientation = "portrait" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.AuthorActivity"
+                    android:screenOrientation = "portrait" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.ReportActivity"
-                    android:label = "@string/report" />
+                    android:label = "@string/report"
+                    android:screenOrientation = "portrait" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"
-                    android:label = "@string/user_profile" /> <!-- 腾讯QQ sdk专用 -->
+                    android:label = "@string/user_profile"
+                    android:screenOrientation = "portrait" />
+
+                <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"
                     android:launchMode = "singleTask"

@@ -147,6 +147,7 @@
         <string name = "image_preview_max_count_error">每个投稿最多支持8张图片</string>
         <string name = "download_link">下载地址</string>
         <string name = "download_link_error">下载地址的格式不正确, 只支持http开头的网址</string>
+        <string name = "download_link_help">可以直接粘贴百度网盘分享口令, 将会自动完成解析填写</string>
         <string name = "tag">标签 (可选)</string>
         <string name = "tag_help">可以输入投稿相关的关键词, 人物, 歌曲名等等, 需要输入多个标签可以用逗号 , 分割</string>
         <string name = "bilibili_link">B站视频地址 (可选)</string>
@@ -205,7 +206,7 @@
         <string name = "channel_description" translatable = "false">消息推送的渠道</string>
 
         <!-- home category page-->
-        <string name = "home_cateogry_help">登陆后才能使用魔法</string>
+        <string name = "home_cateogry_help">登陆后才能施放魔法</string>
 
 
 </resources>

@@ -17,10 +17,14 @@ import org.mikuclub.app.adapter.PostSubmitImageAdapter;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.MediaDelegate;
 import org.mikuclub.app.delegate.PostDelegate;
+import org.mikuclub.app.javaBeans.parameters.CreatePostParameters;
 import org.mikuclub.app.javaBeans.response.SingleMedia;
+import org.mikuclub.app.javaBeans.response.SinglePost;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.javaBeans.response.baseResource.ImagePreview;
 import org.mikuclub.app.javaBeans.response.baseResource.Media;
+import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
@@ -58,6 +62,8 @@ public class PostSubmitActivity extends AppCompatActivity
         /* 静态变量 Static variable */
         public static final int TAG = 17;
 
+        private static final String INTENT_POST_ID = "post_id";
+
         /* 变量 local variable */
         //分类id矩阵
         private ArrayList<ArrayList<Integer>> categoriesMatrix = new ArrayList<>();
@@ -71,6 +77,11 @@ public class PostSubmitActivity extends AppCompatActivity
         private PostSubmitImageAdapter recyclerViewAdapter;
         //列表数据
         private List<ImagePreview> recyclerDataList;
+
+        //用来判断是新建文章 还是编辑旧文章
+        private int postId;
+        //在编辑旧文章的时候 才会用到
+        private Post post;
 
 
         /* 组件 views */
@@ -103,6 +114,7 @@ public class PostSubmitActivity extends AppCompatActivity
 
         private AlertDialog categoryDialog;
         private AlertDialog progressDialog;
+        private AlertDialog getPostRetryDialog;
 
 
         @Override
@@ -144,6 +156,8 @@ public class PostSubmitActivity extends AppCompatActivity
                 buttonDraft = findViewById(R.id.button_draft);
                 /*===============*/
 
+                //如果有传递文章id 说明是在编辑旧投稿
+                postId = getIntent().getIntExtra(INTENT_POST_ID, 0);
 
                 mediaDelegate = new MediaDelegate(TAG);
                 postDelegate = new PostDelegate(TAG);
@@ -156,37 +170,187 @@ public class PostSubmitActivity extends AppCompatActivity
                 {
                         //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
+                        //如果是在编辑旧文章
+                        if (postId>0){
+                                //更换标题名
+                                actionBar.setTitle(ResourcesUtils.getString(R.string.edit));
+                        }
                 }
 
-
+                //初始化表单
                 initForm();
 
                 //初始化图片预览列表
                 initRecyclerView();
+
+                //如果文章id大于0说明是在编辑旧文章
+                if (postId > 0)
+                {
+                        //准备获取文章信息, 之后用信息填写表单
+                        prepareGetPost();
+                        //获取文章
+                        getPostData();
+                }
+
+
+
+        }
+
+        /**
+         * 准备获取文章信息
+         */
+        private void prepareGetPost()
+        {
+
+                //弹窗确认按钮点击事件监听
+                DialogInterface.OnClickListener positiveClickListener = (dialog, which) -> {
+                        //重试请求
+                        getPostData();
+                };
+                //弹窗取消按钮点击事件监听
+                DialogInterface.OnClickListener negativeClickListener = (dialog, which) -> {
+                        //关闭当前页面
+                        finish();
+                };
+                //创建重试弹窗
+                getPostRetryDialog = AlertDialogUtils.createConfirmDialog(this, ResourcesUtils.getString(R.string.post_get_by_id_error_message), null, true, true, ResourcesUtils.getString(R.string.retry), positiveClickListener, ResourcesUtils.getString(R.string.cancel), negativeClickListener);
+
+
+        }
+
+        /**
+         * 获取文章信息
+         */
+        private void getPostData()
+        {
+                //显示进度条
+                progressDialog.show();
+
+                HttpCallBack httpCallBack = new HttpCallBack()
+                {
+                        @Override
+                        public void onSuccess(String response)
+                        {
+                                //获取文章数据
+                                post = ParserUtils.fromJson(response, SinglePost.class).getBody();
+                                //用数据填充表单
+                                fillForm();
+                        }
+
+                        @Override
+                        public void onError(WpError wpError)
+                        {
+                                super.onError(wpError);
+                                //弹出确认窗口 允许用户重试
+                                getPostRetryDialog.show();
+                        }
+
+                        @Override
+                        public void onHttpError()
+                        {
+                                onError(null);
+                        }
+
+                        @Override
+                        public void onFinally()
+                        {
+                                //隐藏进度条弹窗
+                                progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                                //显示重试弹窗
+                                getPostRetryDialog.show();
+                        }
+                };
+                postDelegate.getPost(httpCallBack, postId);
 
 
         }
 
 
         /**
-         * 初始化recyclerView列表
-         * init recyclerView
+         * 在编辑旧投稿的情况
+         * 用文章数据预先填满表单
          */
-        private void initRecyclerView()
+        private void fillForm()
         {
 
-                //创建适配器
-                recyclerViewAdapter = new PostSubmitImageAdapter(this, recyclerDataList);
+                //获取文章的元数据
+                Post.Metadata metadata = post.getMetadata();
 
-                //创建列表主布局
-                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                //修复标题中可能存在的被html转义的特殊符号
+                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                inputTitle.setText(title);
 
-                //配置列表
-                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE, false, false, null);
+                //设置分类名
+                findCategoryById();
+
+                //获取来源说明
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource_name()))
+                {
+                        inputSourceName.setText(metadata.getSource_name().get(0));
+                }
+                //获取文章描述
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getContent()))
+                {
+                        inputDescription.setText(metadata.getContent().get(0));
+                }
+                //获取下载地址
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getDown()))
+                {
+                        inputDownload1.setText(metadata.getDown().get(0));
+                }
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getDown2()))
+                {
+                        inputDownload2.setText(metadata.getDown2().get(0));
+                }
+                //获取访问密码
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword()))
+                {
+                        inputPassword1.setText(metadata.getPassword().get(0));
+                }
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getPassword2()))
+                {
+                        inputPassword2.setText(metadata.getPassword2().get(0));
+                }
+                //获取解压密码
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getUnzip_password()))
+                {
+                        inputUnzipPassword1.setText(metadata.getUnzip_password().get(0));
+                }
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getUnzip_password2()))
+                {
+                        inputUnzipPassword2.setText(metadata.getUnzip_password2().get(0));
+                }
+                //获取B站地址
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getBilibili()))
+                {
+                        inputBilibili.setText(metadata.getBilibili().get(0));
+                }
+
+                //获取图片预览地址
+                ImagePreview imagePreview;
+                for (int i = 0; i < metadata.getPreviews().size(); i++)
+                {
+                        //防止图片地址数组超过范围
+                        if (i < metadata.getImages_src().size())
+                        {
+                                //创建图片预览类
+                                imagePreview = new ImagePreview();
+                                imagePreview.setId(metadata.getPreviews().get(i));
+                                imagePreview.setSource_url(metadata.getImages_src().get(i));
+                                imagePreview.setAlreadySubmitted(true);
+                                //添加进列表
+                                recyclerDataList.add(imagePreview);
+                        }
+                }
+                //更新列表显示
+                recyclerViewAdapter.notifyDataSetChanged();
 
         }
-
 
         /**
          * 初始化表单
@@ -216,6 +380,28 @@ public class PostSubmitActivity extends AppCompatActivity
                         //提交动作
                         submitAction();
                 });
+
+
+        }
+
+        /**
+         * 初始化recyclerView列表
+         * init recyclerView
+         */
+        private void initRecyclerView()
+        {
+
+                //创建适配器
+                recyclerViewAdapter = new PostSubmitImageAdapter(this, recyclerDataList);
+
+                //创建列表主布局
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+                //配置列表
+                RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE, false, false, null);
+
+
 
         }
 
@@ -305,19 +491,72 @@ public class PostSubmitActivity extends AppCompatActivity
                                         String text = editText.getText().toString().trim();
                                         editText.setText(text);
                                 }
+
                         }
                 };
+
                 inputTitle.setOnFocusChangeListener(focusChangeListener);
                 inputSourceName.setOnFocusChangeListener(focusChangeListener);
                 inputDescription.setOnFocusChangeListener(focusChangeListener);
-                inputDownload1.setOnFocusChangeListener(focusChangeListener);
-                inputDownload2.setOnFocusChangeListener(focusChangeListener);
+
                 inputPassword1.setOnFocusChangeListener(focusChangeListener);
                 inputPassword2.setOnFocusChangeListener(focusChangeListener);
                 inputUnzipPassword1.setOnFocusChangeListener(focusChangeListener);
                 inputUnzipPassword2.setOnFocusChangeListener(focusChangeListener);
                 inputBilibili.setOnFocusChangeListener(focusChangeListener);
 
+                //下载栏专用 解析百度盘链接
+                View.OnFocusChangeListener focusChangeListenerForDownload = (v, hasFocus) -> {
+                        //如果失去焦点 并且是 输入框组件
+                        if (!hasFocus && v instanceof TextInputEditText)
+                        {
+                                TextInputEditText editText = (TextInputEditText) v;
+                                if (editText.getText() != null)
+                                {
+                                        //去除左右空格
+                                        String text = editText.getText().toString().trim();
+                                        //去除所有的空格和空白符号和 全角冒号和 逗号
+                                        text = text.replace(" ", "").replaceAll("\\s*", "").replace("：", ":").replace("，", ",");
+
+                                        String linkName = "链接:";
+                                        //如果存在 "链接: "  这个字符串
+                                        int linkNameIndex = text.indexOf(linkName);
+                                        if (linkNameIndex != -1)
+                                        {
+                                                //移除字符串 和之前的任何东西
+                                                text = text.substring(linkNameIndex + linkName.length());
+                                        }
+
+                                        String passwordName = "提取码:";
+                                        //如果存在 "提取码:   这个字符串
+                                        int passwordNameIndex = text.indexOf(passwordName);
+                                        if (passwordNameIndex != -1)
+                                        {
+
+                                                //提取出密码
+                                                String password = text.substring(passwordNameIndex + passwordName.length());
+                                                //从下载地址中 移除提取码 字符串和后续密码内容
+                                                text = text.substring(0, passwordNameIndex);
+
+                                                //如果是下载点1
+                                                if (editText == inputDownload1)
+                                                {
+                                                        inputPassword1.setText(password);
+                                                }
+                                                //如果是下载点2
+                                                else if (editText == inputDownload2)
+                                                {
+                                                        inputPassword2.setText(password);
+                                                }
+                                        }
+
+                                        editText.setText(text);
+                                }
+                        }
+                };
+
+                inputDownload1.setOnFocusChangeListener(focusChangeListenerForDownload);
+                inputDownload2.setOnFocusChangeListener(focusChangeListenerForDownload);
 
         }
 
@@ -375,16 +614,16 @@ public class PostSubmitActivity extends AppCompatActivity
 
                 //依次检查每个输入框
                 boolean hasError = false;
-                String title;
-                String source;
-                String description;
-                String download1;
-                String download2;
-                String password1;
-                String password2;
-                String unzipPassword1;
-                String unzipPassword2;
-                String bilibili;
+                String title = null;
+                String sourceName = null;
+                String description = null;
+                String download1 = null;
+                String download2 = null;
+                String password1 = null;
+                String password2 = null;
+                String unzipPassword1 = null;
+                String unzipPassword2 = null;
+                String bilibili = null;
 
                 //检查标题栏
                 if (inputTitle.getText() != null)
@@ -414,7 +653,7 @@ public class PostSubmitActivity extends AppCompatActivity
                 //获取来源说明
                 if (inputSourceName.getText() != null)
                 {
-                        source = inputSourceName.getText().toString();
+                        sourceName = inputSourceName.getText().toString();
                 }
                 //检查描述
                 if (inputDescription.getText() != null)
@@ -440,9 +679,9 @@ public class PostSubmitActivity extends AppCompatActivity
                 //检查下载栏2
                 if (inputDownload2.getText() != null)
                 {
-                        download1 = inputDownload2.getText().toString();
+                        download2 = inputDownload2.getText().toString();
                         //如果不是空, 并且不是磁链地址, 并且 不是 有效的网址
-                        if (!download1.isEmpty() && !download1.contains("magnet:") && !GeneralUtils.isValidUrl(download1))
+                        if (!download2.isEmpty() && !download2.contains("magnet:") && !GeneralUtils.isValidUrl(download2))
                         {
                                 inputDownload2Layout.setError(ResourcesUtils.getString(R.string.download_link_error));
                                 hasError = true;
@@ -475,10 +714,11 @@ public class PostSubmitActivity extends AppCompatActivity
                         //如果不是空, 并且不是磁链地址, 并且 不是 有效的网址
                         if (!bilibili.isEmpty())
                         {
-                               //查询"AV"字符的位置
+                                //查询"AV"字符的位置
                                 int biliIndex = bilibili.indexOf(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV);
-                               //如果av字符存在
-                                if(biliIndex != -1){
+                                //如果av字符存在
+                                if (biliIndex != -1)
+                                {
                                         //提取出AV号 : av123456
                                         bilibili = bilibili.substring(biliIndex);
                                         //去除av号后面可能存在的多余后缀
@@ -495,7 +735,8 @@ public class PostSubmitActivity extends AppCompatActivity
                                         inputBilibili.setText(bilibili);
                                 }
                                 //如果地址不包含av号
-                                else{
+                                else
+                                {
                                         inputBilibiliLayout.setError(ResourcesUtils.getString(R.string.bilibili_link_error));
                                         hasError = true;
                                 }
@@ -503,39 +744,109 @@ public class PostSubmitActivity extends AppCompatActivity
                 }
 
                 // 如果发现了表单存在错误
-                if(hasError){
+                if (hasError)
+                {
                         ToastUtils.shortToast("当前表单里存在错误, 请根据错误提示进行更改");
                 }
                 //如果未上传任何图片预览
-                else if(recyclerDataList.isEmpty()){
+                else if (recyclerDataList.isEmpty())
+                {
                         ToastUtils.shortToast("请至少上传一张图片");
                 }
 
                 //如果未发现错误
-                else{
+                else
+                {
+
+                        //创建参数
+                        CreatePostParameters parameters = new CreatePostParameters();
+                        CreatePostParameters.Meta meta = new CreatePostParameters.Meta();
+                        meta.setSource_name(sourceName);
+                        meta.setContent(description);
+                        meta.setDown(download1);
+                        meta.setDown2(download2);
+                        meta.setPassword(password1);
+                        meta.setPassword2(password2);
+                        meta.setUnzip_password(unzipPassword1);
+                        meta.setUnzip_password2(unzipPassword2);
+                        meta.setBilibili(bilibili);
+
+                        //创建图片预览的id数组
+                        ArrayList<String> previews = new ArrayList<>();
+                        for (int i = 0; i < recyclerDataList.size(); i++)
+                        {
+                                previews.add(String.valueOf(recyclerDataList.get(i).getId()));
+                        }
+                        meta.setPreviews(previews);
+
+                        parameters.setTitle(title);
+                        parameters.setCategories(categoriesMatrix.get(selectedCategoryPosition));
+                        parameters.setMeta(meta);
+
                         //发送提交请求
-                        sendSubmitRequest();
+                        sendSubmitRequest(parameters);
 
                 }
 
 
-
-                //把全角字符转成半角
-                //text = GeneralUtils.fullSymbolToHalf(text);
-                //去除空格, 去除其他空白符号
-                //text = text.replace(" ", "").replaceAll("\\s*", "");
                 //去除中文字符
                 //text = GeneralUtils.replaceChineseCharacters(text);
-
-
-
         }
 
 
         /**
-         * 发送提交请求
+         * 发送请求
+         *
+         * @param parameters
          */
-        private void sendSubmitRequest(){
+        private void sendSubmitRequest(CreatePostParameters parameters)
+        {
+
+                //显示进度条
+                progressDialog.show();
+
+                HttpCallBack httpCallBack = new HttpCallBack()
+                {
+                        @Override
+                        public void onSuccess(String response)
+                        {
+                                //如果投稿提交成功
+                                ToastUtils.shortToast("提交成功");
+                                //清空列表 避免图片附件被退出时删除
+                                recyclerDataList.clear();
+                                //跳转到投稿管理页
+                                PostManageActivity.startAction(PostSubmitActivity.this);
+                                finish();
+                        }
+
+                        @Override
+                        public void onError(WpError wpError)
+                        {
+                                super.onError(wpError);
+                                progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onHttpError()
+                        {
+                                progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                                progressDialog.dismiss();
+                        }
+                };
+
+                //如果是创建文章
+                if(postId == 0){
+                        postDelegate.createPost(httpCallBack, parameters);
+                }
+                //如果是更新旧文章
+                else{
+                        postDelegate.updatePost(httpCallBack, parameters, postId);
+                }
 
 
         }
@@ -609,6 +920,36 @@ public class PostSubmitActivity extends AppCompatActivity
                         }
 
                 }
+        }
+
+        /**
+         * 根据分类id号, 找到对应分类在矩阵里的位置 和 设置对应的分类名
+         */
+        private void findCategoryById()
+        {
+
+                ArrayList<Integer> subCategoryIds;
+
+                for (int i = 0; i < post.getCategories().size(); i++)
+                {
+                        for (int j = 0; j < categoriesMatrix.size(); j++)
+                        {
+
+                                subCategoryIds = categoriesMatrix.get(j);
+                                //如果文章分类id 匹配到 子分类的id, 说明找到了
+                                if (post.getCategories().get(i).equals(subCategoryIds.get(subCategoryIds.size() - 1)))
+                                {
+                                        //保存找到的分类数组的位置
+                                        selectedCategoryPosition = j;
+                                        //设置分类名
+                                        inputCategory.setText(categoriesName.get(j));
+                                        //退出循环
+                                        j = categoriesMatrix.size();
+                                        i = post.getCategories().size();
+                                }
+                        }
+                }
+
         }
 
         /**
@@ -715,6 +1056,22 @@ public class PostSubmitActivity extends AppCompatActivity
                 Intent intent = new Intent(context, PostSubmitActivity.class);
                 context.startActivity(intent);
         }
+
+        /**
+         * 通过编辑页 启动本活动的静态方法
+         * 提供文章id
+         * static method to start current activity
+         *
+         * @param context
+         * @param postId
+         */
+        public static void startAction(Context context, int postId)
+        {
+                Intent intent = new Intent(context, PostSubmitActivity.class);
+                intent.putExtra(INTENT_POST_ID, postId);
+                context.startActivity(intent);
+        }
+
 
         public MediaDelegate getMediaDelegate()
         {
