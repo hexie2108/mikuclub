@@ -570,6 +570,7 @@ public class PostSubmitActivity extends AppCompatActivity
                 //判断是否需要压缩
                 imageFile = ImageCompression.compressFileIfTooLarge(this, imageFile);
 
+
                 HttpCallBack httpCallBack = new HttpCallBack()
                 {
                         @Override
