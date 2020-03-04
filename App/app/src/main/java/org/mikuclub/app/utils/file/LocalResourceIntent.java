@@ -2,6 +2,15 @@ package org.mikuclub.app.utils.file;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+
+import com.yalantis.ucrop.UCrop;
+
+import org.mikuclub.app.config.GlobalConfig;
+
+import androidx.appcompat.app.AppCompatActivity;
+import mikuclub.app.R;
 
 /**
  * 启动intent 获取本地图片 和 处理本地图片
@@ -52,8 +61,55 @@ public class LocalResourceIntent
                 intent.putExtra("output", cropBean.getSaveUri());
                 intent.putExtra("circleCrop", cropBean.getCircleCrop());
                 intent.putExtra("noFaceDetection", true);
+
                 //跳转
                 activity.startActivityForResult(intent, requestCodeToCropImage);
+        }
+
+        /**
+         * 裁剪图片
+         * 输入图片URI 裁剪完成, 返回对应的URI输出地址
+         * @param activity
+         * @param imageUri
+         * @param outputUri
+         */
+        public static void startActionForResultToCropImageWithUCrop(AppCompatActivity activity, Uri imageUri, Uri outputUri)
+        {
+                UCrop.Options options = new UCrop.Options();
+                // 修改标题栏颜色
+                options.setToolbarColor(activity.getResources().getColor(R.color.colorPrimary));
+                // 修改状态栏颜色
+                options.setStatusBarColor(activity.getResources().getColor(R.color.colorPrimaryDark));
+
+
+
+                // 隐藏底部工具
+                options.setHideBottomControls(true);
+                // 图片格式
+                options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+                // 设置图片压缩质量
+                options.setCompressionQuality(90);
+
+                // 是否让用户调整范围(默认false)，如果开启，可能会造成剪切的图片的长宽比不是设定的
+                // 如果不开启，用户不能拖动选框，只能缩放图片
+
+                options.setFreeStyleCropEnabled(false);
+
+                // 圆
+                options.setCircleDimmedLayer(true);
+                // 不显示网格线
+                options.setShowCropGrid(false);
+
+                // 设置源uri及目标uri
+                UCrop.of(imageUri, outputUri)
+                        // 长宽比
+                        .withAspectRatio(1, 1)
+                        // 图片大小
+                        .withMaxResultSize(GlobalConfig.USER_AVATAR_SIZE, GlobalConfig.USER_AVATAR_SIZE)
+                        // 配置参数
+                        .withOptions(options)
+                        .start(activity);
+
         }
 
 

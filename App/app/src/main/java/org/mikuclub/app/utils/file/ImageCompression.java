@@ -8,7 +8,6 @@ import android.net.Uri;
 import org.mikuclub.app.utils.LogUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,27 +24,29 @@ public class ImageCompression
          * 避免文件名不规范乱码导致的服务器识别错误
          *
          * @param context
-         * @param file
+         * @param fileUri
          * @return
          */
-        public static File compressFileIfTooLarge(Context context, File file)
+        public static File compressFileIfTooLarge(Context context, Uri fileUri)
         {
-                File outputFile = file;
 
-                LogUtils.v("压缩图片");
+                File outputFile;
+
+                LogUtils.v("创建压缩后的图片");
 
                 try
                 {
-                        //先获取一个
+                        //先创建一个bitmap参数 来获取图片文件的信息
                         // BitmapFactory options to downsize the image
                         BitmapFactory.Options o = new BitmapFactory.Options();
                         o.inJustDecodeBounds = true;
-                        o.inSampleSize = 6;
+                        o.inSampleSize = 1;
 
-                        FileInputStream inputStream = new FileInputStream(file);
+                       InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
                         //Bitmap selectedBitmap = null;
                         BitmapFactory.decodeStream(inputStream, null, o);
-                        inputStream.close();
+                        //关闭输入流
+                       inputStream.close();
 
                         //只有在图片 超过 最大尺寸两倍的情况下 就进行数据层面的缩放 节省内存, 图片实际大小不会变
                         // Find the correct scale value. It should be the power of 2.
@@ -57,12 +58,13 @@ public class ImageCompression
                         }
 
                         //设置新图片的缩放比例参数
-                        BitmapFactory.Options o2 = new BitmapFactory.Options();
-                        o2.inSampleSize = scale;
-                        //开启输入流 读取文件
-                        inputStream = new FileInputStream(file);
+                        o.inJustDecodeBounds = false;
+                        o.inSampleSize = scale;
+                        //重新打开新的输入流
+                        inputStream = context.getContentResolver().openInputStream(fileUri);
+
                         //创建成压缩后的图片
-                        Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+                        Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o);
                         //关闭输入流
                         inputStream.close();
 
@@ -73,13 +75,20 @@ public class ImageCompression
                         outputFile = FileUtils.createNewCacheFile(context);
                         //开启缓存文件的输出流
                         FileOutputStream outputStream = new FileOutputStream(outputFile);
+
                         //把图片压缩成JPEG写入缓存文件
-                        selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                       selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                        //关闭输出流
+                        outputStream.close();
 
-
+                        //如果文件是空的, 则把输出改为null
+                        if(outputFile.length()==0){
+                                outputFile=null;
+                        }
                 }
                 catch (Exception e)
                 {
+                        e.printStackTrace();
                         return null;
                 }
 

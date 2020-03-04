@@ -42,18 +42,24 @@ public class FileUtils
          */
         public static File createNewCacheFile(Context context)
         {
-                //获取缓存文件夹
+                //获取外部缓存文件夹
                 File cacheDirectory = context.getExternalCacheDir();
+                //如果不存在
+                if (cacheDirectory == null)
+                {
+                        //获取内部缓存文件夹
+                        cacheDirectory = context.getCacheDir();
+                }
                 //输出文件
                 File outputFile = null;
                 //如果缓存文件夹不是null
                 if (cacheDirectory != null)
                 {
                         //生成随机文件名, 后缀加上jpg
-                        String fileName = String.valueOf(System.currentTimeMillis() / 1000) + ".jpg";
+                        String fileName = System.currentTimeMillis() / 1000 + ".jpg";
                         outputFile = new File(cacheDirectory, fileName);
-
                 }
+
 
                 return outputFile;
         }
@@ -70,32 +76,45 @@ public class FileUtils
                 if (cacheDirectory != null)
                 {
                         //循环清空缓存文件夹
-                        deleteFileRecursion(cacheDirectory);
+                        deleteFileRecursion(cacheDirectory.listFiles());
                 }
+                //如果外部缓存文件夹不存在
+                else{
+                        //获取内部缓存文件夹
+                        cacheDirectory = context.getCacheDir();
+                        if (cacheDirectory != null)
+                        {
+                                //循环清空缓存文件夹
+                                deleteFileRecursion(cacheDirectory.listFiles());
+                        }
+                }
+
         }
 
         /**
-         * 递归删除文件和文件夹
+         * 递归删除文件
+         * 不删除文件夹
          *
-         * @param file
+         * @param entries
          */
-        private static void deleteFileRecursion(File file)
+        private static void deleteFileRecursion(File[]  entries)
         {
-                if (file.isDirectory())
-                {
-                        File[] entries = file.listFiles();
                         if (entries != null)
                         {
                                 for (File entry : entries)
                                 {
-                                        deleteFileRecursion(entry);
+                                        //如果不是文件夹
+                                        if(!entry.isDirectory()){
+                                                if (!entry.delete())
+                                                {
+                                                        LogUtils.v("文件删除失败");
+                                                }
+                                        }
+
                                 }
                         }
-                }
-                if (!file.delete())
-                {
-                        LogUtils.v("文件删除失败");
-                }
+
+
         }
 
 
