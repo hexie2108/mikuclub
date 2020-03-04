@@ -34,7 +34,6 @@ import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
-import org.mikuclub.app.utils.file.FileUtils;
 import org.mikuclub.app.utils.file.ImageCompression;
 import org.mikuclub.app.utils.file.LocalResourceIntent;
 import org.mikuclub.app.utils.http.HttpCallBack;
@@ -171,7 +170,8 @@ public class PostSubmitActivity extends AppCompatActivity
                         //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                         //如果是在编辑旧文章
-                        if (postId>0){
+                        if (postId > 0)
+                        {
                                 //更换标题名
                                 actionBar.setTitle(ResourcesUtils.getString(R.string.edit));
                         }
@@ -191,7 +191,6 @@ public class PostSubmitActivity extends AppCompatActivity
                         //获取文章
                         getPostData();
                 }
-
 
 
         }
@@ -402,7 +401,6 @@ public class PostSubmitActivity extends AppCompatActivity
                 RecyclerViewUtils.setup(recyclerView, recyclerViewAdapter, layoutManager, GlobalConfig.NUMBER_PER_PAGE, false, false, null);
 
 
-
         }
 
         /**
@@ -565,41 +563,49 @@ public class PostSubmitActivity extends AppCompatActivity
          */
         private void updateImage(Uri imageUri)
         {
-                //获取 图片文件对象
-                File imageFile = FileUtils.getFileByUri(this, imageUri);
-                //判断是否需要压缩
-                imageFile = ImageCompression.compressFileIfTooLarge(this, imageFile);
 
-                HttpCallBack httpCallBack = new HttpCallBack()
+                //解析图片uri , 生成压缩过的副本到 应用缓存文件夹里
+                File imageFile = ImageCompression.compressFileIfTooLarge(this, imageUri);
+                //如果图片为空, 就提示错误
+                if (imageFile == null)
                 {
-                        @Override
-                        public void onSuccess(String response)
+                        ToastUtils.shortToast("无法创建对应图片的压缩版本");
+                }
+                else
+                {
+                        HttpCallBack httpCallBack = new HttpCallBack()
                         {
-                                Media media = ParserUtils.fromJson(response, SingleMedia.class).getBody();
-                                ImagePreview imagePreview = new ImagePreview();
-                                imagePreview.setId(media.getId());
-                                imagePreview.setSource_url(media.getMedia_details().getSizes().getThumbnail().getSource_url());
-                                recyclerDataList.add(imagePreview);
-                                //recyclerViewAdapter.notifyItemInserted(recyclerDataList.size()-1);
-                                recyclerViewAdapter.notifyDataSetChanged();
-                        }
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        Media media = ParserUtils.fromJson(response, SingleMedia.class).getBody();
+                                        ImagePreview imagePreview = new ImagePreview();
+                                        imagePreview.setId(media.getId());
+                                        imagePreview.setSource_url(media.getMedia_details().getSizes().getThumbnail().getSource_url());
+                                        recyclerDataList.add(imagePreview);
+                                        //recyclerViewAdapter.notifyItemInserted(recyclerDataList.size()-1);
+                                        recyclerViewAdapter.notifyDataSetChanged();
+                                }
 
 
-                        @Override
-                        public void onFinally()
-                        {
-                                progressDialog.dismiss();
-                        }
+                                @Override
+                                public void onFinally()
+                                {
+                                        progressDialog.dismiss();
+                                }
 
-                        @Override
-                        public void onCancel()
-                        {
-                                progressDialog.dismiss();
-                        }
-                };
+                                @Override
+                                public void onCancel()
+                                {
+                                        progressDialog.dismiss();
+                                }
+                        };
 
-                progressDialog.show();
-                mediaDelegate.uploadImage(httpCallBack, imageFile);
+                        progressDialog.show();
+                        mediaDelegate.uploadImage(httpCallBack, imageFile);
+
+                }
+
 
         }
 
@@ -840,11 +846,13 @@ public class PostSubmitActivity extends AppCompatActivity
                 };
 
                 //如果是创建文章
-                if(postId == 0){
+                if (postId == 0)
+                {
                         postDelegate.createPost(httpCallBack, parameters);
                 }
                 //如果是更新旧文章
-                else{
+                else
+                {
                         postDelegate.updatePost(httpCallBack, parameters, postId);
                 }
 

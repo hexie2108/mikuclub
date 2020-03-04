@@ -86,6 +86,12 @@
                     android:label = "@string/user_profile"
                     android:screenOrientation = "portrait" />
 
+                <!-- 剪辑图片 专用 -->
+                <activity
+                    android:name="com.yalantis.ucrop.UCropActivity"
+                    android:screenOrientation="portrait"
+                    android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
                 <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"

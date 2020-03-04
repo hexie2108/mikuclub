@@ -192,8 +192,8 @@ public class HttpCallBack
                         }
                 }
 
-                LogUtils.w(errorMessage + " : " + error.getMessage());
-                ToastUtils.shortToast(errorMessage);
+                LogUtils.w(error.getCause() + " : " + error.getMessage());
+                ToastUtils.longToast(error.getCause()+" : "+error.getMessage());
 
                 onHttpError();
 

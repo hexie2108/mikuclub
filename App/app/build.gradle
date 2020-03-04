@@ -8,10 +8,10 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 5
-        versionName "v0.5"
+        versionCode 6
+        versionName "v0.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        ndk {
+       ndk {
             //  设置微博sdk支持的SO库架构
             abiFilters 'armeabi' //, 'armeabi-v7a','arm64-v8a'
         }
@@ -98,6 +98,9 @@ dependencies {
     //html代码自定义解析 https://github.com/wangchenyan/html-text
     implementation 'com.github.wangchenyan:html-text:1.0'
     implementation 'org.apache.commons:commons-text:1.8'
+
+    //第三方裁剪图片的功能
+    implementation 'com.github.yalantis:ucrop:2.2.4'
 
 
 

@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(this, false, false);
                 //创建微博分享的API
-                weiboAPI = WeiboUtils.getInstance(this);
+               weiboAPI = WeiboUtils.getInstance(this);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);

@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.yalantis.ucrop.UCrop;
 
-import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.MediaDelegate;
 import org.mikuclub.app.delegate.UserDelegate;
 import org.mikuclub.app.javaBeans.parameters.UpdateUserParameters;
@@ -32,7 +32,7 @@ import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
 import org.mikuclub.app.utils.file.FileUtils;
-import org.mikuclub.app.utils.file.ImageCropBean;
+import org.mikuclub.app.utils.file.ImageCompression;
 import org.mikuclub.app.utils.file.LocalResourceIntent;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
@@ -556,6 +556,7 @@ public class UserProfileActivity extends AppCompatActivity
                 //创建获取临时缓存文件
                 newAvatarFile = FileUtils.createNewCacheFile(this);
                 newAvatarUri = FileUtils.getUri(newAvatarFile);
+
                 if (imageUri == null)
                 {
                         ToastUtils.shortToast("错误: 无法获取选中图片的URI");
@@ -570,7 +571,7 @@ public class UserProfileActivity extends AppCompatActivity
                 }
                 else
                 {
-                        ImageCropBean cropBean = new ImageCropBean();
+                      /*  ImageCropBean cropBean = new ImageCropBean();
                         cropBean.setDataUri(imageUri);
                         cropBean.setOutputX(GlobalConfig.USER_AVATAR_SIZE);
                         cropBean.setOutputY(GlobalConfig.USER_AVATAR_SIZE);
@@ -578,7 +579,8 @@ public class UserProfileActivity extends AppCompatActivity
                         cropBean.setScale(true);
                         cropBean.setReturnData(false);
                         cropBean.setSaveUri(newAvatarUri);
-                        LocalResourceIntent.startActionForResultToCropImage(this, cropBean);
+                        LocalResourceIntent.startActionForResultToCropImage(this, cropBean);*/
+                      LocalResourceIntent.startActionForResultToCropImageWithUCrop(this, imageUri, newAvatarUri);
                 }
         }
 
@@ -590,8 +592,14 @@ public class UserProfileActivity extends AppCompatActivity
 
                 //加载新的裁剪头像
                 Glide.with(this).load(newAvatarUri).circleCrop().into(avatarImg);
+                //手动压缩图片, 解决ucrop不减少图片大小的bug
+                newAvatarFile = ImageCompression.compressFileIfTooLarge(this, newAvatarUri);
+
                 //激活提交更新的按钮
                 buttonUpdate.setEnabled(true);
+
+
+
         }
 
 
@@ -613,7 +621,11 @@ public class UserProfileActivity extends AppCompatActivity
                                                 afterSelectedImageAndStartCropImage(data.getData());
                                         }
                                         break;
-                                case LocalResourceIntent.requestCodeToCropImage:
+                                /*case LocalResourceIntent.requestCodeToCropImage:
+                                        //裁剪完图片后
+                                        afterCropImage();
+                                        break;*/
+                                case UCrop.REQUEST_CROP:
                                         //裁剪完图片后
                                         afterCropImage();
                                         break;
