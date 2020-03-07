@@ -37,7 +37,8 @@ public class PostManageAdapter extends BaseAdapterWithFooter
 
         /**
          * 构建函数 default constructor
-         *  @param context
+         *
+         * @param context
          * @param list     列表文章
          * @param delegate 删除按钮的点击确认动作
          */
@@ -84,24 +85,51 @@ public class PostManageAdapter extends BaseAdapterWithFooter
 
                 //获取文章元数据
                 Post.Metadata metadata = post.getMetadata();
-                //如果数据不是空
+
+                //获取文章相关统计数据
+                String postViews;
+                String postCountComment;
+                String postCountLike;
+                String postCountSharing;
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getViews()))
                 {
-                        viewHolder.getPostViews().setText(metadata.getViews().get(0) + " " + ResourcesUtils.getString(R.string.post_view_count));
+                        postViews = metadata.getViews().get(0) + " " + ResourcesUtils.getString(R.string.post_view_count);
                 }
+                else
+                {
+                        postViews = ResourcesUtils.getString(R.string.post_view_zero_count);
+                }
+
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_comments()))
                 {
-                        viewHolder.getPostCountComments().setText(metadata.getCount_comments().get(0) + " " + ResourcesUtils.getString(R.string.post_comment_count));
+                        postCountComment = metadata.getCount_comments().get(0) + " " + ResourcesUtils.getString(R.string.post_comment_count);
+                }
+                else
+                {
+                        postCountComment = ResourcesUtils.getString(R.string.post_comment_zero_count);
                 }
 
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like()))
                 {
-                        viewHolder.getPostCountLike().setText(metadata.getCount_like().get(0) + " " + ResourcesUtils.getString(R.string.post_like_count));
+                        postCountLike = metadata.getCount_like().get(0) + " " + ResourcesUtils.getString(R.string.post_like_count);
+                }
+                else
+                {
+                        postCountLike = ResourcesUtils.getString(R.string.post_like_zero_count);
                 }
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_sharing()))
                 {
-                        viewHolder.getPostCountShare().setText(metadata.getCount_sharing().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_sharing_count));
+                        postCountSharing = metadata.getCount_sharing().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_sharing_count);
                 }
+                else
+                {
+                        postCountSharing = ResourcesUtils.getString(R.string.post_sharing_zero_count);
+                }
+
+                viewHolder.getPostViews().setText(postViews);
+                viewHolder.getPostCountComments().setText(postCountComment);
+                viewHolder.getPostCountLike().setText(postCountLike);
+                viewHolder.getPostCountShare().setText(postCountSharing);
 
 
         }

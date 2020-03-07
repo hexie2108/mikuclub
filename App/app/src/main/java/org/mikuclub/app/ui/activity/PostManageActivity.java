@@ -37,6 +37,8 @@ public class PostManageActivity extends AppCompatActivity
         /* 静态变量 Static variable */
         public static final int TAG = 16;
 
+
+
         /* 变量 local variable */
         //数据请求代理人
         private PostDelegate delegate;
