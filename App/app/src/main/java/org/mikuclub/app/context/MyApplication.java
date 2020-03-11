@@ -27,6 +27,16 @@ public class MyApplication extends Application
                 context = getApplicationContext();
                 //创建网络请求队列
                 RequestQueue.getInstance(context);
+
+                /*
+                //开发用 谷歌测试广告
+                List<String> testDevices = new ArrayList<>();
+                testDevices.add("0C89F2337E013471CB83C53BEE28A88E");
+                RequestConfiguration requestConfiguration
+                        = new RequestConfiguration.Builder()
+                        .setTestDeviceIds(testDevices)
+                        .build();
+                MobileAds.setRequestConfiguration(requestConfiguration);*/
         }
 
         public static Context getContext()

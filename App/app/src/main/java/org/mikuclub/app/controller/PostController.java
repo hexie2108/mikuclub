@@ -81,6 +81,8 @@ public class PostController extends BaseController
                                         if (getTotalPage() == -1)
                                         {
                                                 setTotalPage(newPosts.getHeaders().getTotalPage());
+                                                //首次获取文章信息 要返回顶部
+                                                getRecyclerView().scrollToPosition(scrollPositionAfterRefresh);
                                         }
 
                                         //如果还未到最后一页

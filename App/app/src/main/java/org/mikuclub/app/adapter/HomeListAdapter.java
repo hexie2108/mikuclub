@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
@@ -33,6 +34,7 @@ public class HomeListAdapter extends PostAdapter
 
         List<Post> headerPostList;
 
+
         /**
          * 构建函数 default constructor
          *  @param headerPostList 头部幻灯片文章
@@ -45,6 +47,8 @@ public class HomeListAdapter extends PostAdapter
                 this.headerPostList = headerPostList;
                 //开启头部组件显示
                 setHeaderRow(1);
+
+
         }
 
         /**
@@ -94,6 +98,11 @@ public class HomeListAdapter extends PostAdapter
                                 });
                         }
                 });
+
+                //请求谷歌广告
+                AdRequest adRequest = new AdRequest.Builder().build();
+                //显示广告
+                holder.getAdSenseHome().loadAd(adRequest);
 
         }
 

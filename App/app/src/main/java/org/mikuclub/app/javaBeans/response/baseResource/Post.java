@@ -59,7 +59,11 @@ public class Post implements Serializable
 
                 @SerializedName("_thumbnail_src")
                 private List<String> thumbnail_src;
+
                 private List<String> images_src;
+                private List<String> images_thumbnail_src;
+                private List<String> images_full_src;
+
                 private List<Integer> count_comments;
                 private List<Integer> count_like;
                 // private List<PostTag> tags;
@@ -71,6 +75,27 @@ public class Post implements Serializable
                 private List<String> bilibili;
 
                 private List<Integer> previews;
+
+
+                public List<String> getImages_thumbnail_src()
+                {
+                        return images_thumbnail_src;
+                }
+
+                public void setImages_thumbnail_src(List<String> images_thumbnail_src)
+                {
+                        this.images_thumbnail_src = images_thumbnail_src;
+                }
+
+                public List<String> getImages_full_src()
+                {
+                        return images_full_src;
+                }
+
+                public void setImages_full_src(List<String> images_full_src)
+                {
+                        this.images_full_src = images_full_src;
+                }
 
                 public List<Integer> getPreviews()
                 {
