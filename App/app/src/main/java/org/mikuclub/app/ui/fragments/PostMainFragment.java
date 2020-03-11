@@ -220,7 +220,7 @@ public class PostMainFragment extends Fragment
                         {
 
                                 //启动单独的图片查看页面
-                                ImageActivity.startAction(getActivity(), imagesSrc, position);
+                                ImageActivity.startAction(getActivity(), imagesSrc, null, position);
                         }
 
                         //设置点击链接tag的动作

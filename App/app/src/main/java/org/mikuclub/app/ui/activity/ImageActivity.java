@@ -12,7 +12,6 @@ import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
-import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.ArrayList;
@@ -23,13 +22,16 @@ import mikuclub.app.R;
 
 public class ImageActivity extends AppCompatActivity
 {
+
         /* 静态变量 Static variable */
-        public static final String INTENT_IMAGES_SRC = "images_src";
+        public static final String INTENT_IMAGES_FULL_SRC = "images_full_src";
+        public static final String INTENT_IMAGES_THUMBNAIL_SRC = "images_thumbnail_src";
         public static final String INTENT_POSITION = "position";
 
         /* 变量 local variable */
         //当前页面需要的图片URL地址
-        List<String> imagesSrc;
+        private List<String> imagesFullSrc;
+        private List<String> imagesThumbnailSrc;
         int position;
 
         /* 组件 views */
@@ -51,8 +53,10 @@ public class ImageActivity extends AppCompatActivity
                 //绑定组件
                 sliderViewPager = findViewById(R.id.image_slider_viewpager);
 
-                //获取图片地址的列表
-                imagesSrc = getIntent().getStringArrayListExtra(INTENT_IMAGES_SRC);
+                //获取原图地址列表
+                imagesFullSrc = getIntent().getStringArrayListExtra(INTENT_IMAGES_FULL_SRC);
+                //获取微缩图地址列表
+                imagesThumbnailSrc= getIntent().getStringArrayListExtra(INTENT_IMAGES_THUMBNAIL_SRC);
                 position = getIntent().getIntExtra(INTENT_POSITION, 0);
 
                 initSliders();
@@ -68,7 +72,7 @@ public class ImageActivity extends AppCompatActivity
 
                 PageBean bean = new PageBean();
                 //如果只有一张图关闭循环
-                if (imagesSrc.size() == 1)
+                if (imagesFullSrc.size() == 1)
                 {
                         bean.isAutoCycle = false;
                         bean.isAutoLoop = false;
@@ -78,7 +82,7 @@ public class ImageActivity extends AppCompatActivity
                 sliderViewPager.addPageBean(bean);
 
                 sliderViewPager.setCurrentPosition(position);
-                sliderViewPager.setPageListener(R.layout.slider_view_item_image, imagesSrc, new PageHelperListener<String>()
+                sliderViewPager.setPageListener(R.layout.slider_view_item_image, imagesFullSrc, new PageHelperListener<String>()
                 {
                         @Override
                         public void bindView(View view, String imageSrc, int position)
@@ -87,29 +91,40 @@ public class ImageActivity extends AppCompatActivity
                                 TouchImageView imageView = view.findViewById(R.id.item_image);
                                 //设置最大放大等级
                                 imageView.setMaxZoom(2);
-                                GlideImageUtils.getForZoomImageView(ImageActivity.this, imageView, imageSrc, GeneralUtils.getThumbnailSrcByImageSrc(imageSrc));
+                                String thumbnailSrc=null;
+                                //确保有微缩图地址可以获取
+                                if(imagesThumbnailSrc != null && imagesThumbnailSrc.size()>position){
+                                        thumbnailSrc = imagesThumbnailSrc.get(position);
+                                }
+
+                                GlideImageUtils.getForZoomImageView(ImageActivity.this, imageView, imageSrc, thumbnailSrc);
                         }
                 });
-
         }
-
 
         /**
          * 启动本活动的静态方法
          * static method to start current activity
          *
          * @param context
-         * @param imagesSrc
+         * @param imagesFullSrc  原始图片地址列表
+         * @param imagesThumbnailSrc 微缩图地址列表
          */
-        public static void startAction(Context context, List<String> imagesSrc, int position)
+        public static void startAction(Context context, List<String> imagesFullSrc, List<String> imagesThumbnailSrc, int position)
         {
-                ArrayList<String> list = new ArrayList<>(imagesSrc);
-
                 Intent intent = new Intent(context, ImageActivity.class);
-                intent.putStringArrayListExtra(INTENT_IMAGES_SRC, list);
+
+                ArrayList<String> imagesFullSrcArrayList = new ArrayList<>(imagesFullSrc);
+                intent.putStringArrayListExtra(INTENT_IMAGES_FULL_SRC, imagesFullSrcArrayList);
+
+                //如果微缩图列表有提供
+                if(imagesThumbnailSrc != null){
+                        ArrayList<String>   imagesThumbnailSrcArrayList = new ArrayList<>(imagesThumbnailSrc);
+                        intent.putStringArrayListExtra(INTENT_IMAGES_THUMBNAIL_SRC, imagesThumbnailSrcArrayList);
+                }
+
                 intent.putExtra(INTENT_POSITION, position);
                 context.startActivity(intent);
         }
-
 
 }
