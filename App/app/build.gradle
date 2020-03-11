@@ -8,8 +8,8 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 6
-        versionName "v0.6"
+        versionCode 7
+        versionName "v0.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
        ndk {
             //  设置微博sdk支持的SO库架构
@@ -56,7 +56,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //import material design
-    implementation 'com.google.android.material:material:1.2.0-alpha04'
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
 
     //import PreferenceManager
     implementation 'androidx.preference:preference:1.1.0'
@@ -67,8 +67,8 @@ dependencies {
     //import CardView
     implementation 'androidx.cardview:cardview:1.0.0'
     //navigation UI
-    implementation 'androidx.navigation:navigation-fragment:2.2.0'
-    implementation 'androidx.navigation:navigation-ui:2.2.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.1'
+    implementation 'androidx.navigation:navigation-ui:2.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     //网络请求框架
@@ -105,7 +105,7 @@ dependencies {
 
 
     //谷歌数据分析
-    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-core:17.2.3'
     //新浪sdk
     implementation 'com.sina.weibo.sdk:core:9.12.0:openDefaultRelease@aar'
     //QQ SDK
