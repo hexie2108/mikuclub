@@ -2,6 +2,7 @@ package org.mikuclub.app.adapter.viewHolder;
 
 import android.view.View;
 
+import com.google.android.gms.ads.AdView;
 import com.zhengsr.viewpagerlib.indicator.RectIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
@@ -18,6 +19,7 @@ public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
         //首页幻灯片
         private BannerViewPager sliderViewPager;
         private RectIndicator indicator;
+        private AdView adSenseHome;
 
 
         public HomeSliderHeaderViewHolder(@NonNull View itemView)
@@ -26,6 +28,7 @@ public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
                 //管理器绑定各项 组件
                 sliderViewPager = itemView.findViewById(R.id.home_slider_viewpager);
                 indicator = itemView.findViewById(R.id.home_slider_indicator);
+                adSenseHome = itemView.findViewById(R.id.ad_sense_home);
         }
 
         public BannerViewPager getSliderViewPager()
@@ -46,5 +49,15 @@ public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
         public void setIndicator(RectIndicator indicator)
         {
                 this.indicator = indicator;
+        }
+
+        public AdView getAdSenseHome()
+        {
+                return adSenseHome;
+        }
+
+        public void setAdSenseHome(AdView adSenseHome)
+        {
+                this.adSenseHome = adSenseHome;
         }
 }

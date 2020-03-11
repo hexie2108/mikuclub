@@ -286,27 +286,18 @@ public class PostActivity extends AppCompatActivity
                                 //加载图片
                                 ImageView imageView = view.findViewById(R.id.item_image);
 
-                                String thumbnailSrc;
-                                //如果是第一张图
-                                if (itemSrc.equals(imagesSrc.get(0)))
-                                {
-                                        //直接使用预设的缩微图
-                                        thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+                                String thumbnailSrc=null;
+                                //确保有微缩图
+                                if(post.getMetadata().getImages_thumbnail_src().size()>position){
+                                        thumbnailSrc = post.getMetadata().getImages_thumbnail_src().get(position);
                                 }
-                                //后续图片
-                                else
-                                {
-                                        //计算缩微图地址
-                                        thumbnailSrc = GeneralUtils.getThumbnailSrcByImageSrc(itemSrc);
-                                }
+
                                 //加载图片 (先加载缩微图 之后加载原图)
                                 GlideImageUtils.getWithThumbnail(PostActivity.this, imageView, itemSrc, thumbnailSrc);
 
                                 view.setOnClickListener(v -> {
-
-
                                         //启动单独的图片查看页面
-                                        ImageActivity.startAction(PostActivity.this, imagesSrc, position);
+                                        ImageActivity.startAction(PostActivity.this, post.getMetadata().getImages_full_src(), post.getMetadata().getImages_thumbnail_src(), position);
                                 });
 
                         }

@@ -340,7 +340,7 @@ public class PostSubmitActivity extends AppCompatActivity
                                 //创建图片预览类
                                 imagePreview = new ImagePreview();
                                 imagePreview.setId(metadata.getPreviews().get(i));
-                                imagePreview.setSource_url(metadata.getImages_src().get(i));
+                                imagePreview.setSource_url(metadata.getImages_thumbnail_src().get(i));
                                 imagePreview.setAlreadySubmitted(true);
                                 //添加进列表
                                 recyclerDataList.add(imagePreview);
