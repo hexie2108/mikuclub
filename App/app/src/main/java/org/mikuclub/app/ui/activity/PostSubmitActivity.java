@@ -295,7 +295,14 @@ public class PostSubmitActivity extends AppCompatActivity
                 //获取文章描述
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getContent()))
                 {
-                        inputDescription.setText(metadata.getContent().get(0));
+                        String description = metadata.getContent().get(0);
+                        //只有在字符串包含 p标签的时候 才会 尝试去除html标签, 不然会导致默认换行符被移除
+                        if (description.contains("<p>"))
+                        {
+                                description = GeneralUtils.removeHTMLTag(description);
+                        }
+
+                        inputDescription.setText(description);
                 }
                 //获取下载地址
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getDown()))
@@ -722,10 +729,14 @@ public class PostSubmitActivity extends AppCompatActivity
                         {
                                 //查询"AV"字符的位置
                                 int biliIndex = bilibili.indexOf(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV);
-                                //如果av字符存在
+                                //如果AV不存在 就尝试检测是否是BV号
+                                if(biliIndex == -1){
+                                        biliIndex = bilibili.indexOf(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_BV);
+                                }
+                                //如果2个字符中有一个存在
                                 if (biliIndex != -1)
                                 {
-                                        //提取出AV号 : av123456
+                                        //提取出视频号 : av123456 或者 BV1UE411w7PB
                                         bilibili = bilibili.substring(biliIndex);
                                         //去除av号后面可能存在的多余后缀
                                         String[] extraSymbol = {"/", "?", "#"};

@@ -35,15 +35,40 @@
                     android:id = "@+id/home_slider_indicator"
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
+                    android:layout_gravity = "end"
                     android:layout_marginTop = "@dimen/small"
-                    android:layout_marginEnd="@dimen/small"
-                   android:layout_gravity="end"
+                    android:layout_marginEnd = "@dimen/small"
                     app:rect_height = "5dp"
                     app:rect_round_size = "@dimen/small"
                     app:rect_selectedColor = "@android:color/white"
-                    app:rect_width = "10dp"
-                    />
+                    app:rect_width = "10dp" />
         </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id = "@+id/site_communication_container"
+            android:layout_width = "0dp"
+            app:cardCornerRadius="@dimen/small"
+            android:background="@android:color/white"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/normal"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/home_slider_viewpager_container"
+
+            >
+
+                <TextView
+                    android:id = "@+id/site_communication"
+                    android:textIsSelectable="true"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:padding="@dimen/small"
+                    android:textSize="@dimen/text_default"
+                    android:textAlignment="center"
+                    tools:text = "站点通知消息" />
+
+        </androidx.cardview.widget.CardView>
+
 
         <com.google.android.gms.ads.AdView xmlns:ads = "http://schemas.android.com/apk/res-auto"
             android:id = "@+id/ad_sense_home"
@@ -55,10 +80,10 @@
             android:layout_marginBottom = "@dimen/normal"
             ads:adSize = "BANNER"
             ads:adUnitId = "ca-app-pub-1442793010183347/4728117614"
-            ads:layout_constraintBottom_toBottomOf = "parent"
-            ads:layout_constraintTop_toBottomOf = "@id/home_slider_viewpager_container"
+            app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintStart_toStartOf = "parent" />
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/site_communication_container" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

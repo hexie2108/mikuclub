@@ -24,6 +24,7 @@ import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapter.viewPager.PostViewPagerAdapter;
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.SinglePost;
 import org.mikuclub.app.javaBeans.response.WpError;
@@ -35,6 +36,7 @@ import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
+import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
@@ -366,18 +368,24 @@ public class PostActivity extends AppCompatActivity
         }
 
         /**
+         * 设置折叠工具栏 在横屏状态下的 初始高度
          * 根据appbar高度来更改标题栏图标的颜色
-         * Change the icon color of the title bar based on the appbar height
          */
         public void changeHomeIconColorListener()
         {
+                //如果当前是横屏状态
+                if(ScreenUtils.isHorizontal(PostActivity.this)){
+                        //改变折叠工具栏的显示高度
+                        int height = (int)  (getResources().getDisplayMetrics().heightPixels * GlobalConfig.HEIGHT_PERCENTAGE_OF_COLLAPSING_TOOLBAR_HORIZONTAL); //设置高度为屏幕百分比
+                        ScreenUtils.setViewSize(postCollapsingToolbarLayout, 0, height);
+                }
+
                 //根据折叠状态更改标题栏图标颜色
                 appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
                         Drawable backButtonIcon = toolbar.getNavigationIcon();
                         //确保 标题栏返回键的图标不是null, 避免后续操作出现空指针错误
                         if (backButtonIcon != null)
                         {
-
                                 //如果菜单栏被折叠 超过一定高度
                                 if ((postCollapsingToolbarLayout.getHeight() + verticalOffset) < (1.15 * ViewCompat.getMinimumHeight(postCollapsingToolbarLayout)))
                                 {

@@ -29,33 +29,38 @@
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PostSubmitActivity"
                     android:label = "@string/submit_post_title"
-                    android:screenOrientation = "portrait"></activity>
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                    ></activity>
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PostManageActivity"
                     android:label = "@string/post_manage_title"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
                     android:label = "@string/settings"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity"
-                    android:screenOrientation = "portrait" /> <!-- 解决腾讯sdk 网络连接报错 -->
-                <uses-library
-                    android:name = "org.apache.http.legacy"
-                    android:required = "false" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
+
 
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.LoginActivity"
                     android:label = "@string/login"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.ImageActivity"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.WelcomeActivity"
-                    android:screenOrientation = "portrait">
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                    >
                         <intent-filter>
                                 <action android:name = "android.intent.action.MAIN" />
 
@@ -64,34 +69,43 @@
                 </activity>
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.HomeActivity"
-                    android:screenOrientation = "portrait" />
+
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SearchActivity"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PostActivity"
-                    android:screenOrientation = "portrait" />
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.CategoryActivity"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.AuthorActivity"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.ReportActivity"
                     android:label = "@string/report"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"
                     android:label = "@string/user_profile"
-                    android:screenOrientation = "portrait" />
+                    android:configChanges="keyboardHidden|orientation|screenSize"
+                     />
 
                 <!-- 剪辑图片 专用 -->
                 <activity
                     android:name="com.yalantis.ucrop.UCropActivity"
-                    android:screenOrientation="portrait"
                     android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+                <!-- 解决腾讯sdk 网络连接报错 -->
+                <uses-library
+                    android:name = "org.apache.http.legacy"
+                    android:required = "false" />
                 <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"

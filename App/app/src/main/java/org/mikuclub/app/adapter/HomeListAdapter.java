@@ -11,13 +11,19 @@ import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapter.viewHolder.HomeSliderHeaderViewHolder;
+import org.mikuclub.app.javaBeans.response.SingleResponse;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.storage.ApplicationPreferencesUtils;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
+import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
@@ -60,15 +66,16 @@ public class HomeListAdapter extends PostAdapter
                 //加载布局
                 View view = getAdpterInflater().inflate(R.layout.slider_view_home, parent, false);
                 HomeSliderHeaderViewHolder holder = new HomeSliderHeaderViewHolder(view);
-                initSlider(holder);
+                initHeader(holder);
 
                 return holder;
         }
 
         /**
-         * 初始化幻灯片
+         * 初始化头部组件
+         * 幻灯片+谷歌广告+站点消息通知
          */
-        private void initSlider(HomeSliderHeaderViewHolder holder)
+        private void initHeader(HomeSliderHeaderViewHolder holder)
         {
 
                 BannerViewPager bannerViewPager = holder.getSliderViewPager();
@@ -98,6 +105,19 @@ public class HomeListAdapter extends PostAdapter
                                 });
                         }
                 });
+
+                //从参数偏好缓存里提取站点消息字符串
+                String siteCommunicationString = ParserUtils.fromJson(ApplicationPreferencesUtils.getSiteCommunication(), SingleResponse.class).getBody();
+                //用html解析器解析
+                HttpUtils.parseHtmlDefault(getAdapterContext(), siteCommunicationString,holder.getSiteCommunication() );
+
+                //如果是横屏状态 重设幻灯片容器的宽高比例
+                if(ScreenUtils.isHorizontal(getAdapterContext()))
+                {
+                        ConstraintLayout.LayoutParams layoutParams = ((ConstraintLayout.LayoutParams) holder.getHomeSliderViewpagerContainer().getLayoutParams());
+                        layoutParams.dimensionRatio = "16:4";
+                        holder.getHomeSliderViewpagerContainer().setLayoutParams(layoutParams);
+                }
 
                 //请求谷歌广告
                 AdRequest adRequest = new AdRequest.Builder().build();

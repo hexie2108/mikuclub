@@ -20,7 +20,10 @@ public class GlobalConfig
         public static final String DISPLAY_DATE_FORMAT = "yy-MM-dd HH:mm";
 
         //浮动弹窗的高度屏幕占比%
-        public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS = 0.6f;
+        public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS_VERTICAL = 0.65f;
+        public static final float HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS_HORIZONTAL = 0.75f;
+        //横屏状态下 文章页面 顶部可折叠容器的初始高度
+        public static final float HEIGHT_PERCENTAGE_OF_COLLAPSING_TOOLBAR_HORIZONTAL = 0.7f;
 
         //缩微图大小
         public static final String THUMBNAIL_SIZE = "-500x280";
@@ -69,6 +72,8 @@ public class GlobalConfig
 
                 //b站视频识别码
                 public static final String BILIBILI_AV = "av";
+                //b站新视频识别码
+                public static final String BILIBILI_BV = "BV";
                 //b站视频前缀地址
                 public static final String BILIBILI_HOST = "https://www.bilibili.com/video/";
                 //bilibili app url唤醒格式
@@ -145,6 +150,9 @@ public class GlobalConfig
 
                 //POST 更新用户信息
                 public static final String UPDATE_USER = HOST + "wp-json/wp/v2/users/me/";
+
+                //GET 获取站点信息通知
+                public static final String SITE_COMMUNICATION = HOST + UTILS + "get_site_communication/";
         }
 
         /**
@@ -176,12 +184,17 @@ public class GlobalConfig
         {
 
 
-                //每次更新检查的有效戒指时间
+                //每次更新检查的有效截止时间
                 public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";
                 //每次更新检查的有效周期
-                public static final long APP_UPDATE_EXPIRE_TIME = 1000; //内测阶段 每1秒过期
-                //public long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; //以后上线 可以每天检查一次
+                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; // 每天检查一次更新
 
+                //网站通知缓存
+                public static final String SITE_COMUNICATION = "site_communication";
+                //网站通知的有效时间
+                public static final String SITE_COMMUNICATION_EXPIRE = "site_communication_expire";
+                //每次更新检查的有效周期
+                public static final long SITE_COMMUNICATION_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; // 每天检查一次更新
 
                 //菜单缓存
                 public static final String CATEGORIES_CACHE = "categories_cache";

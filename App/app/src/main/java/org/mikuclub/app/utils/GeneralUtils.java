@@ -2,10 +2,9 @@ package org.mikuclub.app.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
-import android.view.View;
-import android.view.ViewGroup;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.mikuclub.app.config.GlobalConfig;
@@ -14,8 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 通用实用方法集
@@ -23,24 +20,27 @@ import java.util.regex.Pattern;
  */
 public class GeneralUtils
 {
-        // 中文字符的正则
-        private static String REGEX_CHINESE = "[\u4e00-\u9fa5]";
-
-
-
 
         /**
-         * 去除字符串里的中文字符
+         * 去除字符串中的html标签
+         * @param text
+         * @return
          */
-        public static String replaceChineseCharacters(String text)
+        public static String removeHTMLTag(String text)
         {
-                String output = text;
-                if (!text.isEmpty())
+                String output = "";
+                if (text != null && !text.isEmpty())
                 {
-                        // 加载正则表达式
-                        Pattern pat = Pattern.compile(REGEX_CHINESE);
-                        Matcher mat = pat.matcher(text);
-                        output = mat.replaceAll("");
+                        //安卓新版本
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
+                        {
+                                output = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY).toString();
+                        }
+                        //兼容安卓旧版本的
+                        else
+                        {
+                                output =  Html.fromHtml(text).toString();
+                        }
                 }
                 return output;
 
@@ -62,21 +62,7 @@ public class GeneralUtils
                 return px;
         }
 
-        /**
-         * 设置布局的高度占比
-         *
-         * @param context
-         * @param view
-         * @param percentage 屏幕高度百分比
-         */
-        public static void setMaxHeightOfLayout(Context context, View view, float percentage)
-        {
-                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
 
-                int height = (int) (context.getResources().getDisplayMetrics().heightPixels * percentage);//屏幕高的60%
-                layoutParams.height = height;
-                view.setLayoutParams(layoutParams);
-        }
 
 
         /**
@@ -190,8 +176,6 @@ public class GeneralUtils
 
                 return isValid;
         }
-
-
 
 
         /**

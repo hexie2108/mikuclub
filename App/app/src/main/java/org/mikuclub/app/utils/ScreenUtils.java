@@ -2,6 +2,7 @@ package org.mikuclub.app.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,25 +24,24 @@ import androidx.annotation.NonNull;
  */
 public class ScreenUtils
 {
+
         /**
-         * 给弹窗设置固定比例的高度
-         *
+         * 判断当前设备是否处于横屏状态
          * @param context
-         * @param view
+         * @return
          */
+        public static boolean isHorizontal(Context context){
 
-        public static void setFixWindowsHeight(Context context, final View view)
-        {
+                boolean screenIsHorizontal = false;
+                int orientation = context.getResources().getConfiguration().orientation;
+                //如果获取到的识别码是 代表横屏
+                if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        screenIsHorizontal = true;
+                }
+                return screenIsHorizontal;
 
-                view.post(new Runnable()
-                {
-                        @Override
-                        public void run()
-                        {
-                                GeneralUtils.setMaxHeightOfLayout(context, view, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS);
-                        }
-                });
         }
+
 
         /**
          * 获得屏幕宽度
@@ -83,6 +83,58 @@ public class ScreenUtils
                 return outMetrics.heightPixels;
         }
 
+
+        /**
+         * 设置布局的高度占比
+         *
+         * @param context
+         * @param view
+         */
+        public static void setHeightForWindowsFragment(Context context, View view)
+        {
+
+                //获取屏幕宽高 (px)
+                int height = context.getResources().getDisplayMetrics().heightPixels;
+                //判断是否是处于横屏状态
+                if (!isHorizontal(context))
+                {
+                        //设置窗口的高度 (相对于屏幕的百分比)
+                        height = (int) (height * GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS_VERTICAL); //设置高度为屏幕百分比
+                }
+                else
+                {
+                        //设置窗口的高度 (相对于屏幕的百分比)
+                        height = (int) (height * GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS_HORIZONTAL); //设置高度为屏幕百分比
+                }
+                setViewSize(view, 0, height);
+
+        }
+
+        /**
+         * 设置 view组件的大小
+         *
+         * @param view
+         * @param width  设置为0 则将继续使用原来的宽度
+         * @param height 设置为0 则将继续使用原来的高度
+         */
+        public static void setViewSize(View view, int width, int height)
+        {
+                //在组件生成后 再执行, 避免空指针错误
+                view.post(() -> {
+                        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                        if (width > 0)
+                        {
+                                layoutParams.width = width;
+                        }
+                        if (height > 0)
+                        {
+                                layoutParams.height = height;
+                        }
+                        view.setLayoutParams(layoutParams);
+                });
+        }
+
+
         /**
          * 禁用 SheetDialog弹窗的拖拽功能
          *
@@ -90,6 +142,7 @@ public class ScreenUtils
          */
         public static void disableDraggingOfBottomSheetDialogFragment(Dialog dialog)
         {
+
                 BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialog;
                 LinearLayout layout = new LinearLayout(dialog.getContext());
                 layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -103,6 +156,9 @@ public class ScreenUtils
                         final BottomSheetBehavior behavior = (BottomSheetBehavior) behaviorField.get(bottomSheetDialog);
                         if (behavior != null)
                         {
+                                //设置默认就展开最大高度
+                                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                //绑定动作, 禁止拖拽改变大小
                                 behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback()
                                 {
                                         @Override

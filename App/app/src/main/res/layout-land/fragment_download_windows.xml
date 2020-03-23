@@ -7,12 +7,19 @@
     android:layout_width = "match_parent"
     android:layout_height = "match_parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id = "@+id/guideline"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:orientation = "vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id = "@+id/down1_box"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
             android:padding = "@dimen/normal"
-            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintEnd_toStartOf = "@id/guideline"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toTopOf = "parent">
 
@@ -121,8 +128,8 @@
             android:layout_height = "wrap_content"
             android:padding = "@dimen/normal"
             app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@id/down1_box">
+            app:layout_constraintStart_toEndOf = "@id/guideline"
+            app:layout_constraintTop_toTopOf = "parent">
 
                 <TextView
                     android:id = "@+id/down2_title"
@@ -235,7 +242,7 @@
             android:textSize = "@dimen/text_default"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@id/down2_box"
+            app:layout_constraintTop_toBottomOf = "@id/down1_box"
             app:layout_goneMarginTop = "@dimen/normal" />
 
 

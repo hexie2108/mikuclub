@@ -16,6 +16,7 @@ import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -58,13 +59,26 @@ public class DownloadFragment extends BottomSheetDialogFragment
 
         private MaterialButton returnButton;
 
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+        {
+                LogUtils.e("onCreateDialog");
+                return super.onCreateDialog(savedInstanceState);
+        }
+
+
+
+
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
         {
+
                 // 为fragment加载主布局
-                return  inflater.inflate(R.layout.fragment_download_windows, container, false);
+                View view =  inflater.inflate(R.layout.fragment_download_windows, container, false);
+              return view;
         }
 
         @Override
@@ -100,9 +114,9 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 initDownloadView();
 
                 //动态调整布局高度
-                final View myView = view;
-                myView.post(() -> GeneralUtils.setMaxHeightOfLayout(getActivity(), myView, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS));
+                ScreenUtils.setHeightForWindowsFragment(getActivity(), view);
         }
+
 
         /**
          * 初始化下载页面
@@ -259,7 +273,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
         @Override
         public void setupDialog(Dialog dialog, int style)
         {
-                ScreenUtils.disableDraggingOfBottomSheetDialogFragment(dialog);
+               ScreenUtils.disableDraggingOfBottomSheetDialogFragment(dialog);
         }
 
 

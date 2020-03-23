@@ -94,9 +94,7 @@ public class SharingFragment extends BottomSheetDialogFragment
                 sharingUrl = GlobalConfig.Server.HOST + post.getId();
 
                 //动态调整布局高度
-                final View myView = view;
-                myView.post(() -> GeneralUtils.setMaxHeightOfLayout(getActivity(), myView, GlobalConfig.HEIGHT_PERCENTAGE_OF_FLOAT_WINDOWS));
-
+                ScreenUtils.setHeightForWindowsFragment(getActivity(), view);
 
                 initButtons();
         }

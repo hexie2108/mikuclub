@@ -272,6 +272,7 @@ public class HttpUtils
                         @Override
                         public void onLinkClick(Context context, String url)
                         {
+
                                 startWebViewIntent(context, url, null);
                         }
                 });

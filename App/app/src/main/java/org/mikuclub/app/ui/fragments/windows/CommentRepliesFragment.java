@@ -130,9 +130,9 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                         //关闭窗口
                         CommentRepliesFragment.this.dismiss();
                 });
-                //调整窗口高度
-                ScreenUtils.setFixWindowsHeight(getActivity(), view);
 
+                //动态调整布局高度
+                ScreenUtils.setHeightForWindowsFragment(getActivity(), view);
 
         }
 

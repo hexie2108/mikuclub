@@ -63,9 +63,10 @@ public class WelcomeActivity extends AppCompatActivity
         private Posts stickyPostList = null;
         private Posts postList = null;
         private String categoryCache;
+        private String siteCommunicationCache;
 
         //需要完成的请求的总数
-        private final int REQUEST_TOTAL_NUMBER = 7;
+        private final int REQUEST_TOTAL_NUMBER = 8;
         //已完成的请求数量 (成功和失败都算)
         private int requestCount = 0;
 
@@ -116,6 +117,9 @@ public class WelcomeActivity extends AppCompatActivity
                         checkUpdate();
                         //获取分类信息
                         checkCategories();
+                        //获取站点消息通知
+                        checkSiteCommunication();
+
                         //获取未读消息数量
                         getUnreadMessageCount();
                         //获取主页文章数据
@@ -344,6 +348,71 @@ public class WelcomeActivity extends AppCompatActivity
                 else
                 {
                         LogUtils.v("已使用旧分类缓存");
+                        startHomeSafety();
+                }
+        }
+
+        /**
+         * 检查站点消息通知
+         * 过期或者没有缓存的话 就获取新的
+         */
+        private void checkSiteCommunication()
+        {
+
+                siteCommunicationCache = ApplicationPreferencesUtils.getSiteCommunication();
+
+                //如果分类信息检测有效期已过期 或者 找不到分类缓存
+                if (System.currentTimeMillis() > ApplicationPreferencesUtils.getSiteCommunicationExpire() || siteCommunicationCache == null)
+                {
+                        LogUtils.v("开始重新请求站点通知信息");
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        //获取分类信息
+                                        siteCommunicationCache = response;
+                                        //更新分类缓存 和 缓存过期时间
+                                        ApplicationPreferencesUtils.setSiteCommunicationAndExpire(siteCommunicationCache);
+                                        LogUtils.v("重新请求站点通知信息 成功");
+                                        startHomeSafety();
+                                }
+
+                                @Override
+                                public void onError(WpError wpError)
+                                {
+                                        //只有在无缓存的情况, 才会报错
+                                        if (siteCommunicationCache.isEmpty())
+                                        {
+                                                setErrorInfo(null);
+                                        }
+                                        //有缓存的话 无视
+                                        else
+                                        {
+                                                startHomeSafety();
+                                        }
+                                }
+
+                                @Override
+                                public void onHttpError()
+                                {
+                                        onError(null);
+                                }
+
+                                @Override
+                                public void onCancel()
+                                {
+                                        //重置请求计数器
+                                        requestCount = 0;
+                                }
+                        };
+                        //发送请求
+                        utilsDelegate.getSiteCommunication(httpCallBack);
+                }
+                //直接使用缓存
+                else
+                {
+                        LogUtils.v("已使用旧消息通知缓存");
                         startHomeSafety();
                 }
         }

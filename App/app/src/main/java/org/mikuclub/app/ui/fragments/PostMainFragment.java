@@ -161,15 +161,31 @@ public class PostMainFragment extends Fragment
                 {
                         String videoSrc = metadata.getBilibili().get(0);
                         //确如果是 b站地址
-                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV))
+                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV) || videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_BV) )
                         {
-                                final String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL + videoSrc.substring(2);
-                                final String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + videoSrc;
                                 //监听按钮点击
                                 postBilibiliButton.setOnClickListener(v -> {
+                                        //生成B站唤起地址
+                                        //网页地址
+                                        String bilibiliWebSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_HOST + videoSrc;
+                                        //app地址
+                                        String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL;
+
+                                        //如果是旧av的情况
+                                        if(videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV)){
+                                                //使用旧av号
+                                                bilibiliAppSrc += videoSrc.substring(2);
+                                        }
+                                        //如果是新bv的情况
+                                        else{
+                                                //使用BV号
+                                                bilibiliAppSrc += videoSrc;
+                                        }
                                         //启动第三方应用
                                         HttpUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
                                 });
+
+
 
                                 //显示b站视频按钮
                                 postBilibiliButton.setVisibility(View.VISIBLE);

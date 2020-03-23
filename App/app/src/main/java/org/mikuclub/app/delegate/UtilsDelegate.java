@@ -33,6 +33,18 @@ public class UtilsDelegate extends BaseDelegate
                 Request.get(GlobalConfig.Server.APP_UPDATE, baseParameters.toMap(), null, getTag(), httpCallBack);
 
         }
+        /**
+         * 获取站点通知信息
+         *
+         * @param httpCallBack
+         */
+        public void getSiteCommunication(HttpCallBack httpCallBack)
+        {
+                BaseParameters baseParameters = new BaseParameters();
+                Request.get(GlobalConfig.Server.SITE_COMMUNICATION, baseParameters.toMap(), null, getTag(), httpCallBack);
+
+        }
+
 
         /**
          * 获取分类信息缓存
