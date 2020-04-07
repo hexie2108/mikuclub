@@ -107,7 +107,7 @@
             app:layout_constraintEnd_toEndOf = "@id/item_content"
             app:layout_constraintStart_toStartOf = "@id/item_content"
             app:layout_constraintTop_toBottomOf = "@id/item_content"
-            tools:text = "0 条回复" />
+            tools:text = "@string/post_comment_reply_zero_count" />
 
         <View
             android:id = "@+id/item_split_line"

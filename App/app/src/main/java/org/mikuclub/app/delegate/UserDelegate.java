@@ -1,12 +1,12 @@
 package org.mikuclub.app.delegate;
 
+import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.base.BaseDelegate;
+import org.mikuclub.app.delegate.models.ResourceModel;
 import org.mikuclub.app.javaBeans.parameters.UpdateUserParameters;
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
-import org.mikuclub.app.config.GlobalConfig;
-import org.mikuclub.app.delegate.models.ResourceModel;
-import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.utils.http.Request;
 
 /**
@@ -51,6 +51,9 @@ public class UserDelegate extends BaseDelegate
 
                 Request.post(GlobalConfig.Server.UPDATE_USER, new BaseParameters().toMap(),  bodyParameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(),getTag(), httpCallBack);
         }
+
+
+
 
 
 

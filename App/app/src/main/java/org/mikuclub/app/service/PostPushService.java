@@ -121,8 +121,7 @@ public class PostPushService extends Service
                         //配置新的定时器
                         //获取推送频率 的 总毫秒数 = 1天的毫秒数 * 推送频率的天数
                         long postPushCycleInMilliseconds = GlobalConfig.DAY_IN_MILLISECONDS * Integer.valueOf(postPushCycle);
-                        //方便测试 设置 1分钟
-                        //long postPushCycleInMilliseconds = 1000 * 30;
+                        //postPushCycleInMilliseconds = 1000*30*Integer.valueOf(postPushCycle);
 
                         setScheduledTask(postPushCycleInMilliseconds);
                 }

@@ -53,8 +53,9 @@ public class PostDelegate extends BaseDelegate
          */
         public void getPost(HttpCallBack httpCallBack, int postId)
         {
-                BaseParameters baseParameters = new BaseParameters();
-                getModel().selectById(postId, baseParameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Map<String, Object> queryParameters = new BaseParameters().toMap();
+                putIfNotNull(queryParameters, "edit", 1);
+                getModel().selectById(postId, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
         }
 
 
@@ -112,13 +113,13 @@ public class PostDelegate extends BaseDelegate
 
 
         /**
-         * 文章点赞和取消点赞功能
+         * 设置文章点赞和取消点赞功能
          *
          * @param httpCallBack
          * @param postId
          * @param isAddLike    true = 点赞, false = 取消点赞
          */
-        public void postLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
+        public void setPostLikeCount(HttpCallBack httpCallBack, int postId, boolean isAddLike)
         {
                 BaseParameters baseParameters = new BaseParameters();
                 Map<String, Object> bodyParameters = new HashMap<>();
@@ -134,11 +135,11 @@ public class PostDelegate extends BaseDelegate
 
 
         /**
-         * 文章分享次数计算
+         * 增加文章分享次数
          *
          * @param postId
          */
-        public void postShareCount(int postId)
+        public void addPostShareCount(int postId)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
@@ -147,11 +148,11 @@ public class PostDelegate extends BaseDelegate
         }
 
         /**
-         * 文章查看次数计算
+         * 增加文章查看次数计算
          *
          * @param postId
          */
-        public void postViewCount(int postId)
+        public void addPostViewCount(int postId)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
@@ -160,18 +161,20 @@ public class PostDelegate extends BaseDelegate
         }
 
         /**
-         * 文章失效次数计算
+         * 增加文章失效次数
          *
          * @param httpCallBack
          * @param postId
          */
-        public void postFailDownCount(HttpCallBack httpCallBack, int postId)
+        public void addPostFailDownCount(HttpCallBack httpCallBack, int postId)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
                 putIfNotNull(queryParameters, "post_id", postId);
                 Request.get(GlobalConfig.Server.POST_FAIL_DOWN_COUNT, queryParameters, null, getTag(), httpCallBack);
         }
+
+
 
         /**
          * 获取从最后访问时间 到目前为止 新发布的文章数量
@@ -223,6 +226,43 @@ public class PostDelegate extends BaseDelegate
                 BaseParameters baseParameters = new BaseParameters();
                 getModel().updateById(postId, baseParameters.toMap(), parameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
+        }
+
+
+        /**
+         * 获取用户收藏夹
+         * @param httpCallBack
+         */
+        public void getPostFavorite(HttpCallBack httpCallBack)
+        {
+                Request.get(GlobalConfig.Server.POST_FAVORITE, new BaseParameters().toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+        }
+
+        /**
+         * 添加id到用户收藏夹
+         * @param httpCallBack
+         * @param postId
+         */
+        public void setPostFavorite(HttpCallBack httpCallBack, int postId)
+        {
+                Map<String, Object> bodyParameters = new HashMap<>();
+                putIfNotNull(bodyParameters, "post_id", postId);
+                Request.post(GlobalConfig.Server.POST_FAVORITE, new BaseParameters().toMap(), bodyParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+        }
+
+        /**
+         * 从用户收藏夹删除id
+         * @param httpCallBack
+         * @param postId
+         */
+        public void deletePostFavorite(HttpCallBack httpCallBack, int postId)
+        {
+                Map<String, Object> queryParameters = new BaseParameters().toMap();
+                putIfNotNull(queryParameters, "post_id", postId);
+                /*================================================
+                目前delete请求中的body参数无法被解读, 所以把post_id 加到 query参数里
+                =================================================*/
+                Request.delete(GlobalConfig.Server.POST_FAVORITE, queryParameters, null, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
         }
 
 }

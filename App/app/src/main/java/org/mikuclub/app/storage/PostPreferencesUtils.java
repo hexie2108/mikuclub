@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class PostPreferencesUtils
 {
         private static ArrayList<Integer> likedPostIds;
+        private static ArrayList<Integer> favoritePostIds;
 
         /**
          * 获取 点赞文章id储存数组
@@ -53,7 +54,7 @@ public class PostPreferencesUtils
         {
 
                 ArrayList<Integer> likedPostIds = getLikedPostIds();
-                Boolean isContained = false;
+                boolean isContained = false;
                 if (likedPostIds != null && likedPostIds.contains(postId))
                 {
                         isContained = true;
@@ -86,7 +87,7 @@ public class PostPreferencesUtils
                         }
                 }
                 //如果id已存在于数组中 那就是删除操作
-                else if (position != -1)
+                else
                 {
                         //移除
                         likedPostIds.remove(position);
@@ -99,6 +100,108 @@ public class PostPreferencesUtils
                         .apply();
 
         }
+
+
+
+
+
+        /**
+         * 获取 收藏夹文章id储存数组
+         * 如果在偏好里不存在的话 就创建一个新数组
+         *
+         * @return
+         */
+        public static ArrayList<Integer> getFavoritePostIds()
+        {
+
+                //如果还未初始化
+                if (favoritePostIds == null)
+                {
+                        String favoritePostIdsString = PreferencesUtils.getPostPreference().getString(GlobalConfig.Preferences.POST_FAVORITE, null);
+                        //如果已经存在相关数据
+                        if (favoritePostIdsString != null)
+                        {
+                                //解析为数组
+                                favoritePostIds = new ArrayList<>(ParserUtils.integerArrayList(favoritePostIdsString));
+                        }
+                        //如果数据不存在
+                        else
+                        {
+                                //创建全新数组
+                                favoritePostIds = new ArrayList<>();
+                        }
+                }
+                return favoritePostIds;
+        }
+
+        /**
+         * 检测 收藏夹文章id数组 是否包含指定的文章id
+         * @param postId 文章id
+         * @return  true 包含, false 不包含
+         */
+        public static boolean isContainedInFavoritePostIds(int postId)
+        {
+
+                ArrayList<Integer> favoritePostIds = getFavoritePostIds();
+                boolean isContained = false;
+                if (favoritePostIds != null && favoritePostIds.contains(postId))
+                {
+                        isContained = true;
+                }
+                return isContained;
+        }
+
+
+
+        /**
+         * 重新设置整个收藏夹
+         * @param postIds
+         */
+        public static void setFavoritePostIds(ArrayList postIds)
+        {
+                favoritePostIds = postIds;
+
+                //保存变更到共享偏好里
+                PreferencesUtils.getPostPreference()
+                        .edit()
+                        .putString(GlobalConfig.Preferences.POST_FAVORITE, ParserUtils.integerArrayListToJson(favoritePostIds))
+                        .apply();
+
+        }
+
+
+        /**
+         * 添加文章id到收藏夹数组 或者 从收藏夹里删除指定id
+         *
+         * @param postId
+         */
+        public static void addFavoritePostId(int postId)
+        {
+                ArrayList<Integer> favoritePostIds = getLikedPostIds();
+
+                //检查id是否已存在
+                int position = favoritePostIds.indexOf(postId);
+                //如果id不存在, 就是添加操作
+                if (position == -1)
+                {
+                        //添加id到数组
+                        favoritePostIds.add(postId);
+                }
+                //如果id已存在于数组中 那就是删除操作
+                else
+                {
+                        //移除
+                        favoritePostIds.remove(position);
+                }
+
+                //保存变更到共享偏好里
+                PreferencesUtils.getPostPreference()
+                        .edit()
+                        .putString(GlobalConfig.Preferences.POST_FAVORITE, ParserUtils.integerArrayListToJson(favoritePostIds))
+                        .apply();
+
+        }
+
 
 
 

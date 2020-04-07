@@ -10,6 +10,11 @@
                     android:title = "@string/user_profile"
                     />
                 <item
+                    android:id = "@+id/item_user_favorite"
+                    android:icon = "@drawable/favorite"
+                    android:title = "@string/user_favorite"
+                    />
+                <item
                     android:id = "@+id/item_submit_post"
                     android:icon = "@drawable/publish"
                     android:title = "@string/submit_post_title"

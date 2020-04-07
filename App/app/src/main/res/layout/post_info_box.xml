@@ -47,11 +47,11 @@
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:layout_marginStart = "@dimen/small"
-            android:text = "@string/post_view_zero_count"
             android:textSize = "@dimen/text_small"
             app:layout_constraintBottom_toBottomOf = "parent"
             app:layout_constraintStart_toEndOf = "@id/post_views_icon"
-            app:layout_constraintTop_toTopOf = "parent" />
+            app:layout_constraintTop_toTopOf = "parent"
+            tools:text = "@string/post_view_zero_count" />
 
         <ImageView
             android:id = "@+id/post_count_comments_icon"

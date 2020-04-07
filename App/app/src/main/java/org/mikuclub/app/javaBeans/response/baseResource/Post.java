@@ -76,6 +76,17 @@ public class Post implements Serializable
 
                 private List<Integer> previews;
 
+                private List<Integer> count_favorite;
+
+                public List<Integer> getCount_favorite()
+                {
+                        return count_favorite;
+                }
+
+                public void setCount_favorite(List<Integer> count_favorite)
+                {
+                        this.count_favorite = count_favorite;
+                }
 
                 public List<String> getImages_thumbnail_src()
                 {

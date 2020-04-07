@@ -61,6 +61,28 @@
                     android:textStyle="bold"
                     tools:text = "已发布" />
 
+                <ImageView
+                    android:id = "@+id/post_date_icon"
+                    android:layout_width = "@dimen/normal"
+                    android:layout_height = "@dimen/normal"
+                    android:src = "@drawable/access_time"
+                    app:layout_constraintStart_toEndOf="@id/post_status_value"
+                    app:layout_constraintTop_toTopOf="@id/post_status_label"
+                    app:layout_constraintBottom_toBottomOf = "@id/post_status_label"
+                    android:layout_marginStart="@dimen/normal"
+                    />
+
+                <TextView
+                    android:id = "@+id/post_date"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/small"
+                    android:textSize = "@dimen/text_small"
+                    app:layout_constraintTop_toTopOf="@id/post_status_label"
+                    app:layout_constraintBottom_toBottomOf = "@id/post_status_label"
+                    app:layout_constraintStart_toEndOf="@id/post_date_icon"
+                    tools:text = "20-01-01 00:00" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -79,19 +101,7 @@
             android:orientation = "horizontal">
 
 
-                <ImageView
-                    android:id = "@+id/post_date_icon"
-                    android:layout_width = "@dimen/normal"
-                    android:layout_height = "@dimen/normal"
-                    android:src = "@drawable/access_time" />
 
-                <TextView
-                    android:id = "@+id/post_date"
-                    android:layout_width = "wrap_content"
-                    android:layout_height = "wrap_content"
-                    android:layout_marginStart = "@dimen/small"
-                    android:textSize = "@dimen/text_small"
-                    tools:text = "20-01-01 00:00" />
 
                 <ImageView
                     android:id = "@+id/post_views_icon"
@@ -105,7 +115,7 @@
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/small"
-                    android:text = "@string/post_view_zero_count"
+                    tools:text = "@string/post_view_zero_count"
                     android:textSize = "@dimen/text_small" />
 
                 <ImageView
@@ -120,7 +130,7 @@
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/small"
-                    android:text = "@string/post_comment_zero_count"
+                    tools:text = "@string/post_comment_zero_count"
                     android:textSize = "@dimen/text_small" />
 
 
@@ -136,8 +146,25 @@
                     android:layout_width = "wrap_content"
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/small"
-                    android:text = "@string/post_like_zero_count"
+                    tools:text = "@string/post_like_zero_count"
                     android:textSize = "@dimen/text_small" />
+
+                <ImageView
+                    android:id = "@+id/post_count_favorite_icon"
+                    android:layout_width = "@dimen/normal"
+                    android:layout_height = "@dimen/normal"
+                    android:layout_marginStart = "@dimen/small"
+                    android:src = "@drawable/favorite" />
+
+                <TextView
+                    android:id = "@+id/post_count_favorite"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/small"
+                    tools:text = "@string/post_favorite_zero_count"
+                    android:textSize = "@dimen/text_small" />
+
+
 
 
                 <ImageView

@@ -153,6 +153,10 @@ public class GlobalConfig
 
                 //GET 获取站点信息通知
                 public static final String SITE_COMMUNICATION = HOST + UTILS + "get_site_communication/";
+
+                //GET 获取收藏夹, POST设置收藏夹, DELETE删除收藏夹ID
+                public static final String POST_FAVORITE = HOST + UTILS + "favorite/";
+
         }
 
         /**
@@ -190,7 +194,7 @@ public class GlobalConfig
                 public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; // 每天检查一次更新
 
                 //网站通知缓存
-                public static final String SITE_COMUNICATION = "site_communication";
+                public static final String SITE_COMMUNICATION = "site_communication";
                 //网站通知的有效时间
                 public static final String SITE_COMMUNICATION_EXPIRE = "site_communication_expire";
                 //每次更新检查的有效周期
@@ -204,11 +208,14 @@ public class GlobalConfig
                 public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 15; //每15天检查一次
 
                 //点赞过的文章ID数组
-                public static final String POST_LIKED_ARRAY = "user_token_time";
+                public static final String POST_LIKED_ARRAY = "post_liked";
                 //点赞过的文章ID数组长度
                 public static final int POST_LIKED_ARRAY_SIZE = 300;
                 //最近的访问时间
                 public static final String LATEST_ACCESS_TIME = "latest_access_time";
+
+                //收藏的文章ID数组
+                public static final String POST_FAVORITE = "post_favorite";
 
 
         }

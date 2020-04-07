@@ -17,11 +17,13 @@ import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.AppUpdate;
 import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.SingleResponseArrayInteger;
 import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.service.PostPushService;
 import org.mikuclub.app.storage.ApplicationPreferencesUtils;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
+import org.mikuclub.app.storage.PostPreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
@@ -65,14 +67,17 @@ public class WelcomeActivity extends AppCompatActivity
         private String categoryCache;
         private String siteCommunicationCache;
 
+        //判断是否有请求错误发生
+        boolean thereIsError = false;
+
         //需要完成的请求的总数
-        private final int REQUEST_TOTAL_NUMBER = 8;
+        private final int REQUEST_TOTAL_NUMBER = 9;
         //已完成的请求数量 (成功和失败都算)
         private int requestCount = 0;
 
         /* 组件 views */
-        private TextView welecomeInfoText;
-        private ProgressBar welecomeProgressBar;
+        private TextView welcomeInfoText;
+        private ProgressBar welcomeProgressBar;
         private ConstraintLayout layout;
 
         @Override
@@ -81,8 +86,8 @@ public class WelcomeActivity extends AppCompatActivity
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_welcome);
 
-                welecomeInfoText = findViewById(R.id.welcome_info_text);
-                welecomeProgressBar = findViewById(R.id.welcome_progress_bar);
+                welcomeInfoText = findViewById(R.id.welcome_info_text);
+                welcomeProgressBar = findViewById(R.id.welcome_progress_bar);
                 layout = findViewById(R.id.layout);
 
                 //创建请求代理人
@@ -122,6 +127,8 @@ public class WelcomeActivity extends AppCompatActivity
 
                         //获取未读消息数量
                         getUnreadMessageCount();
+                        //获取用户收藏夹
+                        getUserFavorite();
                         //获取主页文章数据
                         getPostDataForHome();
 
@@ -132,10 +139,9 @@ public class WelcomeActivity extends AppCompatActivity
 
                 }
                 else
-               {
+                {
                         //没网络的话 就报错
-                        String errorMessage = ResourcesUtils.getString(R.string.welcome_internet_not_available_error_message);
-                        setErrorInfo(errorMessage);
+                        setErrorInfo(null);
                 }
         }
 
@@ -150,46 +156,19 @@ public class WelcomeActivity extends AppCompatActivity
                 if (UserPreferencesUtils.isLogin())
                 {
                         LogUtils.v("开始验证登陆信息有效性");
-                        HttpCallBack httpCallBack = new HttpCallBack()
+                        HttpCallBack httpCallBack = new WelcomeHttpCallBack()
                         {
                                 //token正常
                                 @Override
                                 public void onSuccess(String response)
                                 {
                                         LogUtils.v("登陆信息还有效");
-                                        //增加计数器
-                                        startHomeSafety();
                                 }
-
                                 //令牌错误
                                 @Override
                                 public void onTokenError()
                                 {
                                         LogUtils.v("登陆信息已失效");
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                //内容错误
-                                @Override
-                                public void onError(WpError wpError)
-                                {
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                //网络错误
-                                @Override
-                                public void onHttpError()
-                                {
-                                        setErrorInfo(null);
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置请求计数器
-                                        requestCount = 0;
                                 }
                         };
                         //检测令牌是否还有效
@@ -218,7 +197,7 @@ public class WelcomeActivity extends AppCompatActivity
                 if (System.currentTimeMillis() > ApplicationPreferencesUtils.getUpdateCheckExpire())
                 {
                         LogUtils.v("检测时间已过期, 开始重新检测更新");
-                        HttpCallBack httpCallBack = new HttpCallBack()
+                        HttpCallBack httpCallBack = new WelcomeHttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
@@ -241,7 +220,7 @@ public class WelcomeActivity extends AppCompatActivity
                                                 {
                                                         LogUtils.v("已经是最新版了");
                                                         // 设置检查更新的有效期
-                                                       ApplicationPreferencesUtils.setUpdateCheckExpire();
+                                                        ApplicationPreferencesUtils.setUpdateCheckExpire();
                                                 }
                                                 //增加计数器
                                                 startHomeSafety();
@@ -252,25 +231,21 @@ public class WelcomeActivity extends AppCompatActivity
                                 @Override
                                 public void onError(WpError wpError)
                                 {
-                                        LogUtils.v("更新信息内容有错误, 下次再检测");
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                //网络错误的情况, 忽视, 下次再检查更新
-                                @Override
-                                public void onHttpError()
-                                {
                                         LogUtils.v("更新请求失败, 下次再检测");
                                         //增加计数器
                                         startHomeSafety();
                                 }
 
                                 @Override
-                                public void onCancel()
+                                public void onHttpError()
                                 {
-                                        //重置请求计数器
-                                        requestCount = 0;
+                                        onError(null);
+                                }
+
+                                @Override
+                                public void onFinally()
+                                {
+                                        //覆盖默认的onFinally动作
                                 }
                         };
                         utilsDelegate.checkUpdate(httpCallBack);
@@ -292,16 +267,14 @@ public class WelcomeActivity extends AppCompatActivity
          */
         private void checkCategories()
         {
-
-                categoryCache = CategoryPreferencesUtils.getCategoryCache() ;
+                categoryCache = CategoryPreferencesUtils.getCategoryCache();
 
                 //如果分类信息检测有效期已过期 或者 找不到分类缓存
                 if (System.currentTimeMillis() > CategoryPreferencesUtils.getCategoryCheckExpire() || categoryCache == null)
                 {
                         LogUtils.v("开始重新请求分类信息");
-                        HttpCallBack httpCallBack = new HttpCallBack()
+                        HttpCallBack httpCallBack = new WelcomeHttpCallBack()
                         {
-
                                 @Override
                                 public void onSuccess(String response)
                                 {
@@ -310,7 +283,6 @@ public class WelcomeActivity extends AppCompatActivity
                                         //更新分类缓存 和 缓存过期时间
                                         CategoryPreferencesUtils.setCategoryCacheAndExpire(categoryCache);
                                         LogUtils.v("重新请求分类信息 成功");
-                                        startHomeSafety();
                                 }
 
                                 @Override
@@ -321,24 +293,6 @@ public class WelcomeActivity extends AppCompatActivity
                                         {
                                                 setErrorInfo(null);
                                         }
-                                        //有缓存的话 无视
-                                        else
-                                        {
-                                                startHomeSafety();
-                                        }
-                                }
-
-                                @Override
-                                public void onHttpError()
-                                {
-                                        onError(null);
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置请求计数器
-                                        requestCount = 0;
                                 }
                         };
                         //发送请求
@@ -365,7 +319,7 @@ public class WelcomeActivity extends AppCompatActivity
                 if (System.currentTimeMillis() > ApplicationPreferencesUtils.getSiteCommunicationExpire() || siteCommunicationCache == null)
                 {
                         LogUtils.v("开始重新请求站点通知信息");
-                        HttpCallBack httpCallBack = new HttpCallBack()
+                        HttpCallBack httpCallBack = new WelcomeHttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
@@ -375,7 +329,6 @@ public class WelcomeActivity extends AppCompatActivity
                                         //更新分类缓存 和 缓存过期时间
                                         ApplicationPreferencesUtils.setSiteCommunicationAndExpire(siteCommunicationCache);
                                         LogUtils.v("重新请求站点通知信息 成功");
-                                        startHomeSafety();
                                 }
 
                                 @Override
@@ -386,24 +339,6 @@ public class WelcomeActivity extends AppCompatActivity
                                         {
                                                 setErrorInfo(null);
                                         }
-                                        //有缓存的话 无视
-                                        else
-                                        {
-                                                startHomeSafety();
-                                        }
-                                }
-
-                                @Override
-                                public void onHttpError()
-                                {
-                                        onError(null);
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置请求计数器
-                                        requestCount = 0;
                                 }
                         };
                         //发送请求
@@ -417,9 +352,11 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
+
+
         /**
          * 获取用户未读私信和未读评论回复的数量
-         *Get the counts of unread private messages and unread comment of current user
+         * Get the counts of unread private messages and unread comment of current user
          */
         private void getUnreadMessageCount()
         {
@@ -429,37 +366,20 @@ public class WelcomeActivity extends AppCompatActivity
                 {
                         LogUtils.v("开始获取未读消息数量");
                         //获取未读私信计数的回调
-                        HttpCallBack countPrivateMessageCallBack = new HttpCallBack()
+                        HttpCallBack countPrivateMessageCallBack = new WelcomeHttpCallBack()
                         {
-
                                 @Override
                                 public void onSuccess(String response)
                                 {
                                         LogUtils.v("获取未读私信数量成功");
-
                                         //解析回复
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
                                         MessagePreferencesUtils.setPrivateMessageCount(Integer.valueOf(singleResponse.getBody()));
-
-                                }
-
-                                @Override
-                                public void onFinally()
-                                {
-                                        //不管是成功 , 内容错误, 登陆令牌错误, 还是网络错误, 通通无视
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置请求计数器
-                                        requestCount = 0;
                                 }
                         };
                         //获取未读评论计数的回调
-                        HttpCallBack countReplyCommentCallBack = new HttpCallBack()
+                        HttpCallBack countReplyCommentCallBack = new WelcomeHttpCallBack()
                         {
                                 @Override
                                 public void onSuccess(String response)
@@ -470,27 +390,11 @@ public class WelcomeActivity extends AppCompatActivity
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
                                         MessagePreferencesUtils.setReplyCommentCount(Integer.valueOf(singleResponse.getBody()));
                                 }
-
-                                @Override
-                                public void onFinally()
-                                {
-                                        //不管是成功 , 内容错误, 登陆令牌错误, 还是网络错误, 通通无视
-                                        //增加计数器
-                                        startHomeSafety();
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        //重置请求计数器
-                                        requestCount = 0;
-                                }
                         };
 
                         //发送请求
                         messageDelegate.countPrivateMessage(countPrivateMessageCallBack, true, false);
                         messageDelegate.countReplyComment(countReplyCommentCallBack, true);
-
                 }
                 //如果未登陆直接增加2次计数器
                 else
@@ -502,24 +406,56 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
         /**
+         * 获取用户收藏夹
+         */
+        private void getUserFavorite()
+        {
+
+                //如果用户有登陆
+                if (UserPreferencesUtils.isLogin())
+                {
+                        LogUtils.v("开始获取用户收藏夹");
+                        //获取收藏夹
+                        HttpCallBack favoriteCallBack = new WelcomeHttpCallBack()
+                        {
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        LogUtils.v("获取用户收藏夹成功");
+                                        //解析回复
+                                        SingleResponseArrayInteger singleResponse = ParserUtils.fromJson(response, SingleResponseArrayInteger.class);
+                                        //从回复类里提取 收藏夹id数组
+                                        PostPreferencesUtils.setFavoritePostIds(singleResponse.getBody());
+                                }
+
+
+                        };
+                        postDelegate.getPostFavorite(favoriteCallBack);
+
+                }
+                //如果未登陆直接增加1次计数器
+                else
+                {
+                        startHomeSafety();
+                }
+        }
+
+
+
+
+        /**
          * 获取主页需要的文章数据
          * get the post data for home
          */
         private void getPostDataForHome()
         {
+                HttpCallBack callBackToGetStickyPost = new WelcomeHttpCallBack(){
 
-
-                //请求置顶文章 回调函数
-                HttpCallBack callBackToGetStickyPost = new HttpCallBack()
-                {
-                        //请求成功
                         @Override
                         public void onSuccess(String response)
                         {
                                 //解析数据 +保存数据
                                 stickyPostList = ParserUtils.fromJson(response, Posts.class);
-                                //尝试启动主页
-                                startHomeSafety();
                         }
 
                         @Override
@@ -527,48 +463,20 @@ public class WelcomeActivity extends AppCompatActivity
                         {
                                 setErrorInfo(null);
                         }
-
-                        //请求失败
-                        @Override
-                        public void onHttpError()
-                        {
-                                onError(null);
-                        }
-
-                        @Override
-                        public void onCancel()
-                        {
-                                //重置请求计数器
-                                requestCount = 0;
-                        }
                 };
+
                 //请求普通文章 回调函数
-                HttpCallBack callBackToGetPost = new HttpCallBack()
+                HttpCallBack callBackToGetPost = new WelcomeHttpCallBack()
                 {
                         @Override
                         public void onSuccess(String response)
                         {
                                 postList = ParserUtils.fromJson(response, Posts.class);
-                                startHomeSafety();
                         }
-
                         @Override
                         public void onError(WpError wpError)
                         {
                                 setErrorInfo(null);
-                        }
-
-                        @Override
-                        public void onHttpError()
-                        {
-                                onError(null);
-                        }
-
-                        @Override
-                        public void onCancel()
-                        {
-                                //重置请求计数器
-                                requestCount = 0;
                         }
                 };
                 //只需要第一页
@@ -584,21 +492,25 @@ public class WelcomeActivity extends AppCompatActivity
 
         }
 
+
+
+
+
         /**
          * 检测请求是否都已经完成, 并且数据都已获取
          * 只有在都请求都成功的情况 才会 启动主页
          * 否则 报错
          * Check whether the requests have been completed and the data has been obtained
          * The homepage will only be launched if all requests are successful
-         *Otherwise display error message
+         * Otherwise display error message
          */
         private synchronized void startHomeSafety()
         {
                 //增加请求计数器
                 addRequestCount();
 
-                //所有请求都完成, 并且数据都成功获取的情况
-                if (requestCount == REQUEST_TOTAL_NUMBER && stickyPostList != null && postList != null && !categoryCache.isEmpty())
+                //所有请求都完成, 没有关键错误情况发生, 数据都成功获取的情况
+                if (requestCount == REQUEST_TOTAL_NUMBER && !thereIsError && stickyPostList != null && postList != null)
                 {
                         //启动主页
                         HomeActivity.startAction(WelcomeActivity.this, stickyPostList, postList);
@@ -607,22 +519,23 @@ public class WelcomeActivity extends AppCompatActivity
                 }
         }
 
+
         /**
          * 根据偏好配置 判断是否启动服务
          */
-        private void initPostPushService(){
+        private void initPostPushService()
+        {
 
                 //确认是否有开启推送, 默认是开启
                 boolean postPushIsActivated = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(ResourcesUtils.getString(R.string.preference_new_post_push_key), true);
                 //只有在开启的情况
-                if(postPushIsActivated){
+                if (postPushIsActivated)
+                {
                         //启动文章推送服务
                         PostPushService.startAction(this);
                 }
 
         }
-
-
 
 
         /**
@@ -636,7 +549,8 @@ public class WelcomeActivity extends AppCompatActivity
         private void setErrorInfo(String message)
         {
                 String errorMessage = ResourcesUtils.getString(R.string.welcome_server_error);
-                if(message!=null){
+                if (message != null)
+                {
                         errorMessage = message;
                 }
 
@@ -644,21 +558,25 @@ public class WelcomeActivity extends AppCompatActivity
                 Request.cancelRequest(TAG);
                 //清零计数器
                 requestCount = 0;
+                //开启错误信号标
+                thereIsError=true;
 
                 //切换组件显示
-                welecomeProgressBar.setVisibility(View.INVISIBLE);
-                welecomeInfoText.setText(errorMessage);
-                welecomeInfoText.setVisibility(View.VISIBLE);
+                welcomeProgressBar.setVisibility(View.INVISIBLE);
+                welcomeInfoText.setText(errorMessage);
+                welcomeInfoText.setVisibility(View.VISIBLE);
 
                 //绑定点击事件 允许用户手动重试
                 layout.setOnClickListener(v -> {
                         // 卸载点击监听
                         layout.setOnClickListener(null);
                         //切换组件显示
-                        welecomeInfoText.setVisibility(View.INVISIBLE);
-                        welecomeProgressBar.setVisibility(View.VISIBLE);
+                        welcomeInfoText.setVisibility(View.INVISIBLE);
+                        welcomeProgressBar.setVisibility(View.VISIBLE);
                         //清零计数器
                         requestCount = 0;
+                        //关闭错误信号标
+                        thereIsError=false;
                         //重试
                         initPage();
                 });
@@ -668,6 +586,7 @@ public class WelcomeActivity extends AppCompatActivity
         /**
          * 创建和显示 更新提示弹窗
          * Create alert dialog to showing update info
+         *
          * @param appUpdate 更新信息
          */
         private void openAlertDialogToUpdate(final AppUpdate appUpdate)
@@ -678,7 +597,7 @@ public class WelcomeActivity extends AppCompatActivity
                 String description = appUpdate.getBody().getDescription();
                 //把被转义\\n恢复成普通换行符
                 description = description.replace("\\n", "\n");
-                String message = ResourcesUtils.getString(R.string.welcome_update_version_name)+" "+ appUpdate.getBody().getVersionName() + "\n" + description;
+                String message = ResourcesUtils.getString(R.string.welcome_update_version_name) + " " + appUpdate.getBody().getVersionName() + "\n" + description;
                 dialog.setMessage(message);
                 //如果是强制更新, 就无法取消
                 dialog.setCancelable(!appUpdate.getBody().isForceUpdate());
@@ -710,7 +629,7 @@ public class WelcomeActivity extends AppCompatActivity
         /**
          * 检查应用是否已获取敏感权限授权
          * 还没有的话, 则请求权限
-         *Check if the application has been authorized for sensitive permissions
+         * Check if the application has been authorized for sensitive permissions
          * If not, request permission
          */
         private void permissionCheck()
@@ -738,14 +657,12 @@ public class WelcomeActivity extends AppCompatActivity
                         ActivityCompat.requestPermissions(WelcomeActivity.this, permissions, 1);
                 }
                 //如果已经拥有全部权限
-                else{
+                else
+                {
                         //正常初始化页面 init the page
                         initPage();
                 }
         }
-
-
-
 
 
         /**
@@ -795,6 +712,53 @@ public class WelcomeActivity extends AppCompatActivity
         private synchronized void addRequestCount()
         {
                 this.requestCount++;
+        }
+
+
+
+
+        /**
+         * 自定义欢迎页专用请求回调类
+         *
+         * @return
+         */
+        private class WelcomeHttpCallBack extends HttpCallBack
+        {
+
+                @Override
+                public void onSuccess(String response)
+                {
+
+                }
+
+                @Override
+                public void onError(WpError wpError)
+                {
+
+                }
+
+                @Override
+                public void onHttpError()
+                {
+                        onError(null);
+                }
+
+                @Override
+                public void onFinally()
+                {
+                        //不管是成功 , 内容错误, 登陆令牌错误, 还是网络错误, 通通无视
+                        //增加计数器
+                        startHomeSafety();
+                }
+
+                @Override
+                public void onCancel()
+                {
+                        //重置请求计数器
+                        requestCount = 0;
+                }
+
+
         }
 
 }

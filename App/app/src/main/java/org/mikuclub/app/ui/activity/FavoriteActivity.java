@@ -7,37 +7,36 @@ import android.view.MenuItem;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.mikuclub.app.adapter.PostManageAdapter;
+import org.mikuclub.app.adapter.PostAdapter;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.controller.PostController;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
-import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.storage.PostPreferencesUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
+import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
 import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
-public class PostManageActivity extends AppCompatActivity
+public class FavoriteActivity extends AppCompatActivity
 {
+
         /* 静态变量 Static variable */
-        public static final int TAG = 16;
-
-
+        public static final int TAG = 18;
 
         /* 变量 local variable */
         //数据请求代理人
@@ -45,7 +44,7 @@ public class PostManageActivity extends AppCompatActivity
         private PostController controller;
 
         //列表适配器
-        private PostManageAdapter recyclerViewAdapter;
+        private PostAdapter recyclerViewAdapter;
         //列表数据
         private List<Post> recyclerDataList;
 
@@ -57,20 +56,17 @@ public class PostManageActivity extends AppCompatActivity
         private SwipeRefreshLayout swipeRefresh;
         private FloatingActionButton floatingActionButton;
 
-
         @Override
         protected void onCreate(Bundle savedInstanceState)
         {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_post_manage);
+                setContentView(R.layout.activity_favorite);
 
                 //绑定组件
                 Toolbar toolbar = findViewById(R.id.toolbar);
                 recyclerView = findViewById(R.id.recycler_view);
                 swipeRefresh = findViewById(R.id.swipe_refresh);
                 floatingActionButton = findViewById(R.id.list_floating_action_button);
-
-
                 //创建数据请求 代理人
                 delegate = new PostDelegate(TAG);
                 //创建空列表
@@ -92,8 +88,8 @@ public class PostManageActivity extends AppCompatActivity
                 initController();
                 //绑定浮动按钮
                 initFloatingActionButton();
-
         }
+
 
         /**
          * 初始化recyclerView列表
@@ -104,12 +100,14 @@ public class PostManageActivity extends AppCompatActivity
 
 
                 //创建适配器
-                recyclerViewAdapter = new PostManageAdapter(this, recyclerDataList, delegate);
+                recyclerViewAdapter = new PostAdapter(this, recyclerDataList);
 
-                //创建列表主布局
-                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                layoutManager.setOrientation(RecyclerView.VERTICAL);
-
+                //创建列表网格布局
+                //设置行数
+                int numberColumn = 2;
+                GridLayoutManager layoutManager = new GridLayoutManager(this, numberColumn);
+                //让最后一个组件(尾部) 占据2个列
+                layoutManager.setSpanSizeLookup(new MyGridLayoutSpanSizeLookup(recyclerDataList, numberColumn, false));
                 //创建列表滑动监听器
                 MyListOnScrollListener listener = new MyListOnScrollListener(recyclerViewAdapter, layoutManager){
                         @Override
@@ -150,10 +148,20 @@ public class PostManageActivity extends AppCompatActivity
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
 
-                //参数设置当前用户自己发布的文章
-                parameters.setAuthor(new ArrayList<>(Collections.singletonList(UserPreferencesUtils.getUser().getId())));
-                //添加除了公开以外的文章状态
-                parameters.setStatus(new ArrayList<>(Arrays.asList(GlobalConfig.Post.Status.POST_MANAGE_STATUS)));
+                //确保收藏夹不是空的
+                if(!PostPreferencesUtils.getFavoritePostIds().isEmpty()){
+                        //参数设置只获取收藏夹里的文章id相关的文章
+                        parameters.setInclude(PostPreferencesUtils.getFavoritePostIds());
+                }
+                //如果收藏夹未空 , 直接显示无内容错误
+                else{
+                        recyclerViewAdapter.setNotMoreErrorMessage(ResourcesUtils.getString(R.string.favorite_empty_error));
+                        recyclerViewAdapter.updateFooterStatus(false, true, false);
+                        //关闭上拉加载
+                        swipeRefresh.setEnabled(false);
+                }
+
+
 
                 //创建数据控制器
                 controller = new PostController(this);
@@ -166,8 +174,16 @@ public class PostManageActivity extends AppCompatActivity
                 //设置跳转后的列表位置
                 controller.setScrollPositionAfterRefresh(0);
 
-                //第一次请求数据
-                controller.getMore();
+                //只有在收藏夹不是空的情况下才会请求
+                if(!PostPreferencesUtils.getFavoritePostIds().isEmpty()){
+                        //第一次请求数据
+                        controller.getMore();
+                }
+                else{
+                        //关闭加载功能
+                        controller.setWantMore(false);
+                }
+
         }
 
         /**
@@ -210,15 +226,12 @@ public class PostManageActivity extends AppCompatActivity
 
         /**
          * 启动本活动的静态方法
-         * static method to start current activity
          *
          * @param context
          */
         public static void startAction(Context context)
         {
-                Intent intent = new Intent(context, PostManageActivity.class);
-                //重新创建模式, 并删除所有之上的活动
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent intent = new Intent(context, FavoriteActivity.class);
                 context.startActivity(intent);
         }
 }

@@ -49,9 +49,9 @@ public class HomeActivity extends AppCompatActivity
         public static final int TAG = 2;
         public static final String INTENT_STICKY_POST_LIST = "sticky_post_list";
         public static final String INTENT_POST_LIST = "post_list";
-        private static final String TAG_HOME_MAIN_FRAGMENT ="homeMainFragment";
-        private static final String TAG_HOME_CATEGORIES_FRAGMENT ="homeCategoriesFragment";
-        private static final String TAG_HOME_MESSAGE_FRAGMENT ="homeMessageFragment";
+        private static final String TAG_HOME_MAIN_FRAGMENT = "homeMainFragment";
+        private static final String TAG_HOME_CATEGORIES_FRAGMENT = "homeCategoriesFragment";
+        private static final String TAG_HOME_MESSAGE_FRAGMENT = "homeMessageFragment";
 
         /* 变量 local variable */
 
@@ -222,7 +222,7 @@ public class HomeActivity extends AppCompatActivity
 
                 //如果对应的fragment还未生成, 或者fragment是切换到分类页的情况
                 // (因为通过显示/隐藏方式会造成分类页fragment在登陆后不显示魔法分类的问题, 所以每次切换到分类页就重新生成新的fragment)
-                if (fragment == null || fragmentTag.equals(TAG_HOME_CATEGORIES_FRAGMENT)  )
+                if (fragment == null || fragmentTag.equals(TAG_HOME_CATEGORIES_FRAGMENT))
                 {
                         //根据tag创建对应fragment
                         switch (fragmentTag)
@@ -233,7 +233,8 @@ public class HomeActivity extends AppCompatActivity
                                         break;
                                 case TAG_HOME_CATEGORIES_FRAGMENT:
                                         //如果分类页已经创建过
-                                        if(fragment!=null){
+                                        if (fragment != null)
+                                        {
                                                 //删除之前的旧分类页
                                                 fragmentTransaction = fragmentTransaction.remove(fragment);
                                         }
@@ -325,6 +326,10 @@ public class HomeActivity extends AppCompatActivity
                                         break;
                                 case R.id.item_submit_post:
                                         PostSubmitActivity.startAction(this);
+                                        break;
+
+                                case R.id.item_user_favorite:
+                                        FavoriteActivity.startAction(this);
                                         break;
 
                         }
