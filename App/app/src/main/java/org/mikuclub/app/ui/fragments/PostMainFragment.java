@@ -18,6 +18,7 @@ import org.mikuclub.app.javaBeans.response.SingleResponseArrayInteger;
 import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.storage.PostPreferencesUtils;
+import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
@@ -145,7 +146,7 @@ public class PostMainFragment extends Fragment
                 int commentsCount = 0;
                 int likesCount = 0;
                 int sharingCount = 0;
-                int favoriteCount =0;
+                int favoriteCount = 0;
 
                 //如果查看数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getViews()))
@@ -203,7 +204,7 @@ public class PostMainFragment extends Fragment
                 {
                         String videoSrc = metadata.getBilibili().get(0);
                         //确如果是 b站地址
-                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV) || videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_BV) )
+                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV) || videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_BV))
                         {
                                 //监听按钮点击
                                 postBilibiliButton.setOnClickListener(v -> {
@@ -214,12 +215,14 @@ public class PostMainFragment extends Fragment
                                         String bilibiliAppSrc = GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_APP_WAKE_URL;
 
                                         //如果是旧av的情况
-                                        if(videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV)){
+                                        if (videoSrc.contains(GlobalConfig.ThirdPartyApplicationInterface.BILIBILI_AV))
+                                        {
                                                 //使用旧av号
                                                 bilibiliAppSrc += videoSrc.substring(2);
                                         }
                                         //如果是新bv的情况
-                                        else{
+                                        else
+                                        {
                                                 //使用BV号
                                                 bilibiliAppSrc += videoSrc;
                                         }
@@ -371,7 +374,6 @@ public class PostMainFragment extends Fragment
         }
 
 
-
         /**
          * 初始化分享按钮
          * init share button
@@ -418,16 +420,30 @@ public class PostMainFragment extends Fragment
         /**
          * 初始化 收藏夹按钮
          */
-        private void initFavoriteButton(){
-                boolean buttonIsActivated = false;
-                //如果收藏文章id数组里已经包含这个id, 说明已收藏过
-                if (PostPreferencesUtils.isContainedInFavoritePostIds(post.getId()))
+        private void initFavoriteButton()
+        {
+                //只有在用户登陆的情况下
+                if (UserPreferencesUtils.isLogin())
                 {
-                        buttonIsActivated = true;
+                        boolean buttonIsActivated = false;
+                        //如果收藏文章id数组里已经包含这个id, 说明已收藏过
+                        if (PostPreferencesUtils.isContainedInFavoritePostIds(post.getId()))
+                        {
+                                buttonIsActivated = true;
+                        }
+                        //根据激活状态 设置 按钮样式和动作
+                        favoriteAction(buttonIsActivated);
+
                 }
-                //根据激活状态 设置 按钮样式和动作
-                favoriteAction(buttonIsActivated);
+                //如果用户未登陆 就隐藏收藏按钮
+                else{
+                        //隐藏收藏按钮
+                        postCountFavoriteButton.setVisibility(View.GONE);
+                        //隐藏收藏数量
+                        postCountFavorite.setVisibility(View.GONE);
+                }
         }
+
         /**
          * 收藏操作
          * 添加收藏 和 取消收藏
@@ -475,11 +491,13 @@ public class PostMainFragment extends Fragment
                                         //显示消息提示
                                         ToastUtils.shortToast(toastMessage);
                                 }
+
                                 @Override
                                 public void onError(WpError wpError)
                                 {
                                         //如果是因为空数组导致的报错
-                                        if(wpError == null){
+                                        if (wpError == null)
+                                        {
                                                 //说明收藏夹是空的, 清空本地收藏夹数组
                                                 PostPreferencesUtils.setFavoritePostIds(new ArrayList<>());
                                                 String toastMessage = ResourcesUtils.getString(R.string.post_favorite_delete);
@@ -502,11 +520,13 @@ public class PostMainFragment extends Fragment
                                 }
                         };
                         //如果还未收藏 就是添加收藏请求
-                        if(!isActivated){
+                        if (!isActivated)
+                        {
                                 delegate.setPostFavorite(httpCallBack, post.getId());
                         }
                         //如果已收藏  就是取消收藏请求
-                        else{
+                        else
+                        {
                                 delegate.deletePostFavorite(httpCallBack, post.getId());
                         }
 
