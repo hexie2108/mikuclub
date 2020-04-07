@@ -26,87 +26,71 @@
                     android:enabled = "true"
                     android:exported = "false" />
 
+
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.FavoriteActivity"
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label="@string/user_favorite"
+
+                    />
+
+
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PostSubmitActivity"
-                    android:label = "@string/submit_post_title"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                    ></activity>
-
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label = "@string/submit_post_title" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PostManageActivity"
-                    android:label = "@string/post_manage_title"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label = "@string/post_manage_title" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SettingsActivity"
-                    android:label = "@string/settings"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label = "@string/settings" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.PrivateMessageActivity"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
-
-
+                    android:configChanges = "keyboardHidden|orientation|screenSize" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.LoginActivity"
-                    android:label = "@string/login"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label = "@string/login" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.ImageActivity"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.WelcomeActivity"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                    >
+                    android:configChanges = "keyboardHidden|orientation|screenSize">
                         <intent-filter>
                                 <action android:name = "android.intent.action.MAIN" />
 
                                 <category android:name = "android.intent.category.LAUNCHER" />
                         </intent-filter>
                 </activity>
-                <activity
-                    android:name = "org.mikuclub.app.ui.activity.HomeActivity"
-
-                     />
+                <activity android:name = "org.mikuclub.app.ui.activity.HomeActivity" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SearchActivity"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
-                <activity
-                    android:name = "org.mikuclub.app.ui.activity.PostActivity"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize" />
+                <activity android:name = "org.mikuclub.app.ui.activity.PostActivity" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.CategoryActivity"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.AuthorActivity"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.ReportActivity"
-                    android:label = "@string/report"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label = "@string/report" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"
-                    android:label = "@string/user_profile"
-                    android:configChanges="keyboardHidden|orientation|screenSize"
-                     />
-
-                <!-- 剪辑图片 专用 -->
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                    android:label = "@string/user_profile" /> <!-- 剪辑图片 专用 -->
                 <activity
-                    android:name="com.yalantis.ucrop.UCropActivity"
-                    android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-
-                <!-- 解决腾讯sdk 网络连接报错 -->
+                    android:name = "com.yalantis.ucrop.UCropActivity"
+                    android:theme = "@style/Theme.AppCompat.Light.NoActionBar" /> <!-- 解决腾讯sdk 网络连接报错 -->
                 <uses-library
                     android:name = "org.apache.http.legacy"
-                    android:required = "false" />
-                <!-- 腾讯QQ sdk专用 -->
+                    android:required = "false" /> <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"
                     android:launchMode = "singleTask"
@@ -124,12 +108,10 @@
                     android:name = "com.tencent.connect.common.AssistActivity"
                     android:configChanges = "orientation|keyboardHidden"
                     android:screenOrientation = "behind"
-                    android:theme = "@android:style/Theme.Translucent.NoTitleBar" />
-
-                <!-- 谷歌广告sdk申明-->
+                    android:theme = "@android:style/Theme.Translucent.NoTitleBar" /> <!-- 谷歌广告sdk申明 -->
                 <meta-data
-                    android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-                    android:value="true"/>
+                    android:name = "com.google.android.gms.ads.AD_MANAGER_APP"
+                    android:value = "true" />
         </application>
 
 </manifest>

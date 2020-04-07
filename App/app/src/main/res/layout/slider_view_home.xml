@@ -16,7 +16,7 @@
             android:layout_width = "0dp"
             android:layout_height = "0dp"
             app:cardCornerRadius = "@dimen/small"
-            app:layout_constraintDimensionRatio = "H,16:8"
+            app:layout_constraintDimensionRatio = "H,16:10"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toTopOf = "parent">
@@ -59,7 +59,7 @@
 
                 <TextView
                     android:id = "@+id/site_communication"
-                    android:textIsSelectable="true"
+
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
                     android:padding="@dimen/small"

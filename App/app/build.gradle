@@ -8,13 +8,13 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 8
-        versionName "v0.8"
+        versionCode 10
+        versionName "v1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-       ndk {
+        /*ndk {
             //  设置微博sdk支持的SO库架构
             abiFilters 'armeabi' //, 'armeabi-v7a','arm64-v8a'
-        }
+        }*/
     }
     buildTypes {
         release {
@@ -108,9 +108,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.2.3'
     //新浪sdk
     implementation 'com.sina.weibo.sdk:core:9.12.0:openDefaultRelease@aar'
-    //QQ SDK
-    implementation files('libs\\open_sdk_r2973327_lite.jar')
-
+    //
 
 
 }

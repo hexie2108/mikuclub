@@ -25,6 +25,7 @@ public class PostManageViewHolder extends RecyclerView.ViewHolder
         private TextView postViews;
         private TextView postCountComments;
         private TextView postCountLike;
+        private TextView postCountFavorite;
         private TextView postCountShare;
         private Button editButton;
         private Button deleteButton;
@@ -42,10 +43,21 @@ public class PostManageViewHolder extends RecyclerView.ViewHolder
                 postViews= itemView.findViewById(R.id.post_views);
                postCountComments= itemView.findViewById(R.id.post_count_comments);
                postCountLike= itemView.findViewById(R.id.post_count_like);
+               postCountFavorite = itemView.findViewById(R.id.post_count_favorite);
                postCountShare= itemView.findViewById(R.id.post_count_share);
                editButton= itemView.findViewById(R.id.button_edit);
               deleteButton= itemView.findViewById(R.id.button_delete);
 
+        }
+
+        public TextView getPostCountFavorite()
+        {
+                return postCountFavorite;
+        }
+
+        public void setPostCountFavorite(TextView postCountFavorite)
+        {
+                this.postCountFavorite = postCountFavorite;
         }
 
         public ConstraintLayout getPostItem()

@@ -40,6 +40,7 @@
         <string name = "report">问题反馈</string>
         <string name = "shopping">动漫周边</string>
         <string name = "submit_post_title">投稿</string>
+        <string name = "user_favorite">收藏夹</string>
 
 
         <!--home page-->
@@ -79,20 +80,30 @@
         <string name = "post_down_magnet_link" translatable = "false">复制磁链</string>
         <string name = "post_down_magnet_link_message" translatable = "false">已复制磁链到剪切板</string>
         <string name = "post_down_password_copy_message">已复制访问密码到剪切板</string>
-        <string name = "post_view_count">次查看</string>
+        <string name = "post_view_count">%1$d 次查看</string>
         <string name = "post_view_zero_count">0 次查看</string>
-        <string name = "post_like_count">次点赞</string>
+        <string name = "post_like_count">%1$d 次点赞</string>
         <string name = "post_like_zero_count">0 次点赞</string>
-        <string name = "post_comment_count">条评论</string>
+        <string name = "post_like_add">已点赞</string>
+        <string name = "post_like_delete">已取消点赞</string>
+        <string name = "post_comment_count">%1$d 条评论</string>
         <string name = "post_comment_zero_count">0 条评论</string>
-        <string name = "post_sharing_count">次分享</string>
+        <string name = "post_sharing_count">%1$d 次分享</string>
         <string name = "post_sharing_zero_count">0 次分享</string>
+        <string name = "post_favorite_count">%1$d 次收藏</string>
+        <string name = "post_favorite_zero_count">0 次收藏</string>
+        <string name = "post_favorite_add">已收藏</string>
+        <string name = "post_favorite_delete">已取消取消</string>
+
+        <string name = "post_comment_reply_zero_count">0 条回复</string>
+
+
         <string name = "post_fail_down_successful_message">上报成功, 管理员将会根据上报次数对稿件进行退稿处理, 并通知UP主补档</string>
         <string name = "post_download1">下载点1</string>
         <string name = "post_download2">下载点2</string>
         <string name = "post_access_password">访问密码</string>
         <string name = "post_unzip_password">解压密码</string>
-        <string name = "post_download_help">提示1: 点击下载后会自动复制提取码到剪切板\n提示2: 如果解压时提示密码错误, 先确认密码是否复制正确, 之后尝试更换一个靠谱的下载和解压软件, 文件下载时损坏和辣鸡解压软件是导致压缩包无法正常解压的主要原因</string>
+        <string name = "post_download_help">文件解压错误的常见原因:\n- 输入了错误的解压密码.\n-  有的文件是压缩分卷, 请全部下载完成后, 再解压第一个分卷, 具体可百度教程.\n- 解压软件问题, 请更换成知名的应用比如ZArchiver等.\n- 文件在下载过程中损坏, 这种情况只能重新下载.</string>
         <string name = "sharing_to_qq">分享到QQ</string>
         <string name = "another_methods">其他方式</string>
         <string name = "sharing_to_weibo">分享到微博</string>
@@ -207,6 +218,9 @@
 
         <!-- home category page-->
         <string name = "home_cateogry_help">登陆后才能施放魔法</string>
+
+        <!-- favorite page 收藏夹-->
+        <string name = "favorite_empty_error">目前收藏夹是空的</string>
 
 
 </resources>

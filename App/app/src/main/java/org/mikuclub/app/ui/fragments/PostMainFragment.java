@@ -14,18 +14,22 @@ import com.google.android.material.button.MaterialButton;
 
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
+import org.mikuclub.app.javaBeans.response.SingleResponseArrayInteger;
+import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.storage.PostPreferencesUtils;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
+import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
-import org.mikuclub.app.storage.PostPreferencesUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -63,6 +67,8 @@ public class PostMainFragment extends Fragment
         private TextView postDescription;
         private TextView postCountLike;
         private MaterialButton postCountLikeButton;
+        private TextView postCountFavorite;
+        private MaterialButton postCountFavoriteButton;
         private TextView postCountShare;
         private MaterialButton postCountShareButton;
         private TextView postCountFailDown;
@@ -95,6 +101,8 @@ public class PostMainFragment extends Fragment
                 postDescription = view.findViewById(R.id.post_description);
                 postCountLike = view.findViewById(R.id.post_count_like);
                 postCountLikeButton = view.findViewById(R.id.post_count_like_button);
+                postCountFavorite = view.findViewById(R.id.post_count_favorite);
+                postCountFavoriteButton = view.findViewById(R.id.post_count_favorite_button);
                 postCountShare = view.findViewById(R.id.post_count_share);
                 postCountShareButton = view.findViewById(R.id.post_count_share_button);
                 postCountFailDown = view.findViewById(R.id.post_count_fail_down);
@@ -109,10 +117,11 @@ public class PostMainFragment extends Fragment
                 initPost();
                 initLikeButton();
                 initShareButton();
+                initFavoriteButton();
                 initFailDownButton();
 
                 //通知服务器 增加查看次数计数
-                delegate.postViewCount(post.getId());
+                delegate.addPostViewCount(post.getId());
         }
 
         /**
@@ -130,19 +139,52 @@ public class PostMainFragment extends Fragment
 
                 //获取文章元数据
                 Post.Metadata metadata = post.getMetadata();
-                //如果数据不是空
+
+                //获取文章相关统计数
+                int viewsCount = 0;
+                int commentsCount = 0;
+                int likesCount = 0;
+                int sharingCount = 0;
+                int favoriteCount =0;
+
+                //如果查看数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getViews()))
                 {
-                        postViews.setText(metadata.getViews().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_view_count));
+                        viewsCount = metadata.getViews().get(0);
                 }
+                //如果评论数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_comments()))
                 {
-                        postCountComments.setText(metadata.getCount_comments().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_comment_count));
+                        commentsCount = metadata.getCount_comments().get(0);
                 }
+                //如果点赞数不是空
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like()))
+                {
+                        likesCount = metadata.getCount_like().get(0);
+                }
+                //如果分享数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_sharing()))
                 {
-                        postCountShare.setText(metadata.getCount_sharing().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_sharing_count));
+                        sharingCount = metadata.getCount_sharing().get(0);
                 }
+                //如果收藏数不是空
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_favorite()))
+                {
+                        favoriteCount = metadata.getCount_favorite().get(0);
+                }
+
+                String postViewsText = String.format(ResourcesUtils.getString(R.string.post_view_count), viewsCount);
+                String postCountCommentText = String.format(ResourcesUtils.getString(R.string.post_comment_count), commentsCount);
+                String postCountLikeText = String.format(ResourcesUtils.getString(R.string.post_like_count), likesCount);
+                String postCountSharingText = String.format(ResourcesUtils.getString(R.string.post_sharing_count), sharingCount);
+                String postCountFavoriteText = String.format(ResourcesUtils.getString(R.string.post_favorite_count), favoriteCount);
+
+                postViews.setText(postViewsText);
+                postCountComments.setText(postCountCommentText);
+                postCountLike.setText(postCountLikeText);
+                postCountShare.setText(postCountSharingText);
+                postCountFavorite.setText(postCountFavoriteText);
+
 
                 //创建作者页面点击监听器
                 View.OnClickListener authorActivityListener = v -> {
@@ -184,7 +226,6 @@ public class PostMainFragment extends Fragment
                                         //启动第三方应用
                                         HttpUtils.startWebViewIntent(getActivity(), bilibiliAppSrc, bilibiliWebSrc);
                                 });
-
 
 
                                 //显示b站视频按钮
@@ -255,38 +296,27 @@ public class PostMainFragment extends Fragment
          */
         private void initLikeButton()
         {
-
                 boolean buttonIsActivated = false;
-                //点赞数 不是空的也不是0
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_like()))
-                {
-                        countLike = post.getMetadata().getCount_like().get(0);
-                }
-
                 //如果点赞文章id数组里包含这个id, 说明已点过赞
                 if (PostPreferencesUtils.isContainedInLikedPostIds(post.getId()))
                 {
                         buttonIsActivated = true;
-                        //检查是否是点过赞
-                        countLike++;
                 }
-                postCountLike.setText(countLike + " " + getResources().getString(R.string.post_like_count));
-
                 //根据激活状态 设置 按钮样式和动作
                 likeAction(buttonIsActivated);
         }
 
         /**
          * 点赞操作
-         * 根据点赞状态, 变化点赞按钮
-         * like operation
+         * 点赞操作 和 取消点赞操作
          *
          * @param isActivated true=已激活过, false =未激活
          */
         private void likeAction(boolean isActivated)
         {
+                //未激活按钮颜色
                 int iconColorId = getResources().getColor(R.color.defaultTextColor);
-                //如果是已激活, 设置不同颜色
+                //如果是已激活, 更改按钮颜色
                 if (isActivated)
                 {
                         iconColorId = getResources().getColor(R.color.colorPrimary);
@@ -308,21 +338,16 @@ public class PostMainFragment extends Fragment
                                 {
                                         //更新数组
                                         PostPreferencesUtils.setLikedPostId(post.getId());
-
                                         //提示信息和更新点赞数
                                         String toastMessage;
                                         if (!isActivated)
                                         {
-                                                toastMessage = "已点赞";
-                                                countLike++;
+                                                toastMessage = ResourcesUtils.getString(R.string.post_like_add);
                                         }
                                         else
                                         {
-                                                toastMessage = "已取消点赞";
-                                                countLike--;
+                                                toastMessage = ResourcesUtils.getString(R.string.post_like_delete);
                                         }
-                                        //更新UI
-                                        postCountLike.setText(countLike + " " + getResources().getString(R.string.post_like_count));
                                         //显示消息提示
                                         ToastUtils.shortToast(toastMessage);
                                 }
@@ -341,9 +366,11 @@ public class PostMainFragment extends Fragment
                                 }
                         };
 
-                        delegate.postLikeCount(httpCallBack, post.getId(), !isActivated);
+                        delegate.setPostLikeCount(httpCallBack, post.getId(), !isActivated);
                 });
         }
+
+
 
         /**
          * 初始化分享按钮
@@ -375,17 +402,115 @@ public class PostMainFragment extends Fragment
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(post.getMetadata().getCount_sharing()))
                 {
                         //就获取当前分享次数 然后 +1
-                        countSharing = post.getMetadata().getCount_sharing().get(0) + 1;
+                        countSharing += post.getMetadata().getCount_sharing().get(0);
                 }
                 //设置新的分享次数
-                postCountShare.setText(countSharing + " " + getResources().getString(R.string.post_sharing_count));
+                postCountShare.setText(String.format(ResourcesUtils.getString(R.string.post_sharing_count), countSharing));
 
                 //如果还未通知服务器更新分享次数
                 if (!alreadyShare)
                 {
                         //通知服务器 增加分享次数计数
-                        delegate.postShareCount(post.getId());
+                        delegate.addPostShareCount(post.getId());
                 }
+        }
+
+        /**
+         * 初始化 收藏夹按钮
+         */
+        private void initFavoriteButton(){
+                boolean buttonIsActivated = false;
+                //如果收藏文章id数组里已经包含这个id, 说明已收藏过
+                if (PostPreferencesUtils.isContainedInFavoritePostIds(post.getId()))
+                {
+                        buttonIsActivated = true;
+                }
+                //根据激活状态 设置 按钮样式和动作
+                favoriteAction(buttonIsActivated);
+        }
+        /**
+         * 收藏操作
+         * 添加收藏 和 取消收藏
+         *
+         * @param isActivated true=已收藏过, false =还未收藏
+         */
+        private void favoriteAction(boolean isActivated)
+        {
+                //未激活按钮颜色
+                int iconColorId = getResources().getColor(R.color.defaultTextColor);
+                //如果是已激活, 改变按钮颜色
+                if (isActivated)
+                {
+                        iconColorId = getResources().getColor(R.color.colorPrimary);
+                }
+
+                //更改按钮样式
+                postCountFavoriteButton.setIconTint(ColorStateList.valueOf(iconColorId));
+                //绑定点击监听器
+                postCountFavoriteButton.setOnClickListener(v -> {
+                        //屏蔽按钮
+                        postCountFavoriteButton.setEnabled(false);
+                        //设置按钮
+                        favoriteAction(!isActivated);
+
+                        HttpCallBack httpCallBack = new HttpCallBack()
+                        {
+                                @Override
+                                public void onSuccess(String response)
+                                {
+                                        //解析回复
+                                        SingleResponseArrayInteger singleResponse = ParserUtils.fromJson(response, SingleResponseArrayInteger.class);
+                                        //从回复类里提取 新的收藏夹id数组
+                                        PostPreferencesUtils.setFavoritePostIds(singleResponse.getBody());
+                                        //提示信息
+                                        String toastMessage;
+                                        if (!isActivated)
+                                        {
+                                                toastMessage = ResourcesUtils.getString(R.string.post_favorite_add);
+                                        }
+                                        else
+                                        {
+                                                toastMessage = ResourcesUtils.getString(R.string.post_favorite_delete);
+                                        }
+                                        //显示消息提示
+                                        ToastUtils.shortToast(toastMessage);
+                                }
+                                @Override
+                                public void onError(WpError wpError)
+                                {
+                                        //如果是因为空数组导致的报错
+                                        if(wpError == null){
+                                                //说明收藏夹是空的, 清空本地收藏夹数组
+                                                PostPreferencesUtils.setFavoritePostIds(new ArrayList<>());
+                                                String toastMessage = ResourcesUtils.getString(R.string.post_favorite_delete);
+                                                //显示消息提示
+                                                ToastUtils.shortToast(toastMessage);
+                                        }
+                                }
+
+                                @Override
+                                public void onFinally()
+                                {
+                                        //激活按钮
+                                        postCountFavoriteButton.setEnabled(true);
+                                }
+
+                                @Override
+                                public void onCancel()
+                                {
+                                        onFinally();
+                                }
+                        };
+                        //如果还未收藏 就是添加收藏请求
+                        if(!isActivated){
+                                delegate.setPostFavorite(httpCallBack, post.getId());
+                        }
+                        //如果已收藏  就是取消收藏请求
+                        else{
+                                delegate.deletePostFavorite(httpCallBack, post.getId());
+                        }
+
+                });
         }
 
 
@@ -436,6 +561,6 @@ public class PostMainFragment extends Fragment
                         }
                 };
 
-                delegate.postFailDownCount(httpCallBack, post.getId());
+                delegate.addPostFailDownCount(httpCallBack, post.getId());
         }
 }

@@ -86,50 +86,51 @@ public class PostManageAdapter extends BaseAdapterWithFooter
                 //获取文章元数据
                 Post.Metadata metadata = post.getMetadata();
 
-                //获取文章相关统计数据
-                String postViews;
-                String postCountComment;
-                String postCountLike;
-                String postCountSharing;
+                //获取文章相关统计数
+                int viewsCount = 0;
+                int commentsCount = 0;
+                int likesCount = 0;
+                int sharingCount = 0;
+                int favoriteCount =0;
+
+                //如果查看数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getViews()))
                 {
-                        postViews = metadata.getViews().get(0) + " " + ResourcesUtils.getString(R.string.post_view_count);
+                        viewsCount = metadata.getViews().get(0);
                 }
-                else
-                {
-                        postViews = ResourcesUtils.getString(R.string.post_view_zero_count);
-                }
-
+                //如果评论数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_comments()))
                 {
-                        postCountComment = metadata.getCount_comments().get(0) + " " + ResourcesUtils.getString(R.string.post_comment_count);
+                        commentsCount = metadata.getCount_comments().get(0);
                 }
-                else
-                {
-                        postCountComment = ResourcesUtils.getString(R.string.post_comment_zero_count);
-                }
-
+                //如果点赞数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_like()))
                 {
-                        postCountLike = metadata.getCount_like().get(0) + " " + ResourcesUtils.getString(R.string.post_like_count);
+                        likesCount = metadata.getCount_like().get(0);
                 }
-                else
-                {
-                        postCountLike = ResourcesUtils.getString(R.string.post_like_zero_count);
-                }
+                //如果分享数不是空
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_sharing()))
                 {
-                        postCountSharing = metadata.getCount_sharing().get(0).toString() + " " + ResourcesUtils.getString(R.string.post_sharing_count);
+                        sharingCount = metadata.getCount_sharing().get(0);
                 }
-                else
+                //如果收藏数不是空
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getCount_favorite()))
                 {
-                        postCountSharing = ResourcesUtils.getString(R.string.post_sharing_zero_count);
+                        favoriteCount = metadata.getCount_favorite().get(0);
                 }
 
-                viewHolder.getPostViews().setText(postViews);
-                viewHolder.getPostCountComments().setText(postCountComment);
-                viewHolder.getPostCountLike().setText(postCountLike);
-                viewHolder.getPostCountShare().setText(postCountSharing);
+                String postViewsText = String.format(ResourcesUtils.getString(R.string.post_view_count), viewsCount);
+                String postCountCommentText = String.format(ResourcesUtils.getString(R.string.post_comment_count), commentsCount);
+                String postCountLikeText = String.format(ResourcesUtils.getString(R.string.post_like_count), likesCount);
+                String postCountSharingText = String.format(ResourcesUtils.getString(R.string.post_sharing_count), sharingCount);
+                String postCountFavoriteText = String.format(ResourcesUtils.getString(R.string.post_favorite_count), favoriteCount);
+
+                viewHolder.getPostViews().setText(postViewsText);
+                viewHolder.getPostCountComments().setText(postCountCommentText);
+                viewHolder.getPostCountLike().setText(postCountLikeText);
+                viewHolder.getPostCountShare().setText(postCountSharingText);
+                viewHolder.getPostCountFavorite().setText(postCountFavoriteText);
+
 
 
         }

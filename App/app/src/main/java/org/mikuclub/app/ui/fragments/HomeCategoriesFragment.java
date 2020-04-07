@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.mikuclub.app.adapter.CategoryAdapter;
 import org.mikuclub.app.config.GlobalConfig;
@@ -38,6 +39,7 @@ public class HomeCategoriesFragment extends Fragment
         /* 组件 views */
         //列表
         private RecyclerView recyclerView;
+        private TextView homeCategoryInfo;
 
 
         @Override
@@ -57,6 +59,7 @@ public class HomeCategoriesFragment extends Fragment
                 super.onViewCreated(view, savedInstanceState);
 
                 recyclerView = view.findViewById(R.id.recycler_view);
+                homeCategoryInfo = view.findViewById(R.id.home_category_info);
 
                 //反序列化
                 recyclerDataList = CategoryPreferencesUtils.getCategory();
@@ -91,6 +94,7 @@ public class HomeCategoriesFragment extends Fragment
         /**
          * 检查用户是否登陆
          * 没登陆的情况去除魔法区分类
+         * 有登陆的情况 则隐藏魔法区提示信息
          * Remove the magic zone category if user is not login
          */
         private void checkAndRemoveMofaCategory()
@@ -110,6 +114,10 @@ public class HomeCategoriesFragment extends Fragment
                                         i = 0;
                                 }
                         }
+                }
+                //如果有登陆 就隐藏分类页提示信息
+                else{
+                        homeCategoryInfo.setVisibility(View.GONE);
                 }
 
         }

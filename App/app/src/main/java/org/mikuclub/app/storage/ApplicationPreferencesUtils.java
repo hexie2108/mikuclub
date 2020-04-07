@@ -49,7 +49,7 @@ public class ApplicationPreferencesUtils
          */
         public static String getSiteCommunication()
         {
-                return PreferencesUtils.getApplicationPreference().getString(GlobalConfig.Preferences.SITE_COMUNICATION, null);
+                return PreferencesUtils.getApplicationPreference().getString(GlobalConfig.Preferences.SITE_COMMUNICATION, null);
         }
 
 
@@ -63,7 +63,7 @@ public class ApplicationPreferencesUtils
                 //保存到偏好文件内
                 PreferencesUtils.getApplicationPreference()
                         .edit()
-                        .putString(GlobalConfig.Preferences.SITE_COMUNICATION, siteCommunication)
+                        .putString(GlobalConfig.Preferences.SITE_COMMUNICATION, siteCommunication)
                         .putLong(GlobalConfig.Preferences.SITE_COMMUNICATION_EXPIRE, expire).apply();
         }
 
