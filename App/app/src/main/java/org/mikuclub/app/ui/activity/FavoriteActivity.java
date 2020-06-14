@@ -152,6 +152,8 @@ public class FavoriteActivity extends AppCompatActivity
                 if(!PostPreferencesUtils.getFavoritePostIds().isEmpty()){
                         //参数设置只获取收藏夹里的文章id相关的文章
                         parameters.setInclude(PostPreferencesUtils.getFavoritePostIds());
+                        //设置根据 文章id 来对结果进行排序
+                        parameters.setOrderby(GlobalConfig.Post.OrderBy.INCLUDE);
                 }
                 //如果收藏夹未空 , 直接显示无内容错误
                 else{

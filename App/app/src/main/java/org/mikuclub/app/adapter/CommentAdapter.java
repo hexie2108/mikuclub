@@ -12,9 +12,11 @@ import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.fragments.windows.CommentRepliesFragment;
+import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
 import java.util.List;
@@ -106,14 +108,8 @@ public class CommentAdapter extends BaseAdapterWithFooter
          */
         protected void setItemOnClickListener(final CommentViewHolder holder)
         {
-                //绑定评论框点击动作
-                holder.getItem().setOnClickListener(v -> {
-                        //获取对应位置的数据 , 修复可能的position偏移
-                        Comment comment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
-                        CommentRepliesFragment fragment = CommentRepliesFragment.startAction(comment);
-                        fragment.show(((AppCompatActivity) getAdapterContext()).getSupportFragmentManager(), fragment.getClass().toString());
 
-                });
+
 
                 //绑定头像的点击事件
                 holder.getItemAvatarImg().setOnClickListener(v -> {
@@ -129,6 +125,27 @@ public class CommentAdapter extends BaseAdapterWithFooter
                                 author.setAvatar_src(comment.getAuthor_avatar_urls().getSize96());
                                 AuthorActivity.startAction(getAdapterContext(), author);
                         }
+
+                });
+
+                //绑定评论框整体点击动作
+                holder.getItem().setOnClickListener(v -> {
+                        //获取对应位置的数据 , 修复可能的position偏移
+                        Comment comment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+                        CommentRepliesFragment fragment = CommentRepliesFragment.startAction(comment);
+                        fragment.show(((AppCompatActivity) getAdapterContext()).getSupportFragmentManager(), fragment.getClass().toString());
+
+                });
+                //绑定评论框整体长按动作
+                holder.getItem().setOnLongClickListener(v -> {
+                        //获取对应位置的数据 , 修复可能的position偏移
+                        Comment comment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+                        //复制评论到剪切版
+                        ClipboardUtils.setText(HttpUtils.removeHtmlMainTag(comment.getContent().getRendered(), "<p>", "</p>"));
+                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.comment_copy_message));
+
+                        //消耗掉点击事件
+                        return true;
                 });
 
         }
@@ -174,7 +191,20 @@ public class CommentAdapter extends BaseAdapterWithFooter
                                 {
                                         controller.changeParentComment(parentComment, false);
                                 }
+                                //提示用户可复制评论
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.suggest_to_copy_message));
                         });
+                        //绑定评论框整体长按动作
+                        holder.getItem().setOnLongClickListener(v -> {
+                                //获取对应位置的数据 , 修复可能的position偏移
+                                Comment comment = (Comment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+                                //复制评论到剪切版
+                                ClipboardUtils.setText(HttpUtils.removeHtmlMainTag(comment.getContent().getRendered(), "<p>", "</p>"));
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.comment_copy_message));
+                                //消耗掉点击事件
+                                return true;
+                        });
+
                 }
 
                 public void setController(CommentController controller)

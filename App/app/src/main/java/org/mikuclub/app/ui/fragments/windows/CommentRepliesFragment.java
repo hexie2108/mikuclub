@@ -20,10 +20,13 @@ import org.mikuclub.app.delegate.CommentDelegate;
 import org.mikuclub.app.javaBeans.parameters.CommentParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.RecyclerViewUtils;
+import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ScreenUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.custom.MyListOnScrollListener;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 import org.mikuclub.app.utils.http.Request;
@@ -168,6 +171,16 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 item.setOnClickListener(v -> {
                         //原始父评论点击的话 就恢复为默认回复对象
                         controller.changeParentComment(comment, false);
+                        //提示用户可复制评论
+                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.suggest_to_copy_message));
+                });
+                //绑定评论框整体长按动作
+                item.setOnLongClickListener(v -> {
+                        //复制评论到剪切版
+                        ClipboardUtils.setText(HttpUtils.removeHtmlMainTag(comment.getContent().getRendered(), "<p>", "</p>"));
+                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.comment_copy_message));
+                        //消耗掉点击事件
+                        return true;
                 });
         }
 

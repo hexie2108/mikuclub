@@ -80,6 +80,8 @@
         <string name = "post_down_magnet_link" translatable = "false">复制磁链</string>
         <string name = "post_down_magnet_link_message" translatable = "false">已复制磁链到剪切板</string>
         <string name = "post_down_password_copy_message">已复制访问密码到剪切板</string>
+        <string name = "comment_copy_message">已复制评论到剪切板</string>
+        <string name = "suggest_to_copy_message">长按可复制评论</string>
         <string name = "post_view_count">%1$d 次查看</string>
         <string name = "post_view_zero_count">0 次查看</string>
         <string name = "post_like_count">%1$d 次点赞</string>
@@ -114,6 +116,10 @@
         <string name = "watch_on_bilibili">去B站观看</string>
         <string name = "share_to">分享到</string>
 
+        <string name = "save_to_phone">保存到手机</string>
+        <string name = "image_download">图片下载</string>
+        <string name = "image_download_start">图片下载开始</string>
+        <string name = "image_download_success">图片下载成功, 可打开相册查看</string>
 
         <!--user profile page-->
         <string name = "save_the_update">保存更新</string>

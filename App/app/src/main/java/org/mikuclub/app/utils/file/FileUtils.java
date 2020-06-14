@@ -1,9 +1,13 @@
 package org.mikuclub.app.utils.file;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -11,6 +15,7 @@ import android.provider.MediaStore;
 import org.mikuclub.app.utils.LogUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileUtils
 {
@@ -64,6 +69,79 @@ public class FileUtils
                 return outputFile;
         }
 
+        /**
+         * 把图片 保存到相册文件夹
+         * 并通知系统更新
+         *
+         * @param context  上下文
+         * @return true 保存成功 | false 保存失败
+         */
+        public static Uri createImageFileUri(Context context)
+        {
+                Uri uri = null;
+                final String fileName = System.currentTimeMillis() / 1000 + "";
+                final ContentResolver resolver = context.getContentResolver();
+
+                try
+                {
+
+                        //如果是 安卓10
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                        {
+                                final ContentValues contentValues = new ContentValues();
+                                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+                                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+                                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+                                final Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+                                uri = resolver.insert(contentUri, contentValues);
+
+                                if (uri == null)
+                                {
+                                        throw new IOException("Failed to create new MediaStore record.");
+                                }
+                        }
+                        //如果是低版本的系统
+                        else
+                        {
+                                String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                                File file = new File(imagesDir, fileName + ".jpg");
+                                //如果文件已存在
+                                if (file.exists())
+                                {
+                                        //覆盖掉
+                                        file.delete();
+                                        file.createNewFile();
+                                }
+                                uri = getUri(file);
+                        }
+
+                        //发送广播 通知系统 已添加了新图片
+                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        //如果uri获取成功
+                        if (uri != null)
+                        {
+                                //通知相册更新
+                                mediaScanIntent.setData(uri);
+                                context.sendBroadcast(mediaScanIntent);
+                        }
+
+                }
+                catch (IOException e)
+                {
+                        if (uri != null)
+                        {
+                                // Don't leave an orphan entry in the MediaStore
+                                resolver.delete(uri, null, null);
+                        }
+                        e.printStackTrace();
+                }
+
+
+                return uri;
+
+        }
+
 
         /**
          * 清空缓存文件夹
@@ -79,7 +157,8 @@ public class FileUtils
                         deleteFileRecursion(cacheDirectory.listFiles());
                 }
                 //如果外部缓存文件夹不存在
-                else{
+                else
+                {
                         //获取内部缓存文件夹
                         cacheDirectory = context.getCacheDir();
                         if (cacheDirectory != null)
@@ -97,22 +176,23 @@ public class FileUtils
          *
          * @param entries
          */
-        private static void deleteFileRecursion(File[]  entries)
+        private static void deleteFileRecursion(File[] entries)
         {
-                        if (entries != null)
+                if (entries != null)
+                {
+                        for (File entry : entries)
                         {
-                                for (File entry : entries)
+                                //如果不是文件夹
+                                if (!entry.isDirectory())
                                 {
-                                        //如果不是文件夹
-                                        if(!entry.isDirectory()){
-                                                if (!entry.delete())
-                                                {
-                                                        LogUtils.v("文件删除失败");
-                                                }
+                                        if (!entry.delete())
+                                        {
+                                                LogUtils.v("文件删除失败");
                                         }
-
                                 }
+
                         }
+                }
 
 
         }
