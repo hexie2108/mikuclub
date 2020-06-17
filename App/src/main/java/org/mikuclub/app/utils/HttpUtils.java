@@ -76,22 +76,25 @@ public class HttpUtils
          */
         public static String removeHtmlMainTag(String text, String tagStart, String tagEnd)
         {
-                text = text.trim();
-                //LogUtils.e(text + " " + text.length());
-                //如果字符串开头tag匹配
-                if (text.indexOf(tagStart) == 0)
+                if (text != null)
                 {
-                        //获取结尾tag位置
-                        int endIndex = text.lastIndexOf(tagEnd);
-                        //如果也找到了结尾tag, 而且离结尾不远 才进行剪切操作 (5个字符范围内)
-                        if (endIndex != -1 && endIndex > text.length() - tagEnd.length() - 5)
+                        text = text.trim();
+                        //LogUtils.e(text + " " + text.length());
+                        //如果字符串开头tag匹配
+                        if (text.indexOf(tagStart) == 0)
                         {
-                                //截取字符串
-                                text = text.substring(tagStart.length(), endIndex);
+                                //获取结尾tag位置
+                                int endIndex = text.lastIndexOf(tagEnd);
+                                //如果也找到了结尾tag, 而且离结尾不远 才进行剪切操作 (5个字符范围内)
+                                if (endIndex != -1 && endIndex > text.length() - tagEnd.length() - 5)
+                                {
+                                        //截取字符串
+                                        text = text.substring(tagStart.length(), endIndex);
+                                }
+                                //   LogUtils.e(text + " " + text.length());
+
+
                         }
-                        //   LogUtils.e(text + " " + text.length());
-
-
                 }
                 return text;
         }

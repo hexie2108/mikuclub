@@ -156,6 +156,7 @@
 
         <!--post submit page-->
         <string name = "title">标题</string>
+        <string name = "description_help">需要输入复杂简介描述请使用网页端, APP端目前只支持编辑纯文本</string>
         <string name = "source_name">来源说明 (可选)</string>
         <string name = "source_name_help">注明来源地址, 原标题 和 原作者名</string>
         <string name = "image_preview">图片预览</string>

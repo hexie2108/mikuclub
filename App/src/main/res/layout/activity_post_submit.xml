@@ -47,7 +47,7 @@
                             style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
-
+                            android:layout_marginTop = "@dimen/normal"
                             android:hint = "@string/category"
                             app:boxStrokeWidth = "1dp"
                             app:errorEnabled = "true">
@@ -71,6 +71,7 @@
                             style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
                             android:hint = "@string/source_name"
                             app:boxStrokeWidth = "1dp"
                             app:endIconMode = "clear_text"
@@ -94,10 +95,13 @@
                             style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
                             android:hint = "@string/description"
                             app:boxStrokeWidth = "1dp"
                             app:endIconMode = "clear_text"
-                            app:errorEnabled = "true">
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/description_help">
+                                >
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id = "@+id/input_description"
@@ -161,13 +165,14 @@
                             style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
                             android:hint = "@string/download_link"
-                            app:helperText="@string/download_link_help"
                             android:imeOptions = "actionNext"
                             android:maxLines = "1"
                             app:boxStrokeWidth = "1dp"
                             app:endIconMode = "clear_text"
-                            app:errorEnabled = "true">
+                            app:errorEnabled = "true"
+                            app:helperText = "@string/download_link_help">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id = "@+id/input_download1"
@@ -181,6 +186,7 @@
                         <LinearLayout
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
                             android:orientation = "horizontal">
 
                                 <com.google.android.material.textfield.TextInputLayout
@@ -242,6 +248,7 @@
                             style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
                             android:hint = "@string/download_link"
                             android:imeOptions = "actionNext"
                             android:maxLines = "1"
@@ -261,6 +268,7 @@
                         <LinearLayout
                             android:layout_width = "match_parent"
                             android:layout_height = "wrap_content"
+                            android:layout_marginTop = "@dimen/normal"
                             android:orientation = "horizontal">
 
                                 <com.google.android.material.textfield.TextInputLayout

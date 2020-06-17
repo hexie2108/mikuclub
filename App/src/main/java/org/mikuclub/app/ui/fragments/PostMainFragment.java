@@ -259,16 +259,9 @@ public class PostMainFragment extends Fragment
                 //开启超链接支持
                 postDescription.setMovementMethod(LinkMovementMethod.getInstance());
                 String htmlDescription;
-                //如果描述元数据存在
-                if (metadata.getContent() != null)
-                {
-                        htmlDescription = metadata.getContent().get(0);
-                }
-                //如果不存在 则只能去获取已被格式化的文章描述
-                else
-                {
-                        htmlDescription = post.getContent().getRendered();
-                }
+                //获取描述
+                htmlDescription = post.getContent().getRendered();
+
 
 
                 //解析 html描述

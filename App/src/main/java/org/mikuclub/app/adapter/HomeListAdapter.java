@@ -6,18 +6,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
 import org.mikuclub.app.adapter.viewHolder.HomeSliderHeaderViewHolder;
-import org.mikuclub.app.javaBeans.response.SingleResponse;
+import org.mikuclub.app.javaBeans.response.SiteCommunication;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.storage.ApplicationPreferencesUtils;
 import org.mikuclub.app.ui.activity.PostActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
 
@@ -106,10 +104,31 @@ public class HomeListAdapter extends PostAdapter
                         }
                 });
 
-                //从参数偏好缓存里提取站点消息字符串
-                String siteCommunicationString = ParserUtils.fromJson(ApplicationPreferencesUtils.getSiteCommunication(), SingleResponse.class).getBody();
-                //用html解析器解析
-                HttpUtils.parseHtmlDefault(getAdapterContext(), siteCommunicationString,holder.getSiteCommunication() );
+                //从参数偏好缓存里提取站点消息对象
+                SiteCommunication.SiteCommunicationBody communicationBody = ApplicationPreferencesUtils.getSiteCommunication();
+                if(communicationBody != null ){
+                        //获取公告信息
+                        String siteCommunicationString = communicationBody.getCommunication();
+                        //用html解析器解析
+                        HttpUtils.parseHtmlDefault(getAdapterContext(), siteCommunicationString,holder.getSiteCommunication());
+
+                        //如果要显示广告
+                        if(!communicationBody.getApp_adindex_01_show().isEmpty()){
+                                //获取广告信息
+                                String adIndex01Text = communicationBody.getApp_adindex_01_text();
+                                //用html解析器解析
+                                HttpUtils.parseHtmlDefault(getAdapterContext(), adIndex01Text,holder.getAdIndex01());
+                                //绑定点击事件
+                                holder.getAdIndex01().setOnClickListener(v -> HttpUtils.startWebViewIntent(getAdapterContext(), communicationBody.getApp_adindex_01_link(), null));
+                                //显示广告窗口
+                                holder.getAdIndex01().setVisibility(View.VISIBLE);
+
+                        }
+
+
+
+                }
+
 
                 //如果是横屏状态 重设幻灯片容器的宽高比例
                 if(ScreenUtils.isHorizontal(getAdapterContext()))
@@ -119,10 +138,6 @@ public class HomeListAdapter extends PostAdapter
                         holder.getHomeSliderViewpagerContainer().setLayoutParams(layoutParams);
                 }
 
-                //请求谷歌广告
-                AdRequest adRequest = new AdRequest.Builder().build();
-                //显示广告
-                holder.getAdSenseHome().loadAd(adRequest);
 
         }
 

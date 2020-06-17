@@ -152,7 +152,7 @@ public class GlobalConfig
                 public static final String UPDATE_USER = HOST + "wp-json/wp/v2/users/me/";
 
                 //GET 获取站点信息通知
-                public static final String SITE_COMMUNICATION = HOST + UTILS + "get_site_communication/";
+                public static final String SITE_COMMUNICATION = HOST + UTILS + "get_app_communication/";
 
                 //GET 获取收藏夹, POST设置收藏夹, DELETE删除收藏夹ID
                 public static final String POST_FAVORITE = HOST + UTILS + "favorite/";
@@ -184,28 +184,28 @@ public class GlobalConfig
         /**
          * sharePreference专用变量名
          */
-        public class Preferences
+        public static class Preferences
         {
 
 
                 //每次更新检查的有效截止时间
                 public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";
                 //每次更新检查的有效周期
-                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; // 每天检查一次更新
+                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS ; // 每天检查一次更新
 
                 //网站通知缓存
-                public static final String SITE_COMMUNICATION = "site_communication";
+                public static final String SITE_COMMUNICATION = "app_communication";
                 //网站通知的有效时间
-                public static final String SITE_COMMUNICATION_EXPIRE = "site_communication_expire";
+                public static final String SITE_COMMUNICATION_EXPIRE = "app_communication_expire";
                 //每次更新检查的有效周期
-                public static final long SITE_COMMUNICATION_EXPIRE_TIME = DAY_IN_MILLISECONDS * 1; // 每天检查一次更新
+                public static final long SITE_COMMUNICATION_EXPIRE_TIME = DAY_IN_MILLISECONDS; // 每天检查一次更新
 
                 //菜单缓存
                 public static final String CATEGORIES_CACHE = "categories_cache";
                 //菜单缓存的时间
                 public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire_1";
                 //菜单缓存的有效期
-                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS * 15; //每15天检查一次
+                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS ; //每1天检查一次
 
                 //点赞过的文章ID数组
                 public static final String POST_LIKED_ARRAY = "post_liked";
@@ -222,13 +222,13 @@ public class GlobalConfig
 
         public static class Post
         {
-                public class OrderBy
+                public static class OrderBy
                 {
                         public static final String DATE = "date";
                         public static final String INCLUDE= "include";
                 }
 
-                public class Order
+                public static class Order
                 {
                         public static final String ASC = "asc";
                         public static final String DESC = "desc";

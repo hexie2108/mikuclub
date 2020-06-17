@@ -65,7 +65,7 @@ public class WelcomeActivity extends AppCompatActivity
         private Posts stickyPostList = null;
         private Posts postList = null;
         private String categoryCache;
-        private String siteCommunicationCache;
+        private boolean isExistSiteCommunicationCache;
 
         //判断是否有请求错误发生
         boolean thereIsError = false;
@@ -313,10 +313,11 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkSiteCommunication()
         {
 
-                siteCommunicationCache = ApplicationPreferencesUtils.getSiteCommunication();
+                //isExistSiteCommunicationCache = ApplicationPreferencesUtils.isExistSiteCommunication();
+                isExistSiteCommunicationCache = false;
 
                 //如果分类信息检测有效期已过期 或者 找不到分类缓存
-                if (System.currentTimeMillis() > ApplicationPreferencesUtils.getSiteCommunicationExpire() || siteCommunicationCache == null)
+                if (System.currentTimeMillis() > ApplicationPreferencesUtils.getSiteCommunicationExpire() || !isExistSiteCommunicationCache)
                 {
                         LogUtils.v("开始重新请求站点通知信息");
                         HttpCallBack httpCallBack = new WelcomeHttpCallBack()
@@ -324,10 +325,8 @@ public class WelcomeActivity extends AppCompatActivity
                                 @Override
                                 public void onSuccess(String response)
                                 {
-                                        //获取分类信息
-                                        siteCommunicationCache = response;
                                         //更新分类缓存 和 缓存过期时间
-                                        ApplicationPreferencesUtils.setSiteCommunicationAndExpire(siteCommunicationCache);
+                                        ApplicationPreferencesUtils.setSiteCommunicationAndExpire(response);
                                         LogUtils.v("重新请求站点通知信息 成功");
                                 }
 
@@ -335,7 +334,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 public void onError(WpError wpError)
                                 {
                                         //只有在无缓存的情况, 才会报错
-                                        if (siteCommunicationCache.isEmpty())
+                                        if (!isExistSiteCommunicationCache)
                                         {
                                                 setErrorInfo(null);
                                         }

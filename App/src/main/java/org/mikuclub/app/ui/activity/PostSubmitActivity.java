@@ -293,17 +293,15 @@ public class PostSubmitActivity extends AppCompatActivity
                         inputSourceName.setText(metadata.getSource_name().get(0));
                 }
                 //获取文章描述
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getContent()))
-                {
-                        String description = metadata.getContent().get(0);
-                        //只有在字符串包含 p标签的时候 才会 尝试去除html标签, 不然会导致默认换行符被移除
-                        if (description.contains("<p>"))
-                        {
-                                description = GeneralUtils.removeHTMLTag(description);
-                        }
 
-                        inputDescription.setText(description);
+                String description = post.getContent().getRendered();
+                //只有在字符串包含 p标签的时候 才会 尝试去除html标签, 不然会导致默认换行符被移除
+                if (description.contains("<p>"))
+                {
+                        description = GeneralUtils.removeHTMLTag(description);
                 }
+                inputDescription.setText(description);
+
                 //获取下载地址
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getDown()))
                 {
@@ -779,7 +777,7 @@ public class PostSubmitActivity extends AppCompatActivity
                         CreatePostParameters parameters = new CreatePostParameters();
                         CreatePostParameters.Meta meta = new CreatePostParameters.Meta();
                         meta.setSource_name(sourceName);
-                        meta.setContent(description);
+
                         meta.setDown(download1);
                         meta.setDown2(download2);
                         meta.setPassword(password1);
@@ -797,6 +795,7 @@ public class PostSubmitActivity extends AppCompatActivity
                         meta.setPreviews(previews);
 
                         parameters.setTitle(title);
+                        parameters.setContent(description);
                         parameters.setCategories(categoriesMatrix.get(selectedCategoryPosition));
                         parameters.setMeta(meta);
 

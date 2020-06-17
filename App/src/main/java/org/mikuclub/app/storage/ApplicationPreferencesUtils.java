@@ -1,7 +1,9 @@
 package org.mikuclub.app.storage;
 
 import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.javaBeans.response.SiteCommunication;
 import org.mikuclub.app.storage.base.PreferencesUtils;
+import org.mikuclub.app.utils.ParserUtils;
 
 /**
  * 管理应用全局相关的共享偏好
@@ -43,27 +45,52 @@ public class ApplicationPreferencesUtils
         }
 
         /**
-         * 获取站点通知消息字符串
+         * 获取站点通知消息+广告对象
          *
-         * @return
+         * @return 消息和广告对象
          */
-        public static String getSiteCommunication()
+        public static SiteCommunication.SiteCommunicationBody getSiteCommunication()
         {
-                return PreferencesUtils.getApplicationPreference().getString(GlobalConfig.Preferences.SITE_COMMUNICATION, null);
+                String communicationString = PreferencesUtils.getApplicationPreference().getString(GlobalConfig.Preferences.SITE_COMMUNICATION, null);
+                SiteCommunication.SiteCommunicationBody output = null;
+                if (communicationString != null)
+                {
+                        output = ParserUtils.fromJson(communicationString, SiteCommunication.class).getBody();
+                }
+                return output;
+        }
+
+        /**
+         * 检查app通知消息+广告缓存 是否存在
+         *
+         * @return true 缓存存在 | false 缓存不存在
+         */
+        public static boolean isExistSiteCommunication()
+        {
+                boolean exist = true;
+                String communicationString = PreferencesUtils.getApplicationPreference().getString(GlobalConfig.Preferences.SITE_COMMUNICATION, null);
+                if (communicationString == null)
+                {
+                       exist = false;
+                }
+                return exist;
         }
 
 
         /**
+         *
          * 设置站点通知消息的有效期
+         *
+         * @param siteCommunicationJson 序列化后的 消息对象
          */
-        public static void setSiteCommunicationAndExpire(String siteCommunication)
+        public static void setSiteCommunicationAndExpire(String siteCommunicationJson)
         {
                 //当前时间 + 一次检查更新带来的有效周期
                 long expire = System.currentTimeMillis() + GlobalConfig.Preferences.SITE_COMMUNICATION_EXPIRE_TIME;
                 //保存到偏好文件内
                 PreferencesUtils.getApplicationPreference()
                         .edit()
-                        .putString(GlobalConfig.Preferences.SITE_COMMUNICATION, siteCommunication)
+                        .putString(GlobalConfig.Preferences.SITE_COMMUNICATION, siteCommunicationJson)
                         .putLong(GlobalConfig.Preferences.SITE_COMMUNICATION_EXPIRE, expire).apply();
         }
 

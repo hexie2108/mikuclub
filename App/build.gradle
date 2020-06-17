@@ -8,8 +8,8 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 10
-        versionName "v1.0"
+        versionCode 11
+        versionName "v1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //  设置微博sdk支持的SO库架构
@@ -86,7 +86,7 @@ dependencies {
 
 
     //轮播幻灯片组件 https://github.com/LillteZheng/ViewPagerHelper
-    implementation 'com.github.LillteZheng:ViewPagerHelper:v2.1'
+    implementation 'com.github.LillteZheng:ViewPagerHelper:v2.7'
 
 
     //圆角图片支持
@@ -103,12 +103,15 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.5'
 
     //谷歌广告sdk
-    implementation 'com.google.android.gms:play-services-ads:19.1.0'
+    //implementation 'com.google.android.gms:play-services-ads:19.1.0'
     //谷歌数据分析
     implementation 'com.google.firebase:firebase-core:17.4.3'
     //新浪sdk
     implementation 'com.sina.weibo.sdk:core:9.12.0:openDefaultRelease@aar'
-    //
+
+    //富文本编辑器  暂时无法使用需要等待作者更新
+    //https://github.com/chinalwb/Android-Rich-text-Editor
+    //implementation 'com.github.chinalwb:are:0.1.7'
 
 
 }
