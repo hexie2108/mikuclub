@@ -107,9 +107,9 @@ public class PostController extends BaseController
                                 public void onError(WpError wpError)
                                 {
 
-                                        //如果数据列表还是空的 就报了无内容错误, 说明这个用户没有投过稿
+                                        //如果数据列表还是空的 就报了无内容错误
                                         if(getRecyclerDataList().size()==0){
-                                                getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.author_empty_error_message));
+                                                getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.empty_error_message));
                                         }
                                         //显示尾部
                                         getRecyclerViewAdapter().updateFooterStatus(false, true, false);

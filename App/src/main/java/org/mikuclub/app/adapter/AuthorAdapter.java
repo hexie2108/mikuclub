@@ -78,9 +78,9 @@ public class AuthorAdapter extends PostAdapter
                         //显示头部组件
                         viewHolder.getContainer().setVisibility(View.VISIBLE);
                         //加载头像
-                        GlideImageUtils.getSquareImg(getAdapterContext(),  viewHolder.getAuthorImg(), author.getAvatar_src());
+                        GlideImageUtils.getSquareImg(getAdapterContext(),  viewHolder.getAuthorImg(), author.getUser_image());
                         //设置用户名
-                        viewHolder.getAuthorName().setText(author.getName());
+                        viewHolder.getAuthorName().setText(author.getDisplay_name());
                         viewHolder.getAuthorDescription().setText(author.getDescription());
                 }
                 //如果只有基本信息
@@ -88,9 +88,9 @@ public class AuthorAdapter extends PostAdapter
                         //显示头部组件
                         viewHolder.getContainer().setVisibility(View.VISIBLE);
                         //加载头像
-                        GlideImageUtils.getSquareImg(getAdapterContext(),  viewHolder.getAuthorImg(), author.getAvatar_src());
+                        GlideImageUtils.getSquareImg(getAdapterContext(),  viewHolder.getAuthorImg(), author.getUser_image());
                         //设置用户名
-                        viewHolder.getAuthorName().setText(author.getName());
+                        viewHolder.getAuthorName().setText(author.getDisplay_name());
                         viewHolder.getAuthorDescription().setText(author.getDescription());
                 }
                 //如果用户未登陆
@@ -111,9 +111,9 @@ public class AuthorAdapter extends PostAdapter
                 holder.getButtonSendMessage().setOnClickListener(v -> {
                         //创建作者信息
                         Author author =new Author();
-                        author.setAuthor_id(this.author.getAuthor_id());
-                        author.setAvatar_src(this.author.getAvatar_src());
-                        author.setName(this.author.getName());
+                        author.setId(this.author.getId());
+                        author.setUser_image(this.author.getUser_image());
+                        author.setDisplay_name(this.author.getDisplay_name());
                         author.setDescription(this.author.getDescription());
                         //启动私信页
                         PrivateMessageActivity.startAction(getAdapterContext(),author );

@@ -1,8 +1,8 @@
 package org.mikuclub.app.storage;
 
 import org.mikuclub.app.config.GlobalConfig;
-import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.storage.base.PreferencesUtils;
+import org.mikuclub.app.utils.ParserUtils;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,7 @@ public class PostPreferencesUtils
 {
         private static ArrayList<Integer> likedPostIds;
         private static ArrayList<Integer> favoritePostIds;
+        private static ArrayList<Integer> historyPostIds;
 
         /**
          * 获取 点赞文章id储存数组
@@ -170,34 +171,68 @@ public class PostPreferencesUtils
         }
 
 
+
         /**
-         * 添加文章id到收藏夹数组 或者 从收藏夹里删除指定id
+         * 获取 浏览记录文章id储存数组
+         * 如果在偏好里不存在的话 就创建一个新数组
          *
-         * @param postId
+         * @return ArrayList
          */
-        public static void addFavoritePostId(int postId)
+        public static ArrayList<Integer> getHistoryPostIds()
         {
-                ArrayList<Integer> favoritePostIds = getLikedPostIds();
+
+                //如果还未初始化
+                if (historyPostIds == null)
+                {
+                        String postIdsString = PreferencesUtils.getPostPreference().getString(GlobalConfig.Preferences.POST_HISTORY, null);
+                        //如果已经存在相关数据
+                        if (postIdsString != null)
+                        {
+                                //解析为数组
+                                historyPostIds = new ArrayList<>(ParserUtils.integerArrayList(postIdsString));
+                        }
+                        //如果数据不存在
+                        else
+                        {
+                                //创建全新数组
+                                historyPostIds = new ArrayList<>();
+                        }
+                }
+
+                return historyPostIds;
+        }
+
+        /**
+         * 添加文章id到浏览记录数组
+         * 如果已存在则移动到前排第一位置
+         *
+         * @param postId 文章id
+         */
+        public static void addHistoryPostId(int postId)
+        {
+                ArrayList<Integer> postIds = getHistoryPostIds();
 
                 //检查id是否已存在
-                int position = favoritePostIds.indexOf(postId);
-                //如果id不存在, 就是添加操作
-                if (position == -1)
+                int position = postIds.indexOf(postId);
+                //如果id已存在, 就从数组中移除
+                if (position != -1)
                 {
-                        //添加id到数组
-                        favoritePostIds.add(postId);
+                        postIds.remove(position);
                 }
-                //如果id已存在于数组中 那就是删除操作
-                else
+                //如果数组长度已达到或超过上限
+                if (postIds.size() >= GlobalConfig.Preferences.POST_HISTORY_ARRAY_SIZE)
                 {
-                        //移除
-                        favoritePostIds.remove(position);
+                        //去除最后一个元素
+                        postIds.remove(postIds.size()-1);
                 }
+                //添加id到数组头部
+                postIds.add(0, postId);
+
 
                 //保存变更到共享偏好里
                 PreferencesUtils.getPostPreference()
                         .edit()
-                        .putString(GlobalConfig.Preferences.POST_FAVORITE, ParserUtils.integerArrayListToJson(favoritePostIds))
+                        .putString(GlobalConfig.Preferences.POST_HISTORY, ParserUtils.integerArrayListToJson(postIds))
                         .apply();
 
         }

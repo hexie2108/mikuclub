@@ -178,7 +178,7 @@ public class HomePrivateMessageController extends BaseController
          */
         private void startDelegate(HttpCallBack httpCallBack, int page)
         {
-                ((MessageDelegate) getDelegate()).getPrivateMessage(httpCallBack, page, true, null);
+                ((MessageDelegate) getDelegate()).getPrivateMessage(httpCallBack, page, null);
         }
 
         public void setSwipeRefresh(SwipeRefreshLayout swipeRefresh)

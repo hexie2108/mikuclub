@@ -78,6 +78,18 @@ public class Post implements Serializable
 
                 private List<Integer> count_favorite;
 
+                private List<String> baidu_fast_link;
+
+                public List<String> getBaidu_fast_link()
+                {
+                        return baidu_fast_link;
+                }
+
+                public void setBaidu_fast_link(List<String> baidu_fast_link)
+                {
+                        this.baidu_fast_link = baidu_fast_link;
+                }
+
                 public List<Integer> getCount_favorite()
                 {
                         return count_favorite;

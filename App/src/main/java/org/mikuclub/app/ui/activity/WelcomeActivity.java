@@ -164,6 +164,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 {
                                         LogUtils.v("登陆信息还有效");
                                 }
+
                                 //令牌错误
                                 @Override
                                 public void onTokenError()
@@ -289,7 +290,7 @@ public class WelcomeActivity extends AppCompatActivity
                                 public void onError(WpError wpError)
                                 {
                                         //只有在无缓存的情况, 才会报错
-                                        if (categoryCache.isEmpty())
+                                        if (categoryCache == null)
                                         {
                                                 setErrorInfo(null);
                                         }
@@ -313,8 +314,7 @@ public class WelcomeActivity extends AppCompatActivity
         private void checkSiteCommunication()
         {
 
-                //isExistSiteCommunicationCache = ApplicationPreferencesUtils.isExistSiteCommunication();
-                isExistSiteCommunicationCache = false;
+                isExistSiteCommunicationCache = ApplicationPreferencesUtils.isExistSiteCommunication();
 
                 //如果分类信息检测有效期已过期 或者 找不到分类缓存
                 if (System.currentTimeMillis() > ApplicationPreferencesUtils.getSiteCommunicationExpire() || !isExistSiteCommunicationCache)
@@ -352,7 +352,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
 
-
         /**
          * 获取用户未读私信和未读评论回复的数量
          * Get the counts of unread private messages and unread comment of current user
@@ -374,7 +373,7 @@ public class WelcomeActivity extends AppCompatActivity
                                         //解析回复
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
-                                        MessagePreferencesUtils.setPrivateMessageCount(Integer.valueOf(singleResponse.getBody()));
+                                        MessagePreferencesUtils.setPrivateMessageCount(Integer.parseInt(singleResponse.getBody()));
                                 }
                         };
                         //获取未读评论计数的回调
@@ -387,13 +386,13 @@ public class WelcomeActivity extends AppCompatActivity
                                         //解析回复
                                         SingleResponse singleResponse = ParserUtils.fromJson(response, SingleResponse.class);
                                         //从回复类里提取 计数, 转换成 数字, 储存到应用参数里
-                                        MessagePreferencesUtils.setReplyCommentCount(Integer.valueOf(singleResponse.getBody()));
+                                        MessagePreferencesUtils.setReplyCommentCount(Integer.parseInt(singleResponse.getBody()));
                                 }
                         };
 
                         //发送请求
-                        messageDelegate.countPrivateMessage(countPrivateMessageCallBack, true, false);
-                        messageDelegate.countReplyComment(countReplyCommentCallBack, true);
+                        messageDelegate.countPrivateMessage(countPrivateMessageCallBack);
+                        messageDelegate.countReplyComment(countReplyCommentCallBack);
                 }
                 //如果未登陆直接增加2次计数器
                 else
@@ -440,15 +439,14 @@ public class WelcomeActivity extends AppCompatActivity
         }
 
 
-
-
         /**
          * 获取主页需要的文章数据
          * get the post data for home
          */
         private void getPostDataForHome()
         {
-                HttpCallBack callBackToGetStickyPost = new WelcomeHttpCallBack(){
+                HttpCallBack callBackToGetStickyPost = new WelcomeHttpCallBack()
+                {
 
                         @Override
                         public void onSuccess(String response)
@@ -472,6 +470,7 @@ public class WelcomeActivity extends AppCompatActivity
                         {
                                 postList = ParserUtils.fromJson(response, Posts.class);
                         }
+
                         @Override
                         public void onError(WpError wpError)
                         {
@@ -490,9 +489,6 @@ public class WelcomeActivity extends AppCompatActivity
                 postDelegate.getPostList(callBackToGetPost, page, parameters);
 
         }
-
-
-
 
 
         /**
@@ -558,7 +554,7 @@ public class WelcomeActivity extends AppCompatActivity
                 //清零计数器
                 requestCount = 0;
                 //开启错误信号标
-                thereIsError=true;
+                thereIsError = true;
 
                 //切换组件显示
                 welcomeProgressBar.setVisibility(View.INVISIBLE);
@@ -575,7 +571,7 @@ public class WelcomeActivity extends AppCompatActivity
                         //清零计数器
                         requestCount = 0;
                         //关闭错误信号标
-                        thereIsError=false;
+                        thereIsError = false;
                         //重试
                         initPage();
                 });
@@ -712,8 +708,6 @@ public class WelcomeActivity extends AppCompatActivity
         {
                 this.requestCount++;
         }
-
-
 
 
         /**

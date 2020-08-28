@@ -59,12 +59,12 @@ public class HomePrivateMessageAdapter extends BaseAdapterWithFooter
                 final PrivateMessage privateMessage = (PrivateMessage) getAdapterList().get(position);
 
                 //为视图设置数据
-                viewHolder.getItemName().setText(privateMessage.getAuthor().getName());
+                viewHolder.getItemName().setText(privateMessage.getAuthor().getDisplay_name());
                 //生成时间格式
                 String dateString = GeneralUtils.DateToString(privateMessage.getDate());
                 viewHolder.getItemDate().setText(dateString);
                 //加载远程图片
-                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), privateMessage.getAuthor().getAvatar_src());
+                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), privateMessage.getAuthor().getUser_image());
 
                 //显示解析过html的内容
                 HttpUtils.parseHtmlDefault(getAdapterContext(), privateMessage.getContent(), viewHolder.getItemContent());
@@ -90,6 +90,12 @@ public class HomePrivateMessageAdapter extends BaseAdapterWithFooter
                 holder.getItem().setOnClickListener(v -> {
                         //获取对应位置的数据 , 修复可能的position偏移
                         PrivateMessage privateMessage = (PrivateMessage) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+
+                        //设置状态为已读
+                        privateMessage.setStatus(1);
+                        //隐藏未读提示
+                        holder.getItemUnread().setVisibility(View.INVISIBLE);
+
                         //启动私信详情页
                         PrivateMessageActivity.startAction(getAdapterContext(), privateMessage.getAuthor());
                 });

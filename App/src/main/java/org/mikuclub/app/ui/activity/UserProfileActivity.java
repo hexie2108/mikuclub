@@ -59,11 +59,6 @@ public class UserProfileActivity extends AppCompatActivity
         /* 静态变量 Static variable */
         public static final int TAG = 15;
 
-        private static final int TOTAL_REQUEST_COUNT = 3;
-
-        /* 变量 local variable */
-        private int requestCount = 0;
-
         //数据请求代理人
         private UserDelegate delegate;
         private MediaDelegate mediaDelegate;
@@ -272,7 +267,7 @@ public class UserProfileActivity extends AppCompatActivity
                 //获取当前有焦点的组件, 然后隐藏键盘, 如果没有组件有焦点就无视
                 KeyboardUtils.hideKeyboard(getCurrentFocus());
 
-                //有新头像文件的话, 需要先上传图片
+                //有新头像文件的话, 需要先上传 之后再更新用户信息
                 if (newAvatarFile != null)
                 {
                         uploadAvatar();
@@ -280,7 +275,6 @@ public class UserProfileActivity extends AppCompatActivity
                 //没有新头像, 只需要更新用户信息
                 else
                 {
-                        requestCount = 2;
                         updateUserInfo();
                 }
         }
@@ -302,14 +296,8 @@ public class UserProfileActivity extends AppCompatActivity
 
                                 //删除本地缓存文件
                                 newAvatarFile.delete();
-
-                                //删除旧头像,  如果存在的话
-                                deleteOldAvatar();
                                 //更新用户信息
                                 updateUserInfo();
-
-                                //检查所有请求的完成状态
-                                checkCompletionStatus();
                         }
 
                         @Override
@@ -328,58 +316,12 @@ public class UserProfileActivity extends AppCompatActivity
                         @Override
                         public void onCancel()
                         {
-                                requestCount = 0;
                                 progressDialog.dismiss();
                         }
                 };
-                mediaDelegate.uploadAvatar(httpCallBack, newAvatarFile, user.getId());
+                mediaDelegate.uploadAvatar(httpCallBack, newAvatarFile);
         }
 
-
-
-        /**
-         * 请求删除旧头像, 如果存在的话
-         */
-        private void deleteOldAvatar()
-        {
-
-                //如果 用户有存储 对应的旧 头像 id
-                if (!GeneralUtils.listIsNullOrHasEmptyElement(user.getUser_meta().getMm_user_avatar()))
-                {
-                        LogUtils.v("删除旧头像");
-                        HttpCallBack httpCallBack = new HttpCallBack()
-                        {
-                                @Override
-                                public void onSuccess(String response)
-                                {
-                                        LogUtils.v("删除旧头像成功");
-                                }
-
-                                @Override
-                                public void onCancel()
-                                {
-                                        requestCount = 0;
-                                        progressDialog.dismiss();
-                                }
-
-                                @Override
-                                public void onFinally()
-                                {
-                                        //检查所有请求的完成状态
-                                        checkCompletionStatus();
-                                }
-                        };
-                        int oldAvatarId = Integer.valueOf(user.getUser_meta().getMm_user_avatar().get(0));
-                        //发送删除请求
-                        mediaDelegate.deleteMedia(httpCallBack, oldAvatarId);
-                }
-                else
-                {
-                        LogUtils.v("没有发现旧头像");
-                        //检查所有请求的完成状态
-                        checkCompletionStatus();
-                }
-        }
 
 
         /**
@@ -396,7 +338,14 @@ public class UserProfileActivity extends AppCompatActivity
                                 LogUtils.v("更新用户信息成功");
                                 User updatedUser = ParserUtils.fromJson(response, SingleUser.class).getBody();
                                 updateLocalUserInfo(updatedUser);
-                                checkCompletionStatus();
+
+                                //隐藏进度条
+                                progressDialog.dismiss();
+                                //提示信息更新
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.update_successfully_message));
+                                //更新成功结束当前页面
+                                finish();
+
                         }
 
                         @Override
@@ -425,7 +374,6 @@ public class UserProfileActivity extends AppCompatActivity
                         @Override
                         public void onCancel()
                         {
-                                requestCount = 0;
                                 progressDialog.dismiss();
                         }
                 };
@@ -471,50 +419,10 @@ public class UserProfileActivity extends AppCompatActivity
                         //添加密码
                         parameters.setPassword(inputPassword.getText().toString());
                 }
-                //如果有设置新的头像id
-                if (newAvatarId > 0)
-                {
-                        //创建 meta类型
-                        UpdateUserParameters.Meta meta = new UpdateUserParameters.Meta();
-                        //添加 新的avatar头像id
-                        meta.setMm_user_avatar(newAvatarId);
-                        //添加meta到参数里
-                        parameters.setMeta(meta);
-                }
 
                 delegate.updateUser(httpCallBack, parameters);
         }
 
-
-        /**
-         * 请求完成计数+1
-         * 然后检查是否所有请求都已完成
-         * 都已完成的话 才进行后续操作
-         */
-        private synchronized void checkCompletionStatus()
-        {
-                //请求计数+1
-                requestCount++;
-                LogUtils.v("请求计数 " + requestCount);
-
-                //如果所有请求都完成了
-                if (requestCount == TOTAL_REQUEST_COUNT)
-                {
-                        //隐藏进度条
-                        progressDialog.dismiss();
-                        //提示信息更新
-                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.update_successfully_message));
-                        //注销提交按钮
-                        //buttonUpdate.setEnabled(false);
-                        //移除图片文件的指针
-                        //newAvatarFile = null;
-                        //newAvatarId = 0;
-
-                        //更新成功结束当前页面
-                        finish();
-                }
-
-        }
 
         /**
          * 更新本地储存的用户信息

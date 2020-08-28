@@ -45,15 +45,11 @@ public class MessageDelegate extends BaseDelegate
          * 获取私信计数
          *
          * @param httpCallBack
-         * @param unread       是否是要计算未读私信信息
-         * @param selfMessage  计算自己回复的数量
          */
-        public void countPrivateMessage(HttpCallBack httpCallBack, boolean unread, boolean selfMessage)
+        public void countPrivateMessage(HttpCallBack httpCallBack)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "unread", unread);
-                putIfNotNull(queryParameters, "self", selfMessage);
 
                 Request.get(GlobalConfig.Server.PRIVATE_MESSAGE_COUNT, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
@@ -64,14 +60,12 @@ public class MessageDelegate extends BaseDelegate
          *
          * @param httpCallBack
          * @param page      页数
-         * @param distinct  是否要去除同个发信人的重复私信
-         * @param sender_id  是否只要当前用户和sender之间互相写的私信, 0为不要
+         * @param sender_id  是否只要当前用户和sender之间互相写的私信
          */
-        public void getPrivateMessage(HttpCallBack httpCallBack,  int page, boolean distinct, Integer sender_id)
+        public void getPrivateMessage(HttpCallBack httpCallBack,  int page, Integer sender_id)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "distinct", distinct);
                 putIfNotNull(queryParameters, "sender_id", sender_id);
                 putIfNotNull(queryParameters, "paged", page);
                 //如果是正常私信请求
@@ -98,12 +92,11 @@ public class MessageDelegate extends BaseDelegate
          * @param httpCallBack
          * @param unread       是否是要计算未读评论
          */
-        public void countReplyComment(HttpCallBack httpCallBack, boolean unread)
+        public void countReplyComment(HttpCallBack httpCallBack)
         {
                 Map<String, Object> queryParameters = new HashMap<>();
                 putIfNotNull(queryParameters, "_envelope", "1");
-                putIfNotNull(queryParameters, "unread", unread);
-                Request.get(GlobalConfig.Server.REPLY_COMMENTS_COUNT, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+                Request.get(GlobalConfig.Server.UNREAD_COMMENT_REPLY_COUNT, queryParameters, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
 
         }
 

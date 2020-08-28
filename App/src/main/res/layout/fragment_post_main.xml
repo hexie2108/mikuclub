@@ -25,8 +25,83 @@
 
 
                 <include layout = "@layout/post_info_box" />
+
                 <include layout = "@layout/post_author_info_box" />
+
                 <include layout = "@layout/post_functional_box" />
+
+                <TextView
+                    android:id = "@+id/post_unzip_password1_text"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
+                    android:text = "@string/post_unzip_password"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_functional_box" />
+
+                <TextView
+                    android:id = "@+id/post_unzip_password1_value"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
+                    android:selectAllOnFocus = "true"
+                    android:textIsSelectable = "true"
+                    android:textStyle = "bold"
+                    app:layout_constraintBottom_toBottomOf = "@id/post_unzip_password1_text"
+                    app:layout_constraintStart_toEndOf = "@id/post_unzip_password1_text"
+                    app:layout_constraintTop_toTopOf = "@id/post_unzip_password1_text" />
+
+                <TextView
+                    android:id = "@+id/post_unzip_password2_text"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
+                    android:text = "@string/post_unzip_password2"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_unzip_password1_text" />
+
+                <TextView
+                    android:id = "@+id/post_unzip_password2_value"
+                    android:layout_width = "wrap_content"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginStart = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
+                    android:selectAllOnFocus = "true"
+                    android:textIsSelectable = "true"
+                    android:textStyle = "bold"
+                    app:layout_constraintBottom_toBottomOf = "@id/post_unzip_password2_text"
+                    app:layout_constraintStart_toEndOf = "@id/post_unzip_password2_text"
+                    app:layout_constraintTop_toTopOf = "@id/post_unzip_password2_text" />
+
+
+                <TextView
+                    android:id = "@+id/post_baidu_fast_link_text"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
+                    android:text = "@string/post_baidu_fast_link_text"
+
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_unzip_password2_text" />
+
+                <TextView
+                    android:id = "@+id/post_baidu_fast_link_value"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
+                    android:selectAllOnFocus = "true"
+                    android:textIsSelectable = "true"
+                    android:textSize = "@dimen/text_small"
+
+                    app:layout_constraintEnd_toEndOf = "parent"
+                    app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_baidu_fast_link_text" />
 
 
                 <TextView
@@ -34,26 +109,25 @@
                     android:layout_width = "0dp"
                     android:layout_height = "wrap_content"
                     android:layout_marginTop = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
                     android:selectAllOnFocus = "true"
                     android:textIsSelectable = "true"
-
-                    android:lineHeight="@dimen/very_large"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
-                    app:layout_constraintTop_toBottomOf = "@id/post_functional_box" />
+                    app:layout_constraintTop_toBottomOf = "@id/post_baidu_fast_link_value" />
 
                 <TextView
                     android:id = "@+id/post_description"
                     android:layout_width = "0dp"
                     android:layout_height = "wrap_content"
-                    android:layout_marginTop = "@dimen/small"
-                    app:layout_goneMarginTop="@dimen/normal"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:lineHeight = "@dimen/very_large"
                     android:textIsSelectable = "true"
 
-                    android:lineHeight="@dimen/very_large"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
-                    app:layout_constraintTop_toBottomOf = "@id/post_source" />
+                    app:layout_constraintTop_toBottomOf = "@id/post_source"
+                    app:layout_goneMarginTop = "@dimen/normal" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

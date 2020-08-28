@@ -90,7 +90,7 @@ public class PrivateMessageActivity extends AppCompatActivity
                         //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                         //设置标题
-                        actionBar.setTitle(author.getName());
+                        actionBar.setTitle(author.getDisplay_name());
                 }
 
                 //初始化列表
@@ -132,7 +132,7 @@ public class PrivateMessageActivity extends AppCompatActivity
                 controller.setRecyclerDataList(recyclerDataList);
 
                 //设置私信作者id
-                controller.setSenderId(author.getAuthor_id());
+                controller.setSenderId(author.getId());
                 //绑定输入框和输入框布局
                 controller.setInput(input);
                 controller.setInputLayout(inputLayout);
@@ -147,7 +147,7 @@ public class PrivateMessageActivity extends AppCompatActivity
         {
 
                 //只有不是系统消息的情况才能回复
-                if (author.getAuthor_id() != 0)
+                if (author.getId() != 0)
                 {
                         //创建点击事件监听器
                         View.OnClickListener onClickListener = v -> {
@@ -254,6 +254,9 @@ public class PrivateMessageActivity extends AppCompatActivity
         {
                 Intent intent = new Intent(context, PrivateMessageActivity.class);
                 intent.putExtra(INTENT_AUTHOR, author);
+
+
+
                 context.startActivity(intent);
         }
 

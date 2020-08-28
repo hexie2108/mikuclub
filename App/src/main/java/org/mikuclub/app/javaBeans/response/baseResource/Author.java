@@ -5,29 +5,30 @@ import java.io.Serializable;
 public class Author implements Serializable
 {
 
-        private int author_id;
-        private String name;
+        private int id;
+        private String display_name;
         private String description;
-        private String avatar_src;
+        private String user_image;
 
-        public int getAuthor_id()
+
+        public int getId()
         {
-                return author_id;
+                return id;
         }
 
-        public void setAuthor_id(int author_id)
+        public void setId(int id)
         {
-                this.author_id = author_id;
+                this.id = id;
         }
 
-        public String getName()
+        public String getDisplay_name()
         {
-                return name;
+                return display_name;
         }
 
-        public void setName(String name)
+        public void setDisplay_name(String display_name)
         {
-                this.name = name;
+                this.display_name = display_name;
         }
 
         public String getDescription()
@@ -40,14 +41,14 @@ public class Author implements Serializable
                 this.description = description;
         }
 
-        public String getAvatar_src()
+        public String getUser_image()
         {
-                return avatar_src;
+                return user_image;
         }
 
-        public void setAvatar_src(String avatar_src)
+        public void setUser_image(String user_image)
         {
-                this.avatar_src = avatar_src;
+                this.user_image = user_image;
         }
 
 }

@@ -61,12 +61,12 @@ public class HomeReplyCommentAdapter extends BaseAdapterWithFooter
                 final HomeReplyComment replyComment = (HomeReplyComment) getAdapterList().get(position);
 
                 //为视图设置数据
-                viewHolder.getItemName().setText(replyComment.getAuthor().getName());
+                viewHolder.getItemName().setText(replyComment.getAuthor().getDisplay_name());
                 //生成时间格式
                 String dateString = GeneralUtils.DateToString(replyComment.getDate());
                 viewHolder.getItemDate().setText(dateString);
                 //加载远程图片
-                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), replyComment.getAuthor().getAvatar_src());
+                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), replyComment.getAuthor().getUser_image());
 
 
                 //把评论回复数的view用来显示评论的文章来源
@@ -97,6 +97,12 @@ public class HomeReplyCommentAdapter extends BaseAdapterWithFooter
                 holder.getItem().setOnClickListener(v -> {
                         //获取对应位置的数据 , 修复可能的position偏移
                         HomeReplyComment replyComment = (HomeReplyComment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+
+                        //设置状态为已读
+                        replyComment.setStatus(1);
+                        //隐藏未读提示
+                        holder.getItemUnread().setVisibility(View.INVISIBLE);
+
                         //启动文章页
                         PostActivity.startAction(getAdapterContext(), replyComment.getPost());
                 });
@@ -105,6 +111,7 @@ public class HomeReplyCommentAdapter extends BaseAdapterWithFooter
                 holder.getItemAvatarImg().setOnClickListener(v -> {
                         //获取对应位置的数据 , 修复可能的position偏移
                         HomeReplyComment replyComment = (HomeReplyComment) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
+
                         //启动作者页面
                         AuthorActivity.startAction(getAdapterContext(), replyComment.getAuthor());
                 });

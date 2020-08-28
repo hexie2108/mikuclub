@@ -92,7 +92,7 @@ public class GlobalConfig
         public class Server
         {
 
-                // public static final String ROOT = "http://192.168.1.99/wordpress/wp-json/wp/v2/";
+                //public static final String HOST = "http://192.168.3.101/html/";
                 public static final String HOST = "https://www.mikuclub.org/";
                 public static final String ROOT = HOST + "wp-json/wp/v2/";
                 public static final String POSTS = "posts/";
@@ -136,8 +136,8 @@ public class GlobalConfig
 
                 //GET 获取回复评论, DELETE 删除评论
                 public static final String REPLY_COMMENTS = HOST + UTILS + "comments/";
-                //GET 获取回复评论数量
-                public static final String REPLY_COMMENTS_COUNT = HOST + UTILS + "comments_count/";
+                //GET 获取未读评论数量
+                public static final String UNREAD_COMMENT_REPLY_COUNT = HOST + UTILS + "comments_count/";
 
                 //GET 获取作者信息, 自定义接口,因为官方接口有权限问题
                 public static final String GET_AUTHOR = HOST + UTILS + "author/";
@@ -211,9 +211,14 @@ public class GlobalConfig
                 public static final String POST_LIKED_ARRAY = "post_liked";
                 //点赞过的文章ID数组长度
                 public static final int POST_LIKED_ARRAY_SIZE = 300;
+
+                //浏览历史文章ID数组
+                public static final String POST_HISTORY = "post_history";
+                //浏览历史文章ID数组长度
+                public static final int POST_HISTORY_ARRAY_SIZE = 300;
+
                 //最近的访问时间
                 public static final String LATEST_ACCESS_TIME = "latest_access_time";
-
                 //收藏的文章ID数组
                 public static final String POST_FAVORITE = "post_favorite";
 

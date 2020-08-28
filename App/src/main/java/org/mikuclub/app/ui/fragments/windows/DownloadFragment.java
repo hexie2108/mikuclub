@@ -253,8 +253,17 @@ public class DownloadFragment extends BottomSheetDialogFragment
                         //绑定点击监听器
                         downButton.setOnClickListener(onClickListener);
 
+                        //绑定长按点击监听器
+                        downButton.setOnLongClickListener(v -> {
+                                //复制地址到剪切板
+                                ClipboardUtils.setText(downUrl);
+                                ToastUtils.shortToast(ResourcesUtils.getString(R.string.post_down_link_copy_message));
+                                return true;
+                        });
+
+
                 }
-                //没有下载地址就直接隐藏这个下载位
+               //没有下载地址就直接隐藏这个下载位
                 else
                 {
                         downBox.setVisibility(View.GONE);

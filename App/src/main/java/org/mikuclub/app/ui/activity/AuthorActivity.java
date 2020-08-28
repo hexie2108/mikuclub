@@ -91,7 +91,7 @@ public class AuthorActivity extends AppCompatActivity
                         //显示标题栏返回键
                         actionBar.setDisplayHomeAsUpEnabled(true);
                         //设置标题栏标题
-                        actionBar.setTitle(author.getName());
+                        actionBar.setTitle(author.getDisplay_name());
                 }
 
                 //初始化列表
@@ -163,7 +163,7 @@ public class AuthorActivity extends AppCompatActivity
         {
                 //设置查询参数
                 PostParameters parameters = new PostParameters();
-                parameters.setAuthor(new ArrayList<>(Collections.singletonList(author.getAuthor_id())));
+                parameters.setAuthor(new ArrayList<>(Collections.singletonList(author.getId())));
                 //如果未登陆, 排除魔法区
                 if (!UserPreferencesUtils.isLogin())
                 {
@@ -184,7 +184,7 @@ public class AuthorActivity extends AppCompatActivity
                 //第一次请求数据
                 controller.getMore();
                 //第一次获取作者信息
-                controller.getAuthor(author.getAuthor_id());
+                controller.getAuthor(author.getId());
 
         }
 

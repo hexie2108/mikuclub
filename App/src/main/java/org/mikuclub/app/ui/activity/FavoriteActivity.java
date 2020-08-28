@@ -155,7 +155,7 @@ public class FavoriteActivity extends AppCompatActivity
                         //设置根据 文章id 来对结果进行排序
                         parameters.setOrderby(GlobalConfig.Post.OrderBy.INCLUDE);
                 }
-                //如果收藏夹未空 , 直接显示无内容错误
+                //如果收藏夹为空 , 直接显示无内容错误
                 else{
                         recyclerViewAdapter.setNotMoreErrorMessage(ResourcesUtils.getString(R.string.favorite_empty_error));
                         recyclerViewAdapter.updateFooterStatus(false, true, false);

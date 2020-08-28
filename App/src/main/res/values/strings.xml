@@ -41,7 +41,7 @@
         <string name = "shopping">动漫周边</string>
         <string name = "submit_post_title">投稿</string>
         <string name = "user_favorite">收藏夹</string>
-
+        <string name = "user_history">浏览历史</string>
 
         <!--home page-->
         <string name = "home_must_login_before" translatable = "false">请登陆后再访问本页面</string>
@@ -57,6 +57,7 @@
         <string name = "list_jump_windows_title">跳转</string>
         <string name = "list_jump_windows_empty_error" translatable = "false">未输入页数!</string>
         <string name = "list_jump_windows_pagination">第%1$d页 / 总共%2$d页</string>
+        <string name = "empty_error_message" translatable = "false">没有相关内容</string>
 
         <!--comment-->
         <string name = "reply_count">条回复</string>
@@ -80,6 +81,7 @@
         <string name = "post_down_magnet_link" translatable = "false">复制磁链</string>
         <string name = "post_down_magnet_link_message" translatable = "false">已复制磁链到剪切板</string>
         <string name = "post_down_password_copy_message">已复制访问密码到剪切板</string>
+        <string name = "post_down_link_copy_message">已复制下载地址到剪切板</string>
         <string name = "comment_copy_message">已复制评论到剪切板</string>
         <string name = "suggest_to_copy_message">长按可复制评论</string>
         <string name = "post_view_count">%1$d 次查看</string>
@@ -105,7 +107,8 @@
         <string name = "post_download2">下载点2</string>
         <string name = "post_access_password">访问密码</string>
         <string name = "post_unzip_password">解压密码</string>
-        <string name = "post_download_help">文件解压错误的常见原因:\n- 输入了错误的解压密码.\n-  有的文件是压缩分卷, 请全部下载完成后, 再解压第一个分卷, 具体可百度教程.\n- 解压软件问题, 请更换成知名的应用比如ZArchiver等.\n- 文件在下载过程中损坏, 这种情况只能重新下载.</string>
+        <string name = "post_unzip_password2">解压密码2</string>
+        <string name = "post_download_help">普通点击会打开客户端/浏览器+自动复制提取码\n长按可只复制下载链接\n\n文件解压错误的常见原因:\n- 输入了错误的解压密码.\n-  有的文件是压缩分卷, 请全部下载完成后, 再解压第一个分卷, 具体可百度教程.\n- 解压软件问题, 请更换成知名的应用比如ZArchiver等.\n- 文件在下载过程中损坏, 这种情况只能重新下载.</string>
         <string name = "sharing_to_qq">分享到QQ</string>
         <string name = "another_methods">其他方式</string>
         <string name = "sharing_to_weibo">分享到微博</string>
@@ -139,6 +142,9 @@
         <string name = "update_user_error_message" translatable = "false">更新图片元数据失败</string>
         <string name = "update_successfully_message">信息已更新完成</string>
 
+        <string name = "post_baidu_fast_link_text">秒传链接 (需要通过PC端使用)</string>
+
+        <string name = "source">来源</string>
         <!--search page-->
         <string name = "search_input_hint">要搜索点什么吗&#8230;</string>
 
@@ -228,6 +234,7 @@
 
         <!-- favorite page 收藏夹-->
         <string name = "favorite_empty_error">目前收藏夹是空的</string>
-
+        <!-- history page 浏览历史-->
+        <string name = "history_empty_error">暂无浏览记录</string>
 
 </resources>

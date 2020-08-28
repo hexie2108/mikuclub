@@ -8,8 +8,8 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 11
-        versionName "v1.1"
+        versionCode 12
+        versionName "v1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //  设置微博sdk支持的SO库架构

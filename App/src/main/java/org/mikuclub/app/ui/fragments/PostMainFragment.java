@@ -77,6 +77,13 @@ public class PostMainFragment extends Fragment
         private TextView postBilibili;
         private MaterialButton postBilibiliButton;
 
+        private TextView postUnzipPassword1Text;
+        private TextView postUnzipPassword2Text;
+        private TextView postBaiduFastLinkText;
+        private TextView postUnzipPassword1;
+        private TextView postUnzipPassword2;
+        private TextView postBaiduFastLink;
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,6 +117,12 @@ public class PostMainFragment extends Fragment
                 postCountFailDownButton = view.findViewById(R.id.post_count_fail_down_button);
                 postBilibili = view.findViewById(R.id.post_bilibili);
                 postBilibiliButton = view.findViewById(R.id.post_bilibili_button);
+                postUnzipPassword1 = view.findViewById(R.id.post_unzip_password1_value);
+                postUnzipPassword2 = view.findViewById(R.id.post_unzip_password2_value);
+                postBaiduFastLink = view.findViewById(R.id.post_baidu_fast_link_value);
+                postUnzipPassword1Text = view.findViewById(R.id.post_unzip_password1_text);
+                postUnzipPassword2Text = view.findViewById(R.id.post_unzip_password2_text);
+                postBaiduFastLinkText = view.findViewById(R.id.post_baidu_fast_link_text);
 
                 //从活动中获取文章数据
                 post = ((PostActivity) getActivity()).getPost();
@@ -192,9 +205,9 @@ public class PostMainFragment extends Fragment
                         AuthorActivity.startAction(getActivity(), metadata.getAuthor().get(0));
                 };
                 //加载头像
-                GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, metadata.getAuthor().get(0).getAvatar_src());
+                GlideImageUtils.getSquareImg(getActivity(), postAuthorImg, metadata.getAuthor().get(0).getUser_image());
                 //设置作者信息
-                postAuthorName.setText(metadata.getAuthor().get(0).getName());
+                postAuthorName.setText(metadata.getAuthor().get(0).getDisplay_name());
                 //绑定点击事件
                 postAuthorImg.setOnClickListener(authorActivityListener);
                 postAuthorName.setOnClickListener(authorActivityListener);
@@ -237,6 +250,41 @@ public class PostMainFragment extends Fragment
                         }
                 }
 
+
+                //如果有解压密码1
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getUnzip_password()))
+                {
+                        //设置解压密码
+                        postUnzipPassword1.setText(metadata.getUnzip_password().get(0));
+                }
+                //隐藏解压密码的文本
+                else{
+                        postUnzipPassword1.setVisibility(View.GONE);
+                        postUnzipPassword1Text.setVisibility(View.GONE);
+                }
+                //如果有解压密码2
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getUnzip_password2()))
+                {
+                        //设置解压密码
+                        postUnzipPassword2.setText(metadata.getUnzip_password2().get(0));
+                }
+                //隐藏解压密码2的文本
+                else{
+                        postUnzipPassword2.setVisibility(View.GONE);
+                        postUnzipPassword2Text.setVisibility(View.GONE);
+                }
+
+                //如果有秒传链接
+                if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getBaidu_fast_link()))
+                {
+                        postBaiduFastLink.setText(metadata.getBaidu_fast_link().get(0));
+                }
+                //隐藏秒传链接的文本
+                else{
+                        postBaiduFastLink.setVisibility(View.GONE);
+                        postBaiduFastLinkText.setVisibility(View.GONE);
+                }
+
                 //如果有来源地址
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getSource()))
                 {
@@ -248,12 +296,17 @@ public class PostMainFragment extends Fragment
                 {
                         //再加上来源说明
                         postSource.setText(postSource.getText().toString() + "\n" + metadata.getSource_name().get(0));
+
                 }
                 //如果没有任何来源说明
                 if (postSource.getText().toString().isEmpty())
                 {
-                        //隐藏组件
+
                         postSource.setVisibility(View.GONE);
+                }
+                //否则添加 "来源" 文本
+                else{
+                        postSource.setText(ResourcesUtils.getString(R.string.source)+" "+postSource.getText());
                 }
 
                 //开启超链接支持
@@ -261,7 +314,6 @@ public class PostMainFragment extends Fragment
                 String htmlDescription;
                 //获取描述
                 htmlDescription = post.getContent().getRendered();
-
 
 
                 //解析 html描述
@@ -429,7 +481,8 @@ public class PostMainFragment extends Fragment
 
                 }
                 //如果用户未登陆 就隐藏收藏按钮
-                else{
+                else
+                {
                         //隐藏收藏按钮
                         postCountFavoriteButton.setVisibility(View.GONE);
                         //隐藏收藏数量

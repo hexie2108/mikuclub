@@ -111,8 +111,8 @@ public class PrivateMessageAdapter extends BaseAdapterWithFooter
                 //如果是别人发给用户的私信
                 if (viewType == TYPE_ITEM)
                 {
-                        name = author.getName();
-                        avatarSrc = author.getAvatar_src();
+                        name = author.getDisplay_name();
+                        avatarSrc = author.getUser_image();
                 }
                 //如果是用户自己就是私信作者
                 else

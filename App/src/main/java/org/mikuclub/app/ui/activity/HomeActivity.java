@@ -84,6 +84,9 @@ public class HomeActivity extends AppCompatActivity
         private TextView userName;
         private TextView userEmail;
 
+        //消息提示气泡
+        private BadgeDrawable messaggeCountbadge;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -165,6 +168,7 @@ public class HomeActivity extends AppCompatActivity
                                                 break;
                                         case R.id.navigation_message:
                                                 changeFragment(homeMessageFragment, TAG_HOME_MESSAGE_FRAGMENT);
+                                                messaggeCountbadge.setVisible(false);
                                                 break;
                                 }
                                 return true;
@@ -174,17 +178,22 @@ public class HomeActivity extends AppCompatActivity
 
                 //获取未读消息数量
                 int unreadMessageCount = MessagePreferencesUtils.getPrivateMessageCount() + MessagePreferencesUtils.getReplyCommentCount();
+
+                //在消息图标右上角显示提醒气泡
+                messaggeCountbadge = bottomNavigationView.getOrCreateBadge(R.id.navigation_message);
+
                 //如果未读消息大于0
                 if (unreadMessageCount > 0)
                 {
-                        //在消息图标右上角显示提醒气泡
-                        BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.navigation_message);
                         //设置气泡数字
-                        badge.setNumber(unreadMessageCount);
+                        messaggeCountbadge.setNumber(unreadMessageCount);
                         //设置气泡位置偏移
-                        badge.setVerticalOffset(5);
+                        messaggeCountbadge.setVerticalOffset(5);
                         //设置气泡背景颜色
-                        badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        messaggeCountbadge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                }
+                else{
+                        messaggeCountbadge.setVisible(false);
                 }
 
 
@@ -332,6 +341,9 @@ public class HomeActivity extends AppCompatActivity
                                         FavoriteActivity.startAction(this);
                                         break;
 
+                                case R.id.item_user_history:
+                                        HistoryActivity.startAction(this);
+                                        break;
                         }
                         //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);

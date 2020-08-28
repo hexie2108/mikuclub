@@ -12,6 +12,8 @@ import org.mikuclub.app.utils.DataUtils;
 import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 获取置顶文章列表
-         *
+         * 排除魔法区文章
          * @param httpCallBack
          * @param page
          */
@@ -41,6 +43,8 @@ public class PostDelegate extends BaseDelegate
         {
                 PostParameters parametersPosts = new PostParameters();
                 parametersPosts.setSticky(true);
+                //排除魔法区
+                parametersPosts.setCategories_exclude(new ArrayList<>(Collections.singletonList(GlobalConfig.CATEGORY_ID_MOFA)));
                 parametersPosts.setPer_page(GlobalConfig.NUMBER_PER_PAGE_OF_SLIDERS);
                 getPostList(httpCallBack, page, parametersPosts);
         }

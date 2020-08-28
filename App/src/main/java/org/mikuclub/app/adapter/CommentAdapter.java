@@ -120,9 +120,9 @@ public class CommentAdapter extends BaseAdapterWithFooter
                         {
                                 //启动作者页面
                                 Author author = new Author();
-                                author.setName(comment.getAuthor_name());
-                                author.setAuthor_id(comment.getAuthor());
-                                author.setAvatar_src(comment.getAuthor_avatar_urls().getSize96());
+                                author.setDisplay_name(comment.getAuthor_name());
+                                author.setId(comment.getAuthor());
+                                author.setUser_image(comment.getAuthor_avatar_urls().getSize96());
                                 AuthorActivity.startAction(getAdapterContext(), author);
                         }
 

@@ -10,6 +10,12 @@
                     android:icon = "@drawable/sign_in"
                     android:title = "@string/login" />
 
+                <item
+                    android:id = "@+id/item_user_history"
+                    android:icon = "@drawable/history"
+                    android:title = "@string/user_history"
+                    />
+
 
         </group>
         <group android:id = "@+id/group2">

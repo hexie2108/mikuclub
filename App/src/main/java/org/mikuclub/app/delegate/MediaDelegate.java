@@ -25,7 +25,7 @@ public class MediaDelegate extends BaseDelegate
 
 
         /**
-         * 上传头像
+         * 上传图片
          *
          * @param httpCallBack
          * @param file
@@ -44,18 +44,15 @@ public class MediaDelegate extends BaseDelegate
          *
          * @param httpCallBack
          * @param file
-         * @param userId
          */
-        public void uploadAvatar(HttpCallBack httpCallBack, File file, int userId)
+        public void uploadAvatar(HttpCallBack httpCallBack, File file)
         {
+                //设置基本url参数
+                Map<String, Object> baseParametersMap =new BaseParameters().toMap();
+                //增加参数 说明动作
+                baseParametersMap.put("action_update_avatar", 1);
 
-                BaseParameters baseParameters = new BaseParameters();
-                //设置body参数
-                UpdatePostMetaParameters bodyParameter = new UpdatePostMetaParameters();
-                bodyParameter.setMeta_key(GlobalConfig.Metadata.Attachment._WP_ATTACHMENT_WP_USER_AVATAR);
-                bodyParameter.setMeta_value(userId);
-
-                getModel().insertFile(baseParameters.toMap(), bodyParameter.toMap(), UserPreferencesUtils.createLoggedUserHeader(), file, getTag(), httpCallBack);
+                getModel().insertFile(baseParametersMap, null, UserPreferencesUtils.createLoggedUserHeader(), file, getTag(), httpCallBack);
 
         }
 

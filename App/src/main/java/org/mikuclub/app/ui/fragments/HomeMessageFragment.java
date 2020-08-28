@@ -45,6 +45,9 @@ public class HomeMessageFragment extends Fragment
         //提示信息
         private TextView infoText;
 
+        private BadgeDrawable privateMessageCountBadge;
+        private BadgeDrawable commentCountBadge;
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +82,8 @@ public class HomeMessageFragment extends Fragment
          * 根据用户登陆状态 决定输出内容
          * Determine the output content according to the user login status
          */
-        private void checkUserLogin(){
+        private void checkUserLogin()
+        {
                 //如果用户有登陆
                 if (UserPreferencesUtils.isLogin())
                 {
@@ -143,27 +147,47 @@ public class HomeMessageFragment extends Fragment
                                 }
                         }).attach();
 
+                //在菜单右上角创建提醒气泡
+                privateMessageCountBadge = tabsMenuLayout.getTabAt(0).getOrCreateBadge();
                 //如果未读私信大于0
                 if (MessagePreferencesUtils.getPrivateMessageCount() > 0)
                 {
-                        //在菜单右上角创建提醒气泡
-                        BadgeDrawable badge = tabsMenuLayout.getTabAt(0).getOrCreateBadge();
                         //设置气泡数字
-                        badge.setNumber(MessagePreferencesUtils.getPrivateMessageCount());
+                        privateMessageCountBadge.setNumber(MessagePreferencesUtils.getPrivateMessageCount());
                         //设置气泡背景颜色
-                        badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        privateMessageCountBadge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
+                //否则隐藏
+                else
+                {
+                        privateMessageCountBadge.setVisible(false);
+                }
+
+                //在菜单右上角创建提醒气泡
+                commentCountBadge = tabsMenuLayout.getTabAt(1).getOrCreateBadge();
                 //如果未读评论大于0
                 if (MessagePreferencesUtils.getReplyCommentCount() > 0)
                 {
-                        //在菜单右上角创建提醒气泡
-                        BadgeDrawable badge = tabsMenuLayout.getTabAt(1).getOrCreateBadge();
+
                         //设置气泡数字
-                        badge.setNumber(MessagePreferencesUtils.getReplyCommentCount());
+                        commentCountBadge.setNumber(MessagePreferencesUtils.getReplyCommentCount());
                         //设置气泡背景颜色
-                        badge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        commentCountBadge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                }
+                //否则隐藏
+                else
+                {
+                        commentCountBadge.setVisible(false);
                 }
         }
 
+        @Override
+        public void onPause()
+        {
+                super.onPause();
 
+                //隐藏消息计数气泡
+                privateMessageCountBadge.setVisible(false);
+                commentCountBadge.setVisible(false);
+        }
 }

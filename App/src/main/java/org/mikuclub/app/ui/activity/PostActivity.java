@@ -29,6 +29,7 @@ import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.response.SinglePost;
 import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
+import org.mikuclub.app.storage.PostPreferencesUtils;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.ui.fragments.windows.SharingFragment;
@@ -146,6 +147,8 @@ public class PostActivity extends AppCompatActivity
                         prepareGetPost();
                 }
 
+
+
         }
 
         @Override
@@ -252,6 +255,9 @@ public class PostActivity extends AppCompatActivity
 
                 //根据appBar高度更改标题栏图标颜色
                 changeHomeIconColorListener();
+
+                //保存访问记录
+                PostPreferencesUtils.addHistoryPostId(post.getId());
         }
 
 
