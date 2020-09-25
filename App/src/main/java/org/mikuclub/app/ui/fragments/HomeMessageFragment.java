@@ -187,7 +187,14 @@ public class HomeMessageFragment extends Fragment
                 super.onPause();
 
                 //隐藏消息计数气泡
-                privateMessageCountBadge.setVisible(false);
-                commentCountBadge.setVisible(false);
+                if (privateMessageCountBadge != null)
+                {
+                        privateMessageCountBadge.setVisible(false);
+                }
+                if (commentCountBadge != null)
+                {
+                        commentCountBadge.setVisible(false);
+                }
+
         }
 }

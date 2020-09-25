@@ -167,7 +167,15 @@ public class HomeActivity extends AppCompatActivity
                                                 changeFragment(homeCategoriesFragment, TAG_HOME_CATEGORIES_FRAGMENT);
                                                 break;
                                         case R.id.navigation_message:
-                                                changeFragment(homeMessageFragment, TAG_HOME_MESSAGE_FRAGMENT);
+                                                //如果是登陆用户
+                                                if(UserPreferencesUtils.isLogin())
+                                                {
+                                                        changeFragment(homeMessageFragment, TAG_HOME_MESSAGE_FRAGMENT);
+                                                }
+                                                //否则跳转登陆页
+                                                else{
+                                                        LoginActivity.startAction(this);
+                                                }
                                                 messaggeCountbadge.setVisible(false);
                                                 break;
                                 }

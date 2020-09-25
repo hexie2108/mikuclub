@@ -1,6 +1,8 @@
 package org.mikuclub.app.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -753,5 +755,18 @@ public class WelcomeActivity extends AppCompatActivity
 
 
         }
+
+        /**
+         * 启动本活动的静态方法
+         * @param context
+         */
+        public static void startAction(Context context)
+        {
+                Intent intent = new Intent(context, WelcomeActivity.class);
+                //关闭所有之前的活动页
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+        }
+
 
 }

@@ -215,7 +215,7 @@ public class GlobalConfig
                 //浏览历史文章ID数组
                 public static final String POST_HISTORY = "post_history";
                 //浏览历史文章ID数组长度
-                public static final int POST_HISTORY_ARRAY_SIZE = 300;
+                public static final int POST_HISTORY_ARRAY_SIZE = 200;
 
                 //最近的访问时间
                 public static final String LATEST_ACCESS_TIME = "latest_access_time";

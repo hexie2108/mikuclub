@@ -283,8 +283,9 @@ public class LoginActivity extends AppCompatActivity
                 //储存用户登陆信息
                 UserPreferencesUtils.login(response);
                 //设置请求结果 为 成功
-                setResult(RESULT_OK);
-                finish();
+                //setResult(RESULT_OK);
+                //finish();
+                WelcomeActivity.startAction(this);
 
         }
 
@@ -393,10 +394,20 @@ public class LoginActivity extends AppCompatActivity
          */
         public static void startActionForResult(Context context)
         {
-
                 Intent intent = new Intent(context, LoginActivity.class);
                 ((AppCompatActivity) context).startActivityForResult(intent, REQUEST_CODE);
         }
+
+        /**
+         * 启动本活动的静态方法
+         * @param context
+         */
+        public static void startAction(Context context)
+        {
+                Intent intent = new Intent(context, LoginActivity.class);
+                context.startActivity(intent);
+        }
+
 
 
 }
