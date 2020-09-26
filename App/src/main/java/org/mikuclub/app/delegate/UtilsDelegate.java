@@ -1,13 +1,14 @@
 package org.mikuclub.app.delegate;
 
-import org.mikuclub.app.delegate.base.BaseDelegate;
-import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.config.GlobalConfig;
-import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
+import org.mikuclub.app.delegate.base.BaseDelegate;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
-import org.mikuclub.app.utils.http.Request;
+import org.mikuclub.app.javaBeans.parameters.base.BaseParameters;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.utils.http.HttpCallBack;
+import org.mikuclub.app.utils.http.Request;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -82,6 +83,20 @@ public class UtilsDelegate extends BaseDelegate
 
                 Request.post(GlobalConfig.Server.TOKEN_VALIDATE, baseParameters.toMap(), null, header, getTag(), httpCallBack);
         }
+
+        /**
+         * 上报错误用的接口
+         * @param errorMessage
+         */
+        public void test(String errorMessage){
+
+                Map<String, Object> parametersMap = new HashMap();
+                parametersMap.put("error_message", errorMessage);
+                Request.post(GlobalConfig.Server.TEST, null, parametersMap, null, getTag(), null);
+
+        }
+
+
 
 
 

@@ -157,6 +157,9 @@ public class GlobalConfig
                 //GET 获取收藏夹, POST设置收藏夹, DELETE删除收藏夹ID
                 public static final String POST_FAVORITE = HOST + UTILS + "favorite/";
 
+                //POST TEST 测试接口
+                public static final String TEST = HOST + UTILS + "test/";
+
         }
 
         /**

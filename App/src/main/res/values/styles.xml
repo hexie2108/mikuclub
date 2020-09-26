@@ -8,6 +8,9 @@
                 <item name="android:statusBarColor">@color/colorPrimary</item>
                 <item name="android:actionMenuTextColor">@android:color/white</item>
                 <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
+
+                <!-- Change default text colour -->
+                <item name="android:textColor">@android:color/tab_indicator_text</item>
         </style>
 
 
@@ -31,6 +34,17 @@
 
 
 
+        <!--        主页底部菜单选项颜色-->
+        <style name="NavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+                <item name="itemTextAppearanceActive">@style/ActiveText</item>
+                <item name="itemTextAppearanceInactive">@style/InactiveText</item>
+        </style>
+        <style name="ActiveText">
+                <item name="android:textColor">@color/colorPrimaryDark</item>
+        </style>
+        <style name="InactiveText">
+                <item name="android:textColor">@android:color/tab_indicator_text</item>
+        </style>
 
 
 
