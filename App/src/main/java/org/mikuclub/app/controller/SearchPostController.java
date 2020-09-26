@@ -113,7 +113,8 @@ public class SearchPostController extends PostController
          * @param httpCallBack
          * @param page
          */
-        private void startDelegate(HttpCallBack httpCallBack, int page)
+        @Override
+        protected void startDelegate(HttpCallBack httpCallBack, int page)
         {
                 PostParameters parameters = (PostParameters) getParameters();
                 parameters.setSearch(query);

@@ -160,6 +160,9 @@ public class GlobalConfig
                 //POST TEST 测试接口
                 public static final String TEST = HOST + UTILS + "test/";
 
+                //GET APP专用获取收藏文章的接口
+                public static final String APP_FAVORITE_POST_LIST = HOST + UTILS + "app_favorite_post_list/";
+
         }
 
         /**
@@ -194,7 +197,7 @@ public class GlobalConfig
                 //每次更新检查的有效截止时间
                 public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";
                 //每次更新检查的有效周期
-                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS ; // 每天检查一次更新
+                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS; // 每天检查一次更新
 
                 //网站通知缓存
                 public static final String SITE_COMMUNICATION = "app_communication";
@@ -208,7 +211,7 @@ public class GlobalConfig
                 //菜单缓存的时间
                 public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire_1";
                 //菜单缓存的有效期
-                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS ; //每1天检查一次
+                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS; //每1天检查一次
 
                 //点赞过的文章ID数组
                 public static final String POST_LIKED_ARRAY = "post_liked";
@@ -233,7 +236,7 @@ public class GlobalConfig
                 public static class OrderBy
                 {
                         public static final String DATE = "date";
-                        public static final String INCLUDE= "include";
+                        public static final String INCLUDE = "include";
                 }
 
                 public static class Order
