@@ -23,6 +23,7 @@ import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.User;
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
@@ -46,7 +47,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
@@ -54,7 +54,7 @@ import mikuclub.app.R;
  * 用户信息页面
  * user profile page
  */
-public class UserProfileActivity extends AppCompatActivity
+public class UserProfileActivity extends MyActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 15;

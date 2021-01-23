@@ -29,7 +29,7 @@
                             android:id = "@+id/toolbar"
                             android:layout_width = "match_parent"
                             android:layout_height = "?attr/actionBarSize"
-                            android:background = "?attr/colorPrimary"
+                            android:background = "@color/defaultMikuBackground"
 
                             app:layout_scrollFlags = "scroll|enterAlways|snap"
                             app:popupTheme = "@style/ThemeOverlay.AppCompat.Light">
@@ -49,7 +49,7 @@
                                                     android:id = "@+id/search_input"
                                                     android:layout_width = "match_parent"
                                                     android:layout_height = "wrap_content"
-                                                    android:background = "@android:color/white"
+                                                    android:background = "@color/defaultBackgroundDark"
                                                     android:padding = "@dimen/small"
                                                     android:text = "@string/search_input_hint"
                                                     android:textColor = "@android:color/darker_gray" />

@@ -44,6 +44,8 @@ public class Comment  implements Serializable
               private List<Integer> comment_reply_ids;
               private String parent_user_name;
 
+                private String user_image;
+
                 public String getParent_user_name()
                 {
                         return parent_user_name;
@@ -62,6 +64,16 @@ public class Comment  implements Serializable
                 public void setComment_reply_ids(List<Integer> comment_reply_ids)
                 {
                         this.comment_reply_ids = comment_reply_ids;
+                }
+
+                public String getUser_image()
+                {
+                        return user_image;
+                }
+
+                public void setUser_image(String user_image)
+                {
+                        this.user_image = user_image;
                 }
         }
 

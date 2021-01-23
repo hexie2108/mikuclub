@@ -20,6 +20,7 @@ import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.UtilsDelegate;
 import org.mikuclub.app.javaBeans.parameters.LoginParameters;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
@@ -45,7 +46,7 @@ import mikuclub.app.R;
  * 登陆页面
  * login page
  */
-public class LoginActivity extends AppCompatActivity
+public class LoginActivity extends MyActivity
 {
 
         /* 静态变量 Static variable */

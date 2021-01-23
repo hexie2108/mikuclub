@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <color name = "colorPrimary">#FFFFFF</color>
+        <color name = "colorPrimaryDark">#3700b3</color>
+        <color name = "colorAccent">#03dac6</color>
+
+        <color name="colorOnSurface">#FF0000</color>
+
+        <color name = "defaultMikuBackground">#424242</color>
+        <color name = "defaultBackground">#424242</color>
+        <color name = "defaultBackgroundDark">#121212</color>
+        <color name = "defaultTextColor">#FFFFFF</color>
+
+
+        <color name = "defaultRippleColor" >#FFFFFF</color>
+
+
+</resources>

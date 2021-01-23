@@ -1,6 +1,7 @@
 package org.mikuclub.app.adapter;
 
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -120,6 +121,7 @@ public class HomeListAdapter extends PostAdapter
                                 {
                                         //获取广告信息
                                         String adIndex01Text = communicationBody.getApp_adindex_01_text();
+
                                         //用html解析器解析
                                         HttpUtils.parseHtmlDefault(getAdapterContext(), adIndex01Text, holder.getAdIndex01());
                                         //绑定点击事件

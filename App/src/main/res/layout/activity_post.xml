@@ -18,7 +18,7 @@
                     android:id = "@+id/post_collapsing_toolbar_layout"
                     android:layout_width = "match_parent"
                     android:layout_height = "wrap_content"
-                    app:contentScrim = "?attr/colorPrimary"
+                    app:contentScrim = "@color/defaultMikuBackground"
                     app:layout_scrollFlags = "scroll|exitUntilCollapsed"
                     app:titleEnabled = "false"
                     app:toolbarId = "@id/post_toolbar">
@@ -82,7 +82,7 @@
                 android:visibility="invisible"
             app:srcCompat = "@drawable/cloud_download"
             app:tint = "@android:color/white"
-            app:backgroundTint = "@color/colorPrimary"
+            app:backgroundTint = "@color/defaultMikuBackground"
             app:layout_anchor = "@id/post_app_bar"
             app:layout_anchorGravity = "bottom|end" />
 

@@ -9,7 +9,7 @@ import org.mikuclub.app.adapter.viewHolder.CommentViewHolder;
 import org.mikuclub.app.javaBeans.response.baseResource.Comment;
 import org.mikuclub.app.javaBeans.response.baseResource.HomeReplyComment;
 import org.mikuclub.app.ui.activity.AuthorActivity;
-import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.ui.activity.PostLoadActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
@@ -103,8 +103,8 @@ public class HomeReplyCommentAdapter extends BaseAdapterWithFooter
                         //隐藏未读提示
                         holder.getItemUnread().setVisibility(View.INVISIBLE);
 
-                        //启动文章页
-                        PostActivity.startAction(getAdapterContext(), replyComment.getPost());
+                        //加载文章页
+                        PostLoadActivity.startAction(getAdapterContext(), replyComment.getPost());
                 });
 
                 //绑定头像的点击事件监听器

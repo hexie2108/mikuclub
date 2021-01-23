@@ -51,6 +51,7 @@
                                             android:imeOptions = "actionSearch"
                                             android:inputType = "text"
                                             android:maxLines = "1"
+
                                             android:textColor = "@android:color/darker_gray"
                                             android:textCursorDrawable = "@drawable/custom_edit_text_cursor_color" />
                                 </com.google.android.material.textfield.TextInputLayout>

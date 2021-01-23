@@ -21,12 +21,12 @@ import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.SingleResponse;
 import org.mikuclub.app.javaBeans.response.SingleResponseArrayInteger;
 import org.mikuclub.app.javaBeans.response.WpError;
-import org.mikuclub.app.service.PostPushService;
 import org.mikuclub.app.storage.ApplicationPreferencesUtils;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
 import org.mikuclub.app.storage.PostPreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
@@ -41,7 +41,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -54,7 +53,7 @@ import mikuclub.app.R;
  * 启动页面
  * launch activity
  */
-public class WelcomeActivity extends AppCompatActivity
+public class WelcomeActivity extends MyActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 1;
@@ -137,7 +136,7 @@ public class WelcomeActivity extends AppCompatActivity
                         //设置最新的访问时间
                         ApplicationPreferencesUtils.setLatestAccessTime();
                         //根据偏好配置 判断是否启动推送服务
-                        initPostPushService();
+                       // initPostPushService();
 
                 }
                 else
@@ -529,7 +528,9 @@ public class WelcomeActivity extends AppCompatActivity
                 if (postPushIsActivated)
                 {
                         //启动文章推送服务
+                        /*关闭消息通知服务  20-12-26
                         PostPushService.startAction(this);
+                         */
                 }
 
         }
@@ -758,6 +759,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         /**
          * 启动本活动的静态方法
+         *
          * @param context
          */
         public static void startAction(Context context)
@@ -767,6 +769,7 @@ public class WelcomeActivity extends AppCompatActivity
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
         }
+
 
 
 }

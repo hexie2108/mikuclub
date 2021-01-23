@@ -37,6 +37,10 @@ public class GlobalConfig
         public static final int CATEGORY_ID_MOFA = 1120;
         //赞助页 文章ID
         public static final int SPONSOR_POST_ID = 150107;
+        //秒传链接教程 文章ID
+        public static final int BAIDU_FAST_LINK_INSTRUCTION_POST_ID = 185303;
+        //解压教程 文章ID
+        public static final int UNZIP_INSTRUCTION_POST_ID = 180124;
 
         //一天的毫秒数
         public static final long DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
@@ -89,7 +93,7 @@ public class GlobalConfig
 
 
         //后台服务器地址
-        public class Server
+        public static class Server
         {
 
                 //public static final String HOST = "http://192.168.3.101/html/";
@@ -168,22 +172,21 @@ public class GlobalConfig
         /**
          * 资源的元数据
          */
-        public class Metadata
+        public static class Metadata
         {
 
-                public class Attachment
+                public static class Attachment
                 {
                         //用来注明该附件图片 是头像, 和储存作者ID
                         public static final String _WP_ATTACHMENT_WP_USER_AVATAR = "_wp_attachment_wp_user_avatar";
 
                 }
 
-                public class User
+                public static class User
                 {
                         //储存 用户使用的头像 的post id
                         public static final String MM_USER_AVATAR = "mm_user_avatar";
                 }
-
 
         }
 
@@ -192,7 +195,6 @@ public class GlobalConfig
          */
         public static class Preferences
         {
-
 
                 //每次更新检查的有效截止时间
                 public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";
@@ -228,8 +230,14 @@ public class GlobalConfig
                 //收藏的文章ID数组
                 public static final String POST_FAVORITE = "post_favorite";
 
+                //颜色模式:
+                public static final String APP_UI_MODE = "app_ui_mode";
+
+
 
         }
+
+
 
         public static class Post
         {

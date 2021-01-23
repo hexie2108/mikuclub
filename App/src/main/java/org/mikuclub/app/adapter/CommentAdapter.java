@@ -72,7 +72,7 @@ public class CommentAdapter extends BaseAdapterWithFooter
                 String dateString = GeneralUtils.DateToString(comment.getDate());
                 viewHolder.getItemDate().setText(dateString);
                 //加载远程图片
-                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), comment.getAuthor_avatar_urls().getSize96());
+                GlideImageUtils.getSquareImg(getAdapterContext(), viewHolder.getItemAvatarImg(), comment.getMetadata().getUser_image());
 
                 //如果要显示回复数 和 回复不为空
                 if (displayReplyCount && !GeneralUtils.listIsNullOrHasEmptyElement(comment.getMetadata().getComment_reply_ids()))
@@ -122,7 +122,7 @@ public class CommentAdapter extends BaseAdapterWithFooter
                                 Author author = new Author();
                                 author.setDisplay_name(comment.getAuthor_name());
                                 author.setId(comment.getAuthor());
-                                author.setUser_image(comment.getAuthor_avatar_urls().getSize96());
+                                author.setUser_image(comment.getMetadata().getUser_image());
                                 AuthorActivity.startAction(getAdapterContext(), author);
                         }
 

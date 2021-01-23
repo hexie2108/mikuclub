@@ -12,12 +12,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.mikuclub.app.adapter.viewPager.CategoryViewPagerAdapter;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 import mikuclub.app.R;
@@ -26,7 +26,7 @@ import mikuclub.app.R;
  * 分类文章页
  * category post page
  */
-public class CategoryActivity extends AppCompatActivity
+public class CategoryActivity extends MyActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 6;

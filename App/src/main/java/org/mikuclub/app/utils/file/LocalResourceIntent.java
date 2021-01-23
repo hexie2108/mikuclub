@@ -77,7 +77,7 @@ public class LocalResourceIntent
         {
                 UCrop.Options options = new UCrop.Options();
                 // 修改标题栏颜色
-                options.setToolbarColor(activity.getResources().getColor(R.color.colorPrimary));
+                options.setToolbarColor(activity.getResources().getColor(R.color.defaultMikuBackground));
                 // 修改状态栏颜色
                 options.setStatusBarColor(activity.getResources().getColor(R.color.colorPrimaryDark));
 

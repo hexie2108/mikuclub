@@ -26,6 +26,7 @@ import org.mikuclub.app.javaBeans.response.baseResource.ImagePreview;
 import org.mikuclub.app.javaBeans.response.baseResource.Media;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.storage.CategoryPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
@@ -49,13 +50,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
-public class PostSubmitActivity extends AppCompatActivity
+public class PostSubmitActivity extends MyActivity
 {
 
         /* 静态变量 Static variable */
@@ -536,8 +536,13 @@ public class PostSubmitActivity extends AppCompatActivity
                                         if (passwordNameIndex != -1)
                                         {
 
+                                                //获取 提取码开始位置
+                                                int passwordStart = passwordNameIndex + passwordName.length();
+                                                //计算 提取码结束位置 (设定提取码长度为 4位数)
+                                                int passwordEnd = passwordStart + 4;
                                                 //提取出密码
-                                                String password = text.substring(passwordNameIndex + passwordName.length());
+                                                String password = text.substring(passwordStart, passwordEnd);
+
                                                 //从下载地址中 移除提取码 字符串和后续密码内容
                                                 text = text.substring(0, passwordNameIndex);
 

@@ -1,5 +1,6 @@
 package org.mikuclub.app.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +8,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aliya.uimode.intef.UiModeChangeListener;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -17,11 +20,12 @@ import org.mikuclub.app.javaBeans.response.Posts;
 import org.mikuclub.app.javaBeans.response.baseResource.UserLogin;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.ui.fragments.HomeCategoriesFragment;
 import org.mikuclub.app.ui.fragments.HomeMainFragment;
 import org.mikuclub.app.ui.fragments.HomeMessageFragment;
+import org.mikuclub.app.utils.AppUiMode;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.file.FileUtils;
@@ -30,7 +34,7 @@ import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -42,8 +46,9 @@ import mikuclub.app.R;
 /**
  * 主页
  * home page
+ * 需要实现 UiModeChangeListener 接口 来监听ui日夜模式切换事件
  */
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends MyActivity implements UiModeChangeListener
 {
         /* 静态变量 Static variable */
         public static final int TAG = 2;
@@ -79,10 +84,17 @@ public class HomeActivity extends AppCompatActivity
 
         private TextView searchInput;
         private FloatingActionButton floatingActionButton;
-        //侧边栏头部
+
+        //侧边栏头部组件
+        private View leftNavigationHeadView;
         private ImageView userAvatar;
         private TextView userName;
         private TextView userEmail;
+
+        //日夜模式切换按钮
+        private MaterialButton uiModeButton;
+        private TextView uiModeButtonText;
+
 
         //消息提示气泡
         private BadgeDrawable messaggeCountbadge;
@@ -92,6 +104,8 @@ public class HomeActivity extends AppCompatActivity
         protected void onCreate(Bundle savedInstanceState)
         {
 
+                // GeneralUtils.setNightThemeIfNightModeActivated(this);
+
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home);
 
@@ -100,10 +114,13 @@ public class HomeActivity extends AppCompatActivity
                 drawer = findViewById(R.id.home_drawer_layout);
                 leftNavigationView = findViewById(R.id.home_left_navigation_view);
                 //获取侧边栏头部布局
-                View header = leftNavigationView.getHeaderView(0);
-                userAvatar = header.findViewById(R.id.user_avatar);
-                userName = header.findViewById(R.id.user_name);
-                userEmail = header.findViewById(R.id.user_email);
+                leftNavigationHeadView = leftNavigationView.getHeaderView(0);
+                userAvatar = leftNavigationHeadView.findViewById(R.id.user_avatar);
+                userName = leftNavigationHeadView.findViewById(R.id.user_name);
+                userEmail = leftNavigationHeadView.findViewById(R.id.user_email);
+
+                uiModeButton = leftNavigationHeadView.findViewById(R.id.ui_mode_button);
+                uiModeButtonText = leftNavigationHeadView.findViewById(R.id.ui_mode_button_text);
 
                 bottomNavigationView = findViewById(R.id.home_bottom_bar);
                 searchInput = findViewById(R.id.search_input);
@@ -130,6 +147,16 @@ public class HomeActivity extends AppCompatActivity
                 ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);
                 drawer.addDrawerListener(toggle);
                 toggle.syncState();
+
+                //更新ui日夜按钮 状态
+                updateUiModeButton();
+                //绑定点击事件
+                uiModeButton.setOnClickListener(v ->
+                {
+                        //切换日夜模式
+                        switchUiMode();
+                });
+
 
         }
 
@@ -168,12 +195,13 @@ public class HomeActivity extends AppCompatActivity
                                                 break;
                                         case R.id.navigation_message:
                                                 //如果是登陆用户
-                                                if(UserPreferencesUtils.isLogin())
+                                                if (UserPreferencesUtils.isLogin())
                                                 {
                                                         changeFragment(homeMessageFragment, TAG_HOME_MESSAGE_FRAGMENT);
                                                 }
                                                 //否则跳转登陆页
-                                                else{
+                                                else
+                                                {
                                                         LoginActivity.startAction(this);
                                                 }
                                                 messaggeCountbadge.setVisible(false);
@@ -198,9 +226,10 @@ public class HomeActivity extends AppCompatActivity
                         //设置气泡位置偏移
                         messaggeCountbadge.setVerticalOffset(5);
                         //设置气泡背景颜色
-                        messaggeCountbadge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        messaggeCountbadge.setBackgroundColor(getResources().getColor(R.color.defaultMikuBackground));
                 }
-                else{
+                else
+                {
                         messaggeCountbadge.setVisible(false);
                 }
 
@@ -217,7 +246,7 @@ public class HomeActivity extends AppCompatActivity
          */
         private void changeFragment(Fragment fragment, String fragmentTag)
         {
-                LogUtils.w("切换 FRAGMENT");
+                //LogUtils.w("切换 FRAGMENT");
                 //创建新fragment
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 //如果当前有在显示fragment
@@ -299,7 +328,6 @@ public class HomeActivity extends AppCompatActivity
          */
         private void initLeftNavigationView()
         {
-
                 //绑定侧边栏菜单动作监听
                 leftNavigationView.setNavigationItemSelectedListener(item -> {
 
@@ -317,8 +345,8 @@ public class HomeActivity extends AppCompatActivity
                                         ToastUtils.shortToast(ResourcesUtils.getString(R.string.logout_notice));
                                         break;
                                 case R.id.item_sponsor:
-                                        //启动文章页 赞助
-                                        PostActivity.startAction(this, GlobalConfig.SPONSOR_POST_ID);
+                                        //加载文章页 赞助
+                                        PostLoadActivity.startAction(this, GlobalConfig.SPONSOR_POST_ID);
                                         break;
                                 case R.id.item_shopping:
                                         //启动淘宝 (启动apk 或者 启动浏览器)
@@ -352,6 +380,7 @@ public class HomeActivity extends AppCompatActivity
                                 case R.id.item_user_history:
                                         HistoryActivity.startAction(this);
                                         break;
+
                         }
                         //关闭侧边栏
                         drawer.closeDrawer(GravityCompat.START);
@@ -372,13 +401,13 @@ public class HomeActivity extends AppCompatActivity
                 //如果用户有登陆
                 if (UserPreferencesUtils.isLogin())
                 {
-                        LogUtils.v("登陆用户");
+                        //LogUtils.v("登陆用户");
                         setLoggingUserInfoAndMenu();
                 }
                 // 如果没登陆过
                 else
                 {
-                        LogUtils.v("未登录用户");
+                        //LogUtils.v("未登录用户");
                         setLogoutUserInfoAndMenu();
                 }
 
@@ -433,6 +462,66 @@ public class HomeActivity extends AppCompatActivity
                 leftNavigationView.inflateMenu(R.menu.home_left_drawer_menu_logged);
 
         }
+
+
+        /**
+         * 切换应用日夜模式
+         */
+        private void switchUiMode()
+        {
+                int nextUiMode;
+                switch (AppUiMode.getUiMode())
+                {
+                        case AppCompatDelegate.MODE_NIGHT_NO:
+                                nextUiMode = AppCompatDelegate.MODE_NIGHT_YES;
+                                break;
+                        case AppCompatDelegate.MODE_NIGHT_YES:
+                                nextUiMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                                break;
+                        case AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM:
+                        default:
+                                nextUiMode = AppCompatDelegate.MODE_NIGHT_NO;
+                                break;
+                }
+                AppUiMode.applyUiMode(nextUiMode);
+                HomeActivity.startAction(HomeActivity.this, stickyPosts, posts);
+                finish();
+        }
+
+        /**
+         * 更新日夜模式按钮状态
+         */
+        @SuppressLint("UseCompatLoadingForDrawables")
+        private void updateUiModeButton()
+        {
+                switch (AppUiMode.getUiMode())
+                {
+                        case AppCompatDelegate.MODE_NIGHT_NO:
+                                uiModeButton.setIcon(getResources().getDrawable(R.drawable.sun_o));
+                                uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_day));
+                                break;
+                        case AppCompatDelegate.MODE_NIGHT_YES:
+                                uiModeButton.setIcon(getResources().getDrawable(R.drawable.moon_o));
+                                uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_night));
+                                break;
+                        default:
+                                uiModeButton.setIcon(getResources().getDrawable(R.drawable.eclipse_o));
+                                uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_auto));
+
+                                break;
+                }
+        }
+
+        @Override
+        /**
+         * UI日夜模式切换事件
+         */
+        public void onUiModeChange()
+        {
+                //更新日夜模式按钮
+                //updateUiModeButton();
+        }
+
 
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)

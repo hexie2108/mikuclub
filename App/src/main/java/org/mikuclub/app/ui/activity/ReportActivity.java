@@ -14,6 +14,7 @@ import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.parameters.CreatePrivateMessageParameters;
 import org.mikuclub.app.javaBeans.response.WpError;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -24,7 +25,6 @@ import org.mikuclub.app.utils.http.Request;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
@@ -32,7 +32,7 @@ import mikuclub.app.R;
  * 问题反馈页面
  * report page
  */
-public class ReportActivity extends AppCompatActivity
+public class ReportActivity extends MyActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 10;

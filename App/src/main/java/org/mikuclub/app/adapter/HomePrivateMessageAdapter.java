@@ -86,8 +86,7 @@ public class HomePrivateMessageAdapter extends BaseAdapterWithFooter
          */
         private void setItemOnClickListener(final PrivateMessageViewHolder holder)
         {
-                //绑定评论框点击动作
-                holder.getItem().setOnClickListener(v -> {
+                View.OnClickListener onClickListener = v -> {
                         //获取对应位置的数据 , 修复可能的position偏移
                         PrivateMessage privateMessage = (PrivateMessage) getAdapterListElementWithHeaderRowFix(holder.getAdapterPosition());
 
@@ -98,7 +97,12 @@ public class HomePrivateMessageAdapter extends BaseAdapterWithFooter
 
                         //启动私信详情页
                         PrivateMessageActivity.startAction(getAdapterContext(), privateMessage.getAuthor());
-                });
+                };
+
+                //绑定评论框主体点击动作
+                holder.getItem().setOnClickListener(onClickListener);
+                holder.getItemContent().setOnClickListener(onClickListener);
+
 
         }
 

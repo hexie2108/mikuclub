@@ -6,18 +6,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import org.mikuclub.app.service.PostPushService;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.ResourcesUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import mikuclub.app.R;
 
-public class SettingsActivity extends AppCompatActivity
+public class SettingsActivity extends MyActivity
 {
         //偏好管理器
         private SharedPreferences pref;
@@ -50,11 +49,15 @@ public class SettingsActivity extends AppCompatActivity
                         //如果是修改了投稿推送参数
                         if(key.equals(ResourcesUtils.getString(R.string.preference_new_post_push_key))){
                                 //启动服务 取消旧定时器  之后 根据推送参数 来决定是否设置新定时器
+                                /*关闭消息通知服务  20-12-26
                                 PostPushService.startAction(SettingsActivity.this);
+                                 */
                         }
                         else if(key.equals(ResourcesUtils.getString(R.string.preference_new_post_push_cycle_key))){
                                 //启动服务 来重置定时器
+                                /*关闭消息通知服务  20-12-26
                                 PostPushService.startAction(SettingsActivity.this);
+                                 */
                         }
                 };
                 //绑定监听器

@@ -23,6 +23,7 @@ public class GeneralUtils
 
         /**
          * 去除字符串中的html标签
+         *
          * @param text
          * @return
          */
@@ -39,7 +40,7 @@ public class GeneralUtils
                         //兼容安卓旧版本的
                         else
                         {
-                                output =  Html.fromHtml(text).toString();
+                                output = Html.fromHtml(text).toString();
                         }
                 }
                 return output;
@@ -61,8 +62,6 @@ public class GeneralUtils
                 float px = dp * (metrics.densityDpi / 160f);
                 return px;
         }
-
-
 
 
         /**
@@ -188,6 +187,7 @@ public class GeneralUtils
         {
                 return new String(text.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         }
+
 
 
 }

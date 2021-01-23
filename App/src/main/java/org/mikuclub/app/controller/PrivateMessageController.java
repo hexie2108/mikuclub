@@ -14,7 +14,6 @@ import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.KeyboardUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ParserUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -139,7 +138,7 @@ public class PrivateMessageController extends BaseController
                                         //解析数据
                                         PrivateMessages privateMessages = ParserUtils.fromJson(response, PrivateMessages.class);
 
-                                        LogUtils.e(ParserUtils.toJson(privateMessages));
+                                        //LogUtils.e(ParserUtils.toJson(privateMessages));
 
                                         //逆转数据列表的排列, 把从新到旧 改成 从旧到新排列
                                         Collections.reverse(privateMessages.getBody());

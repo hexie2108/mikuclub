@@ -1,7 +1,6 @@
 package org.mikuclub.app.ui.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -26,20 +25,18 @@ import com.zhengsr.viewpagerlib.view.BannerViewPager;
 import org.mikuclub.app.adapter.viewPager.PostViewPagerAdapter;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.delegate.PostDelegate;
-import org.mikuclub.app.javaBeans.response.SinglePost;
-import org.mikuclub.app.javaBeans.response.WpError;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.storage.PostPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.ui.fragments.PostMainFragment;
 import org.mikuclub.app.ui.fragments.windows.DownloadFragment;
 import org.mikuclub.app.ui.fragments.windows.SharingFragment;
-import org.mikuclub.app.utils.AlertDialogUtils;
 import org.mikuclub.app.utils.GeneralUtils;
-import org.mikuclub.app.utils.ParserUtils;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ScreenUtils;
+import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
-import org.mikuclub.app.utils.http.HttpCallBack;
 import org.mikuclub.app.utils.http.Request;
 
 import java.util.List;
@@ -47,8 +44,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
 import androidx.viewpager2.widget.ViewPager2;
@@ -58,16 +53,16 @@ import mikuclub.app.R;
  * 文章页
  * post page
  */
-public class PostActivity extends AppCompatActivity
+public class PostActivity extends MyActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 4;
         public static final String INTENT_POST = "post";
-        public static final String INTENT_POST_ID = "pos_id";
+
 
         /* 变量 local variable */
         private Post post;
-        private int postId;
+
         //碎片适配器
         private PostViewPagerAdapter postViewPagerAdapter;
         private SharingFragment sharingWindowsFragment;
@@ -90,9 +85,6 @@ public class PostActivity extends AppCompatActivity
         //分页显示器
         private ViewPager2 viewPager;
         private FloatingActionButton postDownloadButton;
-        //创建进度条弹窗
-        AlertDialog progressDialog;
-        AlertDialog confirmDialog;
 
 
         @Override
@@ -131,23 +123,17 @@ public class PostActivity extends AppCompatActivity
                 }
 
 
-                postId = getIntent().getIntExtra(INTENT_POST_ID, 0);
                 //获取文章数据
                 post = (Post) getIntent().getSerializableExtra(INTENT_POST);
-                //如果是通过完整post数据方式启动本活动
-                if (post != null)
+                //如果缺少文章数据
+                if (post == null)
                 {
-                        //直接初始化
-                        setup();
+                        //结束窗口并 显示错误显示弹窗
+                        ToastUtils.longToast(ResourcesUtils.getString(R.string.error_message_missing_post));
+                        finish();
                 }
-                //准备通过post id 获取 文章
-                else
-                {
-                        //准备通过id请求文章
-                        prepareGetPost();
-                }
-
-
+                //初始化
+                setup();
 
         }
 
@@ -155,91 +141,8 @@ public class PostActivity extends AppCompatActivity
         protected void onStart()
         {
                 super.onStart();
-                //如果没有文章数据 , 但是有文章id
-                if (post == null && postId != 0)
-                {
-                        //发送请求
-                        getPostData();
-                }
         }
 
-        /**
-         * 准备请求文章
-         * prepare request to get post
-         */
-        private void prepareGetPost()
-        {
-                //创建请求代理扔
-                delegate = new PostDelegate(TAG);
-                //创建进度条弹窗
-                progressDialog = AlertDialogUtils.createProgressDialog(this, true, true);
-                //弹窗确认按钮点击事件监听
-                DialogInterface.OnClickListener positiveClickListener = (dialog, which) -> {
-                        //重试请求
-                        getPostData();
-                };
-                //弹窗取消按钮点击事件监听
-                DialogInterface.OnClickListener negativeClickListener = (dialog, which) -> {
-                        //关闭当前页面
-                        finish();
-                };
-                //创建重试弹窗
-                confirmDialog = AlertDialogUtils.createConfirmDialog(this, ResourcesUtils.getString(R.string.post_get_by_id_error_message), null, true, true, ResourcesUtils.getString(R.string.retry), positiveClickListener, ResourcesUtils.getString(R.string.cancel), negativeClickListener);
-
-        }
-
-
-        /**
-         * 发送请求
-         * send request to get post
-         */
-        private void getPostData()
-        {
-
-                //显示进度条
-                progressDialog.show();
-
-                HttpCallBack httpCallBack = new HttpCallBack()
-                {
-                        @Override
-                        public void onSuccess(String response)
-                        {
-                                //获取文章数据
-                                post = ParserUtils.fromJson(response, SinglePost.class).getBody();
-                                //初始化页面
-                                setup();
-                        }
-
-                        @Override
-                        public void onError(WpError wpError)
-                        {
-                                //弹出确认窗口 允许用户重试
-                                confirmDialog.show();
-                        }
-
-                        @Override
-                        public void onHttpError()
-                        {
-                                onError(null);
-                        }
-
-                        @Override
-                        public void onFinally()
-                        {
-                                //隐藏进度条弹窗
-                                progressDialog.dismiss();
-                        }
-
-                        @Override
-                        public void onCancel()
-                        {
-                                //隐藏进度条弹窗
-                                progressDialog.dismiss();
-                        }
-                };
-                delegate.getPost(httpCallBack, postId);
-
-        }
 
         /**
          * 初始化本活动
@@ -294,9 +197,10 @@ public class PostActivity extends AppCompatActivity
                                 //加载图片
                                 ImageView imageView = view.findViewById(R.id.item_image);
 
-                                String thumbnailSrc=null;
+                                String thumbnailSrc = null;
                                 //确保有微缩图
-                                if(post.getMetadata().getImages_thumbnail_src().size()>position){
+                                if (post.getMetadata().getImages_thumbnail_src().size() > position)
+                                {
                                         thumbnailSrc = post.getMetadata().getImages_thumbnail_src().get(position);
                                 }
 
@@ -324,6 +228,10 @@ public class PostActivity extends AppCompatActivity
                 postViewPagerAdapter = new PostViewPagerAdapter(this);
 
                 viewPager.setAdapter(postViewPagerAdapter);
+
+                //降低侧滑敏感度
+                RecyclerViewUtils.reduceViewPagerHorizontalScrollSensibility(viewPager);
+
                 //设置分页菜单名称
                 new TabLayoutMediator(tabsMenu, viewPager,
                         (tab, position) -> {
@@ -380,9 +288,10 @@ public class PostActivity extends AppCompatActivity
         public void changeHomeIconColorListener()
         {
                 //如果当前是横屏状态
-                if(ScreenUtils.isHorizontal(PostActivity.this)){
+                if (ScreenUtils.isHorizontal(PostActivity.this))
+                {
                         //改变折叠工具栏的显示高度
-                        int height = (int)  (getResources().getDisplayMetrics().heightPixels * GlobalConfig.HEIGHT_PERCENTAGE_OF_COLLAPSING_TOOLBAR_HORIZONTAL); //设置高度为屏幕百分比
+                        int height = (int) (getResources().getDisplayMetrics().heightPixels * GlobalConfig.HEIGHT_PERCENTAGE_OF_COLLAPSING_TOOLBAR_HORIZONTAL); //设置高度为屏幕百分比
                         ScreenUtils.setViewSize(postCollapsingToolbarLayout, 0, height);
                 }
 
@@ -402,7 +311,6 @@ public class PostActivity extends AppCompatActivity
                                         backButtonIcon.setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
                                 }
                         }
-
 
                 });
         }
@@ -476,20 +384,6 @@ public class PostActivity extends AppCompatActivity
                 context.startActivity(intent);
         }
 
-        /**
-         * 启动本活动的静态方法
-         * static method to start current activity2
-         * 只提供post id
-         *
-         * @param context
-         * @param postId
-         */
-        public static void startAction(Context context, int postId)
-        {
-                Intent intent = new Intent(context, PostActivity.class);
-                intent.putExtra(INTENT_POST_ID, postId);
-                context.startActivity(intent);
-        }
 
         public Post getPost()
         {
