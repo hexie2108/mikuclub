@@ -220,7 +220,7 @@ public class PostController extends BaseController
          * @param httpCallBack
          * @param page
          */
-        private void startDelegate(HttpCallBack httpCallBack, int page)
+        protected void startDelegate(HttpCallBack httpCallBack, int page)
         {
                 ((PostDelegate) getDelegate()).getPostList(httpCallBack, page, (PostParameters) getParameters());
         }

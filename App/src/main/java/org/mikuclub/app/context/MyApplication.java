@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
+import org.mikuclub.app.utils.AppUiMode;
 import org.mikuclub.app.utils.http.RequestQueue;
 
 /**
@@ -28,6 +29,9 @@ public class MyApplication extends Application
                 //创建网络请求队列
                 RequestQueue.getInstance(context);
 
+                //启动 日/夜间 模式系统
+                AppUiMode.init(MyApplication.this);
+
                 /*
                 //开发用 谷歌测试广告
                 List<String> testDevices = new ArrayList<>();
@@ -37,6 +41,8 @@ public class MyApplication extends Application
                         .setTestDeviceIds(testDevices)
                         .build();
                 MobileAds.setRequestConfiguration(requestConfiguration);*/
+
+
         }
 
         public static Context getContext()

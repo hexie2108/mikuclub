@@ -64,14 +64,18 @@
                     android:configChanges = "keyboardHidden|orientation|screenSize" />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.WelcomeActivity"
-                    android:configChanges = "keyboardHidden|orientation|screenSize">
+
+                    android:configChanges = "uiMode|keyboardHidden|orientation|screenSize">
                         <intent-filter>
                                 <action android:name = "android.intent.action.MAIN" />
 
                                 <category android:name = "android.intent.category.LAUNCHER" />
                         </intent-filter>
                 </activity>
-                <activity android:name = "org.mikuclub.app.ui.activity.HomeActivity" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.HomeActivity"
+                    android:configChanges = "uiMode"
+                    />
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.SearchActivity"
                     android:configChanges = "keyboardHidden|orientation|screenSize" />
@@ -89,7 +93,13 @@
                 <activity
                     android:name = "org.mikuclub.app.ui.activity.UserProfileActivity"
                     android:configChanges = "keyboardHidden|orientation|screenSize"
-                    android:label = "@string/user_profile" /> <!-- 剪辑图片 专用 -->
+                    android:label = "@string/user_profile" />
+                <activity
+                    android:name = "org.mikuclub.app.ui.activity.PostLoadActivity"
+                    android:configChanges = "keyboardHidden|orientation|screenSize"
+                     />
+
+                <!-- 剪辑图片 专用 -->
                 <activity
                     android:name = "com.yalantis.ucrop.UCropActivity"
                     android:theme = "@style/Theme.AppCompat.Light.NoActionBar" /> <!-- 解决腾讯sdk 网络连接报错 -->

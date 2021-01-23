@@ -71,14 +71,13 @@ public class ApplicationPreferencesUtils
                 String communicationString = PreferencesUtils.getApplicationPreference().getString(GlobalConfig.Preferences.SITE_COMMUNICATION, null);
                 if (communicationString == null)
                 {
-                       exist = false;
+                        exist = false;
                 }
                 return exist;
         }
 
 
         /**
-         *
          * 设置站点通知消息的有效期
          *
          * @param siteCommunicationJson 序列化后的 消息对象
@@ -117,5 +116,28 @@ public class ApplicationPreferencesUtils
                         .putLong(GlobalConfig.Preferences.LATEST_ACCESS_TIME, System.currentTimeMillis())
                         .apply();
         }
+
+        /**
+         * 获取当前 日/夜模式 ID编号
+         * @return boolean
+         */
+        public static int getAppUiMode()
+        {
+                return PreferencesUtils.getApplicationPreference().getInt(GlobalConfig.Preferences.APP_UI_MODE, 0);
+        }
+
+        /**
+         * 设置 日/夜模式 ID编号
+         * @param int 开关
+         */
+        public static void setAppUiMode(int uiMode)
+        {
+                //保存变更到共享偏好里
+                PreferencesUtils.getApplicationPreference()
+                        .edit()
+                        .putInt(GlobalConfig.Preferences.APP_UI_MODE, uiMode)
+                        .apply();
+        }
+
 
 }

@@ -17,9 +17,9 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginEnd = "60dp"
                     android:maxLines = "2"
-                    android:textColor = "@android:color/black"
-                    android:textStyle = "bold"
+
                     android:textIsSelectable = "true"
+                    android:textStyle = "bold"
                     app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintStart_toStartOf = "parent"
                     app:layout_constraintTop_toTopOf = "parent" />
@@ -86,8 +86,21 @@
                     android:lineHeight = "@dimen/very_large"
                     android:text = "@string/post_baidu_fast_link_text"
 
-                    app:layout_constraintEnd_toEndOf = "parent"
+
                     app:layout_constraintStart_toStartOf = "parent"
+                    app:layout_constraintTop_toBottomOf = "@id/post_unzip_password2_text" />
+
+                <TextView
+                    android:id = "@+id/post_baidu_fast_link_instruction"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:autoLink = "all"
+                    android:lineHeight = "@dimen/very_large"
+                    android:textColor="@color/colorAccent"
+                    android:text = "@string/post_baidu_fast_link_instruction"
+
+                    app:layout_constraintEnd_toEndOf = "parent"
                     app:layout_constraintTop_toBottomOf = "@id/post_unzip_password2_text" />
 
                 <TextView

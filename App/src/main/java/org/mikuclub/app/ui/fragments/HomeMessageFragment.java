@@ -155,7 +155,7 @@ public class HomeMessageFragment extends Fragment
                         //设置气泡数字
                         privateMessageCountBadge.setNumber(MessagePreferencesUtils.getPrivateMessageCount());
                         //设置气泡背景颜色
-                        privateMessageCountBadge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        privateMessageCountBadge.setBackgroundColor(getResources().getColor(R.color.defaultMikuBackground));
                 }
                 //否则隐藏
                 else
@@ -172,7 +172,7 @@ public class HomeMessageFragment extends Fragment
                         //设置气泡数字
                         commentCountBadge.setNumber(MessagePreferencesUtils.getReplyCommentCount());
                         //设置气泡背景颜色
-                        commentCountBadge.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        commentCountBadge.setBackgroundColor(getResources().getColor(R.color.defaultMikuBackground));
                 }
                 //否则隐藏
                 else

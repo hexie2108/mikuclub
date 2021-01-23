@@ -163,7 +163,7 @@ public class CommentRepliesFragment extends BottomSheetDialogFragment
                 String dateString = GeneralUtils.DateToString(comment.getDate());
                 itemDate.setText(dateString);
                 //加载远程图片
-                GlideImageUtils.getSquareImg(getActivity(), itemAvatarImg, comment.getAuthor_avatar_urls().getSize96());
+                GlideImageUtils.getSquareImg(getActivity(), itemAvatarImg, comment.getMetadata().getUser_image());
 
                 //显示解析过html的内容
                 HttpUtils.parseHtmlDefault(getActivity(), comment.getContent().getRendered(), itemContent);

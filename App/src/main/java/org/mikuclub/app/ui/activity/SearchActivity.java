@@ -9,11 +9,11 @@ import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.http.Request;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
 
@@ -21,7 +21,7 @@ import mikuclub.app.R;
  * 搜索页面
  * search page
  */
-public class SearchActivity extends AppCompatActivity
+public class SearchActivity extends MyActivity
 {
         /* 静态变量 Static variable */
         public static final int TAG = 3;

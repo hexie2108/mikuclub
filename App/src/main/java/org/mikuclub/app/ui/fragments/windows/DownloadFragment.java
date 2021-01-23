@@ -13,10 +13,10 @@ import com.google.android.material.button.MaterialButton;
 import org.mikuclub.app.config.GlobalConfig;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.ui.activity.PostLoadActivity;
 import org.mikuclub.app.utils.ClipboardUtils;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
-import org.mikuclub.app.utils.LogUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ScreenUtils;
 import org.mikuclub.app.utils.ToastUtils;
@@ -56,6 +56,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
         private MaterialButton down1Button;
         private MaterialButton down2Button;
         private TextView downInfo;
+        private TextView unzipInstructionLink;
 
         private MaterialButton returnButton;
 
@@ -63,7 +64,7 @@ public class DownloadFragment extends BottomSheetDialogFragment
         @Override
         public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
         {
-                LogUtils.e("onCreateDialog");
+                //LogUtils.e("onCreateDialog");
                 return super.onCreateDialog(savedInstanceState);
         }
 
@@ -104,6 +105,8 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 down2Button = view.findViewById(R.id.down2_button);
                 downInfo = view.findViewById(R.id.down_info);
 
+                unzipInstructionLink = view.findViewById(R.id.unzip_instruction_link);
+
                 returnButton = view.findViewById(R.id.return_button);
 
 
@@ -139,6 +142,11 @@ public class DownloadFragment extends BottomSheetDialogFragment
                 returnButton.setOnClickListener(v -> {
                         //关闭窗口
                         DownloadFragment.this.dismiss();
+                });
+
+                //绑定教程链接
+                unzipInstructionLink.setOnClickListener(v -> {
+                        PostLoadActivity.startAction(getActivity(), GlobalConfig.UNZIP_INSTRUCTION_POST_ID);
                 });
         }
 

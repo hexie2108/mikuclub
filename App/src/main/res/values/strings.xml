@@ -108,7 +108,8 @@
         <string name = "post_access_password">访问密码</string>
         <string name = "post_unzip_password">解压密码</string>
         <string name = "post_unzip_password2">解压密码2</string>
-        <string name = "post_download_help">普通点击会打开客户端/浏览器+自动复制提取码\n长按可只复制下载链接\n\n文件解压错误的常见原因:\n- 输入了错误的解压密码.\n-  有的文件是压缩分卷, 请全部下载完成后, 再解压第一个分卷, 具体可百度教程.\n- 解压软件问题, 请更换成知名的应用比如ZArchiver等.\n- 文件在下载过程中损坏, 这种情况只能重新下载.</string>
+        <string name = "post_download_help">普通点击会打开客户端/浏览器+自动复制提取码\n长按可只复制下载链接\n\n不知道怎么解压文件的和碰到解压问题的, 可以看看下面的链接</string>
+        <string name = "unzip_instruction_link"><u>查看文件解压教程</u></string>
         <string name = "sharing_to_qq">分享到QQ</string>
         <string name = "another_methods">其他方式</string>
         <string name = "sharing_to_weibo">分享到微博</string>
@@ -142,7 +143,8 @@
         <string name = "update_user_error_message" translatable = "false">更新图片元数据失败</string>
         <string name = "update_successfully_message">信息已更新完成</string>
 
-        <string name = "post_baidu_fast_link_text">秒传链接 (需要通过PC端使用)</string>
+        <string name = "post_baidu_fast_link_text">秒传链接</string>
+        <string name = "post_baidu_fast_link_instruction"><u>查看使用方法</u></string>
 
         <string name = "source">来源</string>
         <!--search page-->
@@ -236,5 +238,12 @@
         <string name = "favorite_empty_error">目前收藏夹是空的</string>
         <!-- history page 浏览历史-->
         <string name = "history_empty_error">暂无浏览记录</string>
+
+        <string name = "ui_mode_auto">跟随系统</string>
+        <string name = "ui_mode_day">白天模式</string>
+        <string name = "ui_mode_night">夜间模式</string>
+
+        <string name = "error_message_missing_post_id">错误: 缺少文章ID</string>
+        <string name = "error_message_missing_post">错误: 缺少文章数据</string>
 
 </resources>

@@ -36,6 +36,7 @@ public class PostDelegate extends BaseDelegate
         /**
          * 获取置顶文章列表
          * 排除魔法区文章
+         *
          * @param httpCallBack
          * @param page
          */
@@ -85,7 +86,6 @@ public class PostDelegate extends BaseDelegate
                 {
                         parameters.setOrderby(GlobalConfig.Post.OrderBy.DATE);
                 }
-
                 //如果是搜索文章
                 Map<String, String> headers = null;
                 //如果是要搜索的情况, 或者是要获取 除了publish 以外其他状态的文章
@@ -93,8 +93,6 @@ public class PostDelegate extends BaseDelegate
                 {
                         headers = UserPreferencesUtils.createLoggedUserHeader();
                 }
-
-
                 getModel().selectForList(parameters.toMap(), headers, getTag(), httpCallBack);
 
         }
@@ -179,7 +177,6 @@ public class PostDelegate extends BaseDelegate
         }
 
 
-
         /**
          * 获取从最后访问时间 到目前为止 新发布的文章数量
          *
@@ -235,6 +232,7 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 获取用户收藏夹
+         *
          * @param httpCallBack
          */
         public void getPostFavorite(HttpCallBack httpCallBack)
@@ -244,6 +242,7 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 添加id到用户收藏夹
+         *
          * @param httpCallBack
          * @param postId
          */
@@ -256,6 +255,7 @@ public class PostDelegate extends BaseDelegate
 
         /**
          * 从用户收藏夹删除id
+         *
          * @param httpCallBack
          * @param postId
          */
@@ -267,6 +267,22 @@ public class PostDelegate extends BaseDelegate
                 目前delete请求中的body参数无法被解读, 所以把post_id 加到 query参数里
                 =================================================*/
                 Request.delete(GlobalConfig.Server.POST_FAVORITE, queryParameters, null, UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
+        }
+
+
+        /**
+         * 获取收藏文章列表
+         *
+         * @param httpCallBack 回调方法
+         * @param page         请求页数
+         */
+        public void getFavoritePostList(HttpCallBack httpCallBack, int page, PostParameters parameters)
+        {
+
+                parameters.setPage(page);
+                parameters.setPer_page(GlobalConfig.NUMBER_PER_PAGE);
+
+                Request.get(GlobalConfig.Server.APP_FAVORITE_POST_LIST, parameters.toMap(), UserPreferencesUtils.createLoggedUserHeader(), getTag(), httpCallBack);
         }
 
 }

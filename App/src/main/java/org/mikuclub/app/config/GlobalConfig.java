@@ -37,6 +37,10 @@ public class GlobalConfig
         public static final int CATEGORY_ID_MOFA = 1120;
         //赞助页 文章ID
         public static final int SPONSOR_POST_ID = 150107;
+        //秒传链接教程 文章ID
+        public static final int BAIDU_FAST_LINK_INSTRUCTION_POST_ID = 185303;
+        //解压教程 文章ID
+        public static final int UNZIP_INSTRUCTION_POST_ID = 180124;
 
         //一天的毫秒数
         public static final long DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
@@ -89,7 +93,7 @@ public class GlobalConfig
 
 
         //后台服务器地址
-        public class Server
+        public static class Server
         {
 
                 //public static final String HOST = "http://192.168.3.101/html/";
@@ -160,27 +164,29 @@ public class GlobalConfig
                 //POST TEST 测试接口
                 public static final String TEST = HOST + UTILS + "test/";
 
+                //GET APP专用获取收藏文章的接口
+                public static final String APP_FAVORITE_POST_LIST = HOST + UTILS + "app_favorite_post_list/";
+
         }
 
         /**
          * 资源的元数据
          */
-        public class Metadata
+        public static class Metadata
         {
 
-                public class Attachment
+                public static class Attachment
                 {
                         //用来注明该附件图片 是头像, 和储存作者ID
                         public static final String _WP_ATTACHMENT_WP_USER_AVATAR = "_wp_attachment_wp_user_avatar";
 
                 }
 
-                public class User
+                public static class User
                 {
                         //储存 用户使用的头像 的post id
                         public static final String MM_USER_AVATAR = "mm_user_avatar";
                 }
-
 
         }
 
@@ -190,11 +196,10 @@ public class GlobalConfig
         public static class Preferences
         {
 
-
                 //每次更新检查的有效截止时间
                 public static final String APP_UPDATE_EXPIRE = "app_update_cache_expire";
                 //每次更新检查的有效周期
-                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS ; // 每天检查一次更新
+                public static final long APP_UPDATE_EXPIRE_TIME = DAY_IN_MILLISECONDS; // 每天检查一次更新
 
                 //网站通知缓存
                 public static final String SITE_COMMUNICATION = "app_communication";
@@ -208,7 +213,7 @@ public class GlobalConfig
                 //菜单缓存的时间
                 public static final String CATEGORIES_CACHE_EXPIRE = "categories_cache_expire_1";
                 //菜单缓存的有效期
-                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS ; //每1天检查一次
+                public static final long CATEGORIES_CACHE_EXPIRE_TIME = DAY_IN_MILLISECONDS; //每1天检查一次
 
                 //点赞过的文章ID数组
                 public static final String POST_LIKED_ARRAY = "post_liked";
@@ -225,15 +230,21 @@ public class GlobalConfig
                 //收藏的文章ID数组
                 public static final String POST_FAVORITE = "post_favorite";
 
+                //颜色模式:
+                public static final String APP_UI_MODE = "app_ui_mode";
+
+
 
         }
+
+
 
         public static class Post
         {
                 public static class OrderBy
                 {
                         public static final String DATE = "date";
-                        public static final String INCLUDE= "include";
+                        public static final String INCLUDE = "include";
                 }
 
                 public static class Order

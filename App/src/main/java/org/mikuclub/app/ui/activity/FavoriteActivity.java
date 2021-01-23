@@ -9,11 +9,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.mikuclub.app.adapter.PostAdapter;
 import org.mikuclub.app.config.GlobalConfig;
-import org.mikuclub.app.controller.PostController;
+import org.mikuclub.app.controller.FavoritePostController;
 import org.mikuclub.app.delegate.PostDelegate;
 import org.mikuclub.app.javaBeans.parameters.PostParameters;
 import org.mikuclub.app.javaBeans.response.baseResource.Post;
 import org.mikuclub.app.storage.PostPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.custom.MyGridLayoutSpanSizeLookup;
@@ -25,14 +26,13 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import mikuclub.app.R;
 
-public class FavoriteActivity extends AppCompatActivity
+public class FavoriteActivity extends MyActivity
 {
 
         /* 静态变量 Static variable */
@@ -41,7 +41,7 @@ public class FavoriteActivity extends AppCompatActivity
         /* 变量 local variable */
         //数据请求代理人
         private PostDelegate delegate;
-        private PostController controller;
+        private FavoritePostController controller;
 
         //列表适配器
         private PostAdapter recyclerViewAdapter;
@@ -145,18 +145,10 @@ public class FavoriteActivity extends AppCompatActivity
          */
         private void initController()
         {
-                //设置查询参数
-                PostParameters parameters = new PostParameters();
 
-                //确保收藏夹不是空的
-                if(!PostPreferencesUtils.getFavoritePostIds().isEmpty()){
-                        //参数设置只获取收藏夹里的文章id相关的文章
-                        parameters.setInclude(PostPreferencesUtils.getFavoritePostIds());
-                        //设置根据 文章id 来对结果进行排序
-                        parameters.setOrderby(GlobalConfig.Post.OrderBy.INCLUDE);
-                }
+                PostParameters parameters = new PostParameters();
                 //如果收藏夹为空 , 直接显示无内容错误
-                else{
+                if(PostPreferencesUtils.getFavoritePostIds().isEmpty()){
                         recyclerViewAdapter.setNotMoreErrorMessage(ResourcesUtils.getString(R.string.favorite_empty_error));
                         recyclerViewAdapter.updateFooterStatus(false, true, false);
                         //关闭上拉加载
@@ -164,9 +156,8 @@ public class FavoriteActivity extends AppCompatActivity
                 }
 
 
-
                 //创建数据控制器
-                controller = new PostController(this);
+                controller = new FavoritePostController(this);
                 controller.setDelegate(delegate);
                 controller.setRecyclerView(recyclerView);
                 controller.setRecyclerViewAdapter(recyclerViewAdapter);

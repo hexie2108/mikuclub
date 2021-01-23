@@ -19,6 +19,7 @@ import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.type.BannerTransType;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.ToastUtils;
 import org.mikuclub.app.utils.http.GlideImageUtils;
@@ -26,10 +27,9 @@ import org.mikuclub.app.utils.http.GlideImageUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
 import mikuclub.app.R;
 
-public class ImageActivity extends AppCompatActivity
+public class ImageActivity extends MyActivity
 {
 
         /* 静态变量 Static variable */

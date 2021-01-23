@@ -23,6 +23,7 @@
             android:layout_height = "match_parent"
             android:layout_gravity = "start"
             android:fitsSystemWindows = "true"
+
             app:headerLayout = "@layout/home_left_drawer_header"
             app:menu = "@menu/home_left_drawer_menu_logout" />
 

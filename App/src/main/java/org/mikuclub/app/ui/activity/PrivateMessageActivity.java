@@ -18,6 +18,7 @@ import org.mikuclub.app.delegate.MessageDelegate;
 import org.mikuclub.app.javaBeans.response.baseResource.Author;
 import org.mikuclub.app.javaBeans.response.baseResource.PrivateMessage;
 import org.mikuclub.app.storage.UserPreferencesUtils;
+import org.mikuclub.app.ui.activity.base.MyActivity;
 import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.custom.MyTextWatcher;
 import org.mikuclub.app.utils.http.Request;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,7 +39,7 @@ import mikuclub.app.R;
  * 因为是 通过 fragment里的 viepager内置的fragment启动的活动
  * 导致了 onStop 和 onDestroy 异常, 会延迟10s左右才被加载,  不要在这2个函数内加任何代码
  */
-public class PrivateMessageActivity extends AppCompatActivity
+public class PrivateMessageActivity extends MyActivity
 {
 
         /* 静态变量 Static variable */

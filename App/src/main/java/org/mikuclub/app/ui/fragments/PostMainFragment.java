@@ -22,6 +22,7 @@ import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.AuthorActivity;
 import org.mikuclub.app.ui.activity.ImageActivity;
 import org.mikuclub.app.ui.activity.PostActivity;
+import org.mikuclub.app.ui.activity.PostLoadActivity;
 import org.mikuclub.app.utils.GeneralUtils;
 import org.mikuclub.app.utils.HttpUtils;
 import org.mikuclub.app.utils.ParserUtils;
@@ -83,6 +84,7 @@ public class PostMainFragment extends Fragment
         private TextView postUnzipPassword1;
         private TextView postUnzipPassword2;
         private TextView postBaiduFastLink;
+        private TextView postBaiduFastLinkInstructon;
 
 
         @Override
@@ -123,6 +125,7 @@ public class PostMainFragment extends Fragment
                 postUnzipPassword1Text = view.findViewById(R.id.post_unzip_password1_text);
                 postUnzipPassword2Text = view.findViewById(R.id.post_unzip_password2_text);
                 postBaiduFastLinkText = view.findViewById(R.id.post_baidu_fast_link_text);
+                postBaiduFastLinkInstructon = view.findViewById(R.id.post_baidu_fast_link_instruction);
 
                 //从活动中获取文章数据
                 post = ((PostActivity) getActivity()).getPost();
@@ -258,7 +261,8 @@ public class PostMainFragment extends Fragment
                         postUnzipPassword1.setText(metadata.getUnzip_password().get(0));
                 }
                 //隐藏解压密码的文本
-                else{
+                else
+                {
                         postUnzipPassword1.setVisibility(View.GONE);
                         postUnzipPassword1Text.setVisibility(View.GONE);
                 }
@@ -269,7 +273,8 @@ public class PostMainFragment extends Fragment
                         postUnzipPassword2.setText(metadata.getUnzip_password2().get(0));
                 }
                 //隐藏解压密码2的文本
-                else{
+                else
+                {
                         postUnzipPassword2.setVisibility(View.GONE);
                         postUnzipPassword2Text.setVisibility(View.GONE);
                 }
@@ -278,11 +283,20 @@ public class PostMainFragment extends Fragment
                 if (!GeneralUtils.listIsNullOrHasEmptyElement(metadata.getBaidu_fast_link()))
                 {
                         postBaiduFastLink.setText(metadata.getBaidu_fast_link().get(0));
+                        //绑定点击, 跳转到教程页面
+                        postBaiduFastLinkInstructon.setOnClickListener(v -> {
+
+                                PostLoadActivity.startAction(getActivity(), GlobalConfig.BAIDU_FAST_LINK_INSTRUCTION_POST_ID);
+
+
+                        });
                 }
                 //隐藏秒传链接的文本
-                else{
+                else
+                {
                         postBaiduFastLink.setVisibility(View.GONE);
                         postBaiduFastLinkText.setVisibility(View.GONE);
+                        postBaiduFastLinkInstructon.setVisibility(View.GONE);
                 }
 
                 //如果有来源地址
@@ -301,20 +315,22 @@ public class PostMainFragment extends Fragment
                 //如果没有任何来源说明
                 if (postSource.getText().toString().isEmpty())
                 {
-
                         postSource.setVisibility(View.GONE);
                 }
                 //否则添加 "来源" 文本
-                else{
-                        postSource.setText(ResourcesUtils.getString(R.string.source)+" "+postSource.getText());
+                else
+                {
+                        postSource.setText(ResourcesUtils.getString(R.string.source) + " " + postSource.getText());
                 }
+
 
                 //开启超链接支持
                 postDescription.setMovementMethod(LinkMovementMethod.getInstance());
                 String htmlDescription;
                 //获取描述
                 htmlDescription = post.getContent().getRendered();
-
+                //移除描述里 文字大小css
+                htmlDescription = htmlDescription.replace("font-size", "fontsize");
 
                 //解析 html描述
                 HttpUtils.parseHtml(getActivity(), htmlDescription, postDescription, new OnTagClickListener()
@@ -323,7 +339,6 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onImageClick(Context context, List<String> imagesSrc, int position)
                         {
-
                                 //启动单独的图片查看页面
                                 ImageActivity.startAction(getActivity(), imagesSrc, null, position);
                         }
@@ -332,8 +347,7 @@ public class PostMainFragment extends Fragment
                         @Override
                         public void onLinkClick(Context context, String url)
                         {
-                                //启动第三方应用
-                                HttpUtils.startWebViewIntent(context, url, null);
+                                HttpUtils.loadPageOrStartIntent(context, url, null);
                         }
                 });
         }
@@ -367,7 +381,7 @@ public class PostMainFragment extends Fragment
                 //如果是已激活, 更改按钮颜色
                 if (isActivated)
                 {
-                        iconColorId = getResources().getColor(R.color.colorPrimary);
+                        iconColorId = getResources().getColor(R.color.colorAccent);
                 }
 
                 //更改按钮样式
@@ -441,7 +455,7 @@ public class PostMainFragment extends Fragment
         public void afterShareAction()
         {
                 //更改按钮颜色
-                int iconColorId = getResources().getColor(R.color.colorPrimary);
+                int iconColorId = getResources().getColor(R.color.colorAccent);
                 postCountShareButton.setIconTint(ColorStateList.valueOf(iconColorId));
                 //设置默认分享次数为1
                 int countSharing = 1;
@@ -503,7 +517,7 @@ public class PostMainFragment extends Fragment
                 //如果是已激活, 改变按钮颜色
                 if (isActivated)
                 {
-                        iconColorId = getResources().getColor(R.color.colorPrimary);
+                        iconColorId = getResources().getColor(R.color.colorAccent);
                 }
 
                 //更改按钮样式

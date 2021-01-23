@@ -9,11 +9,15 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+
+import org.mikuclub.app.config.GlobalConfig;
+import org.mikuclub.app.ui.activity.PostLoadActivity;
 
 import java.util.List;
 
@@ -97,6 +101,38 @@ public class HttpUtils
                         }
                 }
                 return text;
+        }
+
+        /**
+         * 如果是内部文章链接, 加载文章页, 如果是外部链接, 启动 浏览器或第三方应用
+         * @param context
+         * @param url
+         * @param SecondaryUrl
+         */
+        public static void loadPageOrStartIntent(Context context, String url, String SecondaryUrl){
+
+                //如果是站内内部链接 并且 可以被分割成5个元素
+                if (url != null && url.contains(GlobalConfig.Server.HOST) && url.split("/").length >= 4)
+                {
+                        //提取出文章id, 排除# , ? 符号和后续内容
+                        String postId = url.split("/")[3].split("#")[0].split("\\?")[0];
+                        try
+                        {
+                                PostLoadActivity.startAction(context, Integer.parseInt(postId));
+                        }
+                        //如果无法提取文章id 默认打开浏览器
+                        catch (NumberFormatException ex)
+                        {
+                                //启动第三方应用
+                                HttpUtils.startWebViewIntent(context, url, SecondaryUrl);
+                        }
+                }
+                else
+                {
+                        //启动第三方应用
+                        HttpUtils.startWebViewIntent(context, url, SecondaryUrl);
+                }
+
         }
 
         /**
@@ -263,6 +299,8 @@ public class HttpUtils
         public static void parseHtmlDefault(final Context context, String htmlString, TextView textView)
         {
 
+                textView.setMovementMethod(LinkMovementMethod.getInstance());
+
                 HttpUtils.parseHtml(context, htmlString, textView, new OnTagClickListener()
                 {
                         //设置 点击图片tag的动作
@@ -276,7 +314,7 @@ public class HttpUtils
                         public void onLinkClick(Context context, String url)
                         {
 
-                                startWebViewIntent(context, url, null);
+                                loadPageOrStartIntent(context, url, null);
                         }
                 });
         }

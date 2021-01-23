@@ -5,7 +5,8 @@
     xmlns:app = "http://schemas.android.com/apk/res-auto"
     xmlns:tools = "http://schemas.android.com/tools"
     android:layout_width = "match_parent"
-    android:layout_height = "match_parent">
+    android:layout_height = "match_parent"
+    android:background = "@color/defaultBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id = "@+id/down1_box"
@@ -53,7 +54,7 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
-                    android:textColor = "@android:color/black"
+
                     android:textIsSelectable = "true"
                     android:textSize = "@dimen/text_default"
 
@@ -79,7 +80,7 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
-                    android:textColor = "@android:color/black"
+
                     android:textIsSelectable = "true"
                     android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toEndOf = "@id/down1_unzip_password_text"
@@ -159,7 +160,7 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
-                    android:textColor = "@android:color/black"
+
                     android:textIsSelectable = "true"
                     android:textSize = "@dimen/text_default"
                     app:layout_constraintStart_toEndOf = "@id/down2_password_text"
@@ -184,7 +185,7 @@
                     android:layout_height = "wrap_content"
                     android:layout_marginStart = "@dimen/large"
                     android:selectAllOnFocus = "true"
-                    android:textColor = "@android:color/black"
+
                     android:textIsSelectable = "true"
                     android:textSize = "@dimen/text_default"
 
@@ -237,6 +238,19 @@
             app:layout_constraintStart_toStartOf = "parent"
             app:layout_constraintTop_toBottomOf = "@id/down2_box"
             app:layout_goneMarginTop = "@dimen/normal" />
+
+        <TextView
+            android:id = "@+id/unzip_instruction_link"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/very_large"
+            android:autoLink = "all"
+            android:text = "@string/unzip_instruction_link"
+            android:textAlignment = "center"
+            android:textColor = "@color/colorAccent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/down_info" />
 
 
         <View
