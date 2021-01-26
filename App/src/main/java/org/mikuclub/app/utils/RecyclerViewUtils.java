@@ -54,7 +54,7 @@ public class RecyclerViewUtils
         public static void reduceViewPagerHorizontalScrollSensibility(ViewPager2 viewPager)
         {
                 //越大越不敏感, 滑动需要的动作越大
-                int sensitivity = 8;
+                int sensitivity = 3;
 
                 try
                 {

@@ -49,7 +49,7 @@
                                                     android:id = "@+id/search_input"
                                                     android:layout_width = "match_parent"
                                                     android:layout_height = "wrap_content"
-                                                    android:background = "@color/defaultBackgroundDark"
+                                                    android:background = "@color/defaultBackground"
                                                     android:padding = "@dimen/small"
                                                     android:text = "@string/search_input_hint"
                                                     android:textColor = "@android:color/darker_gray" />

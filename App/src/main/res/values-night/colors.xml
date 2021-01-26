@@ -5,11 +5,13 @@
         <color name = "colorPrimaryDark">#3700b3</color>
         <color name = "colorAccent">#03dac6</color>
 
+        <color name = "colorMiku">#424242</color>
+
         <color name="colorOnSurface">#FF0000</color>
 
         <color name = "defaultMikuBackground">#424242</color>
+        <color name = "defaultMikuLightBackground">#FFFFFF</color>
         <color name = "defaultBackground">#424242</color>
-        <color name = "defaultBackgroundDark">#121212</color>
         <color name = "defaultTextColor">#FFFFFF</color>
 
 

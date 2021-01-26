@@ -108,7 +108,7 @@
         <string name = "post_access_password">访问密码</string>
         <string name = "post_unzip_password">解压密码</string>
         <string name = "post_unzip_password2">解压密码2</string>
-        <string name = "post_download_help">普通点击会打开客户端/浏览器+自动复制提取码\n长按可只复制下载链接\n\n不知道怎么解压文件的和碰到解压问题的, 可以看看下面的链接</string>
+        <string name = "post_download_help">点击: 会打开百度盘客户端/浏览器+自动复制提取码\n长按: 会只复制下载链接\n\n如果无法唤起百度盘客户端/默认浏览器 请确认是否安装了最新版本, 并且是正常运行状态 (确认是否禁用, 确认默认浏览器应用, 尝试重启设备)\n如果还是无法解决, 只能用长按-复制下载地址-手动用浏览器打开下载地址的方法 \n\n不知道怎么解压文件的和碰到解压问题的, 可以看看下面的链接</string>
         <string name = "unzip_instruction_link"><u>查看文件解压教程</u></string>
         <string name = "sharing_to_qq">分享到QQ</string>
         <string name = "another_methods">其他方式</string>

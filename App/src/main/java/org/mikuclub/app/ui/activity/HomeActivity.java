@@ -226,7 +226,7 @@ public class HomeActivity extends MyActivity implements UiModeChangeListener
                         //设置气泡位置偏移
                         messaggeCountbadge.setVerticalOffset(5);
                         //设置气泡背景颜色
-                        messaggeCountbadge.setBackgroundColor(getResources().getColor(R.color.defaultMikuBackground));
+                        messaggeCountbadge.setBackgroundColor(getResources().getColor(R.color.defaultMikuLightBackground));
                 }
                 else
                 {
@@ -476,11 +476,11 @@ public class HomeActivity extends MyActivity implements UiModeChangeListener
                                 nextUiMode = AppCompatDelegate.MODE_NIGHT_YES;
                                 break;
                         case AppCompatDelegate.MODE_NIGHT_YES:
-                                nextUiMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                                nextUiMode = AppCompatDelegate.MODE_NIGHT_NO;
                                 break;
                         case AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM:
                         default:
-                                nextUiMode = AppCompatDelegate.MODE_NIGHT_NO;
+                                nextUiMode = AppCompatDelegate.MODE_NIGHT_YES;
                                 break;
                 }
                 AppUiMode.applyUiMode(nextUiMode);
@@ -505,8 +505,10 @@ public class HomeActivity extends MyActivity implements UiModeChangeListener
                                 uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_night));
                                 break;
                         default:
-                                uiModeButton.setIcon(getResources().getDrawable(R.drawable.eclipse_o));
-                                uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_auto));
+                                //uiModeButton.setIcon(getResources().getDrawable(R.drawable.eclipse_o));
+                                //uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_auto));
+                                uiModeButton.setIcon(getResources().getDrawable(R.drawable.sun_o));
+                                uiModeButtonText.setText(ResourcesUtils.getString(R.string.ui_mode_day));
 
                                 break;
                 }

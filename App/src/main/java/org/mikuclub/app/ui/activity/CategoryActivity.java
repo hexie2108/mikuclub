@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.mikuclub.app.adapter.viewPager.CategoryViewPagerAdapter;
 import org.mikuclub.app.javaBeans.response.baseResource.Category;
 import org.mikuclub.app.ui.activity.base.MyActivity;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 import org.mikuclub.app.utils.http.Request;
 
@@ -85,6 +86,10 @@ public class CategoryActivity extends MyActivity
         private void initViewPager()
         {
                 viewPager.setAdapter(new CategoryViewPagerAdapter(this, category));
+
+                //降低侧滑敏感度
+                RecyclerViewUtils.reduceViewPagerHorizontalScrollSensibility(viewPager);
+
                 new TabLayoutMediator(tabsMenuLayout, viewPager,
                         (tab, position) -> {
                                 //第一个分页位

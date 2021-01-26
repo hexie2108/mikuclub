@@ -146,7 +146,7 @@ public class AuthorActivity extends MyActivity
         private void initSwipeRefresh()
         {
                 //设置进度条颜色
-                swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+                swipeRefresh.setColorSchemeResources(R.color.colorMiku);
                 //绑定动作
                 swipeRefresh.setOnRefreshListener(() -> {
                         //获取最新文章

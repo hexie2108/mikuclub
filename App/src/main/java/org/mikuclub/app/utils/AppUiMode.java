@@ -45,8 +45,11 @@ public final class AppUiMode
                 //如果参数未0 说明还不存在偏好设置
                 if (uiMode == 0)
                 {
+                        //使用默认白天模式
+                        uiMode =  AppCompatDelegate.MODE_NIGHT_NO;
+
                         //使用安卓系统配置
-                        uiMode = AppCompatDelegate.getDefaultNightMode();
+                        //uiMode = AppCompatDelegate.getDefaultNightMode();
                 }
         }
 
