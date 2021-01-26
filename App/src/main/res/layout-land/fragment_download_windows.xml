@@ -246,6 +246,19 @@
             app:layout_constraintTop_toBottomOf = "@id/down1_box"
             app:layout_goneMarginTop = "@dimen/normal" />
 
+        <TextView
+            android:id = "@+id/unzip_instruction_link"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/very_large"
+            android:autoLink = "all"
+            android:text = "@string/unzip_instruction_link"
+            android:textAlignment = "center"
+            android:textColor = "@color/colorAccent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/down_info" />
+
 
         <View
             android:layout_width = "0dp"

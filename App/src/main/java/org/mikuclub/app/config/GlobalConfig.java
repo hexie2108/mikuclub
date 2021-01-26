@@ -71,7 +71,8 @@ public class GlobalConfig
                 public static final String BAIDU_PAN_URL_VALIDATE_PATH = "pan.baidu.com/s/";
                 //百度网盘 传递URL的参数名称, 因为百度app策略, 分享id里的第一位数字1, 需要被手动去除, 否则无效
                 public static final String BAIDU_PAN_PARAMETER_NAME = "surl";
-                //百度网盘app url唤醒格式
+
+                //百度网盘app url唤醒格式 (注意: 修改协议名 记得 更新manifest.xml里的百度接口名)
                 public static final String BAIDU_PAN_APP_WAKE_URL = "bdnetdisk://n/action.SHARE_LINK";
 
                 //b站视频识别码
@@ -80,9 +81,10 @@ public class GlobalConfig
                 public static final String BILIBILI_BV = "BV";
                 //b站视频前缀地址
                 public static final String BILIBILI_HOST = "https://www.bilibili.com/video/";
-                //bilibili app url唤醒格式
+                //bilibili app url唤醒格式  (注意: 修改协议名 记得 更新manifest.xml里的百度接口名)
                 public static final String BILIBILI_APP_WAKE_URL = "bilibili://video/";
 
+                //taobao接口 (注意: 修改协议名 记得 更新manifest.xml里的百度接口名)
                 public static final String TAOBAO_SCHEME = "taobao://";
                 public static final String TAOBAO_SHOP_HOME = "mikuclub.taobao.com/";
 

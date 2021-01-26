@@ -140,9 +140,9 @@ public class HttpUtils
          *
          * @param context
          * @param url          主要地址
-         * @param SecondaryUrl 备用地址
+         * @param secondaryUrl 备用地址
          */
-        public static void startWebViewIntent(Context context, String url, String SecondaryUrl)
+        public static void startWebViewIntent(Context context, String url, String secondaryUrl)
         {
                 //检测url头部是否正常
                 url = HttpUtils.checkAndAddHttpsProtocol(url);
@@ -153,24 +153,32 @@ public class HttpUtils
                 //设置主要地址
                 intent.setData(Uri.parse(url));
 
-                //如果主要地址 不能被正常解析 (没有安装第三方应用), 而第二个地址不是null 而且不是空
-                if (intent.resolveActivity(context.getPackageManager()) == null && SecondaryUrl != null && !SecondaryUrl.isEmpty())
-                {
-                        //使用备用地址
-                        intent.setData(Uri.parse(SecondaryUrl));
-                }
-
-                //第二次检查, 确保只有在能被解析的情况下 才尝试启动
-                if (intent.resolveActivity(context.getPackageManager()) != null)
+                try
                 {
                         //启动
                         context.startActivity(intent);
                 }
-                //否则 消息框提示
-                else
-                {
-                        ToastUtils.shortToast("无法找到相关联的应用");
+                //如果不能被正常解析 (没有安装第三方应用),
+                catch (Exception e){
+                       // 第二个地址不是null 而且不是空
+                        if(secondaryUrl != null && !secondaryUrl.isEmpty()){
+                                //使用备用地址
+                                intent.setData(Uri.parse(secondaryUrl));
+                                try
+                                {
+                                        //启动
+                                        context.startActivity(intent);
+                                }
+                                catch (Exception e2){
+                                        ToastUtils.shortToast("无法唤起浏览器, 请检查默认浏览器设置");
+                                }
+                        }
+                        //否则 错误提示
+                        else{
+                                ToastUtils.shortToast("无法找到相关联的应用");
+                        }
                 }
+
 
 
         }

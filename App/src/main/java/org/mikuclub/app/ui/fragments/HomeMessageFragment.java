@@ -14,6 +14,7 @@ import org.mikuclub.app.adapter.viewPager.MessageViewPagerAdapter;
 import org.mikuclub.app.storage.MessagePreferencesUtils;
 import org.mikuclub.app.storage.UserPreferencesUtils;
 import org.mikuclub.app.ui.activity.LoginActivity;
+import org.mikuclub.app.utils.RecyclerViewUtils;
 import org.mikuclub.app.utils.ResourcesUtils;
 
 import androidx.annotation.NonNull;
@@ -128,6 +129,10 @@ public class HomeMessageFragment extends Fragment
         private void initViewPager()
         {
                 viewPagerAdapter = new MessageViewPagerAdapter(this);
+
+                //降低侧滑敏感度
+                RecyclerViewUtils.reduceViewPagerHorizontalScrollSensibility(viewPager);
+
                 viewPager.setAdapter(viewPagerAdapter);
 
 
