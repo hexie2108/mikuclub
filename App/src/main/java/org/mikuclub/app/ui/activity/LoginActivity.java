@@ -2,6 +2,7 @@ package org.mikuclub.app.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -34,6 +35,8 @@ import org.mikuclub.app.utils.social.TencentUtils;
 import org.mikuclub.app.utils.social.WeiboListener;
 import org.mikuclub.app.utils.social.WeiboUtils;
 
+import java.util.HashMap;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -41,6 +44,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import mikuclub.app.R;
+
+import static com.tencent.connect.common.Constants.KEY_QRCODE;
+import static com.tencent.connect.common.Constants.KEY_RESTORE_LANDSCAPE;
+import static com.tencent.connect.common.Constants.KEY_SCOPE;
 
 /**
  * 登陆页面
@@ -89,7 +96,7 @@ public class LoginActivity extends MyActivity
                 //创建进度条弹窗
                 progressDialog = AlertDialogUtils.createProgressDialog(this, false, false);
                 //创建微博分享的API
-               weiboAPI = WeiboUtils.getInstance(this);
+                weiboAPI = WeiboUtils.getInstance(this);
 
                 //替换原版标题栏
                 setSupportActionBar(toolbar);
@@ -106,6 +113,9 @@ public class LoginActivity extends MyActivity
                 initEditText();
                 //初始化社会登陆按钮
                 initSocialButton();
+
+
+
 
 
         }
@@ -297,6 +307,15 @@ public class LoginActivity extends MyActivity
          */
         private void startQQAuth()
         {
+
+                HashMap<String, Object> params = new HashMap<String, Object>();
+                if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
+                {
+                        params.put(KEY_RESTORE_LANDSCAPE, true);
+                }
+                params.put(KEY_SCOPE, "all");
+                params.put(KEY_QRCODE, false);
+
                 tencentListener = new TencentListener(this)
                 {
                         @Override
@@ -313,7 +332,9 @@ public class LoginActivity extends MyActivity
                                 //TencentUtils.getInstance().logout(LoginActivity.this);
                         }
                 };
-                TencentUtils.getInstance().login(this, "all", tencentListener);
+
+                //TencentUtils.getInstance().logout(this);
+                TencentUtils.getInstance().login(LoginActivity.this, tencentListener, params);
 
         }
 
@@ -402,6 +423,7 @@ public class LoginActivity extends MyActivity
 
         /**
          * 启动本活动的静态方法
+         *
          * @param context
          */
         public static void startAction(Context context)
@@ -409,6 +431,11 @@ public class LoginActivity extends MyActivity
                 Intent intent = new Intent(context, LoginActivity.class);
                 context.startActivity(intent);
         }
+
+
+
+
+
 
 
 

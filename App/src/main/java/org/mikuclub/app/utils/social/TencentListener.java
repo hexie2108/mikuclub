@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tencent.connect.UnionInfo;
 import com.tencent.connect.common.Constants;
+import com.tencent.tauth.DefaultUiListener;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 
@@ -16,7 +17,7 @@ import org.mikuclub.app.utils.ToastUtils;
  * 自定义QQ登陆动作监听器
  * QQ login action listener
  */
-public abstract class TencentListener implements IUiListener
+public abstract class TencentListener extends DefaultUiListener
 {
         private Context context;
         private String openID;
@@ -85,7 +86,7 @@ public abstract class TencentListener implements IUiListener
          * 获取用户统一识别id , 之后再发送请求给初音服务器 获取初音社用户信息
          */
         private void requestUnionId(){
-                IUiListener listener = new IUiListener()
+                IUiListener listener = new DefaultUiListener()
                 {
 
                         @Override

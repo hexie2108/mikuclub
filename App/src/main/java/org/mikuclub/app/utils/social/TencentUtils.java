@@ -12,7 +12,8 @@ import org.mikuclub.app.context.MyApplication;
 public class TencentUtils
 {
         public static final String OPEN_TYPE = "qq";
-        private static final String APP_KEY = "101842471";
+        public static final String APP_KEY = "101842471";
+        public static final String APP_AUTHORITIES="com.tencent.mikuclub.fileprovider";
 
         private static Tencent TencentAPI;
 
@@ -23,7 +24,8 @@ public class TencentUtils
                 //如果为null
                 if(TencentAPI == null){
                         //初始化
-                        TencentAPI = Tencent.createInstance(APP_KEY, MyApplication.getContext());
+
+                        TencentAPI = Tencent.createInstance(APP_KEY, MyApplication.getContext(), APP_AUTHORITIES);
                 }
                 return TencentAPI;
         }

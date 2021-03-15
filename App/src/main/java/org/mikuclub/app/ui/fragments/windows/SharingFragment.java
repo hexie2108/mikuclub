@@ -17,6 +17,7 @@ import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.share.WbShareCallback;
 import com.tencent.connect.common.Constants;
 import com.tencent.connect.share.QQShare;
+import com.tencent.tauth.DefaultUiListener;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -126,7 +127,7 @@ public class SharingFragment extends BottomSheetDialogFragment
         private void initShareQQButton()
         {
                 //初始化QQ和QQ空间回调监听器
-                qqShareListener = new IUiListener()
+                qqShareListener = new DefaultUiListener()
                 {
                         @Override
                         public void onComplete(Object o)

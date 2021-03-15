@@ -1,6 +1,5 @@
 package org.mikuclub.app.ui.activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,7 +42,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import mikuclub.app.BuildConfig;
 import mikuclub.app.R;
@@ -633,26 +631,31 @@ public class WelcomeActivity extends MyActivity
         private void permissionCheck()
         {
 
+                String[] permissions = new String[] {
+                        android.Manifest.permission.INTERNET,
+                        android.Manifest.permission.ACCESS_NETWORK_STATE,
+                        android.Manifest.permission.CHANGE_WIFI_STATE,
+                        android.Manifest.permission.ACCESS_WIFI_STATE,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_PHONE_STATE
+                };
+
                 List<String> permissionList = new ArrayList<>();
-                //检查是否拥有权限
-                if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                {
-                        //添加权限名到 待申请列表
-                        permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                for (String permission : permissions) {
+
+                        if (ActivityCompat.checkSelfPermission(WelcomeActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
+                                permissionList.add(permission);
+                        }
+
                 }
-                //检查是否拥有权限
-                if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
-                {
-                        //添加权限名到 待申请列表
-                        permissionList.add(Manifest.permission.READ_PHONE_STATE);
-                }
+
                 //如果待申请列表不是空的
                 if (!permissionList.isEmpty())
                 {
                         //把权限列表转换成 字符串数组
-                        String[] permissions = permissionList.toArray(new String[permissionList.size()]);
+                        String[] permissionsArray = permissionList.toArray(new String[]{});
                         //发起权限请求
-                        ActivityCompat.requestPermissions(WelcomeActivity.this, permissions, 1);
+                        ActivityCompat.requestPermissions(WelcomeActivity.this, permissionsArray, 1);
                 }
                 //如果已经拥有全部权限
                 else
