@@ -5,10 +5,13 @@
 
         <uses-permission android:name = "android.permission.INTERNET" />
         <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
+        <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
         <uses-permission android:name = "android.permission.READ_EXTERNAL_STORAGE" />
         <uses-permission android:name = "android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 微博SDK需要 -->
         <uses-permission android:name = "android.permission.READ_PHONE_STATE" />
-        <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
+
 
         <!-- 允许应用访问 其他第三方应用-->
         <queries>
@@ -31,6 +34,8 @@
             android:supportsRtl = "true"
             android:theme = "@style/AppTheme">
 
+                <meta-data android:name="android.notch_support" android:value="true"/>
+                <uses-library android:name="org.apache.http.legacy" android:required="false" />
 
                 <service
                     android:name = "org.mikuclub.app.service.PostPushService"
@@ -116,25 +121,36 @@
                     android:theme = "@style/Theme.AppCompat.Light.NoActionBar" /> <!-- 解决腾讯sdk 网络连接报错 -->
                 <uses-library
                     android:name = "org.apache.http.legacy"
-                    android:required = "false" /> <!-- 腾讯QQ sdk专用 -->
+                    android:required = "false" />
+
+
+                <!-- 腾讯QQ sdk专用 -->
                 <activity
                     android:name = "com.tencent.tauth.AuthActivity"
                     android:launchMode = "singleTask"
                     android:noHistory = "true">
                         <intent-filter>
                                 <action android:name = "android.intent.action.VIEW" />
-
                                 <category android:name = "android.intent.category.DEFAULT" />
                                 <category android:name = "android.intent.category.BROWSABLE" />
-
                                 <data android:scheme = "tencent101842471" />
                         </intent-filter>
                 </activity>
                 <activity
-                    android:name = "com.tencent.connect.common.AssistActivity"
-                    android:configChanges = "orientation|keyboardHidden"
-                    android:screenOrientation = "behind"
-                    android:theme = "@android:style/Theme.Translucent.NoTitleBar" /> <!-- 谷歌广告sdk申明 -->
+                    android:name="com.tencent.open.yyb.AppbarActivity"
+                    android:configChanges="orientation|keyboardHidden"
+                    android:screenOrientation="portrait"
+                    android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+                <activity android:name="com.tencent.connect.avatar.ImageActivity" />
+                <activity
+                    android:name="com.tencent.connect.common.AssistActivity"
+                    android:configChanges="orientation|keyboardHidden|screenSize"
+                    android:screenOrientation="behind"
+                    android:theme="@style/Assist_Style" />
+
+
+
+                <!-- 谷歌广告sdk申明 -->
                 <meta-data
                     android:name = "com.google.android.gms.ads.AD_MANAGER_APP"
                     android:value = "true" />

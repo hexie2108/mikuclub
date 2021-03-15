@@ -99,7 +99,7 @@ public class GlobalConfig
         {
 
                 //public static final String HOST = "http://192.168.3.101/html/";
-                public static final String HOST = "https://www.mikuclub.org/";
+                public static final String HOST = "https://www.mikuclub.xyz/";
                 public static final String ROOT = HOST + "wp-json/wp/v2/";
                 public static final String POSTS = "posts/";
 

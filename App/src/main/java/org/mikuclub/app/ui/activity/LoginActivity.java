@@ -314,6 +314,7 @@ public class LoginActivity extends MyActivity
                         }
                 };
                 TencentUtils.getInstance().login(this, "all", tencentListener);
+
         }
 
         /**
