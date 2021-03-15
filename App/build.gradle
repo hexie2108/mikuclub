@@ -8,8 +8,8 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 20
-        versionName "v2.0"
+        versionCode 21
+        versionName "v2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //  设置微博sdk支持的SO库架构
@@ -109,7 +109,7 @@ dependencies {
     //谷歌数据分析
     implementation 'com.google.firebase:firebase-core:18.0.0'
     //新浪sdk
-    implementation 'com.sina.weibo.sdk:core:9.12.0:openDefaultRelease@aar'
+    implementation 'com.sina.weibo.sdk:core:10.10.0:openDefaultRelease@aar'
 
     //富文本编辑器  暂时无法使用需要等待作者更新
     //https://github.com/chinalwb/Android-Rich-text-Editor
