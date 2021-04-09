@@ -29,7 +29,7 @@
                 <intent>
                         <action android:name="android.intent.action.OPEN_DOCUMENT"/>
                 </intent>
-                
+
                 <!-- QQ -->
                 <package android:name="com.tencent.mobileqq" />
                 <!--  哔哩哔哩 国内版-->
