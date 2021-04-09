@@ -6,10 +6,10 @@ android {
     defaultConfig {
         //application package path
         applicationId "mikuclub.app"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 30
-        versionCode 22
-        versionName "v2.2"
+        versionCode 24
+        versionName "v2.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         /*ndk {
             //  设置微博sdk支持的SO库架构

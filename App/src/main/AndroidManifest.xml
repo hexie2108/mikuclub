@@ -29,7 +29,15 @@
                 <intent>
                         <action android:name="android.intent.action.OPEN_DOCUMENT"/>
                 </intent>
+                
+                <!-- QQ -->
                 <package android:name="com.tencent.mobileqq" />
+                <!--  哔哩哔哩 国内版-->
+                <package android:name="tv.danmaku.bili" />
+                <!--  哔哩哔哩 海外版-->
+                <package android:name="com.bilibili.app.in" />
+                <!--  百度网盘-->
+                <package android:name="com.baidu.netdisk" />
 
         </queries>
 

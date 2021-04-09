@@ -82,7 +82,7 @@ public class SearchPostController extends PostController
                         @Override
                         public void onError(WpError wpError)
                         {
-                                getRecyclerViewAdapter().setNotMoreErrorMessage("巴巴爸爸");
+                                getRecyclerViewAdapter().setNotMoreErrorMessage(ResourcesUtils.getString(R.string.search_empty_error_message));
                                 getRecyclerViewAdapter().updateFooterStatus(false, true, false);
                         }
 
