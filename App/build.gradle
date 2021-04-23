@@ -8,8 +8,8 @@ android {
         applicationId "mikuclub.app"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 24
-        versionName "v2.4"
+        versionCode 25
+        versionName "v2.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         /*ndk {
             //  设置微博sdk支持的SO库架构
@@ -26,12 +26,16 @@ android {
             //the rules to obfuscate the code
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            resValue "string", "app_version_name", "${defaultConfig.versionName}"
+            resValue("string", "app_version_name", "${defaultConfig.versionName}")
+            //谷歌广告单位正式ID
+            resValue("string", "adsense_banner_unit_id", "ca-app-pub-1442793010183347/4728117614")
         }
 
         debug {
             versionNameSuffix ".debug"
-            resValue "string", "app_version_name", "${defaultConfig.versionName}${versionNameSuffix}"
+            resValue("string", "app_version_name", "${defaultConfig.versionName}${versionNameSuffix}")
+            //谷歌广告单位测试用ID
+            resValue("string", "adsense_banner_unit_id", "ca-app-pub-3940256099942544/6300978111")
         }
     }
     packagingOptions {
@@ -105,9 +109,9 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.5'
 
     //谷歌广告sdk
-    //implementation 'com.google.android.gms:play-services-ads:19.1.0'
+    implementation 'com.google.android.gms:play-services-ads:20.0.0'
     //谷歌数据分析
-    implementation 'com.google.firebase:firebase-core:18.0.2'
+    implementation 'com.google.firebase:firebase-core:18.0.3'
     //新浪sdk
     implementation 'com.sina.weibo.sdk:core:10.10.0:openDefaultRelease@aar'
 

@@ -1,12 +1,15 @@
 package org.mikuclub.app.adapter;
 
 import android.content.Context;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.zhengsr.viewpagerlib.callback.PageHelperListener;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
@@ -79,70 +82,89 @@ public class HomeListAdapter extends PostAdapter
         {
 
 
-                        BannerViewPager bannerViewPager = holder.getSliderViewPager();
-                        bannerViewPager.addIndicator(holder.getIndicator());
-                        bannerViewPager.setPageListener(R.layout.slider_view_item_home, headerPostList, new PageHelperListener<Post>()
+                BannerViewPager bannerViewPager = holder.getSliderViewPager();
+                bannerViewPager.addIndicator(holder.getIndicator());
+                bannerViewPager.setPageListener(R.layout.slider_view_item_home, headerPostList, new PageHelperListener<Post>()
+                {
+                        @Override
+                        public void bindView(View view, Post post, int position)
                         {
-                                @Override
-                                public void bindView(View view, Post post, int position)
-                                {
-                                        //获取原图地址
-                                        String imageUrl = post.getMetadata().getImages_src().get(0);
-                                        //获取缩微图地址
-                                        String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
-                                        //获取图片组件
-                                        ImageView imageView = view.findViewById(R.id.item_image);
-                                        //加载图片
-                                        GlideImageUtils.getWithThumbnail(getAdapterContext(), imageView, imageUrl, thumbnailSrc);
-                                        //设置标题
-                                        TextView textView = view.findViewById(R.id.item_text);
-                                        //修复标题中可能存在的被html转义的特殊符号
-                                        String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
-                                        textView.setText(title);
-                                        //绑定点击事件监听器
-                                        view.setOnClickListener(v -> {
-                                                //启动 文章页
-                                                PostActivity.startAction(getAdapterContext(), post);
-                                        });
-                                }
-                        });
+                                //获取原图地址
+                                String imageUrl = post.getMetadata().getImages_src().get(0);
+                                //获取缩微图地址
+                                String thumbnailSrc = post.getMetadata().getThumbnail_src().get(0);
+                                //获取图片组件
+                                ImageView imageView = view.findViewById(R.id.item_image);
+                                //加载图片
+                                GlideImageUtils.getWithThumbnail(getAdapterContext(), imageView, imageUrl, thumbnailSrc);
+                                //设置标题
+                                TextView textView = view.findViewById(R.id.item_text);
+                                //修复标题中可能存在的被html转义的特殊符号
+                                String title = GeneralUtils.unescapeHtml(post.getTitle().getRendered());
+                                textView.setText(title);
+                                //绑定点击事件监听器
+                                view.setOnClickListener(v -> {
+                                        //启动 文章页
+                                        PostActivity.startAction(getAdapterContext(), post);
+                                });
+                        }
+                });
 
-                        //从参数偏好缓存里提取站点消息对象
-                        SiteCommunication.SiteCommunicationBody communicationBody = ApplicationPreferencesUtils.getSiteCommunication();
-                        if (communicationBody != null)
+                //从参数偏好缓存里提取站点消息对象
+                SiteCommunication.SiteCommunicationBody communicationBody = ApplicationPreferencesUtils.getSiteCommunication();
+                if (communicationBody != null)
+                {
+                        //获取公告信息
+                        String siteCommunicationString = communicationBody.getCommunication();
+                        //用html解析器解析
+                        HttpUtils.parseHtmlDefault(getAdapterContext(), siteCommunicationString, holder.getSiteCommunication());
+
+                        //如果要显示自定义广告
+                        if (!communicationBody.getApp_adindex_01_show().isEmpty())
                         {
-                                //获取公告信息
-                                String siteCommunicationString = communicationBody.getCommunication();
+                                //获取广告信息
+                                String adIndex01Text = communicationBody.getApp_adindex_01_text();
+
                                 //用html解析器解析
-                                HttpUtils.parseHtmlDefault(getAdapterContext(), siteCommunicationString, holder.getSiteCommunication());
+                                HttpUtils.parseHtmlDefault(getAdapterContext(), adIndex01Text, holder.getAdIndex01());
+                                //绑定点击事件
+                                holder.getAdIndex01().setOnClickListener(v -> HttpUtils.startWebViewIntent(getAdapterContext(), communicationBody.getApp_adindex_01_link(), null));
 
-                                //如果要显示广告
-                                if (!communicationBody.getApp_adindex_01_show().isEmpty())
-                                {
-                                        //获取广告信息
-                                        String adIndex01Text = communicationBody.getApp_adindex_01_text();
-
-                                        //用html解析器解析
-                                        HttpUtils.parseHtmlDefault(getAdapterContext(), adIndex01Text, holder.getAdIndex01());
-                                        //绑定点击事件
-                                        holder.getAdIndex01().setOnClickListener(v -> HttpUtils.startWebViewIntent(getAdapterContext(), communicationBody.getApp_adindex_01_link(), null));
-                                        //显示广告窗口
-                                        holder.getAdIndex01().setVisibility(View.VISIBLE);
-
-                                }
-
+                                //显示广告窗口
+                                holder.getAdIndex01Container().setVisibility(View.VISIBLE);
 
                         }
-
-
-                        //如果是横屏状态 重设幻灯片容器的宽高比例
-                        if (ScreenUtils.isHorizontal(getAdapterContext()))
+                        //否则使用谷歌广告
+                        else
                         {
-                                ConstraintLayout.LayoutParams layoutParams = ((ConstraintLayout.LayoutParams) holder.getHomeSliderViewpagerContainer().getLayoutParams());
-                                layoutParams.dimensionRatio = "16:4";
-                                holder.getHomeSliderViewpagerContainer().setLayoutParams(layoutParams);
+
+                                //显示广告窗口
+                                holder.getAdViewContainer().setVisibility(View.VISIBLE);
+
+                                //初始化谷歌广告SDK
+                                MobileAds.initialize(getAdapterContext(), new OnInitializationCompleteListener()
+                                {
+                                        @Override
+                                        public void onInitializationComplete(InitializationStatus initializationStatus)
+                                        {
+                                        }
+                                });
+                                //加载显示广告
+                                AdRequest adRequest = new AdRequest.Builder().build();
+                                holder.getAdView().loadAd(adRequest);
                         }
 
+
+                }
+
+
+                //如果是横屏状态 重设幻灯片容器的宽高比例
+                if (ScreenUtils.isHorizontal(getAdapterContext()))
+                {
+                        ConstraintLayout.LayoutParams layoutParams = ((ConstraintLayout.LayoutParams) holder.getHomeSliderViewpagerContainer().getLayoutParams());
+                        layoutParams.dimensionRatio = "16:4";
+                        holder.getHomeSliderViewpagerContainer().setLayoutParams(layoutParams);
+                }
 
 
         }

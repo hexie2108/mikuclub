@@ -332,6 +332,7 @@ public class PostMainFragment extends Fragment
                 //移除描述里 文字大小css
                 htmlDescription = htmlDescription.replace("font-size", "fontsize");
 
+
                 //解析 html描述
                 HttpUtils.parseHtml(getActivity(), htmlDescription, postDescription, new OnTagClickListener()
                 {

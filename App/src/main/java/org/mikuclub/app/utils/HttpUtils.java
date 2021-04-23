@@ -9,6 +9,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
@@ -105,11 +106,13 @@ public class HttpUtils
 
         /**
          * 如果是内部文章链接, 加载文章页, 如果是外部链接, 启动 浏览器或第三方应用
+         *
          * @param context
          * @param url
          * @param SecondaryUrl
          */
-        public static void loadPageOrStartIntent(Context context, String url, String SecondaryUrl){
+        public static void loadPageOrStartIntent(Context context, String url, String SecondaryUrl)
+        {
 
                 //如果是站内内部链接 并且 可以被分割成5个元素
                 if (url != null && url.contains(GlobalConfig.Server.HOST) && url.split("/").length >= 4)
@@ -159,9 +162,11 @@ public class HttpUtils
                         context.startActivity(intent);
                 }
                 //如果不能被正常解析 (没有安装第三方应用),
-                catch (Exception e){
-                       // 第二个地址不是null 而且不是空
-                        if(secondaryUrl != null && !secondaryUrl.isEmpty()){
+                catch (Exception e)
+                {
+                        // 第二个地址不是null 而且不是空
+                        if (secondaryUrl != null && !secondaryUrl.isEmpty())
+                        {
                                 //使用备用地址
                                 intent.setData(Uri.parse(secondaryUrl));
                                 try
@@ -169,16 +174,17 @@ public class HttpUtils
                                         //启动
                                         context.startActivity(intent);
                                 }
-                                catch (Exception e2){
+                                catch (Exception e2)
+                                {
                                         ToastUtils.shortToast("无法唤起浏览器, 请检查默认浏览器设置");
                                 }
                         }
                         //否则 错误提示
-                        else{
+                        else
+                        {
                                 ToastUtils.shortToast("无法找到相关联的应用");
                         }
                 }
-
 
 
         }
@@ -223,76 +229,96 @@ public class HttpUtils
                         //htmlImageMaxWidth = ScreenUtils.getScreenWidth(context) - paddingDistance;
                         htmlImageMaxWidth = ScreenUtils.getScreenWidth(context);
                 }
-                //设置图片加载方式
-                HtmlText.from(htmlString).setImageLoader(new HtmlImageLoader()
+
+                try
                 {
-                        @Override
-                        public void loadImage(String url, final HtmlImageLoader.Callback callback)
+                        //设置图片加载方式
+                        HtmlText.from(htmlString).setImageLoader(new HtmlImageLoader()
                         {
-                                Glide.with(context)
-                                        .asBitmap()
-                                        .load(url)
-                                        .into(new CustomTarget<Bitmap>()
-                                        {
-                                                @Override
-                                                public void onResourceReady(Bitmap resource,
-                                                                            Transition<? super Bitmap> transition)
+                                @Override
+                                public void loadImage(String url, final HtmlImageLoader.Callback callback)
+                                {
+                                        Glide.with(context)
+                                                .asBitmap()
+                                                .load(url)
+                                                .into(new CustomTarget<Bitmap>()
                                                 {
-                                                        callback.onLoadComplete(resource);
-                                                }
+                                                        @Override
+                                                        public void onResourceReady(Bitmap resource,
+                                                                                    Transition<? super Bitmap> transition)
+                                                        {
+                                                                callback.onLoadComplete(resource);
+                                                        }
 
-                                                @Override
-                                                public void onLoadFailed(Drawable errorDrawable)
-                                                {
-                                                        callback.onLoadFailed();
-                                                }
+                                                        @Override
+                                                        public void onLoadFailed(Drawable errorDrawable)
+                                                        {
+                                                                callback.onLoadFailed();
+                                                        }
 
-                                                @Override
-                                                public void onLoadCleared(@Nullable Drawable placeholder)
-                                                {
-                                                }
+                                                        @Override
+                                                        public void onLoadCleared(@Nullable Drawable placeholder)
+                                                        {
+                                                        }
 
-                                        });
-                        }
+                                                });
+                                }
 
-                        /**
-                         * 设置加载占位图
-                         * @return
-                         */
-                        @Override
-                        public Drawable getDefaultDrawable()
+                                /**
+                                 * 设置加载占位图
+                                 *
+                                 * @return
+                                 */
+                                @Override
+                                public Drawable getDefaultDrawable()
+                                {
+
+                                        //return ContextCompat.getDrawable(context, R.drawable.loop_grey_16x9);
+                                        return null;
+                                }
+
+                                /**
+                                 * 设置错误占位图
+                                 *
+                                 * @return
+                                 */
+                                @Override
+                                public Drawable getErrorDrawable()
+                                {
+                                        return ContextCompat.getDrawable(context, R.drawable.error_black);
+                                }
+
+                                /**
+                                 * 设置显示html图片的最大宽度
+                                 *
+                                 * @return
+                                 */
+                                @Override
+                                public int getMaxWidth()
+                                {
+                                        return htmlImageMaxWidth;
+                                }
+
+                                @Override
+                                public boolean fitWidth()
+                                {
+                                        return false;
+                                }
+                        }).setOnTagClickListener(onTagClickListener).into(textView);
+
+                }
+                catch (Exception ex)
+                {
+                        //如果报错 则使用传统html解析器
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                         {
-
-                                //return ContextCompat.getDrawable(context, R.drawable.loop_grey_16x9);
-                                return null;
+                                textView.setText(Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT));
                         }
-
-                        /**
-                         * 设置错误占位图
-                         * @return
-                         */
-                        @Override
-                        public Drawable getErrorDrawable()
+                        else
                         {
-                                return ContextCompat.getDrawable(context, R.drawable.error_black);
+                                textView.setText(Html.fromHtml(htmlString));
                         }
-
-                        /**
-                         * 设置显示html图片的最大宽度
-                         * @return
-                         */
-                        @Override
-                        public int getMaxWidth()
-                        {
-                                return htmlImageMaxWidth;
-                        }
-
-                        @Override
-                        public boolean fitWidth()
-                        {
-                                return false;
-                        }
-                }).setOnTagClickListener(onTagClickListener).into(textView);
+                }
 
         }
 
@@ -309,22 +335,37 @@ public class HttpUtils
 
                 textView.setMovementMethod(LinkMovementMethod.getInstance());
 
-                HttpUtils.parseHtml(context, htmlString, textView, new OnTagClickListener()
+                try
                 {
-                        //设置 点击图片tag的动作
-                        @Override
-                        public void onImageClick(Context context, List<String> imagesSrc, int position)
+                        HttpUtils.parseHtml(context, htmlString, textView, new OnTagClickListener()
                         {
-                        }
+                                //设置 点击图片tag的动作
+                                @Override
+                                public void onImageClick(Context context, List<String> imagesSrc, int position)
+                                {
+                                }
 
-                        //设置点击链接tag的动作
-                        @Override
-                        public void onLinkClick(Context context, String url)
+                                //设置点击链接tag的动作
+                                @Override
+                                public void onLinkClick(Context context, String url)
+                                {
+
+                                        loadPageOrStartIntent(context, url, null);
+                                }
+                        });
+                }
+                catch (Exception ex)
+                {
+                        //如果报错 则使用传统html解析器
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                         {
-
-                                loadPageOrStartIntent(context, url, null);
+                                textView.setText(Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT));
                         }
-                });
+                        else
+                        {
+                                textView.setText(Html.fromHtml(htmlString));
+                        }
+                }
         }
 
 

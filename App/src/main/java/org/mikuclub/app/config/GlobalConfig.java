@@ -91,6 +91,11 @@ public class GlobalConfig
                 public static final String TAOBAO_APK_URL = TAOBAO_SCHEME + TAOBAO_SHOP_HOME;
                 public static final String TAOBAO_WEB_URL = HTTPS_SCHEME + TAOBAO_SHOP_HOME;
 
+
+                //115网盘地址判断
+                public static final String OOF_URL_VALIDATE_PATH = "115.com";
+                //115网盘唤醒接口
+                public static final String OOF_APP_WAKE_URL = "oof.disk://openurl/";
         }
 
 
@@ -100,6 +105,9 @@ public class GlobalConfig
 
                 //public static final String HOST = "http://192.168.3.101/html/";
                 public static final String HOST = "https://www.mikuclub.xyz/";
+                //检测更新用的域名 (备用域名)
+                public static final String SECONDARY_HOST = "https://www.mikuclub.cc/";
+
                 public static final String ROOT = HOST + "wp-json/wp/v2/";
                 public static final String POSTS = "posts/";
 
@@ -123,7 +131,7 @@ public class GlobalConfig
                 private static final String UTILS = "wp-json/utils/v2/";
 
                 //GET 检查应用更新
-                public static final String APP_UPDATE = HOST + UTILS + "app_update/";
+                public static final String APP_UPDATE = SECONDARY_HOST + UTILS + "app_update/";
                 //GET 获取分类信息
                 public static final String CATEGORIES = HOST + UTILS + "get_menu/";
                 //POST  设置文章点赞计数

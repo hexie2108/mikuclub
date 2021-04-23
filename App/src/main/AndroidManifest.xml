@@ -38,6 +38,8 @@
                 <package android:name="com.bilibili.app.in" />
                 <!--  百度网盘-->
                 <package android:name="com.baidu.netdisk" />
+                <!--  115网盘-->
+                <package android:name="com.ylmf.androidclient" />
 
         </queries>
 
@@ -178,6 +180,9 @@
                 <meta-data
                     android:name = "com.google.android.gms.ads.AD_MANAGER_APP"
                     android:value = "true" />
+                <meta-data
+                    android:name="com.google.android.gms.ads.APPLICATION_ID"
+                    android:value="ca-app-pub-1442793010183347~1457643363"/>
         </application>
 
 </manifest>

@@ -73,6 +73,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id = "@+id/adindex_01_container"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
             android:layout_marginTop = "@dimen/normal"
@@ -82,7 +83,7 @@
             app:cardMaxElevation = "0dp"
             app:layout_constraintEnd_toEndOf = "parent"
             app:layout_constraintStart_toStartOf = "parent"
-
+            android:visibility = "gone"
             app:layout_constraintTop_toBottomOf = "@id/site_communication_container">
 
                 <TextView
@@ -92,8 +93,38 @@
                     android:padding = "@dimen/small"
                     android:textAlignment = "center"
                     android:textSize = "@dimen/text_default"
-                    android:visibility = "gone"
                     tools:text = "首页广告" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id = "@+id/adViewContainer"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "@dimen/normal"
+            app:layout_goneMarginTop="@dimen/normal"
+            android:visibility = "gone"
+            android:background = "@color/defaultBackground"
+            app:cardCornerRadius = "@dimen/small"
+            app:cardElevation = "0dp"
+            app:cardMaxElevation = "0dp"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@id/adindex_01_container"
+
+            >
+
+                <com.google.android.gms.ads.AdView xmlns:ads = "http://schemas.android.com/apk/res-auto"
+                    android:id = "@+id/adView"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:layout_centerHorizontal = "true"
+                    android:layout_marginTop = "@dimen/normal"
+                    android:layout_marginBottom = "@dimen/normal"
+                    ads:adSize = "BANNER"
+                    ads:adUnitId = "@string/adsense_banner_unit_id">
+
+                </com.google.android.gms.ads.AdView>
 
         </androidx.cardview.widget.CardView>
 

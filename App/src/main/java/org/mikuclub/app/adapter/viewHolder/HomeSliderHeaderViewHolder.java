@@ -3,6 +3,7 @@ package org.mikuclub.app.adapter.viewHolder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdView;
 import com.zhengsr.viewpagerlib.indicator.RectIndicator;
 import com.zhengsr.viewpagerlib.view.BannerViewPager;
 
@@ -12,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import mikuclub.app.R;
 
 /**
- *  主页 头部组件控制器 (显示 幻灯片)
- *  Home page head view holder (show slider)
+ * 主页 头部组件控制器 (显示 幻灯片)
+ * Home page head view holder (show slider)
  */
-public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
+public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder
+{
 
         //首页幻灯片
         private BannerViewPager sliderViewPager;
@@ -23,6 +25,11 @@ public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
         private TextView adIndex01;
         private TextView siteCommunication;
         private CardView homeSliderViewpagerContainer;
+
+
+        private CardView adIndex01Container;
+        private AdView adView;
+        private CardView adViewContainer;
 
 
         public HomeSliderHeaderViewHolder(@NonNull View itemView)
@@ -34,6 +41,12 @@ public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
                 adIndex01 = itemView.findViewById(R.id.adindex_01);
                 siteCommunication = itemView.findViewById(R.id.site_communication);
                 homeSliderViewpagerContainer = itemView.findViewById(R.id.home_slider_viewpager_container);
+
+                adIndex01Container = itemView.findViewById(R.id.adindex_01_container);
+
+                adViewContainer = itemView.findViewById(R.id.adViewContainer);
+                adView = itemView.findViewById(R.id.adView);
+
         }
 
         public CardView getHomeSliderViewpagerContainer()
@@ -84,5 +97,35 @@ public class HomeSliderHeaderViewHolder extends RecyclerView.ViewHolder{
         public void setSiteCommunication(TextView siteCommunication)
         {
                 this.siteCommunication = siteCommunication;
+        }
+
+        public AdView getAdView()
+        {
+                return adView;
+        }
+
+        public void setAdView(AdView adView)
+        {
+                this.adView = adView;
+        }
+
+        public CardView getAdIndex01Container()
+        {
+                return adIndex01Container;
+        }
+
+        public void setAdIndex01Container(CardView adIndex01Container)
+        {
+                this.adIndex01Container = adIndex01Container;
+        }
+
+        public CardView getAdViewContainer()
+        {
+                return adViewContainer;
+        }
+
+        public void setAdViewContainer(CardView adViewContainer)
+        {
+                this.adViewContainer = adViewContainer;
         }
 }

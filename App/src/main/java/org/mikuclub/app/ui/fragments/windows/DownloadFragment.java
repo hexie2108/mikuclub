@@ -241,6 +241,27 @@ public class DownloadFragment extends BottomSheetDialogFragment
                                         };
 
                                 }
+                                //如果是115盘标准地址
+                                else if(downUrl.contains(GlobalConfig.ThirdPartyApplicationInterface.OOF_URL_VALIDATE_PATH)){
+                                        //更改按钮文字 为百度
+                                        downButton.setText(ResourcesUtils.getString(R.string.oof_drive));
+                                        //设置图标
+                                        //downButton.setIcon(getResources().getDrawable(R.drawable.baidu_pan));
+                                        //绑定动作
+                                        onClickListener = v -> {
+                                                //如果访问密码不是空
+                                                if (!downPassword.getText().toString().isEmpty())
+                                                {
+                                                        ClipboardUtils.setText(downPassword.getText().toString());
+                                                        ToastUtils.shortToast(ResourcesUtils.getString(R.string.post_down_password_copy_message));
+                                                }
+
+                                                //转换成115唤醒地址
+                                                String oofUrl = GlobalConfig.ThirdPartyApplicationInterface.OOF_APP_WAKE_URL + downUrl;
+                                                //启动第三方应用
+                                                HttpUtils.startWebViewIntent(getActivity(), oofUrl, downUrl);
+                                        };
+                                }
                                 else
                                 {
                                         //设置默认文字

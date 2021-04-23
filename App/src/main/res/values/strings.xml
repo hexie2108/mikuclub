@@ -17,6 +17,7 @@
         <string name = "login_token_error" translatable = "false">登陆信息已过期, 请重新登陆</string>
 
         <string name = "baidu_drive">百度网盘</string>
+        <string name = "oof_drive">115网盘</string>
         <string name = "download">下载</string>
         <string name = "sharing">分享</string>
         <string name = "unread">未读</string>
